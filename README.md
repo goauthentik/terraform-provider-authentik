@@ -25,7 +25,7 @@ terraform init && terraform apply
 - [ ] authentik.admin
 - [ ] authentik.api
 - [ ] authentik.core
-- [ ] authentik.crypto
+- [x] authentik.crypto
 - [ ] authentik.events
 - [ ] authentik.flowsw
 - [ ] authentik.lib
