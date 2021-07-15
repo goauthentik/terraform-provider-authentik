@@ -27,10 +27,10 @@ terraform init && terraform apply
 - [ ] authentik.core
 - [x] authentik.crypto
 - [ ] authentik.events
-- [ ] authentik.flowsw
+- [ ] authentik.flows
 - [ ] authentik.lib
 - [ ] authentik.managed
-- [ ] authentik.outposts
+- [x] authentik.outposts
 - [ ] authentik.policies
 - [ ] authentik.policies.dummy
 - [ ] authentik.policies.event_matcher
