@@ -38,11 +38,10 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"authentik_application":    resourceApplication(),
+			"authentik_outpost":        resourceOutpost(),
 			"authentik_provider_proxy": resourceProviderProxy(),
 		},
-		DataSourcesMap: map[string]*schema.Resource{
-			// "authentik_outpost": dataSourceOutpost(),
-		},
+		DataSourcesMap:       map[string]*schema.Resource{},
 		ConfigureContextFunc: providerConfigure,
 	}
 }

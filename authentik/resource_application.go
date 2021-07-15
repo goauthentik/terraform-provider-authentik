@@ -55,8 +55,8 @@ func resourceApplication() *schema.Resource {
 	}
 }
 
-func resourceApplicationSchemaToApp(d *schema.ResourceData) (*api.ApplicationRequest, diag.Diagnostics) {
-	app := api.ApplicationRequest{
+func resourceApplicationSchemaToModel(d *schema.ResourceData) (*api.ApplicationRequest, diag.Diagnostics) {
+	m := api.ApplicationRequest{
 		Name:     d.Get("name").(string),
 		Slug:     d.Get("slug").(string),
 		Provider: api.NullableInt32{},
@@ -64,19 +64,19 @@ func resourceApplicationSchemaToApp(d *schema.ResourceData) (*api.ApplicationReq
 
 	if p, pSet := d.GetOk("protocol_provider"); pSet {
 		i := int32(p.(int))
-		app.Provider.Set(&i)
+		m.Provider.Set(&i)
 	} else {
-		app.Provider.Set(nil)
+		m.Provider.Set(nil)
 	}
 
 	if l, ok := d.Get("meta_launch_url").(string); ok {
-		app.MetaLaunchUrl = &l
+		m.MetaLaunchUrl = &l
 	}
 	if l, ok := d.Get("meta_description").(string); ok {
-		app.MetaDescription = &l
+		m.MetaDescription = &l
 	}
 	if l, ok := d.Get("meta_publisher").(string); ok {
-		app.MetaPublisher = &l
+		m.MetaPublisher = &l
 	}
 
 	pm := d.Get("policy_engine_mode").(string)
@@ -89,14 +89,14 @@ func resourceApplicationSchemaToApp(d *schema.ResourceData) (*api.ApplicationReq
 	default:
 		return nil, diag.Errorf("invalid policy_engine_mode %s", pm)
 	}
-	app.PolicyEngineMode = &pma
-	return &app, nil
+	m.PolicyEngineMode = &pma
+	return &m, nil
 }
 
 func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*ProviderAPIClient)
 
-	app, diags := resourceApplicationSchemaToApp(d)
+	app, diags := resourceApplicationSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
@@ -134,7 +134,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*ProviderAPIClient)
 
-	app, di := resourceApplicationSchemaToApp(d)
+	app, di := resourceApplicationSchemaToModel(d)
 	if di != nil {
 		return di
 	}
