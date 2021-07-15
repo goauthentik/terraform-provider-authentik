@@ -29,8 +29,10 @@ func resourceOutpost() *schema.Resource {
 				Optional: true,
 				Default:  api.OUTPOSTTYPEENUM_PROXY,
 			},
-			"providers": {
-				Type: schema.TypeList,
+			"protocol_providers": {
+				Type:     schema.TypeList,
+				Required: true,
+				Default:  []int32{},
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
 				},
@@ -52,8 +54,8 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData) (*api.OutpostRequest, 
 		Name: d.Get("name").(string),
 	}
 
-	providers := d.Get("providers").([]int32)
-	m.Providers = providers
+	protocol_providers := d.Get("protocol_providers").([]int32)
+	m.Providers = protocol_providers
 
 	if l, ok := d.Get("service_connection").(string); ok {
 		m.ServiceConnection.Set(&l)
@@ -111,7 +113,7 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	d.Set("name", res.Name)
 	d.Set("type", res.Type)
-	d.Set("providers", res.Providers)
+	d.Set("protocol_providers", res.Providers)
 	d.Set("service_connection", res.ServiceConnection)
 	b, err := json.Marshal(res.Config)
 	if err != nil {

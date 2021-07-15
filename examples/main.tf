@@ -12,10 +12,10 @@ provider "authentik" {
 }
 
 resource "authentik_provider_proxy" "proxy" {
-  name = "proxy"
+  name               = "proxy"
   authorization_flow = "f75c8903-f82e-4783-a556-572134ac0bf1"
-  external_host = "http://foo.bar.baz"
-  internal_host = "http://internal.local"
+  external_host      = "http://foo.bar.baz"
+  internal_host      = "http://internal.local"
 }
 
 resource "authentik_application" "name" {
