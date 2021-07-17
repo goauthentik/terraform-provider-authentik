@@ -38,6 +38,9 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
       -
+        name: Generate API Client
+        run: make gen-api
+      -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2.5.0
         with:
