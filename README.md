@@ -1,3 +1,5 @@
+# This Provider is in alpha, the resources are not guaranteed to be stable!
+
 # Terraform Provider authentik
 
 Run the following command to build the provider
