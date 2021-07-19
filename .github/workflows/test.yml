@@ -26,6 +26,7 @@ jobs:
 
     - name: Get dependencies
       run: |
+        make gen-api
         go mod download
 
     - name: Build
@@ -56,6 +57,7 @@ jobs:
 
     - name: Get dependencies
       run: |
+        make gen-api
         go mod download
 
     - name: TF acceptance tests
