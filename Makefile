@@ -10,7 +10,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 
-default: install
+default: install gen
 
 build:
 	go build -o ${BINARY}
@@ -32,7 +32,7 @@ release:
 install: build
 	mkdir -p ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 	mv ${BINARY} ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
-	rm examples_local/.terraform.lock.hcl
+	rm -f examples_local/.terraform.lock.hcl
 	cd examples_local && terraform init
 
 test:

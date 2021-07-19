@@ -1,4 +1,4 @@
-# To get the ID of a flow by Slug
+# To get the ID of a flow by slug
 
 data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"

@@ -42,8 +42,8 @@ func dataSourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface
 	if s, ok := d.GetOk("slug"); ok {
 		req.Slug(s.(string))
 	}
-	if d, ok := d.GetOk("designation"); ok {
-		req.Designation(d.(string))
+	if des, ok := d.GetOk("designation"); ok {
+		req.Designation(des.(string))
 	}
 
 	res, hr, err := req.Execute()

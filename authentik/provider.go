@@ -63,7 +63,8 @@ func Provider() *schema.Provider {
 			"authentik_tenant":                        resourceTenant(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"authentik_flow": dataSourceFlow(),
+			"authentik_flow":  dataSourceFlow(),
+			"authentik_group": dataSourceGroup(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
