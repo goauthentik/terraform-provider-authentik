@@ -123,6 +123,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	d.SetId(res.Pk)
 	d.Set("name", res.Name)
 	d.Set("slug", res.Slug)
+	d.Set("protocol_provider", 0)
 	if prov := res.Provider.Get(); prov != nil {
 		d.Set("protocol_provider", int(*prov))
 	}
@@ -152,7 +153,8 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*ProviderAPIClient)
-	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, d.Id()).Execute()
+	slug := d.Get("slug").(string)
+	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, slug).Execute()
 	if err != nil {
 		return httpToDiag(hr)
 	}

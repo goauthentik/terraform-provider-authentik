@@ -2,10 +2,7 @@ package authentik
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -73,16 +70,6 @@ func Provider() *schema.Provider {
 
 type ProviderAPIClient struct {
 	client *api.APIClient
-}
-
-func httpToDiag(r *http.Response) diag.Diagnostics {
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Printf("[DEBUG] authentik: failed to read response: %s", err)
-		return diag.FromErr(err)
-	}
-	log.Printf("[DEBUG] authentik: error response: %s", string(b))
-	return diag.FromErr(errors.New(string(b)))
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
