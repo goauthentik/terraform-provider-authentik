@@ -55,11 +55,12 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"authentik_application":                   resourceApplication(),
+			"authentik_certificate_key_pair":          resourceCertificateKeyPair(),
 			"authentik_outpost":                       resourceOutpost(),
+			"authentik_policy_binding":                resourcePolicyBinding(),
+			"authentik_provider_proxy":                resourceProviderProxy(),
 			"authentik_service_connection_docker":     resourceServiceConnectionDocker(),
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
-			"authentik_certificate_key_pair":          resourceCertificateKeyPair(),
-			"authentik_provider_proxy":                resourceProviderProxy(),
 			"authentik_tenant":                        resourceTenant(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{

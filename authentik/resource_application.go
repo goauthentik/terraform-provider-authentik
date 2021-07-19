@@ -63,8 +63,7 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) (*api.ApplicationR
 	}
 
 	if p, pSet := d.GetOk("protocol_provider"); pSet {
-		i := int32(p.(int))
-		m.Provider.Set(&i)
+		m.Provider.Set(intToPointer(p.(int)))
 	} else {
 		m.Provider.Set(nil)
 	}
@@ -106,7 +105,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(hr)
 	}
 
-	d.SetId(res.Slug)
+	d.SetId(res.Pk)
 	return resourceApplicationRead(ctx, d, m)
 }
 
@@ -114,11 +113,14 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	var diags diag.Diagnostics
 	c := m.(*ProviderAPIClient)
 
-	res, hr, err := c.client.CoreApi.CoreApplicationsRetrieve(ctx, d.Id()).Execute()
+	slug := d.Get("slug").(string)
+
+	res, hr, err := c.client.CoreApi.CoreApplicationsRetrieve(ctx, slug).Execute()
 	if err != nil {
 		return httpToDiag(hr)
 	}
 
+	d.SetId(res.Pk)
 	d.Set("name", res.Name)
 	d.Set("slug", res.Slug)
 	if prov := res.Provider.Get(); prov != nil {
@@ -144,7 +146,7 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(hr)
 	}
 
-	d.SetId(res.Slug)
+	d.SetId(res.Pk)
 	return resourceApplicationRead(ctx, d, m)
 }
 
