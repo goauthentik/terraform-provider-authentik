@@ -23,13 +23,13 @@ description: |-
 
 ### Optional
 
-- **basic_auth_enabled** (Boolean)
+- **basic_auth_enabled** (Boolean) Defaults to `false`.
 - **basic_auth_password_attribute** (String)
 - **basic_auth_username_attribute** (String)
 - **cookie_domain** (String)
 - **internal_host** (String)
-- **internal_host_ssl_validation** (Boolean)
-- **mode** (String)
+- **internal_host_ssl_validation** (Boolean) Defaults to `true`.
+- **mode** (String) Defaults to `proxy`.
 - **skip_path_regex** (String)
 
 ### Read-Only

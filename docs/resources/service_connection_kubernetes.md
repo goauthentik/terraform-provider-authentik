@@ -23,6 +23,6 @@ description: |-
 
 - **id** (String) The ID of this resource.
 - **kubeconfig** (String)
-- **local** (Boolean)
+- **local** (Boolean) Defaults to `false`.
 
 

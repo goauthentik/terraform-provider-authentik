@@ -8,12 +8,29 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/goauthentik/terraform-provider-authentik/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+func init() {
+	// Set descriptions to support markdown syntax, this will be used in document generation
+	// and the language server.
+	schema.DescriptionKind = schema.StringMarkdown
+
+	// Customize the content of descriptions when output. For example you can add defaults on
+	// to the exported descriptions if present.
+	schema.SchemaDescriptionBuilder = func(s *schema.Schema) string {
+		desc := s.Description
+		if s.Default != nil {
+			desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+		}
+		return strings.TrimSpace(desc)
+	}
+}
 
 // Provider -
 func Provider() *schema.Provider {
@@ -43,6 +60,7 @@ func Provider() *schema.Provider {
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
 			"authentik_certificate_key_pair":          resourceCertificateKeyPair(),
 			"authentik_provider_proxy":                resourceProviderProxy(),
+			"authentik_tenant":                        resourceTenant(),
 		},
 		DataSourcesMap:       map[string]*schema.Resource{},
 		ConfigureContextFunc: providerConfigure,

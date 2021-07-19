@@ -23,7 +23,7 @@ description: |-
 ### Optional
 
 - **id** (String) The ID of this resource.
-- **local** (Boolean)
+- **local** (Boolean) Defaults to `false`.
 - **tls_authentication** (String)
 - **tls_verification** (String)
 

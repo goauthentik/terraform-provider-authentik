@@ -18,13 +18,13 @@ description: |-
 ### Required
 
 - **name** (String)
-- **protocol_providers** (List of Number)
+- **protocol_providers** (List of Number) Defaults to `[]`.
 
 ### Optional
 
 - **config** (String)
 - **id** (String) The ID of this resource.
 - **service_connection** (String)
-- **type** (String)
+- **type** (String) Defaults to `proxy`.
 
 

@@ -27,7 +27,7 @@ description: |-
 - **meta_icon** (String)
 - **meta_launch_url** (String)
 - **meta_publisher** (String)
-- **policy_engine_mode** (String)
+- **policy_engine_mode** (String) Defaults to `any`.
 - **protocol_provider** (Number)
 
 
