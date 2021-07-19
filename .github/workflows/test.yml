@@ -68,4 +68,4 @@ jobs:
         AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
         AUTHENTIK_URL: ${{ secrets.AUTHENTIK_URL }}
       run: |
-        go test -v -cover ./internal/provider/
+        make test
