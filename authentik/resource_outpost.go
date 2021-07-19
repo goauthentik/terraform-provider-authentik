@@ -31,8 +31,7 @@ func resourceOutpost() *schema.Resource {
 			},
 			"protocol_providers": {
 				Type:     schema.TypeList,
-				Required: true,
-				Default:  []int32{},
+				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
 				},

@@ -32,8 +32,8 @@ release:
 install: build
 	mkdir -p ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 	mv ${BINARY} ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
-	rm examples/.terraform.lock.hcl
-	cd examples && terraform init
+	rm examples_local/.terraform.lock.hcl
+	cd examples_local && terraform init
 
 test:
 	go test -i $(TEST) || exit 1
@@ -41,6 +41,10 @@ test:
 
 testacc:
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
+
+gen:
+	terraform fmt -recursive .
+	go generate
 
 gen-api:
 	docker run \
