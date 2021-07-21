@@ -19,10 +19,6 @@ func resourceProviderProxy() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
-			"id": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -151,7 +147,6 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(hr)
 	}
 
-	d.Set("id", res.Pk)
 	d.Set("name", res.Name)
 	d.Set("authorization_flow", res.AuthorizationFlow)
 	d.Set("internal_host", res.InternalHost)

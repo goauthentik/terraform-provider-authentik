@@ -12,6 +12,10 @@ func stringToPointer(in string) *string {
 	return &in
 }
 
+func stringPointerResolve(in *string) string {
+	return *in
+}
+
 func intToPointer(in int) *int32 {
 	i := int32(in)
 	return &i
