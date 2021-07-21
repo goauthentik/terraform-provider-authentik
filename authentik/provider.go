@@ -30,7 +30,7 @@ func init() {
 }
 
 // Provider -
-func Provider() *schema.Provider {
+func Provider(version string) *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"url": {
@@ -64,7 +64,7 @@ func Provider() *schema.Provider {
 			"authentik_flow":  dataSourceFlow(),
 			"authentik_group": dataSourceGroup(),
 		},
-		ConfigureContextFunc: providerConfigure,
+		ConfigureContextFunc: providerConfigure(version),
 	}
 }
 
@@ -72,34 +72,35 @@ type ProviderAPIClient struct {
 	client *api.APIClient
 }
 
-func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	api_url := d.Get("url").(string)
-	token := d.Get("token").(string)
-	insecure := d.Get("insecure").(bool)
+func providerConfigure(version string) schema.ConfigureContextFunc {
+	return func(c context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		api_url := d.Get("url").(string)
+		token := d.Get("token").(string)
+		insecure := d.Get("insecure").(bool)
 
-	// Warning or errors can be collected in a slice type
-	var diags diag.Diagnostics
+		// Warning or errors can be collected in a slice type
+		var diags diag.Diagnostics
 
-	akURL, err := url.Parse(api_url)
-	if err != nil {
-		return nil, diag.FromErr(err)
+		akURL, err := url.Parse(api_url)
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
+
+		config := api.NewConfiguration()
+		config.Debug = true
+		config.UserAgent = fmt.Sprintf("authentik-terraform@%s", version)
+		config.Host = akURL.Host
+		config.Scheme = akURL.Scheme
+		config.HTTPClient = &http.Client{
+			Transport: GetTLSTransport(insecure),
+		}
+		config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
+		apiClient := api.NewAPIClient(config)
+
+		return &ProviderAPIClient{
+			client: apiClient,
+		}, diags
 	}
-
-	config := api.NewConfiguration()
-	config.Debug = true
-	// TODO versioning
-	config.UserAgent = fmt.Sprintf("authentik-terraform@%s", "test")
-	config.Host = akURL.Host
-	config.Scheme = akURL.Scheme
-	config.HTTPClient = &http.Client{
-		Transport: GetTLSTransport(insecure),
-	}
-	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
-	apiClient := api.NewAPIClient(config)
-
-	return &ProviderAPIClient{
-		client: apiClient,
-	}, diags
 }
 
 // GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.

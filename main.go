@@ -23,7 +23,7 @@ var (
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: func() *schema.Provider {
-			return authentik.Provider()
+			return authentik.Provider(version)
 		},
 	})
 }

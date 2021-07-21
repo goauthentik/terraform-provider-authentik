@@ -12,12 +12,12 @@ import (
 // to create a provider server to which the CLI can reattach.
 var providerFactories = map[string]func() (*schema.Provider, error){
 	"authentik": func() (*schema.Provider, error) {
-		return Provider(), nil
+		return Provider("test"), nil
 	},
 }
 
 func TestProvider(t *testing.T) {
-	p := Provider()
+	p := Provider("testing")
 	if err := p.InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
 	}
