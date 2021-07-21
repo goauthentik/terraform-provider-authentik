@@ -55,6 +55,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_certificate_key_pair":          resourceCertificateKeyPair(),
 			"authentik_outpost":                       resourceOutpost(),
 			"authentik_policy_binding":                resourcePolicyBinding(),
+			"authentik_provider_oauth2":               resourceProviderOAuth2(),
 			"authentik_provider_proxy":                resourceProviderProxy(),
 			"authentik_service_connection_docker":     resourceServiceConnectionDocker(),
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
