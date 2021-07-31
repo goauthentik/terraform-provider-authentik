@@ -87,7 +87,7 @@ func resourceProviderOAuth2() *schema.Resource {
 			},
 			"issuer_mode": {
 				Type:     schema.TypeString,
-				Default:  api.ISSUERMODEENUM_GLOBAL,
+				Default:  api.ISSUERMODEENUM_PER_PROVIDER,
 				Optional: true,
 			},
 		},
@@ -174,7 +174,11 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("issuer_mode", res.IssuerMode)
 	d.Set("jwt_alg", res.JwtAlg)
 	d.Set("property_mappings", res.PropertyMappings)
-	d.Set("redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
+	if stringPointerResolve(res.RedirectUris) != "" {
+		d.Set("redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
+	} else {
+		d.Set("redirect_uris", []string{})
+	}
 	if res.RsaKey.IsSet() {
 		d.Set("rsa_key", res.RsaKey.Get())
 	}

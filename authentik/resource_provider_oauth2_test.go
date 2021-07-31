@@ -32,6 +32,7 @@ data "authentik_flow" "default-authorization-flow" {
 resource "authentik_provider_oauth2" "name" {
   name      = "grafana"
   client_id = "grafana"
+  client_secret = "test"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
 }
 
