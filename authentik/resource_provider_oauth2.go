@@ -98,7 +98,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) (*api.OAuth2
 	r := api.OAuth2ProviderRequest{
 		Name:                   d.Get("name").(string),
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
-		AccessCodeValidity:     stringToPointer(d.Get("access_token_validity").(string)),
+		AccessCodeValidity:     stringToPointer(d.Get("access_code_validity").(string)),
 		TokenValidity:          stringToPointer(d.Get("token_validity").(string)),
 		IncludeClaimsInIdToken: boolToPointer(d.Get("include_claims_in_id_token").(bool)),
 		ClientId:               stringToPointer(d.Get("client_id").(string)),
@@ -174,8 +174,10 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("issuer_mode", res.IssuerMode)
 	d.Set("jwt_alg", res.JwtAlg)
 	d.Set("property_mappings", res.PropertyMappings)
-	d.Set("redirect_uris", res.RedirectUris)
-	d.Set("rsa_key", res.RsaKey)
+	d.Set("redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
+	if res.RsaKey.IsSet() {
+		d.Set("rsa_key", res.RsaKey.Get())
+	}
 	d.Set("sub_mode", res.SubMode)
 	d.Set("token_validity", res.TokenValidity)
 	return diags
