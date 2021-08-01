@@ -65,6 +65,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_stage_dummy":                   resourceStageDummy(),
 			"authentik_stage_email":                   resourceStageEmail(),
 			"authentik_stage_identification":          resourceStageIdentification(),
+			"authentik_stage_invitation":              resourceStageInvitation(),
 			"authentik_stage_password":                resourceStagePassword(),
 			"authentik_stage_user_delete":             resourceStageUserDelete(),
 			"authentik_stage_user_login":              resourceStageUserLogin(),

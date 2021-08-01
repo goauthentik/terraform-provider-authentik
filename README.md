@@ -61,7 +61,7 @@ terraform init && terraform apply
 - [x] authentik.stages.dummy
 - [x] authentik.stages.email
 - [x] authentik.stages.identification
-- [ ] authentik.stages.invitation
+- [x] authentik.stages.invitation
 - [x] authentik.stages.password
 - [ ] authentik.stages.prompt
 - [x] authentik.stages.user_delete
