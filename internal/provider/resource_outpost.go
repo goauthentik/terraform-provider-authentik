@@ -49,14 +49,14 @@ func resourceOutpost() *schema.Resource {
 	}
 }
 
-func resourceOutpostSchemaToModel(d *schema.ResourceData, c *ProviderAPIClient) (*api.OutpostRequest, diag.Diagnostics) {
+func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.OutpostRequest, diag.Diagnostics) {
 	m := api.OutpostRequest{
 		Name: d.Get("name").(string),
 	}
 
-	protocol_providers := d.Get("protocol_providers").([]interface{})
-	m.Providers = make([]int32, len(protocol_providers))
-	for i, prov := range protocol_providers {
+	protocolProviders := d.Get("protocol_providers").([]interface{})
+	m.Providers = make([]int32, len(protocolProviders))
+	for i, prov := range protocolProviders {
 		m.Providers[i] = int32(prov.(int))
 	}
 
@@ -100,7 +100,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *ProviderAPIClient) 
 }
 
 func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, diags := resourceOutpostSchemaToModel(d, c)
 	if diags != nil {
@@ -118,7 +118,7 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -135,7 +135,7 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 }
 
 func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, di := resourceOutpostSchemaToModel(d, c)
 	if di != nil {
@@ -152,7 +152,7 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(hr)

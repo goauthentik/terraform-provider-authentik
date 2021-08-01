@@ -136,7 +136,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) (*api.OAuth2
 }
 
 func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	r, diags := resourceProviderOAuth2SchemaToProvider(d)
 	if diags != nil {
@@ -154,7 +154,7 @@ func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m
 
 func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
@@ -188,7 +188,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 }
 
 func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
@@ -208,7 +208,7 @@ func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceProviderOAuth2Delete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)

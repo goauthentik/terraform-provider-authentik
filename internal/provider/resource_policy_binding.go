@@ -95,7 +95,7 @@ func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) (*api.PolicyBind
 }
 
 func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, diags := resourcePolicyBindingSchemaToModel(d)
 	if diags != nil {
@@ -113,7 +113,7 @@ func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -132,7 +132,7 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 }
 
 func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, di := resourcePolicyBindingSchemaToModel(d)
 	if di != nil {
@@ -149,7 +149,7 @@ func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourcePolicyBindingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(hr)

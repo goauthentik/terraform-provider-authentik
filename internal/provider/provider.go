@@ -69,20 +69,21 @@ func Provider(version string) *schema.Provider {
 	}
 }
 
-type ProviderAPIClient struct {
+// APIClient Hold the API Client and any relevant configuration
+type APIClient struct {
 	client *api.APIClient
 }
 
 func providerConfigure(version string) schema.ConfigureContextFunc {
 	return func(c context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		api_url := d.Get("url").(string)
+		apiURL := d.Get("url").(string)
 		token := d.Get("token").(string)
 		insecure := d.Get("insecure").(bool)
 
 		// Warning or errors can be collected in a slice type
 		var diags diag.Diagnostics
 
-		akURL, err := url.Parse(api_url)
+		akURL, err := url.Parse(apiURL)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
@@ -98,7 +99,7 @@ func providerConfigure(version string) schema.ConfigureContextFunc {
 		config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 		apiClient := api.NewAPIClient(config)
 
-		return &ProviderAPIClient{
+		return &APIClient{
 			client: apiClient,
 		}, diags
 	}

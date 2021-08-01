@@ -92,7 +92,7 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, di
 }
 
 func resourceTenantCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	mo, diags := resourceTenantSchemaToModel(d)
 	if diags != nil {
@@ -110,7 +110,7 @@ func resourceTenantCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	res, hr, err := c.client.CoreApi.CoreTenantsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -129,7 +129,7 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 }
 
 func resourceTenantUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, di := resourceTenantSchemaToModel(d)
 	if di != nil {
@@ -146,7 +146,7 @@ func resourceTenantUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 }
 
 func resourceTenantDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreTenantsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(hr)

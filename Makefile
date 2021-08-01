@@ -2,7 +2,7 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-default: testacc
+default: gen
 
 # Run acceptance tests
 .PHONY: testacc
@@ -10,6 +10,7 @@ testacc:
 	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m
 
 gen:
+	golint ./...
 	go generate
 
 gen-api:

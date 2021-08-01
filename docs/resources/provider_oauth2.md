@@ -28,7 +28,7 @@ description: |-
 - **client_type** (String) Defaults to `confidential`.
 - **id** (String) The ID of this resource.
 - **include_claims_in_id_token** (Boolean) Defaults to `true`.
-- **issuer_mode** (String) Defaults to `global`.
+- **issuer_mode** (String) Defaults to `per_provider`.
 - **jwt_alg** (String) Defaults to `HS256`.
 - **property_mappings** (List of String)
 - **redirect_uris** (List of String)

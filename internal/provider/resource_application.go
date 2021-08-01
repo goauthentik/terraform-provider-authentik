@@ -93,7 +93,7 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) (*api.ApplicationR
 }
 
 func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, diags := resourceApplicationSchemaToModel(d)
 	if diags != nil {
@@ -111,7 +111,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 
 func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	slug := d.Get("slug").(string)
 
@@ -135,7 +135,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 }
 
 func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, di := resourceApplicationSchemaToModel(d)
 	if di != nil {
@@ -152,7 +152,7 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 }
 
 func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	slug := d.Get("slug").(string)
 	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, slug).Execute()
 	if err != nil {

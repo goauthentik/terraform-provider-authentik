@@ -67,7 +67,7 @@ func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) (*api.
 }
 
 func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, diags := resourceServiceConnectionDockerSchemaToModel(d)
 	if diags != nil {
@@ -85,7 +85,7 @@ func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.Resour
 
 func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -101,7 +101,7 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 }
 
 func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	app, di := resourceServiceConnectionDockerSchemaToModel(d)
 	if di != nil {
@@ -118,7 +118,7 @@ func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.Resour
 }
 
 func resourceServiceConnectionDockerDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(hr)

@@ -36,7 +36,7 @@ func dataSourceFlow() *schema.Resource {
 
 func dataSourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	req := c.client.FlowsApi.FlowsInstancesList(ctx)
 	if s, ok := d.GetOk("slug"); ok {

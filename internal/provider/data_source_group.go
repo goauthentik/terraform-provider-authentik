@@ -30,7 +30,7 @@ func dataSourceGroup() *schema.Resource {
 
 func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	req := c.client.CoreApi.CoreGroupsList(ctx)
 	if n, ok := d.GetOk("name"); ok {

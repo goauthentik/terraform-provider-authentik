@@ -119,7 +119,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) (*api.ProxyPr
 }
 
 func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 
 	r, diags := resourceProviderProxySchemaToProvider(d)
 	if diags != nil {
@@ -137,7 +137,7 @@ func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
@@ -162,7 +162,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 }
 
 func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
@@ -182,7 +182,7 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*ProviderAPIClient)
+	c := m.(*APIClient)
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
