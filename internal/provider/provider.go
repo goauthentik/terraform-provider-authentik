@@ -60,6 +60,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_service_connection_docker":     resourceServiceConnectionDocker(),
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
 			"authentik_tenant":                        resourceTenant(),
+			"authentik_stage_user_write":              resourceStageUserWrite(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"authentik_flow":  dataSourceFlow(),

@@ -1,0 +1,98 @@
+package provider
+
+import (
+	"context"
+
+	"github.com/goauthentik/terraform-provider-authentik/api"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+func resourceStageUserWrite() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: resourceStageUserWriteCreate,
+		ReadContext:   resourceStageUserWriteRead,
+		UpdateContext: resourceStageUserWriteUpdate,
+		DeleteContext: resourceStageUserWriteDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
+		Schema: map[string]*schema.Schema{
+			"name": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"create_users_as_inactive": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
+		},
+	}
+}
+
+func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) (*api.UserWriteStageRequest, diag.Diagnostics) {
+	r := api.UserWriteStageRequest{
+		Name:                  d.Get("name").(string),
+		CreateUsersAsInactive: boolToPointer(d.Get("create_users_as_inactive").(bool)),
+	}
+
+	return &r, nil
+}
+
+func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*APIClient)
+
+	r, diags := resourceStageUserWriteSchemaToProvider(d)
+	if diags != nil {
+		return diags
+	}
+
+	res, hr, err := c.client.StagesApi.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
+	if err != nil {
+		return httpToDiag(hr)
+	}
+
+	d.SetId(res.Pk)
+	return resourceStageUserWriteRead(ctx, d, m)
+}
+
+func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	c := m.(*APIClient)
+
+	res, hr, err := c.client.StagesApi.StagesUserWriteRetrieve(ctx, d.Id()).Execute()
+	if err != nil {
+		return httpToDiag(hr)
+	}
+
+	d.Set("name", res.Name)
+	d.Set("create_users_as_inactive", res.CreateUsersAsInactive)
+	return diags
+}
+
+func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*APIClient)
+
+	app, di := resourceStageUserWriteSchemaToProvider(d)
+	if di != nil {
+		return di
+	}
+
+	res, hr, err := c.client.StagesApi.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
+	if err != nil {
+		return httpToDiag(hr)
+	}
+
+	d.SetId(res.Pk)
+	return resourceStageUserWriteRead(ctx, d, m)
+}
+
+func resourceStageUserWriteDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*APIClient)
+	hr, err := c.client.StagesApi.StagesUserWriteDestroy(ctx, d.Id()).Execute()
+	if err != nil {
+		return httpToDiag(hr)
+	}
+	return diag.Diagnostics{}
+}

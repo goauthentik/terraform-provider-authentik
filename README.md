@@ -67,5 +67,5 @@ terraform init && terraform apply
 - [ ] authentik.stages.user_delete
 - [ ] authentik.stages.user_login
 - [ ] authentik.stages.user_logout
-- [ ] authentik.stages.user_write
+- [x] authentik.stages.user_write
 - [x] authentik.tenants
