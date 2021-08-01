@@ -29,6 +29,9 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 			"device_classes": {
 				Type:     schema.TypeList,
 				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"configuration_stage": {
 				Type:     schema.TypeString,
@@ -88,7 +91,9 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 
 	d.Set("name", res.Name)
 	d.Set("not_configured_action", res.NotConfiguredAction)
-	d.Set("configuration_stage", res.ConfigurationStage)
+	if res.ConfigurationStage.IsSet() {
+		d.Set("configuration_stage", res.ConfigurationStage.Get())
+	}
 	d.Set("device_classes", res.DeviceClasses)
 	return diags
 }

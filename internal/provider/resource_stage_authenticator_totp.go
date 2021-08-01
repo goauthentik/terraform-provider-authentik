@@ -28,7 +28,7 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 			},
 			"digits": {
 				Type:     schema.TypeInt,
-				Required: true,
+				Optional: true,
 				Default:  6,
 			},
 		},

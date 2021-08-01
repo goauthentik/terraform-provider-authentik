@@ -17,12 +17,12 @@ description: |-
 
 ### Required
 
-- **digits** (Number) Defaults to `6`.
 - **name** (String)
 
 ### Optional
 
 - **configure_flow** (String)
+- **digits** (Number) Defaults to `6`.
 - **id** (String) The ID of this resource.
 
 
