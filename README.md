@@ -60,7 +60,7 @@ terraform init && terraform apply
 - [x] authentik.stages.deny
 - [x] authentik.stages.dummy
 - [x] authentik.stages.email
-- [ ] authentik.stages.identification
+- [x] authentik.stages.identification
 - [ ] authentik.stages.invitation
 - [x] authentik.stages.password
 - [ ] authentik.stages.prompt

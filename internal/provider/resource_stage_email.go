@@ -87,6 +87,8 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) (*api.EmailStage
 	r := api.EmailStageRequest{
 		Name:              d.Get("name").(string),
 		UseGlobalSettings: boolToPointer(d.Get("use_global_settings").(bool)),
+		UseSsl:            boolToPointer(d.Get("use_ssl").(bool)),
+		UseTls:            boolToPointer(d.Get("use_tls").(bool)),
 	}
 
 	if h, hSet := d.GetOk("host"); hSet {
@@ -101,13 +103,6 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) (*api.EmailStage
 	}
 	if h, hSet := d.GetOk("password"); hSet {
 		r.Password = stringToPointer(h.(string))
-	}
-
-	if b, bSet := d.GetOk("use_ssl"); bSet {
-		r.UseSsl = boolToPointer(b.(bool))
-	}
-	if b, bSet := d.GetOk("use_tls"); bSet {
-		r.UseTls = boolToPointer(b.(bool))
 	}
 
 	if p, pSet := d.GetOk("timeout"); pSet {
