@@ -62,6 +62,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_stage_authenticator_duo":       resourceStageAuthenticatorDuo(),
 			"authentik_stage_authenticator_static":    resourceStageAuthenticatorStatic(),
 			"authentik_stage_authenticator_totp":      resourceStageAuthenticatorTOTP(),
+			"authentik_stage_authenticator_validate":  resourceStageAuthenticatorValidate(),
 			"authentik_stage_authenticator_webauthn":  resourceStageAuthenticatorWebAuthn(),
 			"authentik_stage_captcha":                 resourceStageCaptcha(),
 			"authentik_stage_consent":                 resourceStageConsent(),
