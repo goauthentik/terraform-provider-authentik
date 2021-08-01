@@ -54,7 +54,7 @@ terraform init && terraform apply
 - [x] authentik.stages.authenticator_static
 - [x] authentik.stages.authenticator_totp
 - [ ] authentik.stages.authenticator_validate
-- [ ] authentik.stages.authenticator_webauthn
+- [x] authentik.stages.authenticator_webauthn
 - [x] authentik.stages.captcha
 - [x] authentik.stages.consent
 - [x] authentik.stages.deny
