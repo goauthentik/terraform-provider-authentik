@@ -84,9 +84,12 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) (*api.I
 	}
 	r.UserFields = &userFields
 
-	if s, sSet := d.GetOk("sources"); sSet {
-		ss := s.([]string)
-		r.Sources = &ss
+	sources := make([]string, 0)
+	for _, sourcesS := range d.Get("sources").([]interface{}) {
+		sources = append(sources, sourcesS.(string))
+	}
+	if len(sources) > 1 {
+		r.Sources = &sources
 	}
 
 	return &r, nil
