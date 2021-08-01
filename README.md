@@ -58,7 +58,7 @@ terraform init && terraform apply
 - [ ] authentik.stages.captcha
 - [x] authentik.stages.consent
 - [x] authentik.stages.deny
-- [ ] authentik.stages.dummy
+- [x] authentik.stages.dummy
 - [ ] authentik.stages.email
 - [ ] authentik.stages.identification
 - [ ] authentik.stages.invitation
