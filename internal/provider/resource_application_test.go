@@ -1,4 +1,4 @@
-package authentik
+package provider
 
 import (
 	"testing"
