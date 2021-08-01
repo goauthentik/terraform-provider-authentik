@@ -22,11 +22,6 @@ func resourceStageUserLogout() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"create_users_as_inactive": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
 		},
 	}
 }

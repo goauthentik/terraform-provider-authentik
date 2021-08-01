@@ -50,21 +50,21 @@ terraform init && terraform apply
 - [ ] authentik.sources.oauth
 - [ ] authentik.sources.plex
 - [ ] authentik.sources.saml
-- [ ] authentik.stages.authenticator_duo
-- [ ] authentik.stages.authenticator_static
-- [ ] authentik.stages.authenticator_totp
-- [ ] authentik.stages.authenticator_validate
-- [ ] authentik.stages.authenticator_webauthn
-- [ ] authentik.stages.captcha
-- [ ] authentik.stages.consent
-- [ ] authentik.stages.deny
-- [ ] authentik.stages.dummy
-- [ ] authentik.stages.email
-- [ ] authentik.stages.identification
-- [ ] authentik.stages.invitation
-- [ ] authentik.stages.password
-- [ ] authentik.stages.prompt
-- [ ] authentik.stages.user_delete
+- [x] authentik.stages.authenticator_duo
+- [x] authentik.stages.authenticator_static
+- [x] authentik.stages.authenticator_totp
+- [x] authentik.stages.authenticator_validate
+- [x] authentik.stages.authenticator_webauthn
+- [x] authentik.stages.captcha
+- [x] authentik.stages.consent
+- [x] authentik.stages.deny
+- [x] authentik.stages.dummy
+- [x] authentik.stages.email
+- [x] authentik.stages.identification
+- [x] authentik.stages.invitation
+- [x] authentik.stages.password
+- [x] authentik.stages.prompt
+- [x] authentik.stages.user_delete
 - [x] authentik.stages.user_login
 - [x] authentik.stages.user_logout
 - [x] authentik.stages.user_write

@@ -8,25 +8,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccResourceStageUserLogout(t *testing.T) {
+func TestAccResourceStageEmail(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceStageUserLogout(rName),
+				Config: testAccResourceStageEmail(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_user_logout.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_stage_email.name", "name", rName),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourceStageUserLogout(name string) string {
+func testAccResourceStageEmail(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_stage_user_logout" "name" {
+resource "authentik_stage_email" "name" {
   name              = "%s"
 }
 `, name)

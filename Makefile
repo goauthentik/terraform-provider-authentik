@@ -5,8 +5,8 @@ GID = $(shell id -g)
 default: gen
 
 # Run acceptance tests
-.PHONY: testacc
-testacc:
+.PHONY: test
+test:
 	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m
 
 gen:

@@ -1,20 +1,23 @@
 package provider
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccResourceStageUserLogin(t *testing.T) {
+	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceStageUserLogin,
+				Config: testAccResourceStageUserLogin(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_user_login.name", "name", "test app"),
+					resource.TestCheckResourceAttr("authentik_stage_user_login.name", "name", rName),
 					resource.TestCheckResourceAttr("authentik_stage_user_login.name", "session_duration", "minutes=1"),
 				),
 			},
@@ -22,9 +25,11 @@ func TestAccResourceStageUserLogin(t *testing.T) {
 	})
 }
 
-const testAccResourceStageUserLogin = `
+func testAccResourceStageUserLogin(name string) string {
+	return fmt.Sprintf(`
 resource "authentik_stage_user_login" "name" {
-  name              = "test app"
+  name              = "%s"
   session_duration = "minutes=1"
 }
-`
+`, name)
+}

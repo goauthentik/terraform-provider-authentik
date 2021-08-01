@@ -1,22 +1,25 @@
 package provider
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/goauthentik/terraform-provider-authentik/api"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccResourceApplication(t *testing.T) {
+	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceApplicationSimple,
+				Config: testAccResourceApplicationSimple(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_application.name", "name", "acc-test-app"),
-					resource.TestCheckResourceAttr("authentik_application.name", "slug", "acc-test-app"),
+					resource.TestCheckResourceAttr("authentik_application.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_application.name", "slug", rName),
 					resource.TestCheckResourceAttr("authentik_application.name", "protocol_provider", "0"),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_launch_url", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_description", ""),
@@ -28,9 +31,11 @@ func TestAccResourceApplication(t *testing.T) {
 	})
 }
 
-const testAccResourceApplicationSimple = `
+func testAccResourceApplicationSimple(name string) string {
+	return fmt.Sprintf(`
 resource "authentik_application" "name" {
-  name              = "acc-test-app"
-  slug              = "acc-test-app"
+  name              = "%[1]s"
+  slug              = "%[1]s"
 }
-`
+`, name)
+}
