@@ -52,10 +52,10 @@ terraform init && terraform apply
 - [ ] authentik.sources.saml
 - [x] authentik.stages.authenticator_duo
 - [x] authentik.stages.authenticator_static
-- [ ] authentik.stages.authenticator_totp
+- [x] authentik.stages.authenticator_totp
 - [ ] authentik.stages.authenticator_validate
 - [ ] authentik.stages.authenticator_webauthn
-- [ ] authentik.stages.captcha
+- [x] authentik.stages.captcha
 - [x] authentik.stages.consent
 - [x] authentik.stages.deny
 - [x] authentik.stages.dummy
