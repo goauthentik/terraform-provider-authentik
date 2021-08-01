@@ -51,7 +51,7 @@ terraform init && terraform apply
 - [ ] authentik.sources.plex
 - [ ] authentik.sources.saml
 - [x] authentik.stages.authenticator_duo
-- [ ] authentik.stages.authenticator_static
+- [x] authentik.stages.authenticator_static
 - [ ] authentik.stages.authenticator_totp
 - [ ] authentik.stages.authenticator_validate
 - [ ] authentik.stages.authenticator_webauthn
