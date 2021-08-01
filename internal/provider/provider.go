@@ -61,6 +61,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
 			"authentik_tenant":                        resourceTenant(),
 			"authentik_stage_captcha":                 resourceStageCaptcha(),
+			"authentik_stage_consent":                 resourceStageConsent(),
 			"authentik_stage_password":                resourceStagePassword(),
 			"authentik_stage_user_delete":             resourceStageUserDelete(),
 			"authentik_stage_user_login":              resourceStageUserLogin(),
