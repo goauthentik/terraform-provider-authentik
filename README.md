@@ -36,12 +36,12 @@ terraform init && terraform apply
 
 ## Supported apps
 
-- [ ] authentik.admin
-- [ ] authentik.api
+- [x] authentik.admin
+- [x] authentik.api
 - [ ] authentik.core
 - [x] authentik.crypto
-- [ ] authentik.events
-- [ ] authentik.flows
+- [x] authentik.events
+- [x] authentik.flows
 - [x] authentik.outposts
 - [x] authentik.policies
 - [x] authentik.policies.dummy

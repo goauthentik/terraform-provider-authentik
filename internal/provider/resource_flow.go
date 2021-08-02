@@ -22,6 +22,10 @@ func resourceFlow() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"uuid": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"slug": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -88,6 +92,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return httpToDiag(hr, err)
 	}
 
+	d.Set("uuid", res.Pk)
 	d.Set("name", res.Name)
 	d.Set("slug", res.Slug)
 	d.Set("title", res.Title)

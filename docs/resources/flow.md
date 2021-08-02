@@ -28,4 +28,8 @@ description: |-
 - **id** (String) The ID of this resource.
 - **policy_engine_mode** (String) Defaults to `any`.
 
+### Read-Only
+
+- **uuid** (String)
+
 
