@@ -23,7 +23,9 @@ description: |-
 
 - **branding_favicon** (String)
 - **branding_logo** (String)
-- **branding_title** (Boolean) Defaults to `authentik`.
+- **branding_title** (String) Defaults to `authentik`.
+- **default** (Boolean) Defaults to `false`.
+- **event_retention** (String) Defaults to `days=365`.
 - **flow_authentication** (String)
 - **flow_invalidation** (String)
 - **flow_recovery** (String)

@@ -36,5 +36,5 @@ func httpToDiag(r *http.Response, err error) diag.Diagnostics {
 		b = []byte{}
 	}
 	log.Printf("[DEBUG] authentik: error response: %s", string(b))
-	return diag.Errorf("HTTP Error '%s' during request '%s %s': \"%s\"", string(b), r.Request.Method, r.Request.URL.Path, err.Error())
+	return diag.Errorf("HTTP Error '%s' during request '%s %s': \"%s\"", err.Error(), r.Request.Method, r.Request.URL.Path, string(b))
 }

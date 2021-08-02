@@ -22,8 +22,13 @@ func resourceTenant() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"branding_title": {
+			"default": {
 				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"branding_title": {
+				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "authentik",
 			},
@@ -51,18 +56,32 @@ func resourceTenant() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"event_retention": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "days=365",
+			},
 		},
 	}
 }
 
 func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, diag.Diagnostics) {
 	m := api.TenantRequest{
-		Domain: d.Get("domain").(string),
+		Domain:  d.Get("domain").(string),
+		Default: boolToPointer(d.Get("default").(bool)),
 	}
 
-	m.BrandingTitle = stringToPointer(d.Get("branding_title").(string))
-	m.BrandingLogo = stringToPointer(d.Get("branding_logo").(string))
-	m.BrandingFavicon = stringToPointer(d.Get("branding_favicon").(string))
+	m.EventRetention = stringToPointer(d.Get("event_retention").(string))
+
+	if l, ok := d.Get("branding_title").(string); ok {
+		m.BrandingTitle = &l
+	}
+	if l, ok := d.Get("branding_logo").(string); ok {
+		m.BrandingLogo = &l
+	}
+	if l, ok := d.Get("branding_favicon").(string); ok {
+		m.BrandingFavicon = &l
+	}
 
 	if l, ok := d.Get("flow_authentication").(string); ok {
 		m.FlowAuthentication.Set(&l)
@@ -104,7 +123,7 @@ func resourceTenantCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		return httpToDiag(hr, err)
 	}
 
-	d.SetId(res.Domain)
+	d.SetId(res.TenantUuid)
 	return resourceTenantRead(ctx, d, m)
 }
 
@@ -121,10 +140,19 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 	d.Set("branding_title", res.BrandingTitle)
 	d.Set("branding_logo", res.BrandingLogo)
 	d.Set("branding_favicon", res.BrandingFavicon)
-	d.Set("flow_authentication", res.FlowAuthentication)
-	d.Set("flow_invalidation", res.FlowInvalidation)
-	d.Set("flow_recovery", res.FlowRecovery)
-	d.Set("flow_unenrollment", res.FlowUnenrollment)
+	if res.FlowAuthentication.IsSet() {
+		d.Set("flow_authentication", res.FlowAuthentication.Get())
+	}
+	if res.FlowInvalidation.IsSet() {
+		d.Set("flow_invalidation", res.FlowInvalidation.Get())
+	}
+	if res.FlowRecovery.IsSet() {
+		d.Set("flow_recovery", res.FlowRecovery.Get())
+	}
+	if res.FlowUnenrollment.IsSet() {
+		d.Set("flow_unenrollment", res.FlowUnenrollment.Get())
+	}
+	d.Set("event_retention", res.EventRetention)
 	return diags
 }
 
@@ -141,7 +169,7 @@ func resourceTenantUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 		return httpToDiag(hr, err)
 	}
 
-	d.SetId(res.Domain)
+	d.SetId(res.TenantUuid)
 	return resourceTenantRead(ctx, d, m)
 }
 
