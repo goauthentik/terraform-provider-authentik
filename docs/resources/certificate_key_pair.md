@@ -23,6 +23,6 @@ description: |-
 ### Optional
 
 - **id** (String) The ID of this resource.
-- **key_data** (String)
+- **key_data** (String, Sensitive)
 
 

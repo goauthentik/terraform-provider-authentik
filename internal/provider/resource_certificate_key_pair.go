@@ -27,8 +27,9 @@ func resourceCertificateKeyPair() *schema.Resource {
 				Required: true,
 			},
 			"key_data": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
 			},
 		},
 	}
@@ -75,16 +76,14 @@ func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData,
 	d.Set("name", res.Name)
 
 	rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
-	if err != nil {
-		return httpToDiag(hr, err)
+	if err == nil {
+		d.Set("certificate_data", rc.Data+"\n")
 	}
-	d.Set("certificate_data", rc.Data)
 
 	rk, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
-	if err != nil {
-		return httpToDiag(hr, err)
+	if err == nil {
+		d.Set("key_data", rk.Data+"\n")
 	}
-	d.Set("key_data", rk.Data)
 
 	return diags
 }
