@@ -34,14 +34,14 @@ terraform init && terraform apply
 - [x] authentik.policies
 - [x] authentik.policies.dummy
 - [x] authentik.policies.event_matcher
-- [ ] authentik.policies.expiry
+- [x] authentik.policies.expiry
 - [x] authentik.policies.expression
 - [x] authentik.policies.hibp
 - [x] authentik.policies.password
 - [x] authentik.policies.reputation
 - [ ] authentik.providers.ldap
-- [ ] authentik.providers.oauth2
-- [ ] authentik.providers.proxy
+- [x] authentik.providers.oauth2
+- [x] authentik.providers.proxy
 - [ ] authentik.providers.saml
 - [ ] authentik.sources.ldap
 - [ ] authentik.sources.oauth

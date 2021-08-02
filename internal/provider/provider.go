@@ -61,6 +61,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
 			"authentik_policy_dummy":                  resourcePolicyDummy(),
 			"authentik_policy_expression":             resourcePolicyExpression(),
+			"authentik_policy_expiry":                 resourcePolicyExpiry(),
 			"authentik_policy_hibp":                   resourcePolicyHaveIBeenPwend(),
 			"authentik_policy_event_matcher":          resourcePolicyEventMatcher(),
 			"authentik_policy_password":               resourcePolicyPassword(),
