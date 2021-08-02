@@ -20,6 +20,12 @@ func TestAccResourceStageInvitation(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_invitation.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageInvitation(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_invitation.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

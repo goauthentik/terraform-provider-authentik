@@ -20,6 +20,12 @@ func TestAccResourceStageUserDelete(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_user_delete.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageUserDelete(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_user_delete.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

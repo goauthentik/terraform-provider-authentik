@@ -20,6 +20,12 @@ func TestAccResourceStageConsent(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_consent.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageConsent(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_consent.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

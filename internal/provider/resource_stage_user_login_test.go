@@ -21,6 +21,13 @@ func TestAccResourceStageUserLogin(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_user_login.name", "session_duration", "minutes=1"),
 				),
 			},
+			{
+				Config: testAccResourceStageUserLogin(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_user_login.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_stage_user_login.name", "session_duration", "minutes=1"),
+				),
+			},
 		},
 	})
 }

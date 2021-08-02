@@ -20,6 +20,12 @@ func TestAccResourceStageAuthenticatorWebAuthn(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_authenticator_webauthn.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageAuthenticatorWebAuthn(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_webauthn.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

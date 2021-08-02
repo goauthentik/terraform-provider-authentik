@@ -20,6 +20,12 @@ func TestAccResourceStageAuthenticatorValidate(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_authenticator_validate.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageAuthenticatorValidate(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_validate.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

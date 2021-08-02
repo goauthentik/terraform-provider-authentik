@@ -22,6 +22,14 @@ func TestAccResourceOutpost(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_outpost.outpost", "type", "proxy"),
 				),
 			},
+			{
+				Config: testAccResourceOutpostSimple(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_outpost.outpost", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_outpost.outpost", "protocol_providers.#", "1"),
+					resource.TestCheckResourceAttr("authentik_outpost.outpost", "type", "proxy"),
+				),
+			},
 		},
 	})
 }

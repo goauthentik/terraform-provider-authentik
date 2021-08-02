@@ -27,6 +27,18 @@ func TestAccResourceApplication(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_application.name", "policy_engine_mode", string(api.POLICYENGINEMODE_ANY)),
 				),
 			},
+			{
+				Config: testAccResourceApplicationSimple(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_application.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_application.name", "slug", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_application.name", "protocol_provider", "0"),
+					resource.TestCheckResourceAttr("authentik_application.name", "meta_launch_url", ""),
+					resource.TestCheckResourceAttr("authentik_application.name", "meta_description", ""),
+					resource.TestCheckResourceAttr("authentik_application.name", "meta_publisher", ""),
+					resource.TestCheckResourceAttr("authentik_application.name", "policy_engine_mode", string(api.POLICYENGINEMODE_ANY)),
+				),
+			},
 		},
 	})
 }

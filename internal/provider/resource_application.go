@@ -105,7 +105,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(hr)
 	}
 
-	d.SetId(res.Pk)
+	d.SetId(res.Slug)
 	return resourceApplicationRead(ctx, d, m)
 }
 
@@ -113,14 +113,12 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	slug := d.Get("slug").(string)
-
-	res, hr, err := c.client.CoreApi.CoreApplicationsRetrieve(ctx, slug).Execute()
+	res, hr, err := c.client.CoreApi.CoreApplicationsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(hr)
 	}
 
-	d.SetId(res.Pk)
+	d.SetId(res.Slug)
 	d.Set("name", res.Name)
 	d.Set("slug", res.Slug)
 	d.Set("protocol_provider", 0)
@@ -147,14 +145,13 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(hr)
 	}
 
-	d.SetId(res.Pk)
+	d.SetId(res.Slug)
 	return resourceApplicationRead(ctx, d, m)
 }
 
 func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	slug := d.Get("slug").(string)
-	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, slug).Execute()
+	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(hr)
 	}

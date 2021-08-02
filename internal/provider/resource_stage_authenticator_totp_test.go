@@ -20,6 +20,12 @@ func TestAccResourceStageAuthenticatorTOTP(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_authenticator_totp.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageAuthenticatorTOTP(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_totp.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

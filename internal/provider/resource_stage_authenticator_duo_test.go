@@ -20,6 +20,12 @@ func TestAccResourceStageAuthenticatorDuo(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_authenticator_duo.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageAuthenticatorDuo(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_duo.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

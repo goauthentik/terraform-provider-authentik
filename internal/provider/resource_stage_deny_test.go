@@ -20,6 +20,12 @@ func TestAccResourceStageDeny(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_deny.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageDeny(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_deny.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

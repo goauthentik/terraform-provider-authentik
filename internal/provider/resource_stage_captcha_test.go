@@ -20,6 +20,12 @@ func TestAccResourceStageCaptcha(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_captcha.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageCaptcha(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_captcha.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

@@ -21,6 +21,13 @@ func TestAccResourceStageUserWrite(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_user_write.name", "create_users_as_inactive", "false"),
 				),
 			},
+			{
+				Config: testAccResourceStageUserWrite(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_user_write.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_stage_user_write.name", "create_users_as_inactive", "false"),
+				),
+			},
 		},
 	})
 }

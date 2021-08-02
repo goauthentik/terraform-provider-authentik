@@ -20,6 +20,12 @@ func TestAccResourceStagePassword(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_password.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStagePassword(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_password.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

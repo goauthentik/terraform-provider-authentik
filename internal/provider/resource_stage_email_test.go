@@ -20,6 +20,12 @@ func TestAccResourceStageEmail(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_email.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageEmail(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_email.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

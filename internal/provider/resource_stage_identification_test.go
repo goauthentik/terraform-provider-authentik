@@ -20,6 +20,12 @@ func TestAccResourceStageIdentification(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_identification.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageIdentification(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_identification.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

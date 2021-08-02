@@ -20,6 +20,12 @@ func TestAccResourceStageUserLogout(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_user_logout.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageUserLogout(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_user_logout.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

@@ -20,6 +20,12 @@ func TestAccResourceStageDummy(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_stage_dummy.name", "name", rName),
 				),
 			},
+			{
+				Config: testAccResourceStageDummy(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_stage_dummy.name", "name", rName+"test"),
+				),
+			},
 		},
 	})
 }

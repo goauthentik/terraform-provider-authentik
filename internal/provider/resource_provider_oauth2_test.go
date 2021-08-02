@@ -24,6 +24,15 @@ func TestAccResourceProviderOAuth2(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", appName),
 				),
 			},
+			{
+				Config: testAccResourceProviderOAuth2(rName+"test", appName+"test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "client_id", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_application.name", "name", appName+"test"),
+					resource.TestCheckResourceAttr("authentik_application.name", "slug", appName+"test"),
+				),
+			},
 		},
 	})
 }
