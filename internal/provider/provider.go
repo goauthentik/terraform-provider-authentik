@@ -90,6 +90,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_stage_user_logout":             resourceStageUserLogout(),
 			"authentik_stage_user_write":              resourceStageUserWrite(),
 			"authentik_tenant":                        resourceTenant(),
+			"authentik_user":                          resourceUser(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"authentik_flow":  dataSourceFlow(),

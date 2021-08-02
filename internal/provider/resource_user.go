@@ -1,0 +1,148 @@
+package provider
+
+import (
+	"context"
+	"encoding/json"
+	"strconv"
+	"strings"
+
+	"github.com/goauthentik/terraform-provider-authentik/api"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+func resourceUser() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: resourceUserCreate,
+		ReadContext:   resourceUserRead,
+		UpdateContext: resourceUserUpdate,
+		DeleteContext: resourceUserDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
+		Schema: map[string]*schema.Schema{
+			"name": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"username": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"is_active": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
+			"email": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"attributes": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "{}",
+			},
+		},
+	}
+}
+
+func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserRequest, diag.Diagnostics) {
+	m := api.UserRequest{
+		Name:     d.Get("name").(string),
+		Username: d.Get("username").(string),
+		IsActive: boolToPointer(d.Get("is_active").(bool)),
+	}
+
+	if l, ok := d.Get("email").(string); ok {
+		m.Email = &l
+	}
+
+	attr := make(map[string]interface{})
+	if l, ok := d.Get("attributes").(string); ok {
+		if l != "" {
+			err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
+		}
+	}
+	m.Attributes = &attr
+	return &m, nil
+}
+
+func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*APIClient)
+
+	app, diags := resourceUserSchemaToModel(d, c)
+	if diags != nil {
+		return diags
+	}
+
+	res, hr, err := c.client.CoreApi.CoreUsersCreate(ctx).UserRequest(*app).Execute()
+	if err != nil {
+		return httpToDiag(hr, err)
+	}
+
+	d.SetId(strconv.Itoa(int(res.Pk)))
+	return resourceUserRead(ctx, d, m)
+}
+
+func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	c := m.(*APIClient)
+
+	id, err := strconv.Atoi(d.Id())
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	res, hr, err := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(id)).Execute()
+	if err != nil {
+		return httpToDiag(hr, err)
+	}
+
+	d.Set("name", res.Name)
+	d.Set("username", res.Username)
+	d.Set("email", res.Email)
+	d.Set("is_active", res.IsActive)
+	b, err := json.Marshal(res.Attributes)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	d.Set("attributes", string(b))
+	return diags
+}
+
+func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*APIClient)
+
+	app, di := resourceUserSchemaToModel(d, c)
+	if di != nil {
+		return di
+	}
+	id, err := strconv.Atoi(d.Id())
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	res, hr, err := c.client.CoreApi.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
+	if err != nil {
+		return httpToDiag(hr, err)
+	}
+
+	d.SetId(strconv.Itoa(int(res.Pk)))
+	return resourceUserRead(ctx, d, m)
+}
+
+func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	c := m.(*APIClient)
+	id, err := strconv.Atoi(d.Id())
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	hr, err := c.client.CoreApi.CoreUsersDestroy(ctx, int32(id)).Execute()
+	if err != nil {
+		return httpToDiag(hr, err)
+	}
+	return diag.Diagnostics{}
+}
