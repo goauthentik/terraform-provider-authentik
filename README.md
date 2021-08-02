@@ -39,4 +39,3 @@ terraform init && terraform apply
 - [ ] authentik.sources.ldap
 - [ ] authentik.sources.oauth
 - [ ] authentik.sources.plex
-- [ ] authentik.sources.saml

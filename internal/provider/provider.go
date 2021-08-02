@@ -71,6 +71,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_provider_saml":                 resourceProviderSAML(),
 			"authentik_service_connection_docker":     resourceServiceConnectionDocker(),
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
+			"authentik_source_saml":                   resourceSourceSAML(),
 			"authentik_stage_authenticator_duo":       resourceStageAuthenticatorDuo(),
 			"authentik_stage_authenticator_static":    resourceStageAuthenticatorStatic(),
 			"authentik_stage_authenticator_totp":      resourceStageAuthenticatorTOTP(),
