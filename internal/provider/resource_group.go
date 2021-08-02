@@ -110,8 +110,8 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("users", res.Users)
 	d.Set("attributes", string(b))
+	d.Set("users", res.Users)
 	return diags
 }
 

@@ -44,6 +44,7 @@ func resourceOutpost() *schema.Resource {
 			"config": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 		},
 	}
@@ -131,6 +132,11 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 	if res.ServiceConnection.IsSet() {
 		d.Set("service_connection", res.ServiceConnection.Get())
 	}
+	b, err := json.Marshal(res.Config)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	d.Set("config", string(b))
 	return diags
 }
 
