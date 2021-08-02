@@ -36,9 +36,6 @@ terraform init && terraform apply
 
 ## Missing apps
 
-- [ ] authentik.core
-    - User
-    - Group
 - [ ] authentik.sources.ldap
 - [ ] authentik.sources.oauth
 - [ ] authentik.sources.plex
