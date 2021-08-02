@@ -30,8 +30,6 @@ terraform init && terraform apply
 - [x] authentik.crypto
 - [ ] authentik.events
 - [ ] authentik.flows
-- [ ] authentik.lib
-- [ ] authentik.managed
 - [x] authentik.outposts
 - [ ] authentik.policies
 - [ ] authentik.policies.dummy
@@ -40,12 +38,11 @@ terraform init && terraform apply
 - [ ] authentik.policies.expression
 - [ ] authentik.policies.hibp
 - [ ] authentik.policies.password
-- [ ] authentik.policies.reputation
+- [x] authentik.policies.reputation
 - [ ] authentik.providers.ldap
 - [ ] authentik.providers.oauth2
 - [ ] authentik.providers.proxy
 - [ ] authentik.providers.saml
-- [ ] authentik.recovery
 - [ ] authentik.sources.ldap
 - [ ] authentik.sources.oauth
 - [ ] authentik.sources.plex
