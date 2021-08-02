@@ -33,8 +33,8 @@ func httpToDiag(r *http.Response, err error) diag.Diagnostics {
 	b, er := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("[DEBUG] authentik: failed to read response: %s", er)
-		return diag.FromErr(er)
+		b = []byte{}
 	}
 	log.Printf("[DEBUG] authentik: error response: %s", string(b))
-	return diag.Errorf("HTTP Error '%s' during request '%s %s': %s", string(b), r.Request.Method, r.Request.URL.Path, err.Error())
+	return diag.Errorf("HTTP Error '%s' during request '%s %s': \"%s\"", string(b), r.Request.Method, r.Request.URL.Path, err.Error())
 }

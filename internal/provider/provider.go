@@ -60,6 +60,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_service_connection_docker":     resourceServiceConnectionDocker(),
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
 			"authentik_policy_dummy":                  resourcePolicyDummy(),
+			"authentik_policy_event_matcher":          resourcePolicyEventMatcher(),
 			"authentik_policy_password":               resourcePolicyPassword(),
 			"authentik_policy_reputation":             resourcePolicyReputation(),
 			"authentik_stage_authenticator_duo":       resourceStageAuthenticatorDuo(),

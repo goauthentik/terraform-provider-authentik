@@ -33,7 +33,7 @@ terraform init && terraform apply
 - [x] authentik.outposts
 - [x] authentik.policies
 - [x] authentik.policies.dummy
-- [ ] authentik.policies.event_matcher
+- [x] authentik.policies.event_matcher
 - [ ] authentik.policies.expiry
 - [ ] authentik.policies.expression
 - [ ] authentik.policies.hibp
