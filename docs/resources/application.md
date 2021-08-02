@@ -29,5 +29,6 @@ description: |-
 - **meta_publisher** (String)
 - **policy_engine_mode** (String) Defaults to `any`.
 - **protocol_provider** (Number)
+- **uuid** (String)
 
 

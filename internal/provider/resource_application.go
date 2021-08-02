@@ -22,6 +22,11 @@ func resourceApplication() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"uuid": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"slug": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -119,6 +124,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	d.SetId(res.Slug)
+	d.Set("uuid", res.Pk)
 	d.Set("name", res.Name)
 	d.Set("slug", res.Slug)
 	d.Set("protocol_provider", 0)

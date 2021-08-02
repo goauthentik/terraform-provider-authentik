@@ -18,7 +18,6 @@ description: |-
 ### Required
 
 - **name** (String)
-- **url** (String)
 
 ### Optional
 
@@ -26,5 +25,6 @@ description: |-
 - **local** (Boolean) Defaults to `false`.
 - **tls_authentication** (String)
 - **tls_verification** (String)
+- **url** (String) Defaults to `http+unix:///var/run/docker.sock`.
 
 

@@ -23,7 +23,6 @@ func resourcePolicyBinding() *schema.Resource {
 				Required:    true,
 				Description: "ID of the object this binding should apply to",
 			},
-
 			"policy": {
 				Type:        schema.TypeString,
 				Description: "UUID of the policy",
@@ -121,9 +120,15 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	d.Set("target", res.Target)
-	d.Set("policy", res.Policy)
-	d.Set("user", res.User)
-	d.Set("group", res.Group)
+	if res.Policy.IsSet() {
+		d.Set("policy", res.Policy.Get())
+	}
+	if res.User.IsSet() {
+		d.Set("user", res.User.Get())
+	}
+	if res.Group.IsSet() {
+		d.Set("group", res.Group.Get())
+	}
 	d.Set("order", res.Order)
 	d.Set("negate", res.Negate)
 	d.Set("enabled", res.Enabled)

@@ -22,7 +22,7 @@ description: |-
 ### Optional
 
 - **id** (String) The ID of this resource.
-- **kubeconfig** (String)
+- **kubeconfig** (String) Defaults to `{}`.
 - **local** (Boolean) Defaults to `false`.
 
 
