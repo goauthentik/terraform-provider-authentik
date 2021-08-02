@@ -42,7 +42,7 @@ func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	if len(res.Results) < 1 {

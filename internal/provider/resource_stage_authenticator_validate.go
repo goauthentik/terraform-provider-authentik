@@ -73,7 +73,7 @@ func resourceStageAuthenticatorValidateCreate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateCreate(ctx).AuthenticatorValidateStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +86,7 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -108,7 +108,7 @@ func resourceStageAuthenticatorValidateUpdate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateUpdate(ctx, d.Id()).AuthenticatorValidateStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -119,7 +119,7 @@ func resourceStageAuthenticatorValidateDelete(ctx context.Context, d *schema.Res
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorValidateDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 	return diag.Diagnostics{}
 }

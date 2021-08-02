@@ -101,7 +101,7 @@ func resourceTenantCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	res, hr, err := c.client.CoreApi.CoreTenantsCreate(ctx).TenantRequest(*mo).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Domain)
@@ -114,7 +114,7 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.CoreApi.CoreTenantsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.Set("domain", res.Domain)
@@ -138,7 +138,7 @@ func resourceTenantUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	res, hr, err := c.client.CoreApi.CoreTenantsUpdate(ctx, d.Id()).TenantRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Domain)
@@ -149,7 +149,7 @@ func resourceTenantDelete(ctx context.Context, d *schema.ResourceData, m interfa
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreTenantsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 	return diag.Diagnostics{}
 }

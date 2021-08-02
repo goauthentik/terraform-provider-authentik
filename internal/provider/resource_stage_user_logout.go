@@ -44,7 +44,7 @@ func resourceStageUserLogoutCreate(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.StagesApi.StagesUserLogoutCreate(ctx).UserLogoutStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -57,7 +57,7 @@ func resourceStageUserLogoutRead(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesUserLogoutRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -74,7 +74,7 @@ func resourceStageUserLogoutUpdate(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.StagesApi.StagesUserLogoutUpdate(ctx, d.Id()).UserLogoutStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -85,7 +85,7 @@ func resourceStageUserLogoutDelete(ctx context.Context, d *schema.ResourceData, 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserLogoutDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 	return diag.Diagnostics{}
 }

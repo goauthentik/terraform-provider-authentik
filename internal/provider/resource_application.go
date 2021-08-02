@@ -102,7 +102,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsCreate(ctx).ApplicationRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -115,7 +115,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -142,7 +142,7 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsUpdate(ctx, d.Id()).ApplicationRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -153,7 +153,7 @@ func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 	return diag.Diagnostics{}
 }

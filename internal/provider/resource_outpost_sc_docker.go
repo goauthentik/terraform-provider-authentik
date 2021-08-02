@@ -76,7 +76,7 @@ func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerCreate(ctx).DockerServiceConnectionRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -89,7 +89,7 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -110,7 +110,7 @@ func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerUpdate(ctx, d.Id()).DockerServiceConnectionRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -121,7 +121,7 @@ func resourceServiceConnectionDockerDelete(ctx context.Context, d *schema.Resour
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 	return diag.Diagnostics{}
 }

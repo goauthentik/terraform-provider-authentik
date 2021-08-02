@@ -128,7 +128,7 @@ func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -144,7 +144,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -174,7 +174,7 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -189,7 +189,7 @@ func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m 
 	}
 	hr, err := c.client.ProvidersApi.ProvidersProxyDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 	return diag.Diagnostics{}
 }

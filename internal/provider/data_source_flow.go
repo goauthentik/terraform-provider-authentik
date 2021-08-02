@@ -48,7 +48,7 @@ func dataSourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	if len(res.Results) < 1 {

@@ -145,7 +145,7 @@ func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Create(ctx).OAuth2ProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -161,7 +161,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Retrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -200,7 +200,7 @@ func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Update(ctx, int32(id)).OAuth2ProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -215,7 +215,7 @@ func resourceProviderOAuth2Delete(ctx context.Context, d *schema.ResourceData, m
 	}
 	hr, err := c.client.ProvidersApi.ProvidersOauth2Destroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr)
+		return httpToDiag(hr, err)
 	}
 	return diag.Diagnostics{}
 }
