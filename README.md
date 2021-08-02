@@ -37,4 +37,3 @@ terraform init && terraform apply
 ## Missing apps
 
 - [ ] authentik.sources.ldap
-- [ ] authentik.sources.oauth

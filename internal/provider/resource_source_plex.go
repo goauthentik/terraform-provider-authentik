@@ -49,6 +49,11 @@ func resourceSourcePlex() *schema.Resource {
 				Optional: true,
 				Default:  api.POLICYENGINEMODE_ANY,
 			},
+			"user_matching_mode": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.USERMATCHINGMODEENUM_IDENTIFIER,
+			},
 
 			"client_id": {
 				Type:     schema.TypeString,
@@ -91,6 +96,9 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) (*api.PlexSourceRe
 
 	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
 	r.PolicyEngineMode = &pm
+
+	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
+	r.UserMatchingMode = &umm
 
 	allowedServers := d.Get("allowed_servers").([]interface{})
 	as := make([]string, len(allowedServers))
@@ -139,6 +147,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	d.Set("enabled", res.Enabled)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
+	d.Set("user_matching_mode", res.UserMatchingMode)
 
 	d.Set("client_id", res.ClientId)
 	d.Set("allowed_servers", res.AllowedServers)
