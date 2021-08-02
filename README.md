@@ -35,7 +35,7 @@ terraform init && terraform apply
 - [x] authentik.policies.dummy
 - [x] authentik.policies.event_matcher
 - [ ] authentik.policies.expiry
-- [ ] authentik.policies.expression
+- [x] authentik.policies.expression
 - [x] authentik.policies.hibp
 - [x] authentik.policies.password
 - [x] authentik.policies.reputation
