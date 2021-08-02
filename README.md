@@ -37,7 +37,7 @@ terraform init && terraform apply
 - [ ] authentik.policies.expiry
 - [ ] authentik.policies.expression
 - [ ] authentik.policies.hibp
-- [ ] authentik.policies.password
+- [x] authentik.policies.password
 - [x] authentik.policies.reputation
 - [ ] authentik.providers.ldap
 - [ ] authentik.providers.oauth2
