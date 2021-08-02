@@ -68,7 +68,7 @@ jobs:
         AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
         AUTHENTIK_URL: ${{ secrets.AUTHENTIK_URL }}
       run: |
-        go test -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
+        go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
 
     - uses: codecov/codecov-action@v2
       with:
