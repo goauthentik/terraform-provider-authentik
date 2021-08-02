@@ -32,6 +32,7 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 			"kubeconfig": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "{}",
 			},
 		},
 	}
