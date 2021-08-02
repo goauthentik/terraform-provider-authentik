@@ -29,7 +29,8 @@ func resourceServiceConnectionDocker() *schema.Resource {
 			},
 			"url": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
+				Default:  "http+unix:///var/run/docker.sock",
 			},
 			"tls_verification": {
 				Type:     schema.TypeString,
@@ -95,8 +96,12 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 	d.Set("name", res.Name)
 	d.Set("url", res.Url)
 	d.Set("local", res.Local)
-	d.Set("tls_verification", res.TlsVerification)
-	d.Set("tls_authentication", res.TlsAuthentication)
+	if res.TlsVerification.IsSet() {
+		d.Set("tls_verification", res.TlsVerification.Get())
+	}
+	if res.TlsAuthentication.IsSet() {
+		d.Set("tls_authentication", res.TlsAuthentication.Get())
+	}
 	return diags
 }
 
