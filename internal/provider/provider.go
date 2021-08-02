@@ -64,6 +64,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_policy_hibp":                   resourcePolicyHaveIBeenPwend(),
 			"authentik_policy_password":               resourcePolicyPassword(),
 			"authentik_policy_reputation":             resourcePolicyReputation(),
+			"authentik_provider_ldap":                 resourceProviderLDAP(),
 			"authentik_provider_oauth2":               resourceProviderOAuth2(),
 			"authentik_provider_proxy":                resourceProviderProxy(),
 			"authentik_service_connection_docker":     resourceServiceConnectionDocker(),

@@ -17,7 +17,7 @@
 Run the following command to build the provider
 
 ```shell
-go build -o terraform-provider-authentik
+make build
 ```
 
 ## Test sample configuration
@@ -51,7 +51,7 @@ terraform init && terraform apply
 - [x] authentik.policies.hibp
 - [x] authentik.policies.password
 - [x] authentik.policies.reputation
-- [ ] authentik.providers.ldap
+- [x] authentik.providers.ldap
 - [x] authentik.providers.oauth2
 - [x] authentik.providers.proxy
 - [ ] authentik.providers.saml
