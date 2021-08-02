@@ -31,8 +31,8 @@ terraform init && terraform apply
 - [ ] authentik.events
 - [ ] authentik.flows
 - [x] authentik.outposts
-- [ ] authentik.policies
-- [ ] authentik.policies.dummy
+- [x] authentik.policies
+- [x] authentik.policies.dummy
 - [ ] authentik.policies.event_matcher
 - [ ] authentik.policies.expiry
 - [ ] authentik.policies.expression
