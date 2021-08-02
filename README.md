@@ -54,7 +54,7 @@ terraform init && terraform apply
 - [x] authentik.providers.ldap
 - [x] authentik.providers.oauth2
 - [x] authentik.providers.proxy
-- [ ] authentik.providers.saml
+- [x] authentik.providers.saml
 - [ ] authentik.sources.ldap
 - [ ] authentik.sources.oauth
 - [ ] authentik.sources.plex
