@@ -1,5 +1,17 @@
 # This Provider is in alpha, the resources are not guaranteed to be stable!
 
+<p align="center">
+    <img src="https://goauthentik.io/img/icon_top_brand_colour.svg" height="150" alt="authentik logo">
+</p>
+
+---
+
+[![](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
+[![CI Build status](https://img.shields.io/github/checks-status/beryju/terraform-provider-authentik/master?style=for-the-badge)](https://github.com/BeryJu/terraform-provider-authentik/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/terraform-provider-authentik?style=for-the-badge)](https://codecov.io/gh/BeryJu/terraform-provider-authentik)
+![Latest version](https://img.shields.io/github/v/tag/beryju/terraform-provider-authentik?style=for-the-badge)
+
+
 # Terraform Provider authentik
 
 Run the following command to build the provider
