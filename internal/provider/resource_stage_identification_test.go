@@ -17,13 +17,13 @@ func TestAccResourceStageIdentification(t *testing.T) {
 			{
 				Config: testAccResourceStageIdentification(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_identification.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_stage_identification.name", "name", rName+"-ident"),
 				),
 			},
 			{
 				Config: testAccResourceStageIdentification(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_identification.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_stage_identification.name", "name", rName+"test-ident"),
 				),
 			},
 		},
@@ -32,10 +32,31 @@ func TestAccResourceStageIdentification(t *testing.T) {
 
 func testAccResourceStageIdentification(name string) string {
 	return fmt.Sprintf(`
-# TODO: Source and sources field
+data "authentik_flow" "default-authorization-flow" {
+  slug = "default-provider-authorization-implicit-consent"
+}
+
+resource "authentik_source_oauth" "name" {
+  name      = "%[1]s"
+  slug      = "%[1]s"
+  authentication_flow = data.authentik_flow.default-authorization-flow.id
+  enrollment_flow = data.authentik_flow.default-authorization-flow.id
+
+  provider_type = "discord"
+  consumer_key = "foo"
+  consumer_secret = "bar"
+}
+
+resource "authentik_stage_password" "name" {
+  name              = "%[1]s-pass"
+  backends = ["django.contrib.auth.backends.ModelBackend"]
+}
+
 resource "authentik_stage_identification" "name" {
-  name              = "%s"
+  name              = "%[1]s-ident"
   user_fields = ["username"]
+  sources = [authentik_source_oauth.name.uuid]
+  password_stage = authentik_stage_password.name.id
 }
 `, name)
 }
