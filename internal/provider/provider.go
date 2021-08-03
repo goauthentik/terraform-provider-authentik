@@ -69,6 +69,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_provider_oauth2":               resourceProviderOAuth2(),
 			"authentik_provider_proxy":                resourceProviderProxy(),
 			"authentik_provider_saml":                 resourceProviderSAML(),
+			"authentik_scope_mapping":                 resourceScopeMapping(),
 			"authentik_service_connection_docker":     resourceServiceConnectionDocker(),
 			"authentik_service_connection_kubernetes": resourceServiceConnectionKubernetes(),
 			"authentik_source_ldap":                   resourceSourceLDAP(),
