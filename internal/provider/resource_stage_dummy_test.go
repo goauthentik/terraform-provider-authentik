@@ -33,7 +33,7 @@ func TestAccResourceStageDummy(t *testing.T) {
 func testAccResourceStageDummy(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_dummy" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

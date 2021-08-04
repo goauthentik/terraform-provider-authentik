@@ -19,7 +19,7 @@ var providerFactories = map[string]func() (*schema.Provider, error){
 func TestProvider(t *testing.T) {
 	p := Provider("testing")
 	if err := p.InternalValidate(); err != nil {
-		t.Fatalf("err: %s", err)
+		t.Fatalf("err: %[1]s", err)
 	}
 }
 
@@ -30,6 +30,6 @@ func testAccPreCheck(t *testing.T) {
 
 func testEnvIsSet(k string, t *testing.T) {
 	if v := os.Getenv(k); v == "" {
-		t.Fatalf("%s must be set for acceptance tests", k)
+		t.Fatalf("%[1]s must be set for acceptance tests", k)
 	}
 }

@@ -33,7 +33,7 @@ func TestAccResourcePolicyHaveIBeenPwned(t *testing.T) {
 func testAccResourcePolicyHaveIBeenPwned(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_policy_hibp" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

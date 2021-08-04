@@ -33,7 +33,7 @@ func TestAccResourceStageDeny(t *testing.T) {
 func testAccResourceStageDeny(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_deny" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

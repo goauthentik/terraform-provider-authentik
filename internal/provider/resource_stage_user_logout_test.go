@@ -33,7 +33,7 @@ func TestAccResourceStageUserLogout(t *testing.T) {
 func testAccResourceStageUserLogout(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_user_logout" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

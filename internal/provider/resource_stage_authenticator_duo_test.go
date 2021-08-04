@@ -33,7 +33,7 @@ func TestAccResourceStageAuthenticatorDuo(t *testing.T) {
 func testAccResourceStageAuthenticatorDuo(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_authenticator_duo" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   client_id = "foo"
   client_secret = "bar"
   api_hostname = "http://foo.bar.baz"

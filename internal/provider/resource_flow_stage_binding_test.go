@@ -33,7 +33,7 @@ func TestAccResourceFlowStageBinding(t *testing.T) {
 func testAccResourceFlowStageBindingSimple(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_dummy" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 
 resource "authentik_flow" "flow" {

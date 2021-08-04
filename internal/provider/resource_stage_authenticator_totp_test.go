@@ -33,7 +33,7 @@ func TestAccResourceStageAuthenticatorTOTP(t *testing.T) {
 func testAccResourceStageAuthenticatorTOTP(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_authenticator_totp" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

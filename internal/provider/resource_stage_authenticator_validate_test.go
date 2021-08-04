@@ -33,7 +33,7 @@ func TestAccResourceStageAuthenticatorValidate(t *testing.T) {
 func testAccResourceStageAuthenticatorValidate(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_authenticator_validate" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   device_classes = ["static"]
   not_configured_action = "skip"
 }

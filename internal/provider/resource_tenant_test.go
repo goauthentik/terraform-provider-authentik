@@ -35,7 +35,7 @@ func testAccResourceTenant(name string) string {
 # TODO: branding_logo should be optional
 # TODO: branding_favicon should be optional
 resource "authentik_tenant" "name" {
-  domain = "%s"
+  domain = "%[1]s"
   branding_logo = "test"
   branding_favicon = "test"
 }

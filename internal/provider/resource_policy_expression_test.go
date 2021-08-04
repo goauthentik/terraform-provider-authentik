@@ -33,7 +33,7 @@ func TestAccResourcePolicyExpression(t *testing.T) {
 func testAccResourcePolicyExpression(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_policy_expression" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   expression = "return True"
 }
 `, name)

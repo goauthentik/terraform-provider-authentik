@@ -33,7 +33,7 @@ func TestAccResourcePolicyExpiry(t *testing.T) {
 func testAccResourcePolicyExpiry(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_policy_expiry" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   days = 3
 }
 `, name)

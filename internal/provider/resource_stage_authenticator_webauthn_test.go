@@ -33,7 +33,7 @@ func TestAccResourceStageAuthenticatorWebAuthn(t *testing.T) {
 func testAccResourceStageAuthenticatorWebAuthn(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_authenticator_webauthn" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

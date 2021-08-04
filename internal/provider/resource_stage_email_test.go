@@ -33,7 +33,7 @@ func TestAccResourceStageEmail(t *testing.T) {
 func testAccResourceStageEmail(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_email" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

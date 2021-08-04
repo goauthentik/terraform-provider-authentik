@@ -33,7 +33,7 @@ func TestAccResourceStageUserDelete(t *testing.T) {
 func testAccResourceStageUserDelete(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_user_delete" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

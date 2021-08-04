@@ -35,7 +35,7 @@ func TestAccResourceStageUserWrite(t *testing.T) {
 func testAccResourceStageUserWrite(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_user_write" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   create_users_as_inactive = false
 }
 `, name)

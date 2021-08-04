@@ -33,7 +33,7 @@ func TestAccResourceStageCaptcha(t *testing.T) {
 func testAccResourceStageCaptcha(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_captcha" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   private_key = "foo"
   public_key = "bar"
 }

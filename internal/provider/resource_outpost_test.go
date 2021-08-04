@@ -48,7 +48,7 @@ resource "authentik_provider_proxy" "proxy" {
 }
 
 resource "authentik_outpost" "outpost" {
-  name = "%s"
+  name = "%[1]s"
   protocol_providers = [
     authentik_provider_proxy.proxy.id
   ]

@@ -33,7 +33,7 @@ func TestAccResourcePolicyBinding(t *testing.T) {
 func testAccResourcePolicyBinding(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_policy_dummy" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 resource "authentik_application" "name" {
   name              = "%[1]s"

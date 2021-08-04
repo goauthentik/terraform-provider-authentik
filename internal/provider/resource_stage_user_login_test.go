@@ -35,7 +35,7 @@ func TestAccResourceStageUserLogin(t *testing.T) {
 func testAccResourceStageUserLogin(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_user_login" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   session_duration = "minutes=1"
 }
 `, name)

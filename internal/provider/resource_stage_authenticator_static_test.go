@@ -33,7 +33,7 @@ func TestAccResourceStageAuthenticatorStatic(t *testing.T) {
 func testAccResourceStageAuthenticatorStatic(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_authenticator_static" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }

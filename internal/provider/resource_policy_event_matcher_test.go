@@ -33,7 +33,7 @@ func TestAccResourcePolicyEventMatcher(t *testing.T) {
 func testAccResourcePolicyEventMatcher(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_policy_event_matcher" "name" {
-  name              = "%s"
+  name              = "%[1]s"
   action = "login"
   app = "authentik.flows"
   client_ip = "1.2.3.4"

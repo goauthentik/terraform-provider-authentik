@@ -33,7 +33,7 @@ func TestAccResourceStageConsent(t *testing.T) {
 func testAccResourceStageConsent(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_consent" "name" {
-  name              = "%s"
+  name              = "%[1]s"
 }
 `, name)
 }
