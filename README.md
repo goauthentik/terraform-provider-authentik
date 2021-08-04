@@ -6,9 +6,9 @@
 ---
 
 [![](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
-[![CI Build status](https://img.shields.io/github/checks-status/beryju/terraform-provider-authentik/master?style=for-the-badge)](https://github.com/BeryJu/terraform-provider-authentik/actions)
-[![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/terraform-provider-authentik?style=for-the-badge)](https://codecov.io/gh/BeryJu/terraform-provider-authentik)
-![Latest version](https://img.shields.io/github/v/tag/beryju/terraform-provider-authentik?style=for-the-badge)
+[![CI Build status](https://img.shields.io/github/checks-status/goauthentik/terraform-provider-authentik/master?style=for-the-badge)](https://github.com/goauthentik/terraform-provider-authentik/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/gh/goauthentik/terraform-provider-authentik?style=for-the-badge)](https://codecov.io/gh/goauthentik/terraform-provider-authentik)
+![Latest version](https://img.shields.io/github/v/tag/goauthentik/terraform-provider-authentik?style=for-the-badge)
 
 
 # Terraform Provider authentik

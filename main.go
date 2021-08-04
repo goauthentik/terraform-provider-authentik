@@ -37,7 +37,7 @@ func main() {
 	}
 
 	if debugMode {
-		err := plugin.Debug(context.Background(), "registry.terraform.io/beryju/terraform-provider-authentik", opts)
+		err := plugin.Debug(context.Background(), "registry.terraform.io/goauthentik/terraform-provider-authentik", opts)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
