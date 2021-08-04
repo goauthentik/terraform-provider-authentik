@@ -2,10 +2,10 @@
 
 resource "authentik_user" "name" {
   username = "user"
-  name = "User"
+  name     = "User"
 }
 resource "authentik_group" "group" {
-  name = "tf_admins"
-  users = [authentik_user.name.id]
+  name         = "tf_admins"
+  users        = [authentik_user.name.id]
   is_superuser = true
 }

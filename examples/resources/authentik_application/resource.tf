@@ -5,9 +5,9 @@ data "authentik_flow" "default-authorization-flow" {
 }
 
 resource "authentik_provider_oauth2" "name" {
-  name      = "example-app"
-  client_id = "example-app"
-  client_secret = "test"
+  name               = "example-app"
+  client_id          = "example-app"
+  client_secret      = "test"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
 }
 
@@ -23,6 +23,6 @@ resource "authentik_policy_binding" "app-access" {
 }
 
 resource "authentik_application" "name" {
-  name              = "example-app"
-  slug              = "example-app"
+  name = "example-app"
+  slug = "example-app"
 }

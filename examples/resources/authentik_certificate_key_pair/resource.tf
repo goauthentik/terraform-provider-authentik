@@ -24,7 +24,7 @@ resource "tls_self_signed_cert" "example" {
 }
 
 resource "authentik_certificate_key_pair" "name" {
-  name              = "keypair"
+  name             = "keypair"
   certificate_data = tls_self_signed_cert.example.cert_pem
-  key_data = tls_private_key.example.private_key_pem
+  key_data         = tls_private_key.example.private_key_pem
 }
