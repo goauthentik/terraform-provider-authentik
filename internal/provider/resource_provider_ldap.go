@@ -23,7 +23,7 @@ func resourceProviderLDAP() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"authorization_flow": {
+			"bind_flow": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -60,7 +60,7 @@ func resourceProviderLDAP() *schema.Resource {
 func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) (*api.LDAPProviderRequest, diag.Diagnostics) {
 	r := api.LDAPProviderRequest{
 		Name:              d.Get("name").(string),
-		AuthorizationFlow: d.Get("authorization_flow").(string),
+		AuthorizationFlow: d.Get("bind_flow").(string),
 		BaseDn:            stringToPointer(d.Get("base_dn").(string)),
 		UidStartNumber:    intToPointer(d.Get("uid_start_number").(int)),
 		GidStartNumber:    intToPointer(d.Get("gid_start_number").(int)),
@@ -108,7 +108,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	d.Set("name", res.Name)
-	d.Set("authorization_flow", res.AuthorizationFlow)
+	d.Set("bind_flow", res.AuthorizationFlow)
 	d.Set("base_dn", res.BaseDn)
 	if res.SearchGroup.IsSet() {
 		d.Set("search_group", res.SearchGroup.Get())

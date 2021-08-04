@@ -37,14 +37,14 @@ func TestAccResourceProviderLDAP(t *testing.T) {
 
 func testAccResourceProviderLDAP(name string, appName string) string {
 	return fmt.Sprintf(`
-data "authentik_flow" "default-authorization-flow" {
-  slug = "default-provider-authorization-implicit-consent"
+data "authentik_flow" "default-authentication-flow" {
+  slug = "default-authentication-flow"
 }
 
 resource "authentik_provider_ldap" "name" {
   name      = "%[1]s"
   base_dn = "dc=%[1]s,dc=goauthentik,dc=io"
-  authorization_flow = data.authentik_flow.default-authorization-flow.id
+  bind_flow = data.authentik_flow.default-authentication-flow.id
 }
 
 resource "authentik_application" "name" {
