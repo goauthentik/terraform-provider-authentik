@@ -34,10 +34,10 @@ func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	req := c.client.CoreApi.CoreGroupsList(ctx)
 	if n, ok := d.GetOk("name"); ok {
-		req.Name(n.(string))
+		req = req.Name(n.(string))
 	}
 	if i, ok := d.GetOk("is_superuser"); ok {
-		req.IsSuperuser(i.(bool))
+		req = req.IsSuperuser(i.(bool))
 	}
 
 	res, hr, err := req.Execute()
