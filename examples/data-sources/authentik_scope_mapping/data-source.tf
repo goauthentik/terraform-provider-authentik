@@ -6,4 +6,4 @@ data "authentik_scope_mapping" "test" {
   managed = "goauthentik.io/providers/proxy/scope-proxy"
 }
 
-# Then use `data.authentik_scope_mapping.admins.id`
+# Then use `data.authentik_scope_mapping.test.id`
