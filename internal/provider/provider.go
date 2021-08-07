@@ -101,8 +101,9 @@ func Provider(version string) *schema.Provider {
 			"authentik_user":                          resourceUser(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"authentik_flow":  dataSourceFlow(),
-			"authentik_group": dataSourceGroup(),
+			"authentik_flow":          dataSourceFlow(),
+			"authentik_group":         dataSourceGroup(),
+			"authentik_scope_mapping": dataSourceScopeMapping(),
 		},
 		ConfigureContextFunc: providerConfigure(version),
 	}
