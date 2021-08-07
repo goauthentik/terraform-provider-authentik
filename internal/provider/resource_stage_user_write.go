@@ -31,22 +31,18 @@ func resourceStageUserWrite() *schema.Resource {
 	}
 }
 
-func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) (*api.UserWriteStageRequest, diag.Diagnostics) {
+func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWriteStageRequest {
 	r := api.UserWriteStageRequest{
 		Name:                  d.Get("name").(string),
 		CreateUsersAsInactive: boolToPointer(d.Get("create_users_as_inactive").(bool)),
 	}
-
-	return &r, nil
+	return &r
 }
 
 func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageUserWriteSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageUserWriteSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
 	if err != nil {
@@ -74,10 +70,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageUserWriteSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageUserWriteSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
 	if err != nil {

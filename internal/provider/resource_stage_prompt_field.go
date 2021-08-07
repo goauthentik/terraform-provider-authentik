@@ -47,7 +47,7 @@ func resourceStagePromptField() *schema.Resource {
 	}
 }
 
-func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) (*api.PromptRequest, diag.Diagnostics) {
+func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.PromptRequest {
 	r := api.PromptRequest{
 		FieldKey: d.Get("field_key").(string),
 		Label:    d.Get("label").(string),
@@ -63,16 +63,13 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) (*api.Prom
 		r.Order = intToPointer(o.(int))
 	}
 
-	return &r, nil
+	return &r
 }
 
 func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStagePromptFieldSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStagePromptFieldSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsCreate(ctx).PromptRequest(*r).Execute()
 	if err != nil {
@@ -104,10 +101,7 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStagePromptFieldSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStagePromptFieldSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsUpdate(ctx, d.Id()).PromptRequest(*app).Execute()
 	if err != nil {

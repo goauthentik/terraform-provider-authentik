@@ -104,7 +104,7 @@ func resourceSourceSAML() *schema.Resource {
 	}
 }
 
-func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) (*api.SAMLSourceRequest, diag.Diagnostics) {
+func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceRequest {
 	r := api.SAMLSourceRequest{
 		Name:    d.Get("name").(string),
 		Slug:    d.Get("slug").(string),
@@ -142,16 +142,13 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) (*api.SAMLSourceRe
 	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
 		r.SigningKp.Set(stringToPointer(s.(string)))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceSourceSAMLSchemaToSource(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceSourceSAMLSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
 	if err != nil {
@@ -203,10 +200,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 
 func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	app, di := resourceSourceSAMLSchemaToSource(d)
-	if di != nil {
-		return di
-	}
+	app := resourceSourceSAMLSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
 	if err != nil {

@@ -41,7 +41,7 @@ func resourcePolicyHaveIBeenPwend() *schema.Resource {
 	}
 }
 
-func resourcePolicyHaveIBeenPwendSchemaToProvider(d *schema.ResourceData) (*api.HaveIBeenPwendPolicyRequest, diag.Diagnostics) {
+func resourcePolicyHaveIBeenPwendSchemaToProvider(d *schema.ResourceData) *api.HaveIBeenPwendPolicyRequest {
 	r := api.HaveIBeenPwendPolicyRequest{
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 	}
@@ -53,16 +53,13 @@ func resourcePolicyHaveIBeenPwendSchemaToProvider(d *schema.ResourceData) (*api.
 	if s, sSet := d.GetOk("password_field"); sSet {
 		r.PasswordField = stringToPointer(s.(string))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourcePolicyHaveIBeenPwendCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourcePolicyHaveIBeenPwendSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourcePolicyHaveIBeenPwendSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesHaveibeenpwnedCreate(ctx).HaveIBeenPwendPolicyRequest(*r).Execute()
 	if err != nil {
@@ -92,10 +89,7 @@ func resourcePolicyHaveIBeenPwendRead(ctx context.Context, d *schema.ResourceDat
 func resourcePolicyHaveIBeenPwendUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyHaveIBeenPwendSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyHaveIBeenPwendSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesHaveibeenpwnedUpdate(ctx, d.Id()).HaveIBeenPwendPolicyRequest(*app).Execute()
 	if err != nil {

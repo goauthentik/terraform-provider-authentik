@@ -86,17 +86,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 		}
 	}
 
-	t := d.Get("type").(string)
-	var ta api.OutpostTypeEnum
-	switch t {
-	case string(api.OUTPOSTTYPEENUM_LDAP):
-		ta = api.OUTPOSTTYPEENUM_LDAP
-	case string(api.OUTPOSTTYPEENUM_PROXY):
-		ta = api.OUTPOSTTYPEENUM_PROXY
-	default:
-		return nil, diag.Errorf("invalid type %s", t)
-	}
-	m.Type = ta
+	m.Type = api.OutpostTypeEnum(d.Get("type").(string))
 	return &m, nil
 }
 

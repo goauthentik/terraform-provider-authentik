@@ -70,7 +70,7 @@ func resourceProviderProxy() *schema.Resource {
 	}
 }
 
-func resourceProviderProxySchemaToProvider(d *schema.ResourceData) (*api.ProxyProviderRequest, diag.Diagnostics) {
+func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyProviderRequest {
 	r := api.ProxyProviderRequest{
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("authorization_flow").(string),
@@ -102,29 +102,15 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) (*api.ProxyPr
 		r.CookieDomain = &l
 	}
 
-	pm := d.Get("mode").(string)
-	var pma api.ProxyMode
-	switch pm {
-	case string(api.PROXYMODE_PROXY):
-		pma = api.PROXYMODE_PROXY
-	case string(api.PROXYMODE_FORWARD_SINGLE):
-		pma = api.PROXYMODE_FORWARD_SINGLE
-	case string(api.PROXYMODE_FORWARD_DOMAIN):
-		pma = api.PROXYMODE_FORWARD_DOMAIN
-	default:
-		return nil, diag.Errorf("invalid mode %s", pm)
-	}
-	r.Mode = &pma
-	return &r, nil
+	pm := api.ProxyMode(d.Get("mode").(string))
+	r.Mode = &pm
+	return &r
 }
 
 func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceProviderProxySchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceProviderProxySchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
 	if err != nil {
@@ -167,10 +153,7 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	app, di := resourceProviderProxySchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceProviderProxySchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
 	if err != nil {

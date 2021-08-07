@@ -61,7 +61,7 @@ func resourcePolicyPassword() *schema.Resource {
 	}
 }
 
-func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) (*api.PasswordPolicyRequest, diag.Diagnostics) {
+func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordPolicyRequest {
 	r := api.PasswordPolicyRequest{
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 	}
@@ -90,16 +90,13 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) (*api.Passwo
 		r.LengthMin = intToPointer(p.(int))
 	}
 
-	return &r, nil
+	return &r
 }
 
 func resourcePolicyPasswordCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourcePolicyPasswordSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourcePolicyPasswordSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordCreate(ctx).PasswordPolicyRequest(*r).Execute()
 	if err != nil {
@@ -134,10 +131,7 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m i
 func resourcePolicyPasswordUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyPasswordSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyPasswordSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordUpdate(ctx, d.Id()).PasswordPolicyRequest(*app).Execute()
 	if err != nil {

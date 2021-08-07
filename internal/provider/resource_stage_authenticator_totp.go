@@ -35,7 +35,7 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 	}
 }
 
-func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) (*api.AuthenticatorTOTPStageRequest, diag.Diagnostics) {
+func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorTOTPStageRequest {
 	r := api.AuthenticatorTOTPStageRequest{
 		Name:   d.Get("name").(string),
 		Digits: api.DigitsEnum((d.Get("digits").(int))),
@@ -44,16 +44,13 @@ func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) (*ap
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageAuthenticatorTOTPCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageAuthenticatorTOTPSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageAuthenticatorTOTPSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpCreate(ctx).AuthenticatorTOTPStageRequest(*r).Execute()
 	if err != nil {
@@ -84,10 +81,7 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 func resourceStageAuthenticatorTOTPUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageAuthenticatorTOTPSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageAuthenticatorTOTPSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpUpdate(ctx, d.Id()).AuthenticatorTOTPStageRequest(*app).Execute()
 	if err != nil {

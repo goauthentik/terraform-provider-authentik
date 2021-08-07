@@ -46,7 +46,7 @@ func resourcePolicyReputation() *schema.Resource {
 	}
 }
 
-func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) (*api.ReputationPolicyRequest, diag.Diagnostics) {
+func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.ReputationPolicyRequest {
 	r := api.ReputationPolicyRequest{
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 		CheckIp:          boolToPointer(d.Get("check_ip").(bool)),
@@ -58,16 +58,13 @@ func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) (*api.Repu
 		r.Threshold = intToPointer(p.(int))
 	}
 
-	return &r, nil
+	return &r
 }
 
 func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourcePolicyReputationSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourcePolicyReputationSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationCreate(ctx).ReputationPolicyRequest(*r).Execute()
 	if err != nil {
@@ -98,10 +95,7 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyReputationSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyReputationSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationUpdate(ctx, d.Id()).ReputationPolicyRequest(*app).Execute()
 	if err != nil {

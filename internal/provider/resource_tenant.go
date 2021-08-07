@@ -65,7 +65,7 @@ func resourceTenant() *schema.Resource {
 	}
 }
 
-func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, diag.Diagnostics) {
+func resourceTenantSchemaToModel(d *schema.ResourceData) *api.TenantRequest {
 	m := api.TenantRequest{
 		Domain:  d.Get("domain").(string),
 		Default: boolToPointer(d.Get("default").(bool)),
@@ -107,16 +107,13 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, di
 		m.FlowUnenrollment.Set(nil)
 	}
 
-	return &m, nil
+	return &m
 }
 
 func resourceTenantCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	mo, diags := resourceTenantSchemaToModel(d)
-	if diags != nil {
-		return diags
-	}
+	mo := resourceTenantSchemaToModel(d)
 
 	res, hr, err := c.client.CoreApi.CoreTenantsCreate(ctx).TenantRequest(*mo).Execute()
 	if err != nil {
@@ -159,10 +156,7 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 func resourceTenantUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceTenantSchemaToModel(d)
-	if di != nil {
-		return di
-	}
+	app := resourceTenantSchemaToModel(d)
 
 	res, hr, err := c.client.CoreApi.CoreTenantsUpdate(ctx, d.Id()).TenantRequest(*app).Execute()
 	if err != nil {

@@ -126,7 +126,7 @@ func resourceSourceLDAP() *schema.Resource {
 	}
 }
 
-func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) (*api.LDAPSourceRequest, diag.Diagnostics) {
+func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceRequest {
 	r := api.LDAPSourceRequest{
 		Name:    d.Get("name").(string),
 		Slug:    d.Get("slug").(string),
@@ -166,16 +166,13 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) (*api.LDAPSourceRe
 	}
 	r.PropertyMappingsGroup = &propertyMappingsGroup
 
-	return &r, nil
+	return &r
 }
 
 func resourceSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceSourceLDAPSchemaToSource(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceSourceLDAPSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesLdapCreate(ctx).LDAPSourceRequest(*r).Execute()
 	if err != nil {
@@ -223,10 +220,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 
 func resourceSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	app, di := resourceSourceLDAPSchemaToSource(d)
-	if di != nil {
-		return di
-	}
+	app := resourceSourceLDAPSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesLdapUpdate(ctx, d.Id()).LDAPSourceRequest(*app).Execute()
 	if err != nil {

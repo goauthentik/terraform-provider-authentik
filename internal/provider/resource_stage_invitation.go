@@ -31,22 +31,18 @@ func resourceStageInvitation() *schema.Resource {
 	}
 }
 
-func resourceStageInvitationSchemaToProvider(d *schema.ResourceData) (*api.InvitationStageRequest, diag.Diagnostics) {
+func resourceStageInvitationSchemaToProvider(d *schema.ResourceData) *api.InvitationStageRequest {
 	r := api.InvitationStageRequest{
 		Name:                          d.Get("name").(string),
 		ContinueFlowWithoutInvitation: boolToPointer(d.Get("continue_flow_without_invitation").(bool)),
 	}
-
-	return &r, nil
+	return &r
 }
 
 func resourceStageInvitationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageInvitationSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageInvitationSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesInvitationStagesCreate(ctx).InvitationStageRequest(*r).Execute()
 	if err != nil {
@@ -74,10 +70,7 @@ func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m 
 func resourceStageInvitationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageInvitationSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageInvitationSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesInvitationStagesUpdate(ctx, d.Id()).InvitationStageRequest(*app).Execute()
 	if err != nil {

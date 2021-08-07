@@ -43,7 +43,7 @@ func resourceStageAuthenticatorDuo() *schema.Resource {
 	}
 }
 
-func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) (*api.AuthenticatorDuoStageRequest, diag.Diagnostics) {
+func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorDuoStageRequest {
 	r := api.AuthenticatorDuoStageRequest{
 		Name:         d.Get("name").(string),
 		ClientId:     d.Get("client_id").(string),
@@ -54,16 +54,13 @@ func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) (*api
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageAuthenticatorDuoCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageAuthenticatorDuoSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageAuthenticatorDuoSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorDuoCreate(ctx).AuthenticatorDuoStageRequest(*r).Execute()
 	if err != nil {
@@ -95,10 +92,7 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 func resourceStageAuthenticatorDuoUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageAuthenticatorDuoSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageAuthenticatorDuoSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorDuoUpdate(ctx, d.Id()).AuthenticatorDuoStageRequest(*app).Execute()
 	if err != nil {

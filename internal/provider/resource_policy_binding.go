@@ -63,7 +63,7 @@ func resourcePolicyBinding() *schema.Resource {
 	}
 }
 
-func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) (*api.PolicyBindingRequest, diag.Diagnostics) {
+func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) *api.PolicyBindingRequest {
 	m := api.PolicyBindingRequest{
 		Target:  d.Get("target").(string),
 		Order:   int32(d.Get("order").(int)),
@@ -90,16 +90,13 @@ func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) (*api.PolicyBind
 		m.Group.Set(nil)
 	}
 
-	return &m, nil
+	return &m
 }
 
 func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourcePolicyBindingSchemaToModel(d)
-	if diags != nil {
-		return diags
-	}
+	app := resourcePolicyBindingSchemaToModel(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsCreate(ctx).PolicyBindingRequest(*app).Execute()
 	if err != nil {
@@ -139,10 +136,7 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyBindingSchemaToModel(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyBindingSchemaToModel(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsUpdate(ctx, d.Id()).PolicyBindingRequest(*app).Execute()
 	if err != nil {

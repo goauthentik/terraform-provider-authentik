@@ -40,7 +40,7 @@ func resourceStagePrompt() *schema.Resource {
 	}
 }
 
-func resourceStagePromptSchemaToProvider(d *schema.ResourceData) (*api.PromptStageRequest, diag.Diagnostics) {
+func resourceStagePromptSchemaToProvider(d *schema.ResourceData) *api.PromptStageRequest {
 	r := api.PromptStageRequest{
 		Name: d.Get("name").(string),
 	}
@@ -57,16 +57,13 @@ func resourceStagePromptSchemaToProvider(d *schema.ResourceData) (*api.PromptSta
 	}
 	r.ValidationPolicies = &vp
 
-	return &r, nil
+	return &r
 }
 
 func resourceStagePromptCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStagePromptSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStagePromptSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesCreate(ctx).PromptStageRequest(*r).Execute()
 	if err != nil {
@@ -95,10 +92,7 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 func resourceStagePromptUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStagePromptSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStagePromptSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesUpdate(ctx, d.Id()).PromptStageRequest(*app).Execute()
 	if err != nil {

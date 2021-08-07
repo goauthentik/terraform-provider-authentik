@@ -60,7 +60,7 @@ func resourceApplication() *schema.Resource {
 	}
 }
 
-func resourceApplicationSchemaToModel(d *schema.ResourceData) (*api.ApplicationRequest, diag.Diagnostics) {
+func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRequest {
 	m := api.ApplicationRequest{
 		Name:     d.Get("name").(string),
 		Slug:     d.Get("slug").(string),
@@ -83,27 +83,15 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) (*api.ApplicationR
 		m.MetaPublisher = &l
 	}
 
-	pm := d.Get("policy_engine_mode").(string)
-	var pma api.PolicyEngineMode
-	switch pm {
-	case string(api.POLICYENGINEMODE_ALL):
-		pma = api.POLICYENGINEMODE_ALL
-	case string(api.POLICYENGINEMODE_ANY):
-		pma = api.POLICYENGINEMODE_ANY
-	default:
-		return nil, diag.Errorf("invalid policy_engine_mode %s", pm)
-	}
-	m.PolicyEngineMode = &pma
-	return &m, nil
+	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
+	m.PolicyEngineMode = &pm
+	return &m
 }
 
 func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceApplicationSchemaToModel(d)
-	if diags != nil {
-		return diags
-	}
+	app := resourceApplicationSchemaToModel(d)
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsCreate(ctx).ApplicationRequest(*app).Execute()
 	if err != nil {
@@ -141,10 +129,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceApplicationSchemaToModel(d)
-	if di != nil {
-		return di
-	}
+	app := resourceApplicationSchemaToModel(d)
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsUpdate(ctx, d.Id()).ApplicationRequest(*app).Execute()
 	if err != nil {

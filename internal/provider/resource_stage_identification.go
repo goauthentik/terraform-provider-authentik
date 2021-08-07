@@ -61,7 +61,7 @@ func resourceStageIdentification() *schema.Resource {
 	}
 }
 
-func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) (*api.IdentificationStageRequest, diag.Diagnostics) {
+func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.IdentificationStageRequest {
 	r := api.IdentificationStageRequest{
 		Name:                    d.Get("name").(string),
 		ShowMatchedUser:         boolToPointer(d.Get("show_matched_user").(bool)),
@@ -92,16 +92,13 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) (*api.I
 		r.Sources = &sources
 	}
 
-	return &r, nil
+	return &r
 }
 
 func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageIdentificationSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageIdentificationSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationCreate(ctx).IdentificationStageRequest(*r).Execute()
 	if err != nil {
@@ -141,10 +138,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageIdentificationSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageIdentificationSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationUpdate(ctx, d.Id()).IdentificationStageRequest(*app).Execute()
 	if err != nil {

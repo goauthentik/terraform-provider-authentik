@@ -52,7 +52,7 @@ func resourceFlow() *schema.Resource {
 	}
 }
 
-func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.FlowRequest, diag.Diagnostics) {
+func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRequest {
 	m := api.FlowRequest{
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
@@ -63,16 +63,13 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.FlowR
 
 	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
 	m.PolicyEngineMode = &pm
-	return &m, nil
+	return &m
 }
 
 func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceFlowSchemaToModel(d, c)
-	if diags != nil {
-		return diags
-	}
+	app := resourceFlowSchemaToModel(d, c)
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesCreate(ctx).FlowRequest(*app).Execute()
 	if err != nil {
@@ -105,10 +102,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceFlowSchemaToModel(d, c)
-	if di != nil {
-		return di
-	}
+	app := resourceFlowSchemaToModel(d, c)
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesUpdate(ctx, d.Id()).FlowRequest(*app).Execute()
 	if err != nil {

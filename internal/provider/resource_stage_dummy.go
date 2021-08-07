@@ -26,20 +26,17 @@ func resourceStageDummy() *schema.Resource {
 	}
 }
 
-func resourceStageDummySchemaToProvider(d *schema.ResourceData) (*api.DummyStageRequest, diag.Diagnostics) {
+func resourceStageDummySchemaToProvider(d *schema.ResourceData) *api.DummyStageRequest {
 	r := api.DummyStageRequest{
 		Name: d.Get("name").(string),
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageDummyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageDummySchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageDummySchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesDummyCreate(ctx).DummyStageRequest(*r).Execute()
 	if err != nil {
@@ -66,10 +63,7 @@ func resourceStageDummyRead(ctx context.Context, d *schema.ResourceData, m inter
 func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageDummySchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageDummySchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesDummyUpdate(ctx, d.Id()).DummyStageRequest(*app).Execute()
 	if err != nil {

@@ -94,7 +94,7 @@ func resourceProviderOAuth2() *schema.Resource {
 	}
 }
 
-func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) (*api.OAuth2ProviderRequest, diag.Diagnostics) {
+func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2ProviderRequest {
 	r := api.OAuth2ProviderRequest{
 		Name:                   d.Get("name").(string),
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
@@ -132,16 +132,13 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) (*api.OAuth2
 	}
 	r.PropertyMappings = &propertyMapping
 
-	return &r, nil
+	return &r
 }
 
 func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceProviderOAuth2SchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceProviderOAuth2SchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Create(ctx).OAuth2ProviderRequest(*r).Execute()
 	if err != nil {
@@ -193,10 +190,7 @@ func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	app, di := resourceProviderOAuth2SchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceProviderOAuth2SchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Update(ctx, int32(id)).OAuth2ProviderRequest(*app).Execute()
 	if err != nil {

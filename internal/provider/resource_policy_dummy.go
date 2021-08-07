@@ -46,7 +46,7 @@ func resourcePolicyDummy() *schema.Resource {
 	}
 }
 
-func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) (*api.DummyPolicyRequest, diag.Diagnostics) {
+func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolicyRequest {
 	r := api.DummyPolicyRequest{
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 		Result:           boolToPointer(d.Get("result").(bool)),
@@ -60,16 +60,13 @@ func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) (*api.DummyPoli
 		r.WaitMin = intToPointer(p.(int))
 	}
 
-	return &r, nil
+	return &r
 }
 
 func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourcePolicyDummySchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourcePolicyDummySchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyCreate(ctx).DummyPolicyRequest(*r).Execute()
 	if err != nil {
@@ -100,10 +97,7 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m inte
 func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyDummySchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyDummySchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyUpdate(ctx, d.Id()).DummyPolicyRequest(*app).Execute()
 	if err != nil {

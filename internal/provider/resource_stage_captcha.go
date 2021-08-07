@@ -35,22 +35,19 @@ func resourceStageCaptcha() *schema.Resource {
 	}
 }
 
-func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) (*api.CaptchaStageRequest, diag.Diagnostics) {
+func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaStageRequest {
 	r := api.CaptchaStageRequest{
 		Name:       d.Get("name").(string),
 		PublicKey:  d.Get("public_key").(string),
 		PrivateKey: d.Get("private_key").(string),
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageCaptchaCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageCaptchaSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageCaptchaSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaCreate(ctx).CaptchaStageRequest(*r).Execute()
 	if err != nil {
@@ -78,10 +75,7 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 func resourceStageCaptchaUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageCaptchaSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageCaptchaSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaUpdate(ctx, d.Id()).CaptchaStageRequest(*app).Execute()
 	if err != nil {

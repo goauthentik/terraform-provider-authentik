@@ -80,7 +80,7 @@ func resourceSourcePlex() *schema.Resource {
 	}
 }
 
-func resourceSourcePlexSchemaToSource(d *schema.ResourceData) (*api.PlexSourceRequest, diag.Diagnostics) {
+func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceRequest {
 	r := api.PlexSourceRequest{
 		Name:    d.Get("name").(string),
 		Slug:    d.Get("slug").(string),
@@ -107,16 +107,13 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) (*api.PlexSourceRe
 	}
 	r.AllowedServers = &as
 
-	return &r, nil
+	return &r
 }
 
 func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceSourcePlexSchemaToSource(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceSourcePlexSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesPlexCreate(ctx).PlexSourceRequest(*r).Execute()
 	if err != nil {
@@ -158,10 +155,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 
 func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	app, di := resourceSourcePlexSchemaToSource(d)
-	if di != nil {
-		return di
-	}
+	app := resourceSourcePlexSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesPlexUpdate(ctx, d.Id()).PlexSourceRequest(*app).Execute()
 	if err != nil {

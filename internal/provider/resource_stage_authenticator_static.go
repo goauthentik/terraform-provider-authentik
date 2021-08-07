@@ -35,7 +35,7 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 	}
 }
 
-func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) (*api.AuthenticatorStaticStageRequest, diag.Diagnostics) {
+func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorStaticStageRequest {
 	r := api.AuthenticatorStaticStageRequest{
 		Name:       d.Get("name").(string),
 		TokenCount: intToPointer(d.Get("token_count").(int)),
@@ -44,16 +44,13 @@ func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) (*
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageAuthenticatorStaticCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageAuthenticatorStaticSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageAuthenticatorStaticSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticCreate(ctx).AuthenticatorStaticStageRequest(*r).Execute()
 	if err != nil {
@@ -84,10 +81,7 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 func resourceStageAuthenticatorStaticUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageAuthenticatorStaticSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageAuthenticatorStaticSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticUpdate(ctx, d.Id()).AuthenticatorStaticStageRequest(*app).Execute()
 	if err != nil {

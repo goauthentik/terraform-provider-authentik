@@ -38,7 +38,7 @@ func resourceSAMLPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceSAMLPropertyMappingSchemaToProvider(d *schema.ResourceData) (*api.SAMLPropertyMappingRequest, diag.Diagnostics) {
+func resourceSAMLPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.SAMLPropertyMappingRequest {
 	r := api.SAMLPropertyMappingRequest{
 		Name:       d.Get("name").(string),
 		SamlName:   d.Get("saml_name").(string),
@@ -47,16 +47,13 @@ func resourceSAMLPropertyMappingSchemaToProvider(d *schema.ResourceData) (*api.S
 	if de, dSet := d.GetOk("friendly_name"); dSet {
 		r.FriendlyName.Set(stringToPointer(de.(string)))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceSAMLPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceSAMLPropertyMappingSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceSAMLPropertyMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSamlCreate(ctx).SAMLPropertyMappingRequest(*r).Execute()
 	if err != nil {
@@ -88,10 +85,7 @@ func resourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 func resourceSAMLPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceSAMLPropertyMappingSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceSAMLPropertyMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSamlUpdate(ctx, d.Id()).SAMLPropertyMappingRequest(*app).Execute()
 	if err != nil {

@@ -94,7 +94,7 @@ func resourceProviderSAML() *schema.Resource {
 	}
 }
 
-func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) (*api.SAMLProviderRequest, diag.Diagnostics) {
+func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProviderRequest {
 	r := api.SAMLProviderRequest{
 		Name:                       d.Get("name").(string),
 		AuthorizationFlow:          d.Get("authorization_flow").(string),
@@ -134,16 +134,13 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) (*api.SAMLProv
 	}
 	r.PropertyMappings = &propertyMapping
 
-	return &r, nil
+	return &r
 }
 
 func resourceProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceProviderSAMLSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceProviderSAMLSchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlCreate(ctx).SAMLProviderRequest(*r).Execute()
 	if err != nil {
@@ -198,10 +195,7 @@ func resourceProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	app, di := resourceProviderSAMLSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceProviderSAMLSchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlUpdate(ctx, int32(id)).SAMLProviderRequest(*app).Execute()
 	if err != nil {

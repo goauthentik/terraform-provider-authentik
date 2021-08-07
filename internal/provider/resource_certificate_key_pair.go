@@ -35,7 +35,7 @@ func resourceCertificateKeyPair() *schema.Resource {
 	}
 }
 
-func resourceCertificateKeyPairSchemaToModel(d *schema.ResourceData) (*api.CertificateKeyPairRequest, diag.Diagnostics) {
+func resourceCertificateKeyPairSchemaToModel(d *schema.ResourceData) *api.CertificateKeyPairRequest {
 	app := api.CertificateKeyPairRequest{
 		Name:            d.Get("name").(string),
 		CertificateData: d.Get("certificate_data").(string),
@@ -44,16 +44,13 @@ func resourceCertificateKeyPairSchemaToModel(d *schema.ResourceData) (*api.Certi
 	if l, ok := d.Get("key_data").(string); ok {
 		app.KeyData = &l
 	}
-	return &app, nil
+	return &app
 }
 
 func resourceCertificateKeyPairCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceCertificateKeyPairSchemaToModel(d)
-	if diags != nil {
-		return diags
-	}
+	app := resourceCertificateKeyPairSchemaToModel(d)
 
 	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsCreate(ctx).CertificateKeyPairRequest(*app).Execute()
 	if err != nil {
@@ -91,10 +88,7 @@ func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData,
 func resourceCertificateKeyPairUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceCertificateKeyPairSchemaToModel(d)
-	if di != nil {
-		return di
-	}
+	app := resourceCertificateKeyPairSchemaToModel(d)
 
 	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsUpdate(ctx, d.Id()).CertificateKeyPairRequest(*app).Execute()
 	if err != nil {

@@ -35,22 +35,19 @@ func resourcePolicyExpression() *schema.Resource {
 	}
 }
 
-func resourcePolicyExpressionSchemaToProvider(d *schema.ResourceData) (*api.ExpressionPolicyRequest, diag.Diagnostics) {
+func resourcePolicyExpressionSchemaToProvider(d *schema.ResourceData) *api.ExpressionPolicyRequest {
 	r := api.ExpressionPolicyRequest{
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 		Expression:       d.Get("expression").(string),
 	}
 	r.Name.Set(stringToPointer(d.Get("name").(string)))
-	return &r, nil
+	return &r
 }
 
 func resourcePolicyExpressionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourcePolicyExpressionSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourcePolicyExpressionSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesExpressionCreate(ctx).ExpressionPolicyRequest(*r).Execute()
 	if err != nil {
@@ -79,10 +76,7 @@ func resourcePolicyExpressionRead(ctx context.Context, d *schema.ResourceData, m
 func resourcePolicyExpressionUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyExpressionSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyExpressionSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesExpressionUpdate(ctx, d.Id()).ExpressionPolicyRequest(*app).Execute()
 	if err != nil {

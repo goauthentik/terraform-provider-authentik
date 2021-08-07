@@ -41,7 +41,7 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 	}
 }
 
-func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) (*api.AuthenticatorValidateStageRequest, diag.Diagnostics) {
+func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorValidateStageRequest {
 	r := api.AuthenticatorValidateStageRequest{
 		Name: d.Get("name").(string),
 	}
@@ -60,16 +60,13 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 	}
 	r.DeviceClasses = &classes
 
-	return &r, nil
+	return &r
 }
 
 func resourceStageAuthenticatorValidateCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageAuthenticatorValidateSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageAuthenticatorValidateSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateCreate(ctx).AuthenticatorValidateStageRequest(*r).Execute()
 	if err != nil {
@@ -101,10 +98,7 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 func resourceStageAuthenticatorValidateUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageAuthenticatorValidateSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageAuthenticatorValidateSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateUpdate(ctx, d.Id()).AuthenticatorValidateStageRequest(*app).Execute()
 	if err != nil {

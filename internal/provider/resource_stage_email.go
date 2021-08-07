@@ -83,7 +83,7 @@ func resourceStageEmail() *schema.Resource {
 	}
 }
 
-func resourceStageEmailSchemaToProvider(d *schema.ResourceData) (*api.EmailStageRequest, diag.Diagnostics) {
+func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageRequest {
 	r := api.EmailStageRequest{
 		Name:              d.Get("name").(string),
 		UseGlobalSettings: boolToPointer(d.Get("use_global_settings").(bool)),
@@ -121,16 +121,13 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) (*api.EmailStage
 	if h, hSet := d.GetOk("template"); hSet {
 		r.Template = stringToPointer(h.(string))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageEmailSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageEmailSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesEmailCreate(ctx).EmailStageRequest(*r).Execute()
 	if err != nil {
@@ -168,10 +165,7 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m inter
 func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageEmailSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageEmailSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesEmailUpdate(ctx, d.Id()).EmailStageRequest(*app).Execute()
 	if err != nil {

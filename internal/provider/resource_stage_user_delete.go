@@ -26,21 +26,17 @@ func resourceStageUserDelete() *schema.Resource {
 	}
 }
 
-func resourceStageUserDeleteSchemaToProvider(d *schema.ResourceData) (*api.UserDeleteStageRequest, diag.Diagnostics) {
+func resourceStageUserDeleteSchemaToProvider(d *schema.ResourceData) *api.UserDeleteStageRequest {
 	r := api.UserDeleteStageRequest{
 		Name: d.Get("name").(string),
 	}
-
-	return &r, nil
+	return &r
 }
 
 func resourceStageUserDeleteCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageUserDeleteSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageUserDeleteSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserDeleteCreate(ctx).UserDeleteStageRequest(*r).Execute()
 	if err != nil {
@@ -67,10 +63,7 @@ func resourceStageUserDeleteRead(ctx context.Context, d *schema.ResourceData, m 
 func resourceStageUserDeleteUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageUserDeleteSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageUserDeleteSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserDeleteUpdate(ctx, d.Id()).UserDeleteStageRequest(*app).Execute()
 	if err != nil {

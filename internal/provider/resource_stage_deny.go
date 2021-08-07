@@ -26,20 +26,17 @@ func resourceStageDeny() *schema.Resource {
 	}
 }
 
-func resourceStageDenySchemaToProvider(d *schema.ResourceData) (*api.DenyStageRequest, diag.Diagnostics) {
+func resourceStageDenySchemaToProvider(d *schema.ResourceData) *api.DenyStageRequest {
 	r := api.DenyStageRequest{
 		Name: d.Get("name").(string),
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageDenyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageDenySchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageDenySchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesDenyCreate(ctx).DenyStageRequest(*r).Execute()
 	if err != nil {
@@ -66,10 +63,7 @@ func resourceStageDenyRead(ctx context.Context, d *schema.ResourceData, m interf
 func resourceStageDenyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageDenySchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageDenySchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesDenyUpdate(ctx, d.Id()).DenyStageRequest(*app).Execute()
 	if err != nil {

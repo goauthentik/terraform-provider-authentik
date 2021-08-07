@@ -57,7 +57,7 @@ func resourceProviderLDAP() *schema.Resource {
 	}
 }
 
-func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) (*api.LDAPProviderRequest, diag.Diagnostics) {
+func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProviderRequest {
 	r := api.LDAPProviderRequest{
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("bind_flow").(string),
@@ -75,16 +75,13 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) (*api.LDAPProv
 	if s, sok := d.GetOk("tls_server_name"); sok && s.(string) != "" {
 		r.TlsServerName = stringToPointer(s.(string))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceProviderLDAPSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceProviderLDAPSchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapCreate(ctx).LDAPProviderRequest(*r).Execute()
 	if err != nil {
@@ -128,10 +125,7 @@ func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	app, di := resourceProviderLDAPSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceProviderLDAPSchemaToProvider(d)
 
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapUpdate(ctx, int32(id)).LDAPProviderRequest(*app).Execute()
 	if err != nil {

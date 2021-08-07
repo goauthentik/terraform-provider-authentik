@@ -30,7 +30,7 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 	}
 }
 
-func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) (*api.AuthenticateWebAuthnStageRequest, diag.Diagnostics) {
+func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) *api.AuthenticateWebAuthnStageRequest {
 	r := api.AuthenticateWebAuthnStageRequest{
 		Name: d.Get("name").(string),
 	}
@@ -38,16 +38,13 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticateWebAuthnStageRequest(*r).Execute()
 	if err != nil {
@@ -77,10 +74,7 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticateWebAuthnStageRequest(*app).Execute()
 	if err != nil {

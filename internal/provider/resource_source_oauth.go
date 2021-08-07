@@ -88,7 +88,7 @@ func resourceSourceOAuth() *schema.Resource {
 	}
 }
 
-func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSourceRequest, diag.Diagnostics) {
+func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) *api.OAuthSourceRequest {
 	r := api.OAuthSourceRequest{
 		Name:    d.Get("name").(string),
 		Slug:    d.Get("slug").(string),
@@ -120,16 +120,13 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 	if s, sok := d.GetOk("profile_url"); sok && s.(string) != "" {
 		r.ProfileUrl.Set(stringToPointer(s.(string)))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceSourceOAuthSchemaToSource(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceSourceOAuthSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthCreate(ctx).OAuthSourceRequest(*r).Execute()
 	if err != nil {
@@ -181,10 +178,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 
 func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	app, di := resourceSourceOAuthSchemaToSource(d)
-	if di != nil {
-		return di
-	}
+	app := resourceSourceOAuthSchemaToSource(d)
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthUpdate(ctx, d.Id()).OAuthSourceRequest(*app).Execute()
 	if err != nil {

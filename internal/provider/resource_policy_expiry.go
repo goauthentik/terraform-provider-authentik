@@ -40,7 +40,7 @@ func resourcePolicyExpiry() *schema.Resource {
 	}
 }
 
-func resourcePolicyExpirySchemaToProvider(d *schema.ResourceData) (*api.PasswordExpiryPolicyRequest, diag.Diagnostics) {
+func resourcePolicyExpirySchemaToProvider(d *schema.ResourceData) *api.PasswordExpiryPolicyRequest {
 	r := api.PasswordExpiryPolicyRequest{
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 		Days:             int32(d.Get("days").(int)),
@@ -48,16 +48,13 @@ func resourcePolicyExpirySchemaToProvider(d *schema.ResourceData) (*api.Password
 	}
 	r.Name.Set(stringToPointer(d.Get("name").(string)))
 
-	return &r, nil
+	return &r
 }
 
 func resourcePolicyExpiryCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourcePolicyExpirySchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourcePolicyExpirySchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryCreate(ctx).PasswordExpiryPolicyRequest(*r).Execute()
 	if err != nil {
@@ -87,10 +84,7 @@ func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m int
 func resourcePolicyExpiryUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyExpirySchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyExpirySchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryUpdate(ctx, d.Id()).PasswordExpiryPolicyRequest(*app).Execute()
 	if err != nil {

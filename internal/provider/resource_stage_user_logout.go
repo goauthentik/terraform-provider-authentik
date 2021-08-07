@@ -26,21 +26,17 @@ func resourceStageUserLogout() *schema.Resource {
 	}
 }
 
-func resourceStageUserLogoutSchemaToProvider(d *schema.ResourceData) (*api.UserLogoutStageRequest, diag.Diagnostics) {
+func resourceStageUserLogoutSchemaToProvider(d *schema.ResourceData) *api.UserLogoutStageRequest {
 	r := api.UserLogoutStageRequest{
 		Name: d.Get("name").(string),
 	}
-
-	return &r, nil
+	return &r
 }
 
 func resourceStageUserLogoutCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageUserLogoutSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageUserLogoutSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserLogoutCreate(ctx).UserLogoutStageRequest(*r).Execute()
 	if err != nil {
@@ -67,10 +63,7 @@ func resourceStageUserLogoutRead(ctx context.Context, d *schema.ResourceData, m 
 func resourceStageUserLogoutUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageUserLogoutSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageUserLogoutSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserLogoutUpdate(ctx, d.Id()).UserLogoutStageRequest(*app).Execute()
 	if err != nil {

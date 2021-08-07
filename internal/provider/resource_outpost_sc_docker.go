@@ -44,7 +44,7 @@ func resourceServiceConnectionDocker() *schema.Resource {
 	}
 }
 
-func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) (*api.DockerServiceConnectionRequest, diag.Diagnostics) {
+func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) *api.DockerServiceConnectionRequest {
 	m := api.DockerServiceConnectionRequest{
 		Name: d.Get("name").(string),
 		Url:  d.Get("url").(string),
@@ -64,16 +64,13 @@ func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) (*api.
 	} else {
 		m.TlsAuthentication.Set(nil)
 	}
-	return &m, nil
+	return &m
 }
 
 func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceServiceConnectionDockerSchemaToModel(d)
-	if diags != nil {
-		return diags
-	}
+	app := resourceServiceConnectionDockerSchemaToModel(d)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerCreate(ctx).DockerServiceConnectionRequest(*app).Execute()
 	if err != nil {
@@ -108,10 +105,7 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceServiceConnectionDockerSchemaToModel(d)
-	if di != nil {
-		return di
-	}
+	app := resourceServiceConnectionDockerSchemaToModel(d)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerUpdate(ctx, d.Id()).DockerServiceConnectionRequest(*app).Execute()
 	if err != nil {

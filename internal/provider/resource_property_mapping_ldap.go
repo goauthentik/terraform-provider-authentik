@@ -34,22 +34,19 @@ func resourceLDAPPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceLDAPPropertyMappingSchemaToProvider(d *schema.ResourceData) (*api.LDAPPropertyMappingRequest, diag.Diagnostics) {
+func resourceLDAPPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.LDAPPropertyMappingRequest {
 	r := api.LDAPPropertyMappingRequest{
 		Name:        d.Get("name").(string),
 		ObjectField: d.Get("object_field").(string),
 		Expression:  d.Get("expression").(string),
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceLDAPPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceLDAPPropertyMappingSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceLDAPPropertyMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapCreate(ctx).LDAPPropertyMappingRequest(*r).Execute()
 	if err != nil {
@@ -78,10 +75,7 @@ func resourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 func resourceLDAPPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceLDAPPropertyMappingSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceLDAPPropertyMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapUpdate(ctx, d.Id()).LDAPPropertyMappingRequest(*app).Execute()
 	if err != nil {

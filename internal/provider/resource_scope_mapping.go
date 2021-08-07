@@ -38,7 +38,7 @@ func resourceScopeMapping() *schema.Resource {
 	}
 }
 
-func resourceScopeMappingSchemaToProvider(d *schema.ResourceData) (*api.ScopeMappingRequest, diag.Diagnostics) {
+func resourceScopeMappingSchemaToProvider(d *schema.ResourceData) *api.ScopeMappingRequest {
 	r := api.ScopeMappingRequest{
 		Name:       d.Get("name").(string),
 		ScopeName:  d.Get("scope_name").(string),
@@ -47,16 +47,13 @@ func resourceScopeMappingSchemaToProvider(d *schema.ResourceData) (*api.ScopeMap
 	if de, dSet := d.GetOk("description"); dSet {
 		r.Description = stringToPointer(de.(string))
 	}
-	return &r, nil
+	return &r
 }
 
 func resourceScopeMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceScopeMappingSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceScopeMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeCreate(ctx).ScopeMappingRequest(*r).Execute()
 	if err != nil {
@@ -86,10 +83,7 @@ func resourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m int
 func resourceScopeMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceScopeMappingSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceScopeMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeUpdate(ctx, d.Id()).ScopeMappingRequest(*app).Execute()
 	if err != nil {

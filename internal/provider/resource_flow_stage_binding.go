@@ -54,7 +54,7 @@ func resourceFlowStageBinding() *schema.Resource {
 	}
 }
 
-func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.FlowStageBindingRequest, diag.Diagnostics) {
+func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowStageBindingRequest {
 	m := api.FlowStageBindingRequest{
 		Target:             d.Get("target").(string),
 		Stage:              d.Get("stage").(string),
@@ -68,16 +68,13 @@ func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData, c *APIClient)
 
 	ira := api.InvalidResponseActionEnum(d.Get("invalid_response_action").(string))
 	m.InvalidResponseAction = &ira
-	return &m, nil
+	return &m
 }
 
 func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceFlowStageBindingSchemaToModel(d, c)
-	if diags != nil {
-		return diags
-	}
+	app := resourceFlowStageBindingSchemaToModel(d, c)
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsCreate(ctx).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
@@ -110,10 +107,7 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceFlowStageBindingSchemaToModel(d, c)
-	if di != nil {
-		return di
-	}
+	app := resourceFlowStageBindingSchemaToModel(d, c)
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsUpdate(ctx, d.Id()).FlowStageBindingRequest(*app).Execute()
 	if err != nil {

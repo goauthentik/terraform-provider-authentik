@@ -36,7 +36,7 @@ func resourceStageConsent() *schema.Resource {
 	}
 }
 
-func resourceStageConsentSchemaToProvider(d *schema.ResourceData) (*api.ConsentStageRequest, diag.Diagnostics) {
+func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentStageRequest {
 	r := api.ConsentStageRequest{
 		Name: d.Get("name").(string),
 	}
@@ -50,16 +50,13 @@ func resourceStageConsentSchemaToProvider(d *schema.ResourceData) (*api.ConsentS
 		r.ConsentExpireIn = stringToPointer(ex.(string))
 	}
 
-	return &r, nil
+	return &r
 }
 
 func resourceStageConsentCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageConsentSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageConsentSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesConsentCreate(ctx).ConsentStageRequest(*r).Execute()
 	if err != nil {
@@ -88,10 +85,7 @@ func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m int
 func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageConsentSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageConsentSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesConsentUpdate(ctx, d.Id()).ConsentStageRequest(*app).Execute()
 	if err != nil {

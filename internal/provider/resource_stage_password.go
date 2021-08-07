@@ -42,7 +42,7 @@ func resourceStagePassword() *schema.Resource {
 	}
 }
 
-func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) (*api.PasswordStageRequest, diag.Diagnostics) {
+func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordStageRequest {
 	r := api.PasswordStageRequest{
 		Name: d.Get("name").(string),
 	}
@@ -61,16 +61,13 @@ func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) (*api.Passwor
 	}
 	r.Backends = backend
 
-	return &r, nil
+	return &r
 }
 
 func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStagePasswordSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStagePasswordSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesPasswordCreate(ctx).PasswordStageRequest(*r).Execute()
 	if err != nil {
@@ -102,10 +99,7 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStagePasswordSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStagePasswordSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesPasswordUpdate(ctx, d.Id()).PasswordStageRequest(*app).Execute()
 	if err != nil {

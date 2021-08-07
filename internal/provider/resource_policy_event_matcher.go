@@ -45,7 +45,7 @@ func resourcePolicyEventMatcher() *schema.Resource {
 	}
 }
 
-func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) (*api.EventMatcherPolicyRequest, diag.Diagnostics) {
+func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.EventMatcherPolicyRequest {
 	r := api.EventMatcherPolicyRequest{
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 	}
@@ -61,16 +61,13 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) (*api.Ev
 	app := api.AppEnum(d.Get("app").(string))
 	r.App = &app
 
-	return &r, nil
+	return &r
 }
 
 func resourcePolicyEventMatcherCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourcePolicyEventMatcherSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourcePolicyEventMatcherSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherCreate(ctx).EventMatcherPolicyRequest(*r).Execute()
 	if err != nil {
@@ -101,10 +98,7 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourcePolicyEventMatcherSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourcePolicyEventMatcherSchemaToProvider(d)
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherUpdate(ctx, d.Id()).EventMatcherPolicyRequest(*app).Execute()
 	if err != nil {

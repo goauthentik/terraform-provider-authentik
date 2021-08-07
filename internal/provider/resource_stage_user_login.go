@@ -31,22 +31,18 @@ func resourceStageUserLogin() *schema.Resource {
 	}
 }
 
-func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) (*api.UserLoginStageRequest, diag.Diagnostics) {
+func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) *api.UserLoginStageRequest {
 	r := api.UserLoginStageRequest{
 		Name:            d.Get("name").(string),
 		SessionDuration: stringToPointer(d.Get("session_duration").(string)),
 	}
-
-	return &r, nil
+	return &r
 }
 
 func resourceStageUserLoginCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceStageUserLoginSchemaToProvider(d)
-	if diags != nil {
-		return diags
-	}
+	r := resourceStageUserLoginSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserLoginCreate(ctx).UserLoginStageRequest(*r).Execute()
 	if err != nil {
@@ -74,10 +70,7 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 func resourceStageUserLoginUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceStageUserLoginSchemaToProvider(d)
-	if di != nil {
-		return di
-	}
+	app := resourceStageUserLoginSchemaToProvider(d)
 
 	res, hr, err := c.client.StagesApi.StagesUserLoginUpdate(ctx, d.Id()).UserLoginStageRequest(*app).Execute()
 	if err != nil {
