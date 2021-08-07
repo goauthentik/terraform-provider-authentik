@@ -73,11 +73,12 @@ func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData,
 	d.Set("name", res.Name)
 
 	rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
-	if err == nil {
-		d.Set("certificate_data", rc.Data+"\n")
+	if err != nil {
+		return httpToDiag(hr, err)
 	}
+	d.Set("certificate_data", rc.Data+"\n")
 
-	rk, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
+	rk, _, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
 	if err == nil {
 		d.Set("key_data", rk.Data+"\n")
 	}

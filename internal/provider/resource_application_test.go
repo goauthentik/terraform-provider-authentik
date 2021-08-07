@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/goauthentik/terraform-provider-authentik/api"
@@ -38,6 +39,10 @@ func TestAccResourceApplication(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_publisher", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "policy_engine_mode", string(api.POLICYENGINEMODE_ANY)),
 				),
+			},
+			{
+				Config:      testAccResourceApplicationSimple(rName + "test+"),
+				ExpectError: regexp.MustCompile("consisting of letters, numbers, underscores or hyphens"),
 			},
 		},
 	})

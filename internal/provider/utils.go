@@ -21,18 +21,14 @@ func intToPointer(in int) *int32 {
 	return &i
 }
 
-func int32ToPointer(in int32) *int32 {
-	return &in
-}
-
 func boolToPointer(in bool) *bool {
 	return &in
 }
 
 func httpToDiag(r *http.Response, err error) diag.Diagnostics {
 	b, er := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Printf("[DEBUG] authentik: failed to read response: %s", er)
+	if er != nil {
+		log.Printf("[DEBUG] authentik: failed to read response: %s", er.Error())
 		b = []byte{}
 	}
 	log.Printf("[DEBUG] authentik: error response: %s", string(b))

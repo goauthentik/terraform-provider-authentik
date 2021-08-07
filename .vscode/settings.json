@@ -1,0 +1,16 @@
+{
+    "cSpell.words": [
+        "AuthN",
+        "JWKS",
+        "OpenID",
+        "SAML",
+        "oidc",
+        "authentik",
+        "goauthentik",
+        "WebAuthn",
+        "totp",
+        "plex"
+    ],
+    "todo-tree.tree.showCountsInTree": true,
+    "todo-tree.tree.showBadges": true
+}
