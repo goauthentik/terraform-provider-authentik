@@ -53,6 +53,7 @@ func testAccResourceApplicationSimple(name string) string {
 resource "authentik_application" "name" {
   name              = "%[1]s"
   slug              = "%[1]s"
+  meta_icon = "http://localhost/%[1]s"
 }
 `, name)
 }
