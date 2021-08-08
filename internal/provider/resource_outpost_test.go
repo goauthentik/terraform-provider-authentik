@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -30,6 +31,10 @@ func TestAccResourceOutpost(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_outpost.outpost", "type", "proxy"),
 				),
 			},
+			{
+				Config:      testAccResourceOutpostInvalidConfig(rName + "test"),
+				ExpectError: regexp.MustCompile("invalid character"),
+			},
 		},
 	})
 }
@@ -52,6 +57,29 @@ resource "authentik_outpost" "outpost" {
   protocol_providers = [
     authentik_provider_proxy.proxy.id
   ]
+}
+`, name)
+}
+
+func testAccResourceOutpostInvalidConfig(name string) string {
+	return fmt.Sprintf(`
+data "authentik_flow" "default-authorization-flow" {
+  slug = "default-provider-authorization-implicit-consent"
+}
+
+resource "authentik_provider_proxy" "proxy" {
+  name               = "proxy"
+  authorization_flow = data.authentik_flow.default-authorization-flow.id
+  external_host      = "http://foo.bar.baz"
+  internal_host      = "http://internal.local"
+}
+
+resource "authentik_outpost" "outpost" {
+  name = "%[1]s"
+  protocol_providers = [
+    authentik_provider_proxy.proxy.id
+  ]
+  config = "a"
 }
 `, name)
 }
