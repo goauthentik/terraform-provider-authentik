@@ -167,10 +167,17 @@ func NewTracingTransport(inner http.RoundTripper) *TestingTransport {
 }
 
 func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	body := "mock-failed-request"
 	return &http.Response{
-		StatusCode: 400,
-		Body:       ioutil.NopCloser(bytes.NewBufferString("mock-failed-request")),
-		Request:    r,
+		Status:        "400 Bad Request",
+		StatusCode:    400,
+		Proto:         "HTTP/1.1",
+		ProtoMajor:    1,
+		ProtoMinor:    1,
+		Body:          ioutil.NopCloser(bytes.NewBufferString(body)),
+		ContentLength: int64(len(body)),
+		Request:       r,
+		Header:        make(http.Header, 0),
 	}, nil
 }
 
