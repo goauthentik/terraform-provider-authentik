@@ -101,6 +101,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_user":                          resourceUser(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
+			"authentik_certificate_key_pair":  dataSourceCertificateKeyPair(),
 			"authentik_flow":                  dataSourceFlow(),
 			"authentik_group":                 dataSourceGroup(),
 			"authentik_property_mapping_ldap": dataSourceLDAPPropertyMapping(),
