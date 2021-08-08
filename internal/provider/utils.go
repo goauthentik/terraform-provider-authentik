@@ -8,6 +8,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
+func sliceToString(in []interface{}) []string {
+	sl := make([]string, len(in))
+	for i, m := range in {
+		sl[i] = m.(string)
+	}
+	return sl
+}
+
 func stringToPointer(in string) *string {
 	return &in
 }

@@ -5,3 +5,14 @@ data "authentik_property_mapping_ldap" "test" {
 }
 
 # Then use `data.authentik_property_mapping_ldap.test.id`
+
+# Or, to get the IDs of multiple mappings
+
+data "authentik_property_mapping_ldap" "test" {
+  managed_list = [
+    "goauthentik.io/sources/ldap/default-name",
+    "goauthentik.io/sources/ldap/default-mail"
+  ]
+}
+
+# Then use data.authentik_property_mapping_ldap.test.ids

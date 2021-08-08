@@ -19,6 +19,12 @@ func TestAccDataSourceLDAPPropertyMapping(t *testing.T) {
 					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "object_field", "name"),
 				),
 			},
+			{
+				Config: testAccDataSourceLDAPPropertyMappingList,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "ids.#", "2"),
+				),
+			},
 		},
 	})
 }
@@ -27,5 +33,14 @@ const testAccDataSourceLDAPPropertyMappingSimple = `
 data "authentik_property_mapping_ldap" "test" {
   name    = "authentik default LDAP Mapping: Name"
   managed = "goauthentik.io/sources/ldap/default-name"
+}
+`
+
+const testAccDataSourceLDAPPropertyMappingList = `
+data "authentik_property_mapping_ldap" "test" {
+  managed_list = [
+    "goauthentik.io/sources/ldap/default-name",
+    "goauthentik.io/sources/ldap/default-mail"
+  ]
 }
 `

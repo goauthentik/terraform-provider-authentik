@@ -7,3 +7,14 @@ data "authentik_scope_mapping" "test" {
 }
 
 # Then use `data.authentik_scope_mapping.test.id`
+
+# Or, to get the IDs of multiple mappings
+
+data "authentik_scope_mapping" "test" {
+  managed_list = [
+    "goauthentik.io/providers/oauth2/scope-email",
+    "goauthentik.io/providers/oauth2/scope-openid"
+  ]
+}
+
+# Then use data.authentik_scope_mapping.test.ids

@@ -13,13 +13,34 @@ func dataSourceSAMLPropertyMapping() *schema.Resource {
 		Description: "Get SAML Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:          schema.TypeString,
+				Optional:      true,
+				ConflictsWith: []string{"managed_list"},
 			},
 			"managed": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+
+			"managed_list": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Description: "Retrive multiple property mappings",
+			},
+
+			"ids": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Description: "List of ids when `managed_list` is set.",
+			},
+
 			"saml_name": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -32,6 +53,7 @@ func dataSourceSAMLPropertyMapping() *schema.Resource {
 			},
 			"expression": {
 				Type:     schema.TypeString,
+				Optional: true,
 				Computed: true,
 			},
 		},
@@ -43,11 +65,15 @@ func dataSourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 	c := m.(*APIClient)
 
 	req := c.client.PropertymappingsApi.PropertymappingsSamlList(ctx)
+
+	if ml, ok := d.GetOk("managed_list"); ok {
+		req = req.Managed(sliceToString(ml.([]interface{})))
+	} else if m, ok := d.GetOk("managed"); ok {
+		req = req.Managed([]string{m.(string)})
+	}
+
 	if n, ok := d.GetOk("name"); ok {
 		req = req.Name(n.(string))
-	}
-	if m, ok := d.GetOk("managed"); ok {
-		req = req.Managed(m.(string))
 	}
 	if m, ok := d.GetOk("saml_name"); ok {
 		req = req.SamlName(m.(string))
@@ -64,13 +90,22 @@ func dataSourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 	if len(res.Results) < 1 {
 		return diag.Errorf("No matching mappings found")
 	}
-	f := res.Results[0]
-	d.SetId(f.Pk)
-	d.Set("name", f.Name)
-	d.Set("expression", f.Expression)
-	d.Set("saml_name", f.SamlName)
-	if f.FriendlyName.IsSet() {
-		d.Set("friendly_name", f.FriendlyName.Get())
+	if _, ok := d.GetOk("managed_list"); ok {
+		d.SetId("-1")
+		ids := make([]string, len(res.Results))
+		for i, r := range res.Results {
+			ids[i] = r.Pk
+		}
+		d.Set("ids", ids)
+	} else {
+		f := res.Results[0]
+		d.SetId(f.Pk)
+		d.Set("name", f.Name)
+		d.Set("expression", f.Expression)
+		d.Set("saml_name", f.SamlName)
+		if f.FriendlyName.IsSet() {
+			d.Set("friendly_name", f.FriendlyName.Get())
+		}
 	}
 	return diags
 }
