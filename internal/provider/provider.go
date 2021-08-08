@@ -1,8 +1,10 @@
 package provider
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -30,7 +32,7 @@ func init() {
 }
 
 // Provider -
-func Provider(version string) *schema.Provider {
+func Provider(version string, testing bool) *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"url": {
@@ -108,7 +110,7 @@ func Provider(version string) *schema.Provider {
 			"authentik_property_mapping_saml": dataSourceSAMLPropertyMapping(),
 			"authentik_scope_mapping":         dataSourceScopeMapping(),
 		},
-		ConfigureContextFunc: providerConfigure(version),
+		ConfigureContextFunc: providerConfigure(version, testing),
 	}
 }
 
@@ -117,7 +119,7 @@ type APIClient struct {
 	client *api.APIClient
 }
 
-func providerConfigure(version string) schema.ConfigureContextFunc {
+func providerConfigure(version string, testing bool) schema.ConfigureContextFunc {
 	return func(c context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		apiURL := d.Get("url").(string)
 		token := d.Get("token").(string)
@@ -136,9 +138,16 @@ func providerConfigure(version string) schema.ConfigureContextFunc {
 		config.UserAgent = fmt.Sprintf("authentik-terraform@%s", version)
 		config.Host = akURL.Host
 		config.Scheme = akURL.Scheme
-		config.HTTPClient = &http.Client{
-			Transport: GetTLSTransport(insecure),
+		if testing {
+			config.HTTPClient = &http.Client{
+				Transport: NewTracingTransport(GetTLSTransport(insecure)),
+			}
+		} else {
+			config.HTTPClient = &http.Client{
+				Transport: GetTLSTransport(insecure),
+			}
 		}
+
 		config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 		apiClient := api.NewAPIClient(config)
 
@@ -146,6 +155,23 @@ func providerConfigure(version string) schema.ConfigureContextFunc {
 			client: apiClient,
 		}, diags
 	}
+}
+
+type TestingTransport struct {
+	inner http.RoundTripper
+}
+
+// NewTracingTransport Get a HTTP Transport that fails all requests
+func NewTracingTransport(inner http.RoundTripper) *TestingTransport {
+	return &TestingTransport{inner}
+}
+
+func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	return &http.Response{
+		StatusCode: 400,
+		Body:       ioutil.NopCloser(bytes.NewBufferString("mock-failed-request")),
+		Request:    r,
+	}, nil
 }
 
 // GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.

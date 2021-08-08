@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"regexp"
 	"testing"
 	"time"
 
@@ -86,6 +87,20 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_certificate_key_pair.name", "name", rName+"test"),
 				),
+			},
+		},
+	})
+	resource.UnitTest(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: providerTestFactories,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccResourceCertificateKeyPairSimple(rName, cert, key),
+				ExpectError: regexp.MustCompile("mock-failed-request"),
+			},
+			{
+				Config:      testAccResourceCertificateKeyPairSimple(rName+"test", cert, key),
+				ExpectError: regexp.MustCompile("mock-failed-request"),
 			},
 		},
 	})

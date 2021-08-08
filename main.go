@@ -32,7 +32,7 @@ func main() {
 
 	opts := &plugin.ServeOpts{
 		ProviderFunc: func() *schema.Provider {
-			return provider.Provider(version)
+			return provider.Provider(version, false)
 		},
 	}
 
