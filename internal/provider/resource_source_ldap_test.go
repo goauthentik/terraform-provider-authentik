@@ -41,6 +41,7 @@ resource "authentik_source_ldap" "name" {
   bind_cn = "foo"
   bind_password = "bar"
   base_dn = "dn=foo"
+  sync_users_password = false
 }
 `, name, appName)
 }
