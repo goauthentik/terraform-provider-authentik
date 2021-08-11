@@ -67,7 +67,7 @@ jobs:
         echo "AUTHENTIK_TAG=gh-next" >> .env
         echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=beryju.org/authentik/outpost-%(type)s:gh-next" >> .env
         wget https://raw.githubusercontent.com/goauthentik/authentik/version-2021.8/docker-compose.yml
-        docker-compose pull
+        docker-compose pull -q
         docker-compose up -d
         timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v2beta/root/config/)" != "200" ]]; do sleep 5; done' || false
 

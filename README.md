@@ -6,10 +6,13 @@
 ---
 
 [![](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
-[![CI Build status](https://img.shields.io/github/checks-status/goauthentik/terraform-provider-authentik/master?style=for-the-badge)](https://github.com/goauthentik/terraform-provider-authentik/actions)
 [![Code Coverage](https://img.shields.io/codecov/c/gh/goauthentik/terraform-provider-authentik?style=for-the-badge)](https://codecov.io/gh/goauthentik/terraform-provider-authentik)
 ![Latest version](https://img.shields.io/github/v/tag/goauthentik/terraform-provider-authentik?style=for-the-badge)
 
+|                   | Status        |
+| ----------------- | ------------- |
+| authentik master  | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-master?style=for-the-badge) |
+| authentik stable  | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-stable?style=for-the-badge) |
 
 # Terraform Provider authentik
 
