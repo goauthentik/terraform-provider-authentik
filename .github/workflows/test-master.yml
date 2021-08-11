@@ -1,4 +1,4 @@
-name: Tests
+name: test-acc-authentik-master
 on:
   pull_request:
     paths-ignore:

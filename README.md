@@ -13,6 +13,8 @@
 
 # Terraform Provider authentik
 
+Tested against authentik master, on terraform 0.15 and 1.0
+
 Run the following command to build the provider
 
 ```shell

@@ -38,6 +38,14 @@ func resourceUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"groups": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"attributes": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -57,6 +65,8 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 	if l, ok := d.Get("email").(string); ok {
 		m.Email = &l
 	}
+
+	m.Groups = sliceToString(d.Get("groups").([]interface{}))
 
 	attr := make(map[string]interface{})
 	if l, ok := d.Get("attributes").(string); ok {
@@ -111,6 +121,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return diag.FromErr(err)
 	}
 	d.Set("attributes", string(b))
+	d.Set("groups", res.Groups)
 	return diags
 }
 

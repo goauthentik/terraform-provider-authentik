@@ -26,6 +26,19 @@ func TestAccResourceUser(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_user.name", "username", rName+"test"),
 				),
 			},
+			{
+				Config: testAccResourceUserGroup(rName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_user.name", "username", rName),
+				),
+			},
+			{
+				Config: testAccResourceUserGroup(rName + "test"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_user.name", "username", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_user.name", "groups.#", "1"),
+				),
+			},
 		},
 	})
 }
@@ -35,6 +48,20 @@ func testAccResourceUser(name string) string {
 resource "authentik_user" "name" {
   username = "%[1]s"
   name = "%[1]s"
+}
+`, name)
+}
+
+func testAccResourceUserGroup(name string) string {
+	return fmt.Sprintf(`
+resource "authentik_group" "group" {
+  name = "%[1]s"
+  is_superuser = true
+}
+resource "authentik_user" "name" {
+  username = "%[1]s"
+  name = "%[1]s"
+  groups = [authentik_group.group.id]
 }
 `, name)
 }
