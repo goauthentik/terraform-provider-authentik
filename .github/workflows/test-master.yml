@@ -43,7 +43,7 @@ jobs:
         # list whatever Terraform versions here you would like to support
         terraform:
           - '0.15.5'
-          - '1.0.2'
+          - '1.0.4'
     steps:
 
     - name: Set up Go
