@@ -38,7 +38,7 @@ gen-api:
 		--git-host github.com \
 		--git-repo-id goauthentik \
 		--git-user-id terraform-provider-authentik \
-		-i http://goauthentik.io/schema.yaml \
+		-i /local/schema.yml \
 		-g go \
 		-o /local/api \
 		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true
