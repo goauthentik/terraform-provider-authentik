@@ -14,7 +14,7 @@ jobs:
       - name: Check for updates
         id: update
         run: |
-          wget https://raw.githubusercontent.com/goauthentik/authentik/master/schema.yml
+          wget -O schema.yml https://raw.githubusercontent.com/goauthentik/authentik/master/schema.yml
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
