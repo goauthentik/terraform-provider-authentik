@@ -134,8 +134,8 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 
 		BaseDn:       d.Get("base_dn").(string),
 		ServerUri:    d.Get("server_uri").(string),
-		BindCn:       d.Get("bind_cn").(string),
-		BindPassword: d.Get("bind_password").(string),
+		BindCn:       stringToPointer(d.Get("bind_cn").(string)),
+		BindPassword: stringToPointer(d.Get("bind_password").(string)),
 		StartTls:     boolToPointer(d.Get("start_tls").(bool)),
 
 		AdditionalUserDn:      stringToPointer(d.Get("additional_user_dn").(string)),
