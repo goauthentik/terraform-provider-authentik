@@ -157,6 +157,7 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 	}
 }
 
+// TestingTransport Transport used for testing, always returns a 400 Response
 type TestingTransport struct {
 	inner http.RoundTripper
 }
@@ -166,6 +167,7 @@ func NewTracingTransport(inner http.RoundTripper) *TestingTransport {
 	return &TestingTransport{inner}
 }
 
+// RoundTrip HTTP Transport
 func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	body := "mock-failed-request"
 	return &http.Response{
@@ -177,7 +179,7 @@ func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 		Body:          ioutil.NopCloser(bytes.NewBufferString(body)),
 		ContentLength: int64(len(body)),
 		Request:       r,
-		Header:        make(http.Header, 0),
+		Header:        make(http.Header),
 	}, nil
 }
 
