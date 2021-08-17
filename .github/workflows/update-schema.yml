@@ -22,3 +22,5 @@ jobs:
           branch: update-schema
           commit-message: Update Schema version
           title: Update Schema version
+          delete-branch: true
+          signoff: true
