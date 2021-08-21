@@ -2915,6 +2915,23 @@ paths:
         schema:
           type: string
       - in: query
+        name: groups_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: groups_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: is_active
         schema:
           type: boolean
@@ -13178,7 +13195,14 @@ paths:
   /api/v2beta/sources/oauth/source_types/:
     get:
       operationId: sources_oauth_source_types_list
-      description: Get all creatable source types
+      description: |-
+        Get all creatable source types. If ?name is set, only returns the type for <name>.
+        If <name> isn't found, returns the default type.
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       tags:
       - sources
       security:
