@@ -1,6 +1,5 @@
 name: test-acc-authentik-stable
 on:
-  pull_request:
   push:
   schedule:
     - cron: '0 13 * * *'
