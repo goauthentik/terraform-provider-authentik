@@ -28,8 +28,9 @@ func resourcePolicyExpression() *schema.Resource {
 				Default:  false,
 			},
 			"expression": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				DiffSuppressFunc: diffSuppressExpression,
 			},
 		},
 	}

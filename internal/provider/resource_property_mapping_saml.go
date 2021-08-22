@@ -31,8 +31,9 @@ func resourceSAMLPropertyMapping() *schema.Resource {
 				Optional: true,
 			},
 			"expression": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				DiffSuppressFunc: diffSuppressExpression,
 			},
 		},
 	}

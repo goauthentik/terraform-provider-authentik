@@ -36,5 +36,11 @@ resource "authentik_policy_expression" "name" {
   name              = "%[1]s"
   expression = "return True"
 }
+resource "authentik_policy_expression" "name2" {
+  name              = "%[1]s-EOT"
+  expression = <<EOT
+return True
+EOT
+}
 `, name)
 }

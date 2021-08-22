@@ -27,8 +27,9 @@ func resourceLDAPPropertyMapping() *schema.Resource {
 				Required: true,
 			},
 			"expression": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				DiffSuppressFunc: diffSuppressExpression,
 			},
 		},
 	}

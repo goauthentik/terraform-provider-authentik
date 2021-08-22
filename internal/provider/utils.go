@@ -5,9 +5,15 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+func diffSuppressExpression(k, old, new string, d *schema.ResourceData) bool {
+	return strings.TrimSuffix(new, "\n") == old
+}
 
 // stringOffsetInSlice Return the offset of a matching string in a slice or -1 if not found
 func stringOffsetInSlice(s string, list []string) int {
