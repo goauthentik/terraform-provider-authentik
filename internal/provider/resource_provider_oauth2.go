@@ -120,17 +120,11 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	j := api.JwtAlgEnum(jwtAlg)
 	r.JwtAlg = &j
 
-	redirect := make([]string, 0)
-	for _, redirectS := range d.Get("redirect_uris").([]interface{}) {
-		redirect = append(redirect, redirectS.(string))
-	}
-	r.RedirectUris = stringToPointer(strings.Join(redirect, "\n"))
+	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
+	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
 
-	propertyMapping := make([]string, 0)
-	for _, propertyMappingS := range d.Get("property_mappings").([]interface{}) {
-		propertyMapping = append(propertyMapping, propertyMappingS.(string))
-	}
-	r.PropertyMappings = &propertyMapping
+	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
+	r.PropertyMappings = &propertyMappings
 
 	return &r
 }

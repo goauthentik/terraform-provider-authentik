@@ -100,12 +100,8 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
 	r.UserMatchingMode = &umm
 
-	allowedServers := d.Get("allowed_servers").([]interface{})
-	as := make([]string, len(allowedServers))
-	for i, prov := range allowedServers {
-		as[i] = prov.(string)
-	}
-	r.AllowedServers = &as
+	allowedServers := sliceToString(d.Get("allowed_servers").([]interface{}))
+	r.AllowedServers = &allowedServers
 
 	return &r
 }

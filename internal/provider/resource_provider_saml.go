@@ -128,11 +128,8 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	j := api.SpBindingEnum(binding)
 	r.SpBinding = &j
 
-	propertyMapping := make([]string, 0)
-	for _, propertyMappingS := range d.Get("property_mappings").([]interface{}) {
-		propertyMapping = append(propertyMapping, propertyMappingS.(string))
-	}
-	r.PropertyMappings = &propertyMapping
+	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
+	r.PropertyMappings = &propertyMappings
 
 	return &r
 }

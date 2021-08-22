@@ -154,16 +154,10 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		r.SyncParentGroup.Set(stringToPointer(s.(string)))
 	}
 
-	propertyMappings := make([]string, 0)
-	for _, propertyMappingsS := range d.Get("property_mappings").([]interface{}) {
-		propertyMappings = append(propertyMappings, propertyMappingsS.(string))
-	}
+	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	r.PropertyMappings = &propertyMappings
 
-	propertyMappingsGroup := make([]string, 0)
-	for _, propertyMappingsGroupS := range d.Get("property_mappings_group").([]interface{}) {
-		propertyMappingsGroup = append(propertyMappingsGroup, propertyMappingsGroupS.(string))
-	}
+	propertyMappingsGroup := sliceToString(d.Get("property_mappings_group").([]interface{}))
 	r.PropertyMappingsGroup = &propertyMappingsGroup
 
 	return &r
