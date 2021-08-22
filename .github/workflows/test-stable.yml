@@ -3,6 +3,8 @@ on:
   push:
   schedule:
     - cron: '0 13 * * *'
+env:
+  AUTHENTIK_VERSION: 2021.8.1-rc1
 jobs:
   # ensure the code builds...
   build:
@@ -57,11 +59,7 @@ jobs:
         # Skip if you don't want to enable error reporting
         echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
         echo "AK_ADMIN_TOKEN=acc-test-token-key" >> .env
-        # TODO: Remove when 2021.8 is released
-        echo "AUTHENTIK_IMAGE=beryju.org/authentik/server" >> .env
-        echo "AUTHENTIK_TAG=gh-next" >> .env
-        echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=beryju.org/authentik/outpost-%(type)s:gh-next" >> .env
-        wget https://raw.githubusercontent.com/goauthentik/authentik/version-2021.8/docker-compose.yml
+        wget https://raw.githubusercontent.com/goauthentik/authentik/version/$AUTHENTIK_VERSION/docker-compose.yml
         docker-compose pull -q
         docker-compose up -d
         timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v2beta/root/config/)" != "200" ]]; do sleep 5; done' || false

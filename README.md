@@ -12,11 +12,11 @@
 |                   | Status        |
 | ----------------- | ------------- |
 | authentik master  | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-master?style=for-the-badge) |
-| authentik stable  | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-stable?style=for-the-badge) |
+| authentik 2021.8.1-rc1 | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-stable?style=for-the-badge) |
 
 # Terraform Provider authentik
 
-Tested against authentik master, on terraform 0.15 and 1.0
+Tested against authentik master and stable, on terraform 0.15 and 1.0
 
 Run the following command to build the provider
 

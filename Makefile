@@ -17,7 +17,7 @@ default: gen
 test:
 	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m
 
-build:
+build: gen-api
 	go build -o ${BINARY}
 
 install: build
