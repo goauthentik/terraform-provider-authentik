@@ -36,3 +36,11 @@ Then, run the following command to initialize the workspace and apply the sample
 ```shell
 terraform init && terraform apply
 ```
+
+## Versioning
+
+This providers version is based ont he authentik version it's tested against.
+
+Provider version 2021.8.1 is tested against 2021.8.x.
+
+Provider version 2021.8.2 is tested against 2021.8.x but has some bugfixes.
