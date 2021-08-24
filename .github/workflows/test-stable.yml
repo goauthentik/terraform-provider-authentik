@@ -4,7 +4,8 @@ on:
   schedule:
     - cron: '0 13 * * *'
 env:
-  AUTHENTIK_VERSION: 2021.8.1-rc1
+  AUTHENTIK_VERSION: 2021.8.1-rc2
+
 jobs:
   # ensure the code builds...
   build:
