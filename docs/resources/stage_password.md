@@ -17,7 +17,7 @@ description: |-
 
 resource "authentik_stage_password" "test" {
   name     = "test-stage"
-  backends = ["django.contrib.auth.backends.ModelBackend"]
+  backends = ["authentik.core.auth.InbuiltBackend"]
 }
 ```
 

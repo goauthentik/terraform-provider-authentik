@@ -49,7 +49,7 @@ resource "authentik_source_oauth" "name" {
 
 resource "authentik_stage_password" "name" {
   name              = "%[1]s-pass"
-  backends = ["django.contrib.auth.backends.ModelBackend"]
+  backends = ["authentik.core.auth.InbuiltBackend"]
 }
 
 resource "authentik_stage_identification" "name" {

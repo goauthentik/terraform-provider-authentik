@@ -34,7 +34,7 @@ func testAccResourceStagePassword(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_password" "name" {
   name              = "%[1]s"
-  backends = ["django.contrib.auth.backends.ModelBackend"]
+  backends = ["authentik.core.auth.InbuiltBackend"]
 }
 `, name)
 }
