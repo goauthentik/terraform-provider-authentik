@@ -99,7 +99,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	if i, iok := d.GetOk("meta_icon"); iok {
-		hr, err := c.client.CoreApi.CoreApplicationsSetIconUrlCreate(ctx, res.Slug).SetIconURLRequest(api.SetIconURLRequest{
+		hr, err := c.client.CoreApi.CoreApplicationsSetIconUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
 			Url: i.(string),
 		}).Execute()
 		if err != nil {
@@ -149,7 +149,7 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	if i, iok := d.GetOk("meta_icon"); iok {
-		hr, err := c.client.CoreApi.CoreApplicationsSetIconUrlCreate(ctx, res.Slug).SetIconURLRequest(api.SetIconURLRequest{
+		hr, err := c.client.CoreApi.CoreApplicationsSetIconUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
 			Url: i.(string),
 		}).Execute()
 		if err != nil {

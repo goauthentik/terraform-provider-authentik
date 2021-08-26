@@ -30,7 +30,7 @@ func stringOffsetInSlice(s string, list []string) int {
 // Taken from https://github.com/alexissavin/terraform-provider-solidserver/blob/master/solidserver/solidserver-helper.go#L62
 func typeListConsistentMerge(old []string, new []string) []interface{} {
 	// Step 1 Build local list of member indexed by their offset
-	old_offsets := make(map[int]string, len(old))
+	oldOffset := make(map[int]string, len(old))
 	diff := make([]string, 0, len(new))
 	res := make([]interface{}, 0, len(new))
 
@@ -39,7 +39,7 @@ func typeListConsistentMerge(old []string, new []string) []interface{} {
 			offset := stringOffsetInSlice(n, old)
 
 			if offset != -1 {
-				old_offsets[offset] = n
+				oldOffset[offset] = n
 			} else {
 				diff = append(diff, n)
 			}
@@ -49,14 +49,14 @@ func typeListConsistentMerge(old []string, new []string) []interface{} {
 	// Merge sorted entries ordered by their offset with the diff array that contain the new ones
 	// Step 2 Sort the index
 	keys := make([]int, 0, len(old))
-	for k := range old_offsets {
+	for k := range oldOffset {
 		keys = append(keys, k)
 	}
 	sort.Ints(keys)
 
 	// Step 3 build the result
 	for _, k := range keys {
-		res = append(res, old_offsets[k])
+		res = append(res, oldOffset[k])
 	}
 	for _, v := range diff {
 		res = append(res, v)
