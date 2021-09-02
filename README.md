@@ -11,7 +11,7 @@
 |                   | Status        |
 | ----------------- | ------------- |
 | authentik master  | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-master?style=for-the-badge) |
-| authentik 2021.8.1-rc2 | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-stable?style=for-the-badge) |
+| authentik stable | ![CI Build status](https://img.shields.io/github/workflow/status/goauthentik/terraform-provider-authentik/test-acc-authentik-stable?style=for-the-badge) |
 
 # Terraform Provider authentik
 
