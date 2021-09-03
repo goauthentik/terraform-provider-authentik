@@ -1,6 +1,9 @@
 name: test-acc-authentik-master
 on:
   push:
+    branches:
+      - master
+  pull_request:
   schedule:
     - cron: '0 13 * * *'
 jobs:
@@ -38,7 +41,7 @@ jobs:
         # list whatever Terraform versions here you would like to support
         terraform:
           - '0.15.5'
-          - '1.0.4'
+          - '1.0.5'
     steps:
 
     - name: Set up Go
