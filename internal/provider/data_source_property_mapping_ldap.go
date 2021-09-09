@@ -61,9 +61,10 @@ func dataSourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 	req := c.client.PropertymappingsApi.PropertymappingsLdapList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(sliceToString(ml.([]interface{})))
+		req = req.Managed(sliceToStringPointer(ml.([]interface{})))
 	} else if m, ok := d.GetOk("managed"); ok {
-		req = req.Managed([]string{m.(string)})
+		mm := m.(string)
+		req = req.Managed([]*string{&mm})
 	}
 
 	if n, ok := d.GetOk("name"); ok {

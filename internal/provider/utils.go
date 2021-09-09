@@ -73,6 +73,15 @@ func sliceToString(in []interface{}) []string {
 	return sl
 }
 
+func sliceToStringPointer(in []interface{}) []*string {
+	sl := make([]*string, len(in))
+	for i, m := range in {
+		s := m.(string)
+		sl[i] = &s
+	}
+	return sl
+}
+
 func stringToPointer(in string) *string {
 	return &in
 }
