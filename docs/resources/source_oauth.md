@@ -56,4 +56,8 @@ resource "authentik_source_oauth" "name" {
 - **user_matching_mode** (String) Defaults to `identifier`.
 - **uuid** (String)
 
+### Read-Only
+
+- **callback_uri** (String)
+
 

@@ -84,6 +84,11 @@ func resourceSourceOAuth() *schema.Resource {
 				Required:  true,
 				Sensitive: true,
 			},
+
+			"callback_uri": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -173,6 +178,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	if res.ProfileUrl.IsSet() {
 		d.Set("profile_url", res.ProfileUrl.Get())
 	}
+	d.Set("callback_uri", res.CallbackUrl)
 	return diags
 }
 
