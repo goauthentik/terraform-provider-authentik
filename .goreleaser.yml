@@ -55,3 +55,4 @@ changelog:
   filters:
     exclude:
       - '^Update Schema version:'
+      - '^Bump'
