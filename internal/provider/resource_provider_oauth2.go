@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/goauthentik/terraform-provider-authentik/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/api"
 )
 
 func resourceProviderOAuth2() *schema.Resource {

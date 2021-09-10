@@ -1,7 +1,4 @@
 .SHELLFLAGS += -x -e
-PWD = $(shell pwd)
-UID = $(shell id -u)
-GID = $(shell id -g)
 
 HOSTNAME=registry.terraform.io
 NAMESPACE=goauthentik
@@ -29,17 +26,3 @@ install: build
 gen:
 	golint ./...
 	go generate
-
-gen-api:
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		openapitools/openapi-generator-cli generate \
-		--git-host github.com \
-		--git-repo-id goauthentik \
-		--git-user-id terraform-provider-authentik \
-		-i /local/schema.yml \
-		-g go \
-		-o /local/api \
-		--additional-properties=packageName=api,enumClassPrefix=true,useOneOfDiscriminatorLookup=true
-	rm -f api/go.mod api/go.sum

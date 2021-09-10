@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/goauthentik/terraform-provider-authentik/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/imdario/mergo"
+	"goauthentik.io/api"
 )
 
 func resourceOutpost() *schema.Resource {

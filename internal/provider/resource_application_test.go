@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/goauthentik/terraform-provider-authentik/api"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"goauthentik.io/api"
 )
 
 func TestAccResourceApplication(t *testing.T) {
