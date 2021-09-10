@@ -65,10 +65,9 @@ func dataSourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m i
 	req := c.client.PropertymappingsApi.PropertymappingsScopeList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(sliceToStringPointer(ml.([]interface{})))
+		req = req.Managed(sliceToString(ml.([]interface{})))
 	} else if m, ok := d.GetOk("managed"); ok {
-		mm := m.(string)
-		req = req.Managed([]*string{&mm})
+		req = req.Managed([]string{m.(string)})
 	}
 
 	if n, ok := d.GetOk("name"); ok {
