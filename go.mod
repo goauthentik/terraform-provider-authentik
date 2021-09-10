@@ -3,7 +3,7 @@ module github.com/goauthentik/terraform-provider-authentik
 go 1.16
 
 require (
-	github.com/go-openapi/runtime v0.19.29
+	github.com/go-openapi/runtime v0.19.31
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.1
 	github.com/imdario/mergo v0.3.12
