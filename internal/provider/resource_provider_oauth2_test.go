@@ -42,11 +42,15 @@ func testAccResourceProviderOAuth2(name string, appName string) string {
 data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
-
+data "authentik_certificate_key_pair" "generated" {
+  name = "authentik Self-signed Certificate"
+}
 resource "authentik_provider_oauth2" "name" {
   name      = "%[1]s"
   client_id = "%[1]s"
   client_secret = "test"
+  jwt_alg = "RS256"
+  rsa_key = data.authentik_certificate_key_pair.generated.id
   authorization_flow = data.authentik_flow.default-authorization-flow.id
 }
 

@@ -108,6 +108,10 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		r.ClientSecret = stringToPointer(s.(string))
 	}
 
+	if s, sok := d.GetOk("rsa_key"); sok && s.(string) != "" {
+		r.RsaKey.Set(stringToPointer(s.(string)))
+	}
+
 	subMode := d.Get("sub_mode").(string)
 	a := api.SubModeEnum(subMode)
 	r.SubMode = &a
