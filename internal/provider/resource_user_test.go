@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -43,6 +44,27 @@ func TestAccResourceUser(t *testing.T) {
 	})
 }
 
+func TestAccResourceUserAttributes(t *testing.T) {
+	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
+	resource.UnitTest(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: providerFactories,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccResourceUserAttributes(rName, true),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_user.name", "username", rName),
+					resource.TestCheckResourceAttr("authentik_user.name", "attributes", "{\"foo\":\"bar\"}"),
+				),
+			},
+			{
+				Config:      testAccResourceUserAttributes(rName, false),
+				ExpectError: regexp.MustCompile("unexpected EOF"),
+			},
+		},
+	})
+}
+
 func testAccResourceUser(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_user" "name" {
@@ -64,4 +86,18 @@ resource "authentik_user" "name" {
   groups = [authentik_group.group.id]
 }
 `, name)
+}
+
+func testAccResourceUserAttributes(name string, valid bool) string {
+	attributes := "jsonencode({\"foo\"= \"bar\"})"
+	if !valid {
+		attributes = "\"{\""
+	}
+	return fmt.Sprintf(`
+resource "authentik_user" "name" {
+  username = "%[1]s"
+  name = "%[1]s"
+  attributes = %[2]s
+}
+`, name, attributes)
 }
