@@ -68,6 +68,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_policy_password":               resourcePolicyPassword(),
 			"authentik_policy_reputation":             resourcePolicyReputation(),
 			"authentik_property_mapping_ldap":         resourceLDAPPropertyMapping(),
+			"authentik_property_mapping_notification": resourceNotificationPropertyMapping(),
 			"authentik_property_mapping_saml":         resourceSAMLPropertyMapping(),
 			"authentik_provider_ldap":                 resourceProviderLDAP(),
 			"authentik_provider_oauth2":               resourceProviderOAuth2(),
