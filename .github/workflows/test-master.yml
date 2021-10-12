@@ -49,6 +49,21 @@ jobs:
         go-version: '1.16'
       id: go
 
+    - name: Setup authentik
+      run: |
+        sudo apt-get install -y pwgen
+        echo "PG_PASS=$(pwgen 40 1)" >> .env
+        echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
+        echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
+        echo "AK_ADMIN_TOKEN=acc-test-token-key" >> .env
+        echo "AUTHENTIK_IMAGE=goauthentik.io/dev-server" >> .env
+        echo "AUTHENTIK_TAG=gh-next" >> .env
+        echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next" >> .env
+        wget https://raw.githubusercontent.com/goauthentik/authentik/master/docker-compose.yml
+        docker-compose pull -q
+        docker-compose up -d
+        timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v2beta/root/config/)" != "200" ]]; do sleep 5; done' || false
+
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2.3.4
 
@@ -61,8 +76,8 @@ jobs:
       env:
         TF_ACC: "1"
         TF_ACC_TERRAFORM_VERSION: ${{ matrix.terraform }}
-        AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
-        AUTHENTIK_URL: ${{ secrets.AUTHENTIK_URL }}
+        AUTHENTIK_TOKEN: "acc-test-token-key"
+        AUTHENTIK_URL: http://localhost:9000
       run: |
         go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
 
