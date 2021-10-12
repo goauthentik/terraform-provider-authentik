@@ -59,7 +59,7 @@ jobs:
         wget https://raw.githubusercontent.com/goauthentik/authentik/master/docker-compose.yml
         docker-compose pull -q
         docker-compose up -d
-        timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v2beta/root/config/)" != "200" ]]; do sleep 5; done' || false
+        timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v3/root/config/)" != "200" ]]; do sleep 5; done' || false
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2.3.4
