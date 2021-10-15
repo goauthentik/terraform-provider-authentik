@@ -31,16 +31,13 @@ jobs:
         go build -v .
   test:
     name: Matrix Test
-    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        # list whatever Terraform versions here you would like to support
         terraform:
-          - '0.15.5'
-          - '1.0.5'
+          - '1.0.9'
     steps:
 
     - name: Set up Go
