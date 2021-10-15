@@ -47,8 +47,8 @@ resource "authentik_source_ldap" "name" {
 - **group_object_filter** (String) Defaults to `(objectClass=group)`.
 - **id** (String) The ID of this resource.
 - **object_uniqueness_field** (String) Defaults to `objectSid`.
-- **property_mappings** (List of Number)
-- **property_mappings_group** (List of Number)
+- **property_mappings** (List of String)
+- **property_mappings_group** (List of String)
 - **start_tls** (Boolean) Defaults to `true`.
 - **sync_groups** (Boolean) Defaults to `true`.
 - **sync_parent_group** (String)

@@ -112,14 +112,14 @@ func resourceSourceLDAP() *schema.Resource {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+					Type: schema.TypeString,
 				},
 			},
 			"property_mappings_group": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+					Type: schema.TypeString,
 				},
 			},
 		},
@@ -210,7 +210,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	d.Set("property_mappings", typeListConsistentMerge(localMappings, *res.PropertyMappings))
 	localGroupMappings := sliceToString(d.Get("property_mappings_group").([]interface{}))
-	d.Set("property_mappings_group", typeListConsistentMerge(localGroupMappings, *res.PropertyMappings))
+	d.Set("property_mappings_group", typeListConsistentMerge(localGroupMappings, *res.PropertyMappingsGroup))
 	return diags
 }
 
