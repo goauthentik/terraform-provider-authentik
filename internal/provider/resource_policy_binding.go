@@ -29,8 +29,8 @@ func resourcePolicyBinding() *schema.Resource {
 				Optional:    true,
 			},
 			"user": {
-				Type:        schema.TypeString,
-				Description: "UID of the user",
+				Type:        schema.TypeInt,
+				Description: "PK of the user",
 				Optional:    true,
 			},
 			"group": {

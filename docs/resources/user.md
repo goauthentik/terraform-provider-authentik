@@ -38,7 +38,6 @@ resource "authentik_user" "name" {
 
 ### Required
 
-- **name** (String)
 - **username** (String)
 
 ### Optional
@@ -48,5 +47,6 @@ resource "authentik_user" "name" {
 - **groups** (List of String)
 - **id** (String) The ID of this resource.
 - **is_active** (Boolean) Defaults to `true`.
+- **name** (String) Defaults to ``.
 
 

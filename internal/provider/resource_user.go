@@ -23,7 +23,8 @@ func resourceUser() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
-				Required: true,
+				Default:  "",
+				Optional: true,
 			},
 			"username": {
 				Type:     schema.TypeString,
