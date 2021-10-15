@@ -1,4 +1,4 @@
-module github.com/goauthentik/terraform-provider-authentik
+module goauthentik.io/terraform-provider-authentik
 
 go 1.16
 
