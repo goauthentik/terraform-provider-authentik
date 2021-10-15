@@ -13,15 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v2.1.3
+    - uses: actions/checkout@v2.3.4
+    - uses: actions/setup-go@v2.1.3
       with:
         go-version: '1.16'
-      id: go
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2.3.4
-
     - name: Get dependencies
       run: |
         go mod download
@@ -39,42 +34,29 @@ jobs:
         terraform:
           - '1.0.5'
     steps:
-
-    - name: Set up Go
-      uses: actions/setup-go@v2.1.3
+    - uses: actions/checkout@v2.3.4
+    - uses: actions/setup-go@v2.1.3
       with:
         go-version: '1.16'
-      id: go
-
     - name: Setup authentik
-      run: |
-        sudo apt-get install -y pwgen
-        echo "PG_PASS=$(pwgen 40 1)" >> .env
-        echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
-        echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
-        echo "AK_ADMIN_TOKEN=acc-test-token-key" >> .env
-        echo "AUTHENTIK_IMAGE=goauthentik.io/dev-server" >> .env
-        echo "AUTHENTIK_TAG=gh-next" >> .env
-        echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next" >> .env
-        wget https://raw.githubusercontent.com/goauthentik/authentik/master/docker-compose.yml
-        docker-compose pull -q
-        docker-compose up -d
-        timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v3/root/config/)" != "200" ]]; do sleep 5; done' || false
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2.3.4
+      uses: ./.github/actions/setup-authentik
+      id: setup
+      with:
+        beta: "true"
 
     - name: Get dependencies
       run: |
         go mod download
+        go install github.com/axw/gocov/gocov
+        go install github.com/AlekSi/gocov-xml
 
     - name: TF acceptance tests
       timeout-minutes: 30
       env:
         TF_ACC: "1"
         TF_ACC_TERRAFORM_VERSION: ${{ matrix.terraform }}
-        AUTHENTIK_TOKEN: "acc-test-token-key"
-        AUTHENTIK_URL: http://localhost:9000
+        AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
+        AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
       run: |
         go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
 
@@ -84,6 +66,7 @@ jobs:
     - name: run testspace
       if: ${{ always() }}
       run: |
-        testspace unittest.xml --link=codecov
+        gocov convert coverage.out | gocov-xml > coverage.xml
+        testspace [master]coverage.xml --link=codecov
     - if: ${{ always() }}
       uses: codecov/codecov-action@v2

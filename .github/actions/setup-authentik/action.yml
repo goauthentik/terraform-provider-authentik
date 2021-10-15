@@ -1,0 +1,63 @@
+name: 'authentik Setup'
+description: 'Sets up an authentik test environment'
+inputs:
+  beta:
+    description: 'Use beta images instead of stable images'
+    required: false
+    default: "false"
+  wait:
+    description: 'If the action should wait for authentik to be available'
+    required: false
+    default: "true"
+
+outputs:
+  admin_token:
+    description: "API token for akadmin User"
+    value: ${{ steps.credentials.outputs.admin_token }}
+  http_url:
+    description: "Base URL to access authentik at"
+    value: http://localhost:9000
+  https_url:
+    description: "Base URL to access authentik at (HTTPS)"
+    value: https://localhost:9443
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare common variables
+      shell: bash
+      run: |
+        echo "PG_PASS=$(openssl rand -base64 32)" >> .env
+        echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+        echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
+
+    - name: Generate credentials
+      shell: bash
+      id: credentials
+      run: |
+        AK_ADMIN_TOKEN=$(openssl rand -base64 32)
+        echo "AK_ADMIN_TOKEN=${AK_ADMIN_TOKEN}" >> .env
+        echo "::set-output name=admin_token::${AK_ADMIN_TOKEN}"
+
+    - name: Configure
+      shell: bash
+      env:
+        USE_BETA: ${{ inputs.beta }}
+      run: |
+        if [ "$USE_BETA" = "true" ]; then
+          echo "AUTHENTIK_IMAGE=goauthentik.io/dev-server" >> .env
+          echo "AUTHENTIK_TAG=gh-next" >> .env
+          echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next" >> .env
+        fi
+        wget https://goauthentik.io/docker-compose.yml
+
+    - name: Run
+      shell: bash
+      env:
+        DO_WAIT: ${{ inputs.wait }}
+      run: |
+        docker-compose pull -q
+        docker-compose up -d
+        if [ "$USE_BETA" = "true" ]; then
+          timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v3/root/config/)" != "200" ]]; do sleep 5; done' || false
+        fi
