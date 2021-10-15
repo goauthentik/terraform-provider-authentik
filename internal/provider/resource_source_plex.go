@@ -143,7 +143,8 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	d.Set("user_matching_mode", res.UserMatchingMode)
 
 	d.Set("client_id", res.ClientId)
-	d.Set("allowed_servers", res.AllowedServers)
+	localServers := sliceToString(d.Get("allowed_servers").([]interface{}))
+	d.Set("allowed_servers", typeListConsistentMerge(localServers, *res.AllowedServers))
 	d.Set("allow_friends", res.AllowFriends)
 	d.Set("plex_token", res.PlexToken)
 	return diags
