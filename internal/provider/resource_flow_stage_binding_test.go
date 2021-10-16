@@ -15,13 +15,13 @@ func TestAccResourceFlowStageBinding(t *testing.T) {
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceFlowStageBindingSimple(rName),
+				Config: testAccResourceFlowStageBindingSimple(rName, 0),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_flow.flow", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourceFlowStageBindingSimple(rName + "test"),
+				Config: testAccResourceFlowStageBindingSimple(rName+"test", 1),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_flow.flow", "name", rName+"test"),
 				),
@@ -30,7 +30,7 @@ func TestAccResourceFlowStageBinding(t *testing.T) {
 	})
 }
 
-func testAccResourceFlowStageBindingSimple(name string) string {
+func testAccResourceFlowStageBindingSimple(name string, order int) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_dummy" "name" {
   name              = "%[1]s"
@@ -46,7 +46,7 @@ resource "authentik_flow" "flow" {
 resource "authentik_flow_stage_binding" "dummy-flow" {
   target = authentik_flow.flow.uuid
   stage = authentik_stage_dummy.name.id
-  order = 0
+  order = %[2]d
 }
-`, name)
+`, name, order)
 }
