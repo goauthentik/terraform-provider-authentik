@@ -65,6 +65,6 @@ resource "authentik_policy_binding" "app-access" {
 - **negate** (Boolean) Defaults to `false`.
 - **policy** (String) UUID of the policy
 - **timeout** (Number) Defaults to `30`.
-- **user** (String) UID of the user
+- **user** (Number) PK of the user
 
 

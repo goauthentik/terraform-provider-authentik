@@ -82,6 +82,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_source_plex":                   resourceSourcePlex(),
 			"authentik_source_saml":                   resourceSourceSAML(),
 			"authentik_stage_authenticator_duo":       resourceStageAuthenticatorDuo(),
+			"authentik_stage_authenticator_sms":       resourceStageAuthenticatorSms(),
 			"authentik_stage_authenticator_static":    resourceStageAuthenticatorStatic(),
 			"authentik_stage_authenticator_totp":      resourceStageAuthenticatorTOTP(),
 			"authentik_stage_authenticator_validate":  resourceStageAuthenticatorValidate(),
