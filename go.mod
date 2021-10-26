@@ -3,6 +3,8 @@ module goauthentik.io/terraform-provider-authentik
 go 1.16
 
 require (
+	github.com/AlekSi/gocov-xml v1.0.0 // indirect
+	github.com/axw/gocov v1.0.0 // indirect
 	github.com/go-openapi/runtime v0.20.0
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.8.0

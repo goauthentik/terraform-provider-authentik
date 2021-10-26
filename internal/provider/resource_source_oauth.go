@@ -99,7 +99,7 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) *api.OAuthSourceR
 		Slug:    d.Get("slug").(string),
 		Enabled: boolToPointer(d.Get("enabled").(bool)),
 
-		ProviderType:   d.Get("provider_type").(string),
+		ProviderType:   api.ProviderTypeEnum(d.Get("provider_type").(string)),
 		ConsumerKey:    d.Get("consumer_key").(string),
 		ConsumerSecret: d.Get("consumer_secret").(string),
 	}
