@@ -58,6 +58,6 @@ runs:
       run: |
         docker-compose pull -q
         docker-compose up -d
-        if [ "$USE_BETA" = "true" ]; then
+        if [ "$DO_WAIT" = "true" ]; then
           timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v3/root/config/)" != "200" ]]; do sleep 5; done' || false
         fi
