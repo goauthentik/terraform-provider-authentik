@@ -47,6 +47,7 @@ jobs:
       run: |
         go get github.com/axw/gocov/gocov
         go get github.com/AlekSi/gocov-xml
+        go get github.com/jstemmer/go-junit-report
 
     - name: TF acceptance tests
       timeout-minutes: 30
@@ -56,7 +57,7 @@ jobs:
         AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
         AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
       run: |
-        go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
+        go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/ | go-junit-report > junit.xml
 
     - uses: testspace-com/setup-testspace@v1
       with:
@@ -65,6 +66,7 @@ jobs:
       if: ${{ always() }}
       run: |
         gocov convert coverage.out | gocov-xml > coverage.xml
+        testspace [stable]junit.xml --link=codecov
         testspace [stable]coverage.xml --link=codecov
     - if: ${{ always() }}
       uses: codecov/codecov-action@v2
