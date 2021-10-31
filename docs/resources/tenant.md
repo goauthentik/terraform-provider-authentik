@@ -3,7 +3,7 @@
 page_title: "authentik_tenant Resource - terraform-provider-authentik"
 subcategory: ""
 description: |-
-  
+
 ---
 
 # authentik_tenant (Resource)

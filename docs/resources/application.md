@@ -3,7 +3,7 @@
 page_title: "authentik_application Resource - terraform-provider-authentik"
 subcategory: ""
 description: |-
-  
+
 ---
 
 # authentik_application (Resource)
