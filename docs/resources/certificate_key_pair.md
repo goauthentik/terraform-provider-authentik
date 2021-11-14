@@ -3,12 +3,9 @@
 page_title: "authentik_certificate_key_pair Resource - terraform-provider-authentik"
 subcategory: "Cryptography"
 description: |-
-
 ---
 
 # authentik_certificate_key_pair (Resource)
-
-
 
 ## Example Usage
 
@@ -57,5 +54,3 @@ resource "authentik_certificate_key_pair" "name" {
 
 - **id** (String) The ID of this resource.
 - **key_data** (String, Sensitive)
-
-

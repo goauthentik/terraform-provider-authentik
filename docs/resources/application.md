@@ -3,12 +3,9 @@
 page_title: "authentik_application Resource - terraform-provider-authentik"
 subcategory: ""
 description: |-
-
 ---
 
 # authentik_application (Resource)
-
-
 
 ## Example Usage
 
@@ -61,5 +58,3 @@ resource "authentik_application" "name" {
 - **policy_engine_mode** (String) Defaults to `any`.
 - **protocol_provider** (Number)
 - **uuid** (String)
-
-

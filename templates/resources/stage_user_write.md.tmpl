@@ -1,0 +1,20 @@
+---
+page_title: "authentik_stage_user_write Resource - terraform-provider-authentik"
+subcategory: "Flows & Stages"
+description: |-
+---
+
+# authentik_stage_user_write (Resource)
+
+## Example Usage
+
+```terraform
+# Create a user write stage
+
+resource "authentik_stage_user_write" "name" {
+  name                     = "user-write"
+  create_users_as_inactive = false
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

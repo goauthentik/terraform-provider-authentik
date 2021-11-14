@@ -1,0 +1,24 @@
+---
+page_title: "authentik_certificate_key_pair Data Source - terraform-provider-authentik"
+subcategory: "Cryptography"
+description: |-
+  Get certificate-key pairs by name
+---
+
+# authentik_certificate_key_pair (Data Source)
+
+Get certificate-key pairs by name
+
+## Example Usage
+
+```terraform
+# To get the the ID and other info about a certificate
+
+data "authentik_certificate_key_pair" "generated" {
+  name = "authentik Self-signed Certificate"
+}
+
+# Then use `data.authentik_certificate_key_pair.generated.id`
+```
+
+{{ .SchemaMarkdown | trimspace }}

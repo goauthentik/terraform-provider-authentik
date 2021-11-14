@@ -1,0 +1,24 @@
+---
+layout: ""
+page_title: "authentik Provider"
+description: |-
+  Manage https://goauthentik.io with terraform
+---
+
+# authentik Provider
+
+The authentik provider provides resources to interact with the authentik API.
+
+## Example Usage
+
+{{tffile "examples/provider/provider.tf"}}
+
+### Configure provider with environment variables
+It is optionally possible to configure the provider by passing environment variables to terraform
+```bash
+export AUTHENTIK_URL=https://...
+export AUTHENTIK_TOKEN=<secret_token>
+export AUTHENTIK_INSECURE=false
+```
+
+{{ .SchemaMarkdown | trimspace }}

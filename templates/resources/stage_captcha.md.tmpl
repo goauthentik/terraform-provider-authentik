@@ -1,0 +1,21 @@
+---
+page_title: "authentik_stage_captcha Resource - terraform-provider-authentik"
+subcategory: "Flows & Stages"
+description: |-
+---
+
+# authentik_stage_captcha (Resource)
+
+## Example Usage
+
+```terraform
+# Create a captcha stage
+
+resource "authentik_stage_captcha" "name" {
+  name        = "captcha"
+  private_key = "foo"
+  public_key  = "bar"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

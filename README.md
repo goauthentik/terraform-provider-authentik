@@ -23,6 +23,9 @@ Run the following command to build the provider
 make build
 ```
 
+### Generate Documentation
+Run `go generate` from the project root to regenerate the latest provider documentation
+
 ## Test sample configuration
 
 First, build and install the provider.

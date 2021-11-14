@@ -1,0 +1,21 @@
+---
+page_title: "authentik_stage_authenticator_validate Resource - terraform-provider-authentik"
+subcategory: "Flows & Stages"
+description: |-
+---
+
+# authentik_stage_authenticator_validate (Resource)
+
+## Example Usage
+
+```terraform
+# Create an Authenticator validations tage
+
+resource "authentik_stage_authenticator_validate" "name" {
+  name                  = "authenticator-validate"
+  device_classes        = ["static"]
+  not_configured_action = "skip"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

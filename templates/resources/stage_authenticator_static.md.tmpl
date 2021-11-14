@@ -1,0 +1,19 @@
+---
+page_title: "authentik_stage_authenticator_static Resource - terraform-provider-authentik"
+subcategory: "Flows & Stages"
+description: |-
+---
+
+# authentik_stage_authenticator_static (Resource)
+
+## Example Usage
+
+```terraform
+# Create a static TOTP Setup stage
+
+resource "authentik_stage_authenticator_static" "name" {
+  name = "static-totp-setup"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
