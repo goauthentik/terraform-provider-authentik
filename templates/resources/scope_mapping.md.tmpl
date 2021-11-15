@@ -1,0 +1,25 @@
+---
+page_title: "authentik_scope_mapping Resource - terraform-provider-authentik"
+subcategory: "Property Mappings"
+description: |-
+---
+
+# authentik_scope_mapping (Resource)
+
+## Example Usage
+
+```terraform
+# Create a scope mapping
+
+resource "authentik_scope_mapping" "name" {
+  name       = "minio"
+  scope_name = "minio"
+  expression = <<EOF
+return {
+  "policy": "readwrite",
+}
+EOF
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

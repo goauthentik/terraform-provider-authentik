@@ -1,0 +1,35 @@
+---
+page_title: "authentik_property_mapping_saml Data Source - terraform-provider-authentik"
+subcategory: "Property Mappings"
+description: |-
+  Get SAML Property mappings
+---
+
+# authentik_property_mapping_saml (Data Source)
+
+Get SAML Property mappings
+
+## Example Usage
+
+```terraform
+# To get the ID of a SAML Property mapping
+
+data "authentik_property_mapping_saml" "test" {
+  managed = "goauthentik.io/providers/saml/upn"
+}
+
+# Then use `data.authentik_property_mapping_saml.test.id`
+
+# Or, to get the IDs of multiple mappings
+
+data "authentik_property_mapping_saml" "test" {
+  managed_list = [
+    "goauthentik.io/providers/saml/upn",
+    "goauthentik.io/providers/saml/name"
+  ]
+}
+
+# Then use data.authentik_property_mapping_saml.test.ids
+```
+
+{{ .SchemaMarkdown | trimspace }}

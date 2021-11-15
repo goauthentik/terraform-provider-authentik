@@ -1,0 +1,21 @@
+---
+page_title: "authentik_stage_prompt_field Resource - terraform-provider-authentik"
+subcategory: "Flows & Stages"
+description: |-
+---
+
+# authentik_stage_prompt_field (Resource)
+
+## Example Usage
+
+```terraform
+# Create a prompt field
+
+resource "authentik_stage_prompt_field" "field" {
+  field_key = "username"
+  label     = "Username"
+  type      = "username"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

@@ -1,0 +1,21 @@
+---
+page_title: "authentik_tenant Resource - terraform-provider-authentik"
+subcategory: ""
+description: |-
+---
+
+# authentik_tenant (Resource)
+
+## Example Usage
+
+```terraform
+# Create/manage a default tenant
+
+resource "authentik_tenant" "default" {
+  domain         = "."
+  default        = true
+  branding_title = "test"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

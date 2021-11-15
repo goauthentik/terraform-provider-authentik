@@ -1,0 +1,20 @@
+---
+page_title: "authentik_property_mapping_notification Resource - terraform-provider-authentik"
+subcategory: "Property Mappings"
+description: |-
+---
+
+# authentik_property_mapping_notification (Resource)
+
+## Example Usage
+
+```terraform
+# Create a custom Notification transport mapping
+
+resource "authentik_property_mapping_notification" "name" {
+  name       = "custom-field"
+  expression = "return {\"foo\": context['foo']}"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

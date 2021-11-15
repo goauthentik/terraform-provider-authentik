@@ -39,17 +39,20 @@ func Provider(version string, testing bool) *schema.Provider {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("AUTHENTIK_URL", nil),
+				Description: "The authentik API endpoint, can optionally be passed as `AUTHENTIK_URL` environmental variable",
 			},
 			"insecure": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("AUTHENTIK_INSECURE", false),
+				Description: "Whether to skip TLS verification, can optionally be passed as `AUTHENTIK_INSECURE` environmental variable",
 			},
 			"token": {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("AUTHENTIK_TOKEN", nil),
 				Sensitive:   true,
+				Description: "The authentik API token, can optionally be passed as `AUTHENTIK_TOKEN` environmental variable",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
