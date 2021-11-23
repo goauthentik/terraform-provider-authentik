@@ -42,7 +42,7 @@ terraform init && terraform apply
 
 ## Versioning
 
-This providers version is based ont he authentik version it's tested against.
+This provider's version is based on the authentik version it's tested against.
 
 Provider version 2021.8.1 is tested against 2021.8.x.
 
