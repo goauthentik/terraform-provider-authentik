@@ -166,9 +166,12 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			}
 			sentry.Init(sentry.ClientOptions{
 				Dsn:              dsn,
+				Environment:      rootConfig.ErrorReporting.Environment,
+				TracesSampleRate: float64(rootConfig.ErrorReporting.TracesSampleRate),
 				Release:          fmt.Sprintf("authentik-terraform-provider@%s", version),
-				TracesSampleRate: 1,
 			})
+			config.HTTPClient.Transport = NewTracingTransport(context.Background(), config.HTTPClient.Transport)
+			apiClient = api.NewAPIClient(config)
 		}
 
 		return &APIClient{
@@ -212,4 +215,24 @@ func GetTLSTransport(insecure bool) http.RoundTripper {
 		panic(err)
 	}
 	return tlsTransport
+}
+
+type tracingTransport struct {
+	inner http.RoundTripper
+	ctx   context.Context
+}
+
+func NewTracingTransport(ctx context.Context, inner http.RoundTripper) *tracingTransport {
+	return &tracingTransport{inner, ctx}
+}
+
+func (tt *tracingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	span := sentry.StartSpan(tt.ctx, "authentik.go.http_request")
+	r.Header.Set("sentry-trace", span.ToSentryTrace())
+	span.Description = fmt.Sprintf("%s %s", r.Method, r.URL.String())
+	span.SetTag("url", r.URL.String())
+	span.SetTag("method", r.Method)
+	defer span.Finish()
+	res, err := tt.inner.RoundTrip(r.WithContext(span.Context()))
+	return res, err
 }
