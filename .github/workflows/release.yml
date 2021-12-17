@@ -30,3 +30,18 @@ jobs:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           # GitHub sets this automatically
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract new version
+        id: version
+        run: |
+          cd dist/terraform-provider-authentik_linux_amd64/
+          VERSION=$(./$(ls) -version)
+          echo "##[set-output name=version]$VERSION"
+      - name: Create a Sentry.io release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: beryjuorg
+          SENTRY_PROJECT: authentik-terraform-provider
+          SENTRY_URL: https://sentry.beryju.org
+        with:
+          version: authentik-terraform-provider@${{ steps.version.outputs.version }}

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -26,8 +27,10 @@ var (
 
 func main() {
 	var debugMode bool
+	var versionMode bool
 
 	flag.BoolVar(&debugMode, "debug", false, "set to true to run the provider with support for debuggers like delve")
+	flag.BoolVar(&versionMode, "version", false, "Show version and exit")
 	flag.Parse()
 
 	opts := &plugin.ServeOpts{
@@ -41,6 +44,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err.Error())
 		}
+		return
+	}
+
+	if versionMode {
+		fmt.Println(version)
 		return
 	}
 
