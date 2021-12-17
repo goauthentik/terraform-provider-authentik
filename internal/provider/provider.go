@@ -7,8 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
+	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -145,7 +147,7 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		config.Scheme = akURL.Scheme
 		if testing {
 			config.HTTPClient = &http.Client{
-				Transport: NewTracingTransport(GetTLSTransport(insecure)),
+				Transport: NewTestingTransport(GetTLSTransport(insecure)),
 			}
 		} else {
 			config.HTTPClient = &http.Client{
@@ -155,6 +157,19 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 
 		config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 		apiClient := api.NewAPIClient(config)
+
+		rootConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+		if err == nil && rootConfig.ErrorReporting.Enabled {
+			dsn := "https://7b485fd979bf48c1acbe38ffe382a541@sentry.beryju.org/14"
+			if envDsn, found := os.LookupEnv("SENTRY_DSN"); !found {
+				dsn = envDsn
+			}
+			sentry.Init(sentry.ClientOptions{
+				Dsn:              dsn,
+				Release:          fmt.Sprintf("authentik-terraform-provider@%s", version),
+				TracesSampleRate: 1,
+			})
+		}
 
 		return &APIClient{
 			client: apiClient,
@@ -167,8 +182,8 @@ type TestingTransport struct {
 	inner http.RoundTripper
 }
 
-// NewTracingTransport Get a HTTP Transport that fails all requests
-func NewTracingTransport(inner http.RoundTripper) *TestingTransport {
+// NewTestingTransport Get a HTTP Transport that fails all requests
+func NewTestingTransport(inner http.RoundTripper) *TestingTransport {
 	return &TestingTransport{inner}
 }
 
