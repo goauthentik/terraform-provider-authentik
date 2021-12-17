@@ -91,6 +91,9 @@ func boolToPointer(in bool) *bool {
 }
 
 func httpToDiag(r *http.Response, err error) diag.Diagnostics {
+	if r == nil {
+		return diag.Errorf("HTTP Error '%s' without http response", err.Error())
+	}
 	b, er := ioutil.ReadAll(r.Body)
 	if er != nil {
 		log.Printf("[DEBUG] authentik: failed to read response: %s", er.Error())
