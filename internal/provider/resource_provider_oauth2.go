@@ -64,12 +64,7 @@ func resourceProviderOAuth2() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
-			"jwt_alg": {
-				Type:     schema.TypeString,
-				Default:  api.JWTALGENUM_HS256,
-				Optional: true,
-			},
-			"rsa_key": {
+			"signing_key": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -108,8 +103,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		r.ClientSecret = stringToPointer(s.(string))
 	}
 
-	if s, sok := d.GetOk("rsa_key"); sok && s.(string) != "" {
-		r.RsaKey.Set(stringToPointer(s.(string)))
+	if s, sok := d.GetOk("signing_key"); sok && s.(string) != "" {
+		r.SigningKey.Set(stringToPointer(s.(string)))
 	}
 
 	subMode := d.Get("sub_mode").(string)
@@ -119,10 +114,6 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	clientType := d.Get("client_type").(string)
 	c := api.ClientTypeEnum(clientType)
 	r.ClientType = &c
-
-	jwtAlg := d.Get("jwt_alg").(string)
-	j := api.JwtAlgEnum(jwtAlg)
-	r.JwtAlg = &j
 
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
@@ -167,7 +158,6 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("client_type", res.ClientType)
 	d.Set("include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	d.Set("issuer_mode", res.IssuerMode)
-	d.Set("jwt_alg", res.JwtAlg)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	d.Set("property_mappings", typeListConsistentMerge(localMappings, *res.PropertyMappings))
 	if stringPointerResolve(res.RedirectUris) != "" {
@@ -175,8 +165,8 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	} else {
 		d.Set("redirect_uris", []string{})
 	}
-	if res.RsaKey.IsSet() {
-		d.Set("rsa_key", res.RsaKey.Get())
+	if res.SigningKey.IsSet() {
+		d.Set("signing_key", res.SigningKey.Get())
 	}
 	d.Set("sub_mode", res.SubMode)
 	d.Set("token_validity", res.TokenValidity)
