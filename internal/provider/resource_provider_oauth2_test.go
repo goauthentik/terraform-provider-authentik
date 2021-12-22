@@ -49,8 +49,7 @@ resource "authentik_provider_oauth2" "name" {
   name      = "%[1]s"
   client_id = "%[1]s"
   client_secret = "test"
-  jwt_alg = "RS256"
-  rsa_key = data.authentik_certificate_key_pair.generated.id
+  signing_key = data.authentik_certificate_key_pair.generated.id
   authorization_flow = data.authentik_flow.default-authorization-flow.id
 }
 
