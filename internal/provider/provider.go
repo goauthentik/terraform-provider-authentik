@@ -164,12 +164,15 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			if envDsn, found := os.LookupEnv("SENTRY_DSN"); !found {
 				dsn = envDsn
 			}
-			sentry.Init(sentry.ClientOptions{
+			err := sentry.Init(sentry.ClientOptions{
 				Dsn:              dsn,
 				Environment:      rootConfig.ErrorReporting.Environment,
 				TracesSampleRate: float64(rootConfig.ErrorReporting.TracesSampleRate),
 				Release:          fmt.Sprintf("authentik-terraform-provider@%s", version),
 			})
+			if err != nil {
+				fmt.Printf("Error during sentry init: %v\n", err)
+			}
 			config.HTTPClient.Transport = NewTracingTransport(context.Background(), config.HTTPClient.Transport)
 			apiClient = api.NewAPIClient(config)
 		}
