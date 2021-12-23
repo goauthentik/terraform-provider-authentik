@@ -61,6 +61,10 @@ func resourceTenant() *schema.Resource {
 				Optional: true,
 				Default:  "days=365",
 			},
+			"web_certificate": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -107,6 +111,12 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) *api.TenantRequest {
 		m.FlowUnenrollment.Set(nil)
 	}
 
+	if l, ok := d.Get("web_certificate").(string); ok {
+		m.WebCertificate.Set(&l)
+	} else {
+		m.WebCertificate.Set(nil)
+	}
+
 	return &m
 }
 
@@ -150,6 +160,9 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 		d.Set("flow_unenrollment", res.FlowUnenrollment.Get())
 	}
 	d.Set("event_retention", res.EventRetention)
+	if res.WebCertificate.IsSet() {
+		d.Set("web_certificate", res.WebCertificate.Get())
+	}
 	return diags
 }
 

@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_tenant Resource - terraform-provider-authentik"
-subcategory: ""
+subcategory: "System"
 description: |-
 ---
 
@@ -37,3 +37,6 @@ resource "authentik_tenant" "default" {
 - **flow_recovery** (String)
 - **flow_unenrollment** (String)
 - **id** (String) The ID of this resource.
+- **web_certificate** (String)
+
+
