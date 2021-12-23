@@ -65,6 +65,7 @@ runs:
       env:
         DO_WAIT: ${{ inputs.wait }}
       run: |
+        export COMPOSE_PROJECT_NAME=authentik
         docker-compose pull -q
         docker-compose up -d
         if [ "$DO_WAIT" = "true" ]; then
