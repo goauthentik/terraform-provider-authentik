@@ -50,6 +50,10 @@ func resourceStageIdentification() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"passwordless_flow": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"sources": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -76,6 +80,9 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 	}
 	if h, hSet := d.GetOk("recovery_flow"); hSet {
 		r.RecoveryFlow.Set(stringToPointer(h.(string)))
+	}
+	if h, hSet := d.GetOk("passwordless_flow"); hSet {
+		r.PasswordlessFlow.Set(stringToPointer(h.(string)))
 	}
 
 	userFields := make([]api.UserFieldsEnum, 0)
@@ -130,6 +137,9 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	}
 	if res.RecoveryFlow.IsSet() {
 		d.Set("recovery_flow", res.RecoveryFlow.Get())
+	}
+	if res.PasswordlessFlow.IsSet() {
+		d.Set("passwordless_flow", res.PasswordlessFlow.Get())
 	}
 	d.Set("sources", res.Sources)
 	return diags

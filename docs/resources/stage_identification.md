@@ -52,6 +52,7 @@ resource "authentik_stage_identification" "name" {
 - **enrollment_flow** (String)
 - **id** (String) The ID of this resource.
 - **password_stage** (String)
+- **passwordless_flow** (String)
 - **recovery_flow** (String)
 - **show_matched_user** (Boolean) Defaults to `true`.
 - **sources** (List of String)
