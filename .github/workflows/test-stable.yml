@@ -43,6 +43,8 @@ jobs:
     - name: Setup authentik
       uses: ./.github/actions/setup-authentik
       id: setup
+      with:
+        sentry_env: goauthentik-terraform-ci
 
     - name: Get dependencies
       run: |

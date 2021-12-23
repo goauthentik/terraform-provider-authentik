@@ -44,6 +44,7 @@ jobs:
       id: setup
       with:
         beta: "true"
+        sentry_env: goauthentik-terraform-ci
 
     - name: Get dependencies
       run: |

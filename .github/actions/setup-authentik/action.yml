@@ -9,6 +9,10 @@ inputs:
     description: 'If the action should wait for authentik to be available'
     required: false
     default: "true"
+  sentry_env:
+    description: 'Sentry environment to send traces to.'
+    required: false
+    default: "github-actions"
 
 outputs:
   admin_token:
@@ -26,10 +30,13 @@ runs:
   steps:
     - name: Prepare common variables
       shell: bash
+      env:
+        sentry_env: ${{ inputs.sentry_env }}
       run: |
         echo "PG_PASS=$(openssl rand -base64 32)" >> .env
         echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
         echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
+        echo "AUTHENTIK_ERROR_REPORTING__ENVIRONMENT=$sentry_env" >> .env
         echo "AUTHENTIK_DISABLE_UPDATE_CHECK=true" >> .env
         echo "AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true" >> .env
 
