@@ -161,7 +161,7 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		rootConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
 		if err == nil && rootConfig.ErrorReporting.Enabled {
 			dsn := "https://7b485fd979bf48c1acbe38ffe382a541@sentry.beryju.org/14"
-			if envDsn, found := os.LookupEnv("SENTRY_DSN"); !found {
+			if envDsn, found := os.LookupEnv("SENTRY_DSN"); found {
 				dsn = envDsn
 			}
 			err := sentry.Init(sentry.ClientOptions{
