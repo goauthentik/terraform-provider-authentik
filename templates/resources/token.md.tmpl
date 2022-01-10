@@ -1,0 +1,25 @@
+---
+page_title: "authentik_token Resource - terraform-provider-authentik"
+subcategory: "Identity"
+description: |-
+---
+
+# authentik_token (Resource)
+
+## Example Usage
+
+```terraform
+# Create/manage API/App Password tokens
+
+resource "authentik_token" "default" {
+  identifier = "my-token"
+  user = authentik_user.some_user.id
+  intent = "api"
+  # If this is not set then the actual token won't be retrieved
+  retrieve_key = true
+}
+
+# Use authentik_token.default.key
+```
+
+{{ .SchemaMarkdown }}
