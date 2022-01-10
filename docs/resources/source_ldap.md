@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_source_ldap Resource - terraform-provider-authentik"
-subcategory: "Sources"
+subcategory: "Directory"
 description: |-
 ---
 

@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_user Resource - terraform-provider-authentik"
-subcategory: "Identity"
+subcategory: "Directory"
 description: |-
 ---
 

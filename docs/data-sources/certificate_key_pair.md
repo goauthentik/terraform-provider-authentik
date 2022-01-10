@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_certificate_key_pair Data Source - terraform-provider-authentik"
-subcategory: "Cryptography"
+subcategory: "System"
 description: |-
   Get certificate-key pairs by name
 ---

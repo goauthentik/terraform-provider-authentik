@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_property_mapping_ldap Data Source - terraform-provider-authentik"
-subcategory: "Property Mappings"
+subcategory: "Customization"
 description: |-
   Get LDAP Property mappings
 ---

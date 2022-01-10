@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_outpost Resource - terraform-provider-authentik"
-subcategory: "Outposts"
+subcategory: "Applications"
 description: |-
 ---
 

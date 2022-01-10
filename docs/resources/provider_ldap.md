@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_provider_ldap Resource - terraform-provider-authentik"
-subcategory: "Providers"
+subcategory: "Applications"
 description: |-
 ---
 

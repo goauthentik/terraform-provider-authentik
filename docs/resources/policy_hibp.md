@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_policy_hibp Resource - terraform-provider-authentik"
-subcategory: "Policies"
+subcategory: "Customization"
 description: |-
 ---
 

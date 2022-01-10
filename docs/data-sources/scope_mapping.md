@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_scope_mapping Data Source - terraform-provider-authentik"
-subcategory: "Property Mappings"
+subcategory: "Customization"
 description: |-
   Get OAuth Scope mappings
 ---

@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_property_mapping_saml Resource - terraform-provider-authentik"
-subcategory: "Property Mappings"
+subcategory: "Customization"
 description: |-
 ---
 

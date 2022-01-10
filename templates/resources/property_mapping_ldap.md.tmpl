@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_property_mapping_ldap Resource - terraform-provider-authentik"
-subcategory: "Property Mappings"
+subcategory: "Customization"
 description: |-
 ---
 

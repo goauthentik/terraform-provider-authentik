@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_provider_oauth2 Resource - terraform-provider-authentik"
-subcategory: "Providers"
+subcategory: "Applications"
 description: |-
 ---
 

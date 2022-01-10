@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_group Data Source - terraform-provider-authentik"
-subcategory: "Identity"
+subcategory: "Directory"
 description: |-
   Get groups by name
 ---

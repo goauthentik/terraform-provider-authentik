@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_policy_event_matcher Resource - terraform-provider-authentik"
-subcategory: "Policies"
+subcategory: "Customization"
 description: |-
 ---
 

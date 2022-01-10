@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_source_plex Resource - terraform-provider-authentik"
-subcategory: "Sources"
+subcategory: "Directory"
 description: |-
 ---
 

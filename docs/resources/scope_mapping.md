@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_scope_mapping Resource - terraform-provider-authentik"
-subcategory: "Property Mappings"
+subcategory: "Customization"
 description: |-
 ---
 

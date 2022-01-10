@@ -1,6 +1,6 @@
 ---
 page_title: "authentik_service_connection_kubernetes Resource - terraform-provider-authentik"
-subcategory: "Outposts"
+subcategory: "Applications"
 description: |-
 ---
 
