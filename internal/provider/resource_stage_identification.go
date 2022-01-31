@@ -42,6 +42,11 @@ func resourceStageIdentification() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"show_source_labels": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"enrollment_flow": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -69,6 +74,7 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 	r := api.IdentificationStageRequest{
 		Name:                    d.Get("name").(string),
 		ShowMatchedUser:         boolToPointer(d.Get("show_matched_user").(bool)),
+		ShowSourceLabels:        boolToPointer(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: boolToPointer(d.Get("case_insensitive_matching").(bool)),
 	}
 
@@ -132,6 +138,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	}
 	d.Set("case_insensitive_matching", res.CaseInsensitiveMatching)
 	d.Set("show_matched_user", res.ShowMatchedUser)
+	d.Set("show_source_labels", res.ShowSourceLabels)
 	if res.EnrollmentFlow.IsSet() {
 		d.Set("enrollment_flow", res.EnrollmentFlow.Get())
 	}

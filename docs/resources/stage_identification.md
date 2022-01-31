@@ -55,5 +55,6 @@ resource "authentik_stage_identification" "name" {
 - **passwordless_flow** (String)
 - **recovery_flow** (String)
 - **show_matched_user** (Boolean) Defaults to `true`.
+- **show_source_labels** (Boolean) Defaults to `false`.
 - **sources** (List of String)
 - **user_fields** (List of String)
