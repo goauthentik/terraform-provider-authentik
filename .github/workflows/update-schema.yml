@@ -1,0 +1,28 @@
+name: update-schema
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v2
+      - run: |
+          wget https://raw.githubusercontent.com/goauthentik/authentik/master/schema.yml -O schema.yml
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: update-schema
+          commit-message: "update schema"
+          title: "update schema"
+          body: "API fields in authentik might have been added/changed/removed"
+          delete-branch: true
+          signoff: true
