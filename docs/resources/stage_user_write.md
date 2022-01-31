@@ -27,4 +27,5 @@ resource "authentik_stage_user_write" "name" {
 ### Optional
 
 - **create_users_as_inactive** (Boolean) Defaults to `true`.
+- **create_users_group** (String)
 - **id** (String) The ID of this resource.
