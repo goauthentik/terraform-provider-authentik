@@ -43,6 +43,7 @@ resource "authentik_source_oauth" "name" {
 ### Optional
 
 - **access_token_url** (String)
+- **additional_scopes** (String)
 - **authorization_url** (String)
 - **enabled** (Boolean) Defaults to `true`.
 - **id** (String) The ID of this resource.

@@ -75,6 +75,10 @@ func resourceSourceOAuth() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"additional_scopes": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"consumer_key": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -125,6 +129,9 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) *api.OAuthSourceR
 	if s, sok := d.GetOk("profile_url"); sok && s.(string) != "" {
 		r.ProfileUrl.Set(stringToPointer(s.(string)))
 	}
+	if s, sok := d.GetOk("additional_scopes"); sok && s.(string) != "" {
+		r.AdditionalScopes = stringToPointer(s.(string))
+	}
 	return &r
 }
 
@@ -163,7 +170,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	d.Set("enabled", res.Enabled)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
 	d.Set("user_matching_mode", res.UserMatchingMode)
-
+	d.Set("additional_scopes", res.AdditionalScopes)
 	d.Set("provider_type", res.ProviderType)
 	d.Set("consumer_key", res.ConsumerKey)
 	if res.RequestTokenUrl.IsSet() {
