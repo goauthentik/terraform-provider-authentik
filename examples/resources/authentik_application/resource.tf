@@ -23,7 +23,7 @@ resource "authentik_policy_binding" "app-access" {
 }
 
 resource "authentik_application" "name" {
-  name = "example-app"
-  slug = "example-app"
+  name              = "example-app"
+  slug              = "example-app"
   protocol_provider = authentik_provider_oauth2.name.id
 }

@@ -98,6 +98,8 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(hr, err)
 	}
 
+	d.SetId(res.Slug)
+
 	if i, iok := d.GetOk("meta_icon"); iok {
 		hr, err := c.client.CoreApi.CoreApplicationsSetIconUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
 			Url: i.(string),
@@ -106,8 +108,6 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 			return httpToDiag(hr, err)
 		}
 	}
-
-	d.SetId(res.Slug)
 	return resourceApplicationRead(ctx, d, m)
 }
 

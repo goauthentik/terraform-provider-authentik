@@ -38,6 +38,11 @@ func resourceFlow() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"background": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Optional URL to an image which will be used as the background during the flow.",
+			},
 			"policy_engine_mode": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -77,6 +82,15 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.SetId(res.Slug)
+
+	if bg, ok := d.GetOk("background"); ok {
+		hr, err := c.client.FlowsApi.FlowsInstancesSetBackgroundUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
+			Url: bg.(string),
+		}).Execute()
+		if err != nil {
+			return httpToDiag(hr, err)
+		}
+	}
 	return resourceFlowRead(ctx, d, m)
 }
 
@@ -96,6 +110,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	d.Set("designation", res.Designation)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
 	d.Set("compatibility_mode", res.CompatibilityMode)
+	d.Set("background", res.Background)
 	return diags
 }
 
