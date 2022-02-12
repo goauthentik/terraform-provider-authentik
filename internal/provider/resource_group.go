@@ -89,7 +89,7 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreGroupsCreate(ctx).GroupRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -102,7 +102,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	res, hr, err := c.client.CoreApi.CoreGroupsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -125,7 +125,7 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	res, hr, err := c.client.CoreApi.CoreGroupsUpdate(ctx, d.Id()).GroupRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -136,7 +136,7 @@ func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreGroupsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -52,7 +52,7 @@ func resourcePolicyExpressionCreate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesExpressionCreate(ctx).ExpressionPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -65,7 +65,7 @@ func resourcePolicyExpressionRead(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.PoliciesApi.PoliciesExpressionRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name.Get())
@@ -81,7 +81,7 @@ func resourcePolicyExpressionUpdate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesExpressionUpdate(ctx, d.Id()).ExpressionPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -92,7 +92,7 @@ func resourcePolicyExpressionDelete(ctx context.Context, d *schema.ResourceData,
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesExpressionDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

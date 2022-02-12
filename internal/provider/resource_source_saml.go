@@ -152,7 +152,7 @@ func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -164,7 +164,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesSamlRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -204,7 +204,7 @@ func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -215,7 +215,7 @@ func resourceSourceSAMLDelete(ctx context.Context, d *schema.ResourceData, m int
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

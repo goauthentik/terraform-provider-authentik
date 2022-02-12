@@ -78,7 +78,7 @@ func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsCreate(ctx).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -91,7 +91,7 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("target", res.Target)
@@ -111,7 +111,7 @@ func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsUpdate(ctx, d.Id()).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -122,7 +122,7 @@ func resourceFlowStageBindingDelete(ctx context.Context, d *schema.ResourceData,
 	c := m.(*APIClient)
 	hr, err := c.client.FlowsApi.FlowsBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

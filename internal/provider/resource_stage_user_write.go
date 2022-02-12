@@ -54,7 +54,7 @@ func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -67,7 +67,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -83,7 +83,7 @@ func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -94,7 +94,7 @@ func resourceStageUserWriteDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserWriteDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

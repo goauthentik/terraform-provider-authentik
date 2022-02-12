@@ -60,7 +60,7 @@ func resourceStageConsentCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesConsentCreate(ctx).ConsentStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -73,7 +73,7 @@ func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.StagesApi.StagesConsentRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -89,7 +89,7 @@ func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesConsentUpdate(ctx, d.Id()).ConsentStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -100,7 +100,7 @@ func resourceStageConsentDelete(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesConsentDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

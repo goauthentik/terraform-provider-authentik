@@ -63,7 +63,7 @@ func resourcePolicyHaveIBeenPwendCreate(ctx context.Context, d *schema.ResourceD
 
 	res, hr, err := c.client.PoliciesApi.PoliciesHaveibeenpwnedCreate(ctx).HaveIBeenPwendPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -76,7 +76,7 @@ func resourcePolicyHaveIBeenPwendRead(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.PoliciesApi.PoliciesHaveibeenpwnedRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name.Get())
@@ -93,7 +93,7 @@ func resourcePolicyHaveIBeenPwendUpdate(ctx context.Context, d *schema.ResourceD
 
 	res, hr, err := c.client.PoliciesApi.PoliciesHaveibeenpwnedUpdate(ctx, d.Id()).HaveIBeenPwendPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -104,7 +104,7 @@ func resourcePolicyHaveIBeenPwendDelete(ctx context.Context, d *schema.ResourceD
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesHaveibeenpwnedDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -141,7 +141,7 @@ func resourceProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlCreate(ctx).SAMLProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -157,7 +157,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -197,7 +197,7 @@ func resourceProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlUpdate(ctx, int32(id)).SAMLProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -212,7 +212,7 @@ func resourceProviderSAMLDelete(ctx context.Context, d *schema.ResourceData, m i
 	}
 	hr, err := c.client.ProvidersApi.ProvidersSamlDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

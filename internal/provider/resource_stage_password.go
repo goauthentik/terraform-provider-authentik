@@ -71,7 +71,7 @@ func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesPasswordCreate(ctx).PasswordStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -84,7 +84,7 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesPasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -103,7 +103,7 @@ func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesPasswordUpdate(ctx, d.Id()).PasswordStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -114,7 +114,7 @@ func resourceStagePasswordDelete(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

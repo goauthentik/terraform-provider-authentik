@@ -51,7 +51,7 @@ func resourceStageCaptchaCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaCreate(ctx).CaptchaStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -64,7 +64,7 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -79,7 +79,7 @@ func resourceStageCaptchaUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaUpdate(ctx, d.Id()).CaptchaStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -90,7 +90,7 @@ func resourceStageCaptchaDelete(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesCaptchaDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

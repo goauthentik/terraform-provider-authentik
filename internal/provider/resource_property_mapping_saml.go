@@ -58,7 +58,7 @@ func resourceSAMLPropertyMappingCreate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSamlCreate(ctx).SAMLPropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -71,7 +71,7 @@ func resourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSamlRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -90,7 +90,7 @@ func resourceSAMLPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSamlUpdate(ctx, d.Id()).SAMLPropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -101,7 +101,7 @@ func resourceSAMLPropertyMappingDelete(ctx context.Context, d *schema.ResourceDa
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

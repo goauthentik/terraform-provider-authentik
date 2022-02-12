@@ -51,7 +51,7 @@ func resourceLDAPPropertyMappingCreate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapCreate(ctx).LDAPPropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -64,7 +64,7 @@ func resourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -80,7 +80,7 @@ func resourceLDAPPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapUpdate(ctx, d.Id()).LDAPPropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -91,7 +91,7 @@ func resourceLDAPPropertyMappingDelete(ctx context.Context, d *schema.ResourceDa
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

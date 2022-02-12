@@ -90,9 +90,13 @@ func boolToPointer(in bool) *bool {
 	return &in
 }
 
-func httpToDiag(r *http.Response, err error) diag.Diagnostics {
+func httpToDiag(d *schema.ResourceData, r *http.Response, err error) diag.Diagnostics {
 	if r == nil {
 		return diag.Errorf("HTTP Error '%s' without http response", err.Error())
+	}
+	if r.StatusCode == 404 {
+		d.SetId("")
+		return diag.Diagnostics{}
 	}
 	b, er := ioutil.ReadAll(r.Body)
 	if er != nil {

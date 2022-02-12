@@ -85,7 +85,7 @@ func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapCreate(ctx).LDAPProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -101,7 +101,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -129,7 +129,7 @@ func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapUpdate(ctx, int32(id)).LDAPProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -144,7 +144,7 @@ func resourceProviderLDAPDelete(ctx context.Context, d *schema.ResourceData, m i
 	}
 	hr, err := c.client.ProvidersApi.ProvidersLdapDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

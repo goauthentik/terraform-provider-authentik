@@ -115,7 +115,7 @@ func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationCreate(ctx).IdentificationStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -128,7 +128,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -159,7 +159,7 @@ func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationUpdate(ctx, d.Id()).IdentificationStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -170,7 +170,7 @@ func resourceStageIdentificationDelete(ctx context.Context, d *schema.ResourceDa
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesIdentificationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

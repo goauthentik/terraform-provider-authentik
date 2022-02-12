@@ -68,7 +68,7 @@ func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesCreate(ctx).KubernetesServiceConnectionRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -81,7 +81,7 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -104,7 +104,7 @@ func resourceServiceConnectionKubernetesUpdate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesUpdate(ctx, d.Id()).KubernetesServiceConnectionRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -115,7 +115,7 @@ func resourceServiceConnectionKubernetesDelete(ctx context.Context, d *schema.Re
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

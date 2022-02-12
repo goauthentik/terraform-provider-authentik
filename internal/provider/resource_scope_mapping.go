@@ -58,7 +58,7 @@ func resourceScopeMappingCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeCreate(ctx).ScopeMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -71,7 +71,7 @@ func resourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -88,7 +88,7 @@ func resourceScopeMappingUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeUpdate(ctx, d.Id()).ScopeMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -99,7 +99,7 @@ func resourceScopeMappingDelete(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsScopeDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

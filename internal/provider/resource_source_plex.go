@@ -113,7 +113,7 @@ func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesPlexCreate(ctx).PlexSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -125,7 +125,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesPlexRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -156,7 +156,7 @@ func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesPlexUpdate(ctx, d.Id()).PlexSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -167,7 +167,7 @@ func resourceSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m int
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesPlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

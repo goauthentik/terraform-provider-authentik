@@ -142,7 +142,7 @@ func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthCreate(ctx).OAuthSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -154,7 +154,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesOauthRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -195,7 +195,7 @@ func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthUpdate(ctx, d.Id()).OAuthSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -206,7 +206,7 @@ func resourceSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesOauthDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

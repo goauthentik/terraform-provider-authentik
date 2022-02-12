@@ -70,7 +70,7 @@ func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyCreate(ctx).DummyPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -83,7 +83,7 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name.Get())
@@ -101,7 +101,7 @@ func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyUpdate(ctx, d.Id()).DummyPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -112,7 +112,7 @@ func resourcePolicyDummyDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesDummyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

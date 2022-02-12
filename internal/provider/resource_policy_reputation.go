@@ -68,7 +68,7 @@ func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationCreate(ctx).ReputationPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -81,7 +81,7 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name.Get())
@@ -99,7 +99,7 @@ func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationUpdate(ctx, d.Id()).ReputationPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -110,7 +110,7 @@ func resourcePolicyReputationDelete(ctx context.Context, d *schema.ResourceData,
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesReputationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

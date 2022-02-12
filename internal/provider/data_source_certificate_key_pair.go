@@ -63,7 +63,7 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	if len(res.Results) < 1 {
 		return diag.Errorf("No matching groups found")
@@ -79,7 +79,7 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 
 	rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	d.Set("certificate_data", rc.Data+"\n")
 

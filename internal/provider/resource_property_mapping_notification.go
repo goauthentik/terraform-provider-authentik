@@ -46,7 +46,7 @@ func resourceNotificationPropertyMappingCreate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationCreate(ctx).NotificationWebhookMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -59,7 +59,7 @@ func resourceNotificationPropertyMappingRead(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -74,7 +74,7 @@ func resourceNotificationPropertyMappingUpdate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationUpdate(ctx, d.Id()).NotificationWebhookMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -85,7 +85,7 @@ func resourceNotificationPropertyMappingDelete(ctx context.Context, d *schema.Re
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

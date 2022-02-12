@@ -40,7 +40,7 @@ func resourceStageDenyCreate(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.StagesApi.StagesDenyCreate(ctx).DenyStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -53,7 +53,7 @@ func resourceStageDenyRead(ctx context.Context, d *schema.ResourceData, m interf
 
 	res, hr, err := c.client.StagesApi.StagesDenyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -67,7 +67,7 @@ func resourceStageDenyUpdate(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.StagesApi.StagesDenyUpdate(ctx, d.Id()).DenyStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -78,7 +78,7 @@ func resourceStageDenyDelete(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesDenyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

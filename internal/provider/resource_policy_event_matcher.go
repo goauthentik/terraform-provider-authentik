@@ -71,7 +71,7 @@ func resourcePolicyEventMatcherCreate(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherCreate(ctx).EventMatcherPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -84,7 +84,7 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name.Get())
@@ -102,7 +102,7 @@ func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherUpdate(ctx, d.Id()).EventMatcherPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -113,7 +113,7 @@ func resourcePolicyEventMatcherDelete(ctx context.Context, d *schema.ResourceDat
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesEventMatcherDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

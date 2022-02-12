@@ -75,7 +75,7 @@ func dataSourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {

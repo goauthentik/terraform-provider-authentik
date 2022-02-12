@@ -69,7 +69,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 
 	defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
 	if err != nil {
-		return nil, httpToDiag(hr, err)
+		return nil, httpToDiag(d, hr, err)
 	}
 	m.Config = defaultConfig.Config
 	if l, ok := d.Get("config").(string); ok {
@@ -100,7 +100,7 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesCreate(ctx).OutpostRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -113,7 +113,7 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -140,7 +140,7 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesUpdate(ctx, d.Id()).OutpostRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -151,7 +151,7 @@ func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

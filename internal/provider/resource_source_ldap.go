@@ -170,7 +170,7 @@ func resourceSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesLdapCreate(ctx).LDAPSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -182,7 +182,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesLdapRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -220,7 +220,7 @@ func resourceSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesLdapUpdate(ctx, d.Id()).LDAPSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -231,7 +231,7 @@ func resourceSourceLDAPDelete(ctx context.Context, d *schema.ResourceData, m int
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

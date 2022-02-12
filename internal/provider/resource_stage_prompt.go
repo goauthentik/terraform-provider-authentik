@@ -67,7 +67,7 @@ func resourceStagePromptCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesCreate(ctx).PromptStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -80,7 +80,7 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -96,7 +96,7 @@ func resourceStagePromptUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesUpdate(ctx, d.Id()).PromptStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -107,7 +107,7 @@ func resourceStagePromptDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPromptStagesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

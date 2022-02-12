@@ -58,7 +58,7 @@ func resourcePolicyExpiryCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryCreate(ctx).PasswordExpiryPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -71,7 +71,7 @@ func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name.Get())
@@ -88,7 +88,7 @@ func resourcePolicyExpiryUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryUpdate(ctx, d.Id()).PasswordExpiryPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -99,7 +99,7 @@ func resourcePolicyExpiryDelete(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

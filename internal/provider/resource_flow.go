@@ -78,7 +78,7 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesCreate(ctx).FlowRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -88,7 +88,7 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface
 			Url: bg.(string),
 		}).Execute()
 		if err != nil {
-			return httpToDiag(hr, err)
+			return httpToDiag(d, hr, err)
 		}
 	}
 	return resourceFlowRead(ctx, d, m)
@@ -100,7 +100,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("uuid", res.Pk)
@@ -121,7 +121,7 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesUpdate(ctx, d.Id()).FlowRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -132,7 +132,7 @@ func resourceFlowDelete(ctx context.Context, d *schema.ResourceData, m interface
 	c := m.(*APIClient)
 	hr, err := c.client.FlowsApi.FlowsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

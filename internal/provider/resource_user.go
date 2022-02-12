@@ -92,7 +92,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.CoreApi.CoreUsersCreate(ctx).UserRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -110,7 +110,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	res, hr, err := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -140,7 +140,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	res, hr, err := c.client.CoreApi.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -155,7 +155,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	hr, err := c.client.CoreApi.CoreUsersDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

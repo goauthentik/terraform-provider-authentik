@@ -46,7 +46,7 @@ func resourceStageInvitationCreate(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.StagesApi.StagesInvitationStagesCreate(ctx).InvitationStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -59,7 +59,7 @@ func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesInvitationStagesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.Set("name", res.Name)
@@ -74,7 +74,7 @@ func resourceStageInvitationUpdate(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.StagesApi.StagesInvitationStagesUpdate(ctx, d.Id()).InvitationStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -85,7 +85,7 @@ func resourceStageInvitationDelete(ctx context.Context, d *schema.ResourceData, 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesInvitationStagesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(hr, err)
+		return httpToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }
