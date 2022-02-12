@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/imdario/mergo"
 	"goauthentik.io/api"
 )
 
@@ -71,7 +70,6 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 	if err != nil {
 		return nil, httpToDiag(d, hr, err)
 	}
-	m.Config = defaultConfig.Config
 	if l, ok := d.Get("config").(string); ok {
 		if l != "" {
 			var c map[string]interface{}
@@ -79,11 +77,10 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 			if err != nil {
 				return nil, diag.FromErr(err)
 			}
-			err = mergo.Merge(&m.Config, c)
-			if err != nil {
-				return nil, diag.FromErr(err)
-			}
+			m.Config = c
 		}
+	} else {
+		m.Config = defaultConfig.Config
 	}
 
 	m.Type = api.OutpostTypeEnum(d.Get("type").(string))

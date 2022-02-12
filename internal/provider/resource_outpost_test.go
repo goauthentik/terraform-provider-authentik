@@ -57,6 +57,12 @@ resource "authentik_outpost" "outpost" {
   protocol_providers = [
     authentik_provider_proxy.proxy.id
   ]
+  config = jsonencode(
+    {
+      authentik_host                 = "http://localhost:9000/"
+      authentik_host_browser         = ""
+    }
+  )
 }
 `, name)
 }
