@@ -33,9 +33,12 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"configuration_stage": {
-				Type:     schema.TypeString,
+			"configuration_stages": {
+				Type:     schema.TypeList,
 				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 		},
 	}
@@ -50,8 +53,9 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		action := api.NotConfiguredActionEnum(h.(string))
 		r.NotConfiguredAction = &action
 	}
-	if h, hSet := d.GetOk("configuration_stage"); hSet {
-		r.ConfigurationStage.Set(stringToPointer(h.(string)))
+	if h, hSet := d.GetOk("configuration_stages"); hSet {
+		stages := h.([]string)
+		r.ConfigurationStages = &stages
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)
@@ -88,8 +92,8 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 
 	d.Set("name", res.Name)
 	d.Set("not_configured_action", res.NotConfiguredAction)
-	if res.ConfigurationStage.IsSet() {
-		d.Set("configuration_stage", res.ConfigurationStage.Get())
+	if res.ConfigurationStages != nil {
+		d.Set("configuration_stages", *res.ConfigurationStages)
 	}
 	d.Set("device_classes", res.DeviceClasses)
 	return diags

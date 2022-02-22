@@ -28,6 +28,6 @@ resource "authentik_stage_authenticator_validate" "name" {
 
 ### Optional
 
-- **configuration_stage** (String)
+- **configuration_stages** (List of String)
 - **device_classes** (List of String)
 - **id** (String) The ID of this resource.
