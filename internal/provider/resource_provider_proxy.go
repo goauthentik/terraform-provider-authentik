@@ -66,6 +66,10 @@ func resourceProviderProxy() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"token_validity": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -100,6 +104,10 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 
 	if l, ok := d.Get("cookie_domain").(string); ok {
 		r.CookieDomain = &l
+	}
+
+	if l, ok := d.Get("token_validity").(string); ok {
+		r.TokenValidity = &l
 	}
 
 	pm := api.ProxyMode(d.Get("mode").(string))
@@ -144,6 +152,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	d.Set("basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
 	d.Set("mode", res.Mode)
 	d.Set("cookie_domain", res.CookieDomain)
+	d.Set("token_validity", res.TokenValidity)
 	return diags
 }
 

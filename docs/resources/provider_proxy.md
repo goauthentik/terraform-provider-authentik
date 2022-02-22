@@ -49,3 +49,4 @@ resource "authentik_application" "name" {
 - **internal_host_ssl_validation** (Boolean) Defaults to `true`.
 - **mode** (String) Defaults to `proxy`.
 - **skip_path_regex** (String)
+- **token_validity** (String)
