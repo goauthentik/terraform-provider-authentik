@@ -39,6 +39,11 @@ func resourceStagePromptField() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"placeholder_expression": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"order": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -49,10 +54,11 @@ func resourceStagePromptField() *schema.Resource {
 
 func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.PromptRequest {
 	r := api.PromptRequest{
-		FieldKey: d.Get("field_key").(string),
-		Label:    d.Get("label").(string),
-		Type:     api.PromptTypeEnum(d.Get("type").(string)),
-		Required: boolToPointer(d.Get("required").(bool)),
+		FieldKey:              d.Get("field_key").(string),
+		Label:                 d.Get("label").(string),
+		Type:                  api.PromptTypeEnum(d.Get("type").(string)),
+		Required:              boolToPointer(d.Get("required").(bool)),
+		PlaceholderExpression: boolToPointer(d.Get("placeholder_expression").(bool)),
 	}
 
 	if p, pSet := d.GetOk("placeholder"); pSet {
@@ -94,6 +100,7 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("type", res.Type)
 	d.Set("required", res.Required)
 	d.Set("placeholder", res.Placeholder)
+	d.Set("placeholder_expression", res.PlaceholderExpression)
 	d.Set("order", res.Order)
 	return diags
 }
