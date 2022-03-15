@@ -110,7 +110,9 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	d.Set("designation", res.Designation)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
 	d.Set("compatibility_mode", res.CompatibilityMode)
-	d.Set("background", res.Background)
+	if _, bg := d.GetOk("background"); bg {
+		d.Set("background", res.Background)
+	}
 	return diags
 }
 
