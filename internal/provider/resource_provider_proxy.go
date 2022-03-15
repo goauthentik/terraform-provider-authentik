@@ -69,6 +69,7 @@ func resourceProviderProxy() *schema.Resource {
 			"token_validity": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "hours=24",
 			},
 		},
 	}
