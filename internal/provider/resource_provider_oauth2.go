@@ -159,7 +159,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	d.Set("issuer_mode", res.IssuerMode)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", typeListConsistentMerge(localMappings, *res.PropertyMappings))
+	d.Set("property_mappings", stringListConsistentMerge(localMappings, *res.PropertyMappings))
 	if stringPointerResolve(res.RedirectUris) != "" {
 		d.Set("redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
 	} else {

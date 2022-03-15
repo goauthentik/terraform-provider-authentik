@@ -72,7 +72,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 
 	d.Set("name", res.Name)
 	d.Set("create_users_as_inactive", res.CreateUsersAsInactive)
-	d.Set("create_users_group", res.CreateUsersGroup)
+	d.Set("create_users_group", res.CreateUsersGroup.Get())
 	return diags
 }
 

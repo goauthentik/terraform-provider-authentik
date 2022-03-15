@@ -115,7 +115,8 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	d.Set("name", res.Name)
 	d.Set("type", res.Type)
-	d.Set("protocol_providers", res.Providers)
+	localProviders := sliceToInt(d.Get("protocol_providers").([]interface{}))
+	d.Set("protocol_providers", intListConsistentMerge(localProviders, slice32ToInt(res.Providers)))
 	if res.ServiceConnection.IsSet() {
 		d.Set("service_connection", res.ServiceConnection.Get())
 	}

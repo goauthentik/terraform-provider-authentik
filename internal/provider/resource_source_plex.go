@@ -63,7 +63,7 @@ func resourceSourcePlex() *schema.Resource {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+					Type: schema.TypeString,
 				},
 			},
 			"allow_friends": {
@@ -144,7 +144,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	d.Set("client_id", res.ClientId)
 	localServers := sliceToString(d.Get("allowed_servers").([]interface{}))
-	d.Set("allowed_servers", typeListConsistentMerge(localServers, *res.AllowedServers))
+	d.Set("allowed_servers", stringListConsistentMerge(localServers, *res.AllowedServers))
 	d.Set("allow_friends", res.AllowFriends)
 	d.Set("plex_token", res.PlexToken)
 	return diags

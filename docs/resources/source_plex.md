@@ -40,7 +40,7 @@ resource "authentik_source_plex" "name" {
 ### Optional
 
 - **allow_friends** (Boolean) Defaults to `true`.
-- **allowed_servers** (List of Number)
+- **allowed_servers** (List of String)
 - **enabled** (Boolean) Defaults to `true`.
 - **id** (String) The ID of this resource.
 - **policy_engine_mode** (String) Defaults to `any`.

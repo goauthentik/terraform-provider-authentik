@@ -163,7 +163,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	d.Set("name", res.Name)
 	d.Set("authorization_flow", res.AuthorizationFlow)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", typeListConsistentMerge(localMappings, *res.PropertyMappings))
+	d.Set("property_mappings", stringListConsistentMerge(localMappings, *res.PropertyMappings))
 
 	d.Set("acs_url", res.AcsUrl)
 	d.Set("audience", res.Audience)

@@ -208,9 +208,9 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 		d.Set("sync_parent_group", res.SyncParentGroup.Get())
 	}
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", typeListConsistentMerge(localMappings, *res.PropertyMappings))
+	d.Set("property_mappings", stringListConsistentMerge(localMappings, *res.PropertyMappings))
 	localGroupMappings := sliceToString(d.Get("property_mappings_group").([]interface{}))
-	d.Set("property_mappings_group", typeListConsistentMerge(localGroupMappings, *res.PropertyMappingsGroup))
+	d.Set("property_mappings_group", stringListConsistentMerge(localGroupMappings, *res.PropertyMappingsGroup))
 	return diags
 }
 

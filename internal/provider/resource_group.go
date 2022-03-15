@@ -112,7 +112,8 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 		return diag.FromErr(err)
 	}
 	d.Set("attributes", string(b))
-	d.Set("users", res.Users)
+	localUsers := sliceToInt(d.Get("users").([]interface{}))
+	d.Set("users", intListConsistentMerge(localUsers, slice32ToInt(res.Users)))
 	return diags
 }
 

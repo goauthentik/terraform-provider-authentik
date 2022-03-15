@@ -19,7 +19,7 @@ func TestAccResourceOutpost(t *testing.T) {
 				Config: testAccResourceOutpostSimple(rName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_outpost.outpost", "name", rName),
-					resource.TestCheckResourceAttr("authentik_outpost.outpost", "protocol_providers.#", "1"),
+					resource.TestCheckResourceAttr("authentik_outpost.outpost", "protocol_providers.#", "2"),
 					resource.TestCheckResourceAttr("authentik_outpost.outpost", "type", "proxy"),
 				),
 			},
@@ -27,7 +27,7 @@ func TestAccResourceOutpost(t *testing.T) {
 				Config: testAccResourceOutpostSimple(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_outpost.outpost", "name", rName+"test"),
-					resource.TestCheckResourceAttr("authentik_outpost.outpost", "protocol_providers.#", "1"),
+					resource.TestCheckResourceAttr("authentik_outpost.outpost", "protocol_providers.#", "2"),
 					resource.TestCheckResourceAttr("authentik_outpost.outpost", "type", "proxy"),
 				),
 			},
@@ -46,7 +46,14 @@ data "authentik_flow" "default-authorization-flow" {
 }
 
 resource "authentik_provider_proxy" "proxy" {
-  name               = "proxy"
+  name               = "%[1]s-1"
+  authorization_flow = data.authentik_flow.default-authorization-flow.id
+  external_host      = "http://foo.bar.baz"
+  internal_host      = "http://internal.local"
+}
+
+resource "authentik_provider_proxy" "proxy-2" {
+  name               = "%[1]s-2"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
   external_host      = "http://foo.bar.baz"
   internal_host      = "http://internal.local"
@@ -55,7 +62,8 @@ resource "authentik_provider_proxy" "proxy" {
 resource "authentik_outpost" "outpost" {
   name = "%[1]s"
   protocol_providers = [
-    authentik_provider_proxy.proxy.id
+    authentik_provider_proxy.proxy.id,
+    authentik_provider_proxy.proxy-2.id,
   ]
   config = jsonencode(
     {

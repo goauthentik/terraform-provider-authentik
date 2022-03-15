@@ -45,13 +45,6 @@ jobs:
       with:
         beta: "true"
         sentry_env: goauthentik-terraform-ci
-
-    - name: Get dependencies
-      run: |
-        go get github.com/axw/gocov/gocov
-        go get github.com/AlekSi/gocov-xml
-        go get github.com/jstemmer/go-junit-report
-
     - name: TF acceptance tests
       timeout-minutes: 30
       env:
@@ -60,4 +53,4 @@ jobs:
         AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
         AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
       run: |
-        go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/ | go-junit-report > junit.xml
+        go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/

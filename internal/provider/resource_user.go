@@ -123,7 +123,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	}
 	d.Set("attributes", string(b))
 	localGroups := sliceToString(d.Get("groups").([]interface{}))
-	d.Set("groups", typeListConsistentMerge(localGroups, res.Groups))
+	d.Set("groups", stringListConsistentMerge(localGroups, res.Groups))
 	return diags
 }
 
