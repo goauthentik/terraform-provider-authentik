@@ -17,7 +17,7 @@ jobs:
       - run: |
           wget https://raw.githubusercontent.com/goauthentik/authentik/master/schema.yml -O schema.yml
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-schema
