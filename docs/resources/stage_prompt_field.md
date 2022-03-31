@@ -23,14 +23,14 @@ resource "authentik_stage_prompt_field" "field" {
 
 ### Required
 
-- **field_key** (String)
-- **label** (String)
-- **type** (String)
+- `field_key` (String)
+- `label` (String)
+- `type` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **order** (Number)
-- **placeholder** (String)
-- **placeholder_expression** (Boolean) Defaults to `false`.
-- **required** (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.
+- `order` (Number)
+- `placeholder` (String)
+- `placeholder_expression` (Boolean) Defaults to `false`.
+- `required` (Boolean) Defaults to `false`.

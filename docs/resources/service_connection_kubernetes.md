@@ -32,10 +32,10 @@ EOF
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **kubeconfig** (String) Defaults to `{}`.
-- **local** (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.
+- `kubeconfig` (String) Defaults to `{}`.
+- `local` (Boolean) Defaults to `false`.

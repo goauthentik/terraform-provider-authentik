@@ -11,15 +11,15 @@ description: |-
 
 ### Required
 
-- **account_sid** (String, Sensitive)
-- **auth** (String, Sensitive)
-- **from_number** (String)
-- **name** (String)
+- `account_sid` (String, Sensitive)
+- `auth` (String, Sensitive)
+- `from_number` (String)
+- `name` (String)
 
 ### Optional
 
-- **auth_password** (String, Sensitive)
-- **auth_type** (String) Defaults to `basic`.
-- **configure_flow** (String)
-- **id** (String) The ID of this resource.
-- **sms_provider** (String) Defaults to `twilio`.
+- `auth_password` (String, Sensitive)
+- `auth_type` (String) Defaults to `basic`.
+- `configure_flow` (String)
+- `id` (String) The ID of this resource.
+- `sms_provider` (String) Defaults to `twilio`.

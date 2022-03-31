@@ -34,19 +34,19 @@ resource "authentik_application" "name" {
 
 ### Required
 
-- **authorization_flow** (String)
-- **external_host** (String)
-- **name** (String)
+- `authorization_flow` (String)
+- `external_host` (String)
+- `name` (String)
 
 ### Optional
 
-- **basic_auth_enabled** (Boolean) Defaults to `false`.
-- **basic_auth_password_attribute** (String)
-- **basic_auth_username_attribute** (String)
-- **cookie_domain** (String)
-- **id** (String) The ID of this resource.
-- **internal_host** (String)
-- **internal_host_ssl_validation** (Boolean) Defaults to `true`.
-- **mode** (String) Defaults to `proxy`.
-- **skip_path_regex** (String)
-- **token_validity** (String) Defaults to `hours=24`.
+- `basic_auth_enabled` (Boolean) Defaults to `false`.
+- `basic_auth_password_attribute` (String)
+- `basic_auth_username_attribute` (String)
+- `cookie_domain` (String)
+- `id` (String) The ID of this resource.
+- `internal_host` (String)
+- `internal_host_ssl_validation` (Boolean) Defaults to `true`.
+- `mode` (String) Defaults to `proxy`.
+- `skip_path_regex` (String)
+- `token_validity` (String) Defaults to `hours=24`.

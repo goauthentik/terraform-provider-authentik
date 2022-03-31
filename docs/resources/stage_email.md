@@ -21,20 +21,20 @@ resource "authentik_stage_email" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **from_address** (String) Defaults to `system@authentik.local`.
-- **host** (String) Defaults to `localhost`.
-- **id** (String) The ID of this resource.
-- **password** (String, Sensitive)
-- **port** (Number) Defaults to `25`.
-- **subject** (String) Defaults to `authentik`.
-- **template** (String) Defaults to `email/password_reset.html`.
-- **timeout** (Number) Defaults to `30`.
-- **token_expiry** (Number) Defaults to `30`.
-- **use_global_settings** (Boolean) Defaults to `true`.
-- **use_ssl** (Boolean)
-- **use_tls** (Boolean)
-- **username** (String)
+- `from_address` (String) Defaults to `system@authentik.local`.
+- `host` (String) Defaults to `localhost`.
+- `id` (String) The ID of this resource.
+- `password` (String, Sensitive)
+- `port` (Number) Defaults to `25`.
+- `subject` (String) Defaults to `authentik`.
+- `template` (String) Defaults to `email/password_reset.html`.
+- `timeout` (Number) Defaults to `30`.
+- `token_expiry` (Number) Defaults to `30`.
+- `use_global_settings` (Boolean) Defaults to `true`.
+- `use_ssl` (Boolean)
+- `use_tls` (Boolean)
+- `username` (String)

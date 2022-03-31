@@ -33,22 +33,22 @@ resource "authentik_application" "name" {
 
 ### Required
 
-- **acs_url** (String)
-- **authorization_flow** (String)
-- **name** (String)
+- `acs_url` (String)
+- `authorization_flow` (String)
+- `name` (String)
 
 ### Optional
 
-- **assertion_valid_not_before** (String) Defaults to `minutes=3`.
-- **assertion_valid_not_on_or_after** (String) Defaults to `minutes=3`.
-- **audience** (String) Defaults to ``.
-- **digest_algorithm** (String) Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
-- **id** (String) The ID of this resource.
-- **issuer** (String) Defaults to `authentik`.
-- **name_id_mapping** (String)
-- **property_mappings** (List of String)
-- **session_valid_not_on_or_after** (String) Defaults to `minutes=3`.
-- **signature_algorithm** (String) Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
-- **signing_kp** (String)
-- **sp_binding** (String) Defaults to `redirect`.
-- **verification_kp** (String)
+- `assertion_valid_not_before` (String) Defaults to `minutes=3`.
+- `assertion_valid_not_on_or_after` (String) Defaults to `minutes=3`.
+- `audience` (String) Defaults to ``.
+- `digest_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
+- `id` (String) The ID of this resource.
+- `issuer` (String) Defaults to `authentik`.
+- `name_id_mapping` (String)
+- `property_mappings` (List of String)
+- `session_valid_not_on_or_after` (String) Defaults to `minutes=3`.
+- `signature_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
+- `signing_kp` (String)
+- `sp_binding` (String) Defaults to `redirect`.
+- `verification_kp` (String)

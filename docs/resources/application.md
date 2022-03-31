@@ -45,16 +45,16 @@ resource "authentik_application" "name" {
 
 ### Required
 
-- **name** (String)
-- **slug** (String)
+- `name` (String)
+- `slug` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **meta_description** (String)
-- **meta_icon** (String)
-- **meta_launch_url** (String)
-- **meta_publisher** (String)
-- **policy_engine_mode** (String) Defaults to `any`.
-- **protocol_provider** (Number)
-- **uuid** (String)
+- `id` (String) The ID of this resource.
+- `meta_description` (String)
+- `meta_icon` (String)
+- `meta_launch_url` (String)
+- `meta_publisher` (String)
+- `policy_engine_mode` (String) Defaults to `any`.
+- `protocol_provider` (Number)
+- `uuid` (String)

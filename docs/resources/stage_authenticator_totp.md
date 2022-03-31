@@ -21,10 +21,10 @@ resource "authentik_stage_authenticator_totp" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **configure_flow** (String)
-- **digits** (Number) Defaults to `6`.
-- **id** (String) The ID of this resource.
+- `configure_flow` (String)
+- `digits` (Number) Defaults to `6`.
+- `id` (String) The ID of this resource.

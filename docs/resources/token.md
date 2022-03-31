@@ -27,21 +27,21 @@ resource "authentik_token" "default" {
 
 ### Required
 
-- **identifier** (String)
-- **user** (Number)
+- `identifier` (String)
+- `user` (Number)
 
 ### Optional
 
-- **description** (String)
-- **expires** (String)
-- **expiring** (Boolean) Defaults to `true`.
-- **id** (String) The ID of this resource.
-- **intent** (String) Defaults to `api`.
-- **retrieve_key** (Boolean) Defaults to `false`.
+- `description` (String)
+- `expires` (String)
+- `expiring` (Boolean) Defaults to `true`.
+- `id` (String) The ID of this resource.
+- `intent` (String) Defaults to `api`.
+- `retrieve_key` (Boolean) Defaults to `false`.
 
 ### Read-Only
 
-- **expires_in** (Number)
-- **key** (String, Sensitive)
+- `expires_in` (Number)
+- `key` (String, Sensitive)
 
 

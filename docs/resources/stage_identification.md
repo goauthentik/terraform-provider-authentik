@@ -44,17 +44,17 @@ resource "authentik_stage_identification" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **case_insensitive_matching** (Boolean)
-- **enrollment_flow** (String)
-- **id** (String) The ID of this resource.
-- **password_stage** (String)
-- **passwordless_flow** (String)
-- **recovery_flow** (String)
-- **show_matched_user** (Boolean) Defaults to `true`.
-- **show_source_labels** (Boolean) Defaults to `false`.
-- **sources** (List of String)
-- **user_fields** (List of String)
+- `case_insensitive_matching` (Boolean)
+- `enrollment_flow` (String)
+- `id` (String) The ID of this resource.
+- `password_stage` (String)
+- `passwordless_flow` (String)
+- `recovery_flow` (String)
+- `show_matched_user` (Boolean) Defaults to `true`.
+- `show_source_labels` (Boolean) Defaults to `false`.
+- `sources` (List of String)
+- `user_fields` (List of String)

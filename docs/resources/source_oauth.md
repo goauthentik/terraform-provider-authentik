@@ -32,27 +32,27 @@ resource "authentik_source_oauth" "name" {
 
 ### Required
 
-- **authentication_flow** (String)
-- **consumer_key** (String)
-- **consumer_secret** (String, Sensitive)
-- **enrollment_flow** (String)
-- **name** (String)
-- **provider_type** (String)
-- **slug** (String)
+- `authentication_flow` (String)
+- `consumer_key` (String)
+- `consumer_secret` (String, Sensitive)
+- `enrollment_flow` (String)
+- `name` (String)
+- `provider_type` (String)
+- `slug` (String)
 
 ### Optional
 
-- **access_token_url** (String)
-- **additional_scopes** (String)
-- **authorization_url** (String)
-- **enabled** (Boolean) Defaults to `true`.
-- **id** (String) The ID of this resource.
-- **policy_engine_mode** (String) Defaults to `any`.
-- **profile_url** (String)
-- **request_token_url** (String)
-- **user_matching_mode** (String) Defaults to `identifier`.
-- **uuid** (String)
+- `access_token_url` (String)
+- `additional_scopes` (String)
+- `authorization_url` (String)
+- `enabled` (Boolean) Defaults to `true`.
+- `id` (String) The ID of this resource.
+- `policy_engine_mode` (String) Defaults to `any`.
+- `profile_url` (String)
+- `request_token_url` (String)
+- `user_matching_mode` (String) Defaults to `identifier`.
+- `uuid` (String)
 
 ### Read-Only
 
-- **callback_uri** (String)
+- `callback_uri` (String)

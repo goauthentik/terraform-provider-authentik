@@ -22,9 +22,9 @@ resource "authentik_property_mapping_notification" "name" {
 
 ### Required
 
-- **expression** (String)
-- **name** (String)
+- `expression` (String)
+- `name` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.

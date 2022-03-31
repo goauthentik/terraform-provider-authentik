@@ -21,10 +21,10 @@ resource "authentik_stage_authenticator_static" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **configure_flow** (String)
-- **id** (String) The ID of this resource.
-- **token_count** (Number) Defaults to `6`.
+- `configure_flow` (String)
+- `id` (String) The ID of this resource.
+- `token_count` (Number) Defaults to `6`.

@@ -28,20 +28,21 @@ resource "authentik_application" "name" {
 
 ### Required
 
-- **authorization_flow** (String)
-- **client_id** (String)
-- **name** (String)
+- `authorization_flow` (String)
+- `client_id` (String)
+- `name` (String)
 
 ### Optional
 
-- **access_code_validity** (String) Defaults to `minutes=1`.
-- **client_secret** (String, Sensitive)
-- **client_type** (String) Defaults to `confidential`.
-- **id** (String) The ID of this resource.
-- **include_claims_in_id_token** (Boolean) Defaults to `true`.
-- **issuer_mode** (String) Defaults to `per_provider`.
-- **property_mappings** (List of String)
-- **redirect_uris** (List of String)
-- **signing_key** (String)
-- **sub_mode** (String) Defaults to `hashed_user_id`.
-- **token_validity** (String) Defaults to `minutes=10`.
+- `access_code_validity` (String) Defaults to `minutes=1`.
+- `client_secret` (String, Sensitive)
+- `client_type` (String) Defaults to `confidential`.
+- `id` (String) The ID of this resource.
+- `include_claims_in_id_token` (Boolean) Defaults to `true`.
+- `issuer_mode` (String) Defaults to `per_provider`.
+- `property_mappings` (List of String)
+- `redirect_uris` (List of String)
+- `signing_key` (String)
+- `sub_mode` (String) Defaults to `hashed_user_id`.
+- `token_validity` (String) Defaults to `minutes=10`.
+- `verification_keys` (List of String)

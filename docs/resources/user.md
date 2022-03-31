@@ -34,13 +34,13 @@ resource "authentik_user" "name" {
 
 ### Required
 
-- **username** (String)
+- `username` (String)
 
 ### Optional
 
-- **attributes** (String) Defaults to `{}`.
-- **email** (String)
-- **groups** (List of String)
-- **id** (String) The ID of this resource.
-- **is_active** (Boolean) Defaults to `true`.
-- **name** (String) Defaults to ``.
+- `attributes` (String) Defaults to `{}`.
+- `email` (String)
+- `groups` (List of String)
+- `id` (String) The ID of this resource.
+- `is_active` (Boolean) Defaults to `true`.
+- `name` (String) Defaults to ``.

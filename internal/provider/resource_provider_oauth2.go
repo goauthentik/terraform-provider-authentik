@@ -75,6 +75,13 @@ func resourceProviderOAuth2() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"verification_keys": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"sub_mode": {
 				Type:     schema.TypeString,
 				Default:  api.SUBMODEENUM_HASHED_USER_ID,
@@ -117,6 +124,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
+
+	r.VerificationKeys = sliceToString(d.Get("verification_keys").([]interface{}))
 
 	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	r.PropertyMappings = &propertyMappings
@@ -165,6 +174,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	} else {
 		d.Set("redirect_uris", []string{})
 	}
+	d.Set("verification_keys", res.VerificationKeys)
 	if res.SigningKey.IsSet() {
 		d.Set("signing_key", res.SigningKey.Get())
 	}

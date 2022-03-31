@@ -23,11 +23,11 @@ resource "authentik_property_mapping_saml" "saml-aws-rolessessionname" {
 
 ### Required
 
-- **expression** (String)
-- **name** (String)
-- **saml_name** (String)
+- `expression` (String)
+- `name` (String)
+- `saml_name` (String)
 
 ### Optional
 
-- **friendly_name** (String)
-- **id** (String) The ID of this resource.
+- `friendly_name` (String)
+- `id` (String) The ID of this resource.

@@ -23,10 +23,10 @@ resource "authentik_property_mapping_ldap" "name" {
 
 ### Required
 
-- **expression** (String)
-- **name** (String)
-- **object_field** (String)
+- `expression` (String)
+- `name` (String)
+- `object_field` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.

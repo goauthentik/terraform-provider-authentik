@@ -21,9 +21,9 @@ resource "authentik_stage_invitation" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **continue_flow_without_invitation** (Boolean) Defaults to `true`.
-- **id** (String) The ID of this resource.
+- `continue_flow_without_invitation` (Boolean) Defaults to `true`.
+- `id` (String) The ID of this resource.

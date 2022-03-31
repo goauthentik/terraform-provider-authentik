@@ -21,12 +21,12 @@ resource "authentik_policy_dummy" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **execution_logging** (Boolean) Defaults to `false`.
-- **id** (String) The ID of this resource.
-- **result** (Boolean) Defaults to `false`.
-- **wait_max** (Number) Defaults to `30`.
-- **wait_min** (Number) Defaults to `5`.
+- `execution_logging` (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.
+- `result` (Boolean) Defaults to `false`.
+- `wait_max` (Number) Defaults to `30`.
+- `wait_min` (Number) Defaults to `5`.

@@ -21,12 +21,12 @@ resource "authentik_policy_reputation" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **check_ip** (Boolean) Defaults to `true`.
-- **check_username** (Boolean) Defaults to `true`.
-- **execution_logging** (Boolean) Defaults to `false`.
-- **id** (String) The ID of this resource.
-- **threshold** (Number) Defaults to `10`.
+- `check_ip` (Boolean) Defaults to `true`.
+- `check_username` (Boolean) Defaults to `true`.
+- `execution_logging` (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.
+- `threshold` (Number) Defaults to `10`.

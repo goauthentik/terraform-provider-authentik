@@ -21,9 +21,9 @@ resource "authentik_stage_user_login" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **session_duration** (String) Defaults to `seconds=0`.
+- `id` (String) The ID of this resource.
+- `session_duration` (String) Defaults to `seconds=0`.

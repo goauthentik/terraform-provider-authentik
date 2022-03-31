@@ -34,14 +34,14 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 
 ### Required
 
-- **order** (Number)
-- **stage** (String)
-- **target** (String)
+- `order` (Number)
+- `stage` (String)
+- `target` (String)
 
 ### Optional
 
-- **evaluate_on_plan** (Boolean) Defaults to `true`.
-- **id** (String) The ID of this resource.
-- **invalid_response_action** (String) Defaults to `retry`.
-- **policy_engine_mode** (String) Defaults to `any`.
-- **re_evaluate_policies** (Boolean) Defaults to `false`.
+- `evaluate_on_plan` (Boolean) Defaults to `true`.
+- `id` (String) The ID of this resource.
+- `invalid_response_action` (String) Defaults to `retry`.
+- `policy_engine_mode` (String) Defaults to `any`.
+- `re_evaluate_policies` (Boolean) Defaults to `false`.

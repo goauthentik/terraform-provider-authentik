@@ -26,13 +26,13 @@ data "authentik_group" "admins" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ### Read-Only
 
-- **attributes** (String)
-- **is_superuser** (Boolean)
+- `attributes` (String)
+- `is_superuser` (Boolean)

@@ -23,21 +23,21 @@ resource "authentik_tenant" "default" {
 
 ### Required
 
-- **domain** (String)
+- `domain` (String)
 
 ### Optional
 
-- **branding_favicon** (String)
-- **branding_logo** (String)
-- **branding_title** (String) Defaults to `authentik`.
-- **default** (Boolean) Defaults to `false`.
-- **event_retention** (String) Defaults to `days=365`.
-- **flow_authentication** (String)
-- **flow_invalidation** (String)
-- **flow_recovery** (String)
-- **flow_unenrollment** (String)
-- **flow_user_settings** (String)
-- **id** (String) The ID of this resource.
-- **web_certificate** (String)
+- `branding_favicon` (String)
+- `branding_logo` (String)
+- `branding_title` (String) Defaults to `authentik`.
+- `default` (Boolean) Defaults to `false`.
+- `event_retention` (String) Defaults to `days=365`.
+- `flow_authentication` (String)
+- `flow_invalidation` (String)
+- `flow_recovery` (String)
+- `flow_unenrollment` (String)
+- `flow_user_settings` (String)
+- `id` (String) The ID of this resource.
+- `web_certificate` (String)
 
 

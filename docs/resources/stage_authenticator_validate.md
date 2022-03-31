@@ -23,11 +23,11 @@ resource "authentik_stage_authenticator_validate" "name" {
 
 ### Required
 
-- **name** (String)
-- **not_configured_action** (String)
+- `name` (String)
+- `not_configured_action` (String)
 
 ### Optional
 
-- **configuration_stages** (List of String)
-- **device_classes** (List of String)
-- **id** (String) The ID of this resource.
+- `configuration_stages` (List of String)
+- `device_classes` (List of String)
+- `id` (String) The ID of this resource.
