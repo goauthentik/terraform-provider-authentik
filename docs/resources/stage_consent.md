@@ -21,10 +21,10 @@ resource "authentik_stage_consent" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **consent_expire_in** (String) Defaults to `weeks=4`.
-- **id** (String) The ID of this resource.
-- **mode** (String) Defaults to `always_require`.
+- `consent_expire_in` (String) Defaults to `weeks=4`.
+- `id` (String) The ID of this resource.
+- `mode` (String) Defaults to `always_require`.

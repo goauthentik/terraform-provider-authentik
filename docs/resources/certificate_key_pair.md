@@ -47,10 +47,10 @@ resource "authentik_certificate_key_pair" "name" {
 
 ### Required
 
-- **certificate_data** (String)
-- **name** (String)
+- `certificate_data` (String)
+- `name` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **key_data** (String, Sensitive)
+- `id` (String) The ID of this resource.
+- `key_data` (String, Sensitive)

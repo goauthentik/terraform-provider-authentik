@@ -23,10 +23,10 @@ resource "authentik_stage_captcha" "name" {
 
 ### Required
 
-- **name** (String)
-- **private_key** (String, Sensitive)
-- **public_key** (String)
+- `name` (String)
+- `private_key` (String, Sensitive)
+- `public_key` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.

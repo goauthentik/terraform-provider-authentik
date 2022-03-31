@@ -21,9 +21,9 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **configure_flow** (String)
-- **id** (String) The ID of this resource.
+- `configure_flow` (String)
+- `id` (String) The ID of this resource.

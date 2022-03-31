@@ -24,12 +24,12 @@ resource "authentik_policy_event_matcher" "name" {
 
 ### Required
 
-- **action** (String)
-- **app** (String)
-- **name** (String)
+- `action` (String)
+- `app` (String)
+- `name` (String)
 
 ### Optional
 
-- **client_ip** (String)
-- **execution_logging** (Boolean) Defaults to `false`.
-- **id** (String) The ID of this resource.
+- `client_ip` (String)
+- `execution_logging` (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.

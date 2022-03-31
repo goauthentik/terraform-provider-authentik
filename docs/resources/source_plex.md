@@ -30,19 +30,19 @@ resource "authentik_source_plex" "name" {
 
 ### Required
 
-- **authentication_flow** (String)
-- **client_id** (String)
-- **enrollment_flow** (String)
-- **name** (String)
-- **plex_token** (String, Sensitive)
-- **slug** (String)
+- `authentication_flow` (String)
+- `client_id` (String)
+- `enrollment_flow` (String)
+- `name` (String)
+- `plex_token` (String, Sensitive)
+- `slug` (String)
 
 ### Optional
 
-- **allow_friends** (Boolean) Defaults to `true`.
-- **allowed_servers** (List of String)
-- **enabled** (Boolean) Defaults to `true`.
-- **id** (String) The ID of this resource.
-- **policy_engine_mode** (String) Defaults to `any`.
-- **user_matching_mode** (String) Defaults to `identifier`.
-- **uuid** (String)
+- `allow_friends` (Boolean) Defaults to `true`.
+- `allowed_servers` (List of String)
+- `enabled` (Boolean) Defaults to `true`.
+- `id` (String) The ID of this resource.
+- `policy_engine_mode` (String) Defaults to `any`.
+- `user_matching_mode` (String) Defaults to `identifier`.
+- `uuid` (String)

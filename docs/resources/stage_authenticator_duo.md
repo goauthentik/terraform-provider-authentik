@@ -24,12 +24,12 @@ resource "authentik_stage_authenticator_duo" "name" {
 
 ### Required
 
-- **api_hostname** (String)
-- **client_id** (String)
-- **client_secret** (String, Sensitive)
-- **name** (String)
+- `api_hostname` (String)
+- `client_id` (String)
+- `client_secret` (String, Sensitive)
+- `name` (String)
 
 ### Optional
 
-- **configure_flow** (String)
-- **id** (String) The ID of this resource.
+- `configure_flow` (String)
+- `id` (String) The ID of this resource.

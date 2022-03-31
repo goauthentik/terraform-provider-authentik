@@ -22,10 +22,10 @@ resource "authentik_stage_user_write" "name" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **create_users_as_inactive** (Boolean) Defaults to `true`.
-- **create_users_group** (String)
-- **id** (String) The ID of this resource.
+- `create_users_as_inactive` (Boolean) Defaults to `true`.
+- `create_users_group` (String)
+- `id` (String) The ID of this resource.

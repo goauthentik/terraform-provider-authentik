@@ -35,12 +35,12 @@ resource "authentik_outpost" "outpost" {
 
 ### Required
 
-- **name** (String)
-- **protocol_providers** (List of Number)
+- `name` (String)
+- `protocol_providers` (List of Number)
 
 ### Optional
 
-- **config** (String)
-- **id** (String) The ID of this resource.
-- **service_connection** (String)
-- **type** (String) Defaults to `proxy`.
+- `config` (String)
+- `id` (String) The ID of this resource.
+- `service_connection` (String)
+- `type` (String) Defaults to `proxy`.

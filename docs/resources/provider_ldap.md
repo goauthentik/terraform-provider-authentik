@@ -33,15 +33,15 @@ resource "authentik_application" "name" {
 
 ### Required
 
-- **base_dn** (String)
-- **bind_flow** (String)
-- **name** (String)
+- `base_dn` (String)
+- `bind_flow` (String)
+- `name` (String)
 
 ### Optional
 
-- **certificate** (String)
-- **gid_start_number** (Number) Defaults to `4000`.
-- **id** (String) The ID of this resource.
-- **search_group** (String)
-- **tls_server_name** (String)
-- **uid_start_number** (Number) Defaults to `2000`.
+- `certificate` (String)
+- `gid_start_number` (Number) Defaults to `4000`.
+- `id` (String) The ID of this resource.
+- `search_group` (String)
+- `tls_server_name` (String)
+- `uid_start_number` (Number) Defaults to `2000`.

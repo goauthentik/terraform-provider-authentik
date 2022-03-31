@@ -22,11 +22,11 @@ resource "authentik_policy_expiry" "name" {
 
 ### Required
 
-- **days** (Number)
-- **name** (String)
+- `days` (Number)
+- `name` (String)
 
 ### Optional
 
-- **deny_only** (Boolean) Defaults to `false`.
-- **execution_logging** (Boolean) Defaults to `false`.
-- **id** (String) The ID of this resource.
+- `deny_only` (Boolean) Defaults to `false`.
+- `execution_logging` (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.

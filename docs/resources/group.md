@@ -27,12 +27,12 @@ resource "authentik_group" "group" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **attributes** (String) Defaults to `{}`.
-- **id** (String) The ID of this resource.
-- **is_superuser** (Boolean) Defaults to `false`.
-- **parent** (String)
-- **users** (List of Number)
+- `attributes` (String) Defaults to `{}`.
+- `id` (String) The ID of this resource.
+- `is_superuser` (Boolean) Defaults to `false`.
+- `parent` (String)
+- `users` (List of Number)

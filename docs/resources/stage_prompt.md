@@ -30,10 +30,10 @@ resource "authentik_stage_prompt" "name" {
 
 ### Required
 
-- **fields** (List of String)
-- **name** (String)
+- `fields` (List of String)
+- `name` (String)
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **validation_policies** (List of String)
+- `id` (String) The ID of this resource.
+- `validation_policies` (List of String)

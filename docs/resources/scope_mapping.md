@@ -27,11 +27,11 @@ EOF
 
 ### Required
 
-- **expression** (String)
-- **name** (String)
-- **scope_name** (String)
+- `expression` (String)
+- `name` (String)
+- `scope_name` (String)
 
 ### Optional
 
-- **description** (String)
-- **id** (String) The ID of this resource.
+- `description` (String)
+- `id` (String) The ID of this resource.

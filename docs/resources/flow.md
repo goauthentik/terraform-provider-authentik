@@ -33,18 +33,18 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 
 ### Required
 
-- **designation** (String)
-- **name** (String)
-- **slug** (String)
-- **title** (String)
+- `designation` (String)
+- `name` (String)
+- `slug` (String)
+- `title` (String)
 
 ### Optional
 
-- **background** (String) Optional URL to an image which will be used as the background during the flow.
-- **compatibility_mode** (Boolean) Defaults to `true`.
-- **id** (String) The ID of this resource.
-- **policy_engine_mode** (String) Defaults to `any`.
+- `background` (String) Optional URL to an image which will be used as the background during the flow.
+- `compatibility_mode` (Boolean) Defaults to `true`.
+- `id` (String) The ID of this resource.
+- `policy_engine_mode` (String) Defaults to `any`.
 
 ### Read-Only
 
-- **uuid** (String)
+- `uuid` (String)

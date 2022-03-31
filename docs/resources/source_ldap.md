@@ -27,28 +27,28 @@ resource "authentik_source_ldap" "name" {
 
 ### Required
 
-- **base_dn** (String)
-- **bind_cn** (String)
-- **bind_password** (String, Sensitive)
-- **name** (String)
-- **server_uri** (String)
-- **slug** (String)
+- `base_dn` (String)
+- `bind_cn` (String)
+- `bind_password` (String, Sensitive)
+- `name` (String)
+- `server_uri` (String)
+- `slug` (String)
 
 ### Optional
 
-- **additional_group_dn** (String) Defaults to ``.
-- **additional_user_dn** (String) Defaults to ``.
-- **enabled** (Boolean) Defaults to `true`.
-- **group_membership_field** (String) Defaults to `member`.
-- **group_object_filter** (String) Defaults to `(objectClass=group)`.
-- **id** (String) The ID of this resource.
-- **object_uniqueness_field** (String) Defaults to `objectSid`.
-- **property_mappings** (List of String)
-- **property_mappings_group** (List of String)
-- **start_tls** (Boolean) Defaults to `true`.
-- **sync_groups** (Boolean) Defaults to `true`.
-- **sync_parent_group** (String)
-- **sync_users** (Boolean) Defaults to `true`.
-- **sync_users_password** (Boolean) Defaults to `true`.
-- **user_object_filter** (String) Defaults to `(objectClass=person)`.
-- **uuid** (String)
+- `additional_group_dn` (String) Defaults to ``.
+- `additional_user_dn` (String) Defaults to ``.
+- `enabled` (Boolean) Defaults to `true`.
+- `group_membership_field` (String) Defaults to `member`.
+- `group_object_filter` (String) Defaults to `(objectClass=group)`.
+- `id` (String) The ID of this resource.
+- `object_uniqueness_field` (String) Defaults to `objectSid`.
+- `property_mappings` (List of String)
+- `property_mappings_group` (List of String)
+- `start_tls` (Boolean) Defaults to `true`.
+- `sync_groups` (Boolean) Defaults to `true`.
+- `sync_parent_group` (String)
+- `sync_users` (Boolean) Defaults to `true`.
+- `sync_users_password` (Boolean) Defaults to `true`.
+- `user_object_filter` (String) Defaults to `(objectClass=person)`.
+- `uuid` (String)

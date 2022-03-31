@@ -22,11 +22,11 @@ resource "authentik_stage_password" "test" {
 
 ### Required
 
-- **backends** (List of String)
-- **name** (String)
+- `backends` (List of String)
+- `name` (String)
 
 ### Optional
 
-- **configure_flow** (String)
-- **failed_attempts_before_cancel** (Number) Defaults to `5`.
-- **id** (String) The ID of this resource.
+- `configure_flow` (String)
+- `failed_attempts_before_cancel` (Number) Defaults to `5`.
+- `id` (String) The ID of this resource.

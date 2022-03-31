@@ -22,10 +22,10 @@ resource "authentik_policy_expression" "name" {
 
 ### Required
 
-- **expression** (String)
-- **name** (String)
+- `expression` (String)
+- `name` (String)
 
 ### Optional
 
-- **execution_logging** (Boolean) Defaults to `false`.
-- **id** (String) The ID of this resource.
+- `execution_logging` (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.

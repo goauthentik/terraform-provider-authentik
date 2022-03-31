@@ -26,17 +26,17 @@ data "authentik_certificate_key_pair" "generated" {
 
 ### Required
 
-- **name** (String)
+- `name` (String)
 
 ### Optional
 
-- **key_data** (String, Sensitive)
+- `key_data` (String, Sensitive)
 
 ### Read-Only
 
-- **certificate_data** (String)
-- **expiry** (String)
-- **fingerprint1** (String) SHA1-hashed certificate fingerprint
-- **fingerprint256** (String) SHA256-hashed certificate fingerprint
-- **id** (String) The ID of this resource.
-- **subject** (String)
+- `certificate_data` (String)
+- `expiry` (String)
+- `fingerprint1` (String) SHA1-hashed certificate fingerprint
+- `fingerprint256` (String) SHA256-hashed certificate fingerprint
+- `id` (String) The ID of this resource.
+- `subject` (String)

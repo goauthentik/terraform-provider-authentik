@@ -23,16 +23,16 @@ resource "authentik_policy_password" "name" {
 
 ### Required
 
-- **error_message** (String)
-- **name** (String)
+- `error_message` (String)
+- `name` (String)
 
 ### Optional
 
-- **amount_lowercase** (Number)
-- **amount_symbols** (Number)
-- **amount_uppercase** (Number)
-- **execution_logging** (Boolean) Defaults to `false`.
-- **id** (String) The ID of this resource.
-- **length_min** (Number)
-- **password_field** (String) Defaults to `password`.
-- **symbol_charset** (String) Defaults to `!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~`.
+- `amount_lowercase` (Number)
+- `amount_symbols` (Number)
+- `amount_uppercase` (Number)
+- `execution_logging` (Boolean) Defaults to `false`.
+- `id` (String) The ID of this resource.
+- `length_min` (Number)
+- `password_field` (String) Defaults to `password`.
+- `symbol_charset` (String) Defaults to `!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~`.
