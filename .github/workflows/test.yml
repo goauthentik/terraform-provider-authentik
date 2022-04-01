@@ -1,4 +1,4 @@
-name: test-acc-authentik-stable
+name: test-acc-authentik
 on:
   push:
     branches:
@@ -17,7 +17,6 @@ jobs:
     - uses: actions/setup-go@v3
       with:
         go-version: '1.16'
-
     - name: Get dependencies
       run: |
         go mod download
@@ -33,8 +32,11 @@ jobs:
       fail-fast: false
       matrix:
         terraform:
-          - '1.0.9'
-          - '1.1.1'
+          - '1.2.0'
+          - '1.1.7'
+        authentik_beta:
+          - 'true'
+          - 'false'
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v3
@@ -44,6 +46,7 @@ jobs:
       uses: ./.github/actions/setup-authentik
       id: setup
       with:
+        beta: ${{ matrix.authentik_beta }}
         sentry_env: goauthentik-terraform-ci
     - name: TF acceptance tests
       timeout-minutes: 30
