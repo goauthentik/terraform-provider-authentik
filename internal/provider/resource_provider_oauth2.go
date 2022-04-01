@@ -125,7 +125,9 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
 
-	r.VerificationKeys = sliceToString(d.Get("verification_keys").([]interface{}))
+	if vk, sok := d.GetOk("verification_keys"); sok {
+		r.SetVerificationKeys(sliceToString(vk.([]interface{})))
+	}
 
 	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	r.PropertyMappings = &propertyMappings
@@ -174,7 +176,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	} else {
 		d.Set("redirect_uris", []string{})
 	}
-	d.Set("verification_keys", res.VerificationKeys)
+	d.Set("verification_keys", res.GetVerificationKeys())
 	if res.SigningKey.IsSet() {
 		d.Set("signing_key", res.SigningKey.Get())
 	}
