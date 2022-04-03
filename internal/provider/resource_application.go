@@ -22,6 +22,10 @@ func resourceApplication() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"group": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"uuid": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -73,6 +77,9 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		m.Provider.Set(nil)
 	}
 
+	if l, ok := d.Get("group").(string); ok {
+		m.Group = &l
+	}
 	if l, ok := d.Get("meta_launch_url").(string); ok {
 		m.MetaLaunchUrl = &l
 	}
@@ -123,6 +130,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	d.SetId(res.Slug)
 	d.Set("uuid", res.Pk)
 	d.Set("name", res.Name)
+	d.Set("group", res.Group)
 	d.Set("slug", res.Slug)
 	d.Set("protocol_provider", 0)
 	if prov := res.Provider.Get(); prov != nil {

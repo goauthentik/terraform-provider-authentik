@@ -50,6 +50,7 @@ resource "authentik_application" "name" {
 
 ### Optional
 
+- `group` (String)
 - `id` (String) The ID of this resource.
 - `meta_description` (String)
 - `meta_icon` (String)
