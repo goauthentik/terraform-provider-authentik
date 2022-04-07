@@ -2,10 +2,12 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/api/v3"
 )
 
 func resourceTenant() *schema.Resource {
@@ -69,11 +71,16 @@ func resourceTenant() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"attributes": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "{}",
+			},
 		},
 	}
 }
 
-func resourceTenantSchemaToModel(d *schema.ResourceData) *api.TenantRequest {
+func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, diag.Diagnostics) {
 	m := api.TenantRequest{
 		Domain:  d.Get("domain").(string),
 		Default: boolToPointer(d.Get("default").(bool)),
@@ -127,13 +134,26 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) *api.TenantRequest {
 		m.WebCertificate.Set(nil)
 	}
 
-	return &m
+	attr := make(map[string]interface{})
+	if l, ok := d.Get("attributes").(string); ok {
+		if l != "" {
+			err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
+		}
+	}
+	m.Attributes = &attr
+	return &m, nil
 }
 
 func resourceTenantCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	mo := resourceTenantSchemaToModel(d)
+	mo, diags := resourceTenantSchemaToModel(d)
+	if diags != nil {
+		return diags
+	}
 
 	res, hr, err := c.client.CoreApi.CoreTenantsCreate(ctx).TenantRequest(*mo).Execute()
 	if err != nil {
@@ -176,15 +196,23 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 	if res.WebCertificate.IsSet() {
 		d.Set("web_certificate", res.WebCertificate.Get())
 	}
+	b, err := json.Marshal(res.Attributes)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	d.Set("attributes", string(b))
 	return diags
 }
 
 func resourceTenantUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceTenantSchemaToModel(d)
+	obj, diags := resourceTenantSchemaToModel(d)
+	if diags != nil {
+		return diags
+	}
 
-	res, hr, err := c.client.CoreApi.CoreTenantsUpdate(ctx, d.Id()).TenantRequest(*app).Execute()
+	res, hr, err := c.client.CoreApi.CoreTenantsUpdate(ctx, d.Id()).TenantRequest(*obj).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}

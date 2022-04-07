@@ -8,7 +8,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/api/v3"
 )
 
 func resourceUser() *schema.Resource {

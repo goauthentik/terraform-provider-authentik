@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/api/v3"
 )
 
 func TestAccResourceApplication(t *testing.T) {
