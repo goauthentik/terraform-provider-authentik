@@ -27,7 +27,6 @@ resource "authentik_stage_email" "name" {
 
 - `from_address` (String) Defaults to `system@authentik.local`.
 - `host` (String) Defaults to `localhost`.
-- `id` (String) The ID of this resource.
 - `password` (String, Sensitive)
 - `port` (Number) Defaults to `25`.
 - `subject` (String) Defaults to `authentik`.
@@ -38,3 +37,7 @@ resource "authentik_stage_email" "name" {
 - `use_ssl` (Boolean)
 - `use_tls` (Boolean)
 - `username` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

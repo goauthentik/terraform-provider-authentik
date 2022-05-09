@@ -32,7 +32,10 @@ resource "authentik_group" "group" {
 ### Optional
 
 - `attributes` (String) Defaults to `{}`.
-- `id` (String) The ID of this resource.
 - `is_superuser` (Boolean) Defaults to `false`.
 - `parent` (String)
 - `users` (List of Number)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

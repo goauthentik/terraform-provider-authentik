@@ -35,5 +35,8 @@ resource "authentik_stage_prompt" "name" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `validation_policies` (List of String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

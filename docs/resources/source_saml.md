@@ -51,7 +51,6 @@ resource "authentik_source_saml" "name" {
 - `binding_type` (String) Defaults to `REDIRECT`.
 - `digest_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
 - `enabled` (Boolean) Defaults to `true`.
-- `id` (String) The ID of this resource.
 - `issuer` (String)
 - `name_id_policy` (String) Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`.
 - `policy_engine_mode` (String) Defaults to `any`.
@@ -60,3 +59,7 @@ resource "authentik_source_saml" "name" {
 - `slo_url` (String)
 - `temporary_user_delete_after` (String) Defaults to `days=1`.
 - `uuid` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

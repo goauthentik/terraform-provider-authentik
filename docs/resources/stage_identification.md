@@ -50,7 +50,6 @@ resource "authentik_stage_identification" "name" {
 
 - `case_insensitive_matching` (Boolean)
 - `enrollment_flow` (String)
-- `id` (String) The ID of this resource.
 - `password_stage` (String)
 - `passwordless_flow` (String)
 - `recovery_flow` (String)
@@ -58,3 +57,7 @@ resource "authentik_stage_identification" "name" {
 - `show_source_labels` (Boolean) Defaults to `false`.
 - `sources` (List of String)
 - `user_fields` (List of String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

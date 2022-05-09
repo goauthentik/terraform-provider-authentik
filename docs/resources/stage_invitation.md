@@ -26,4 +26,7 @@ resource "authentik_stage_invitation" "name" {
 ### Optional
 
 - `continue_flow_without_invitation` (Boolean) Defaults to `true`.
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

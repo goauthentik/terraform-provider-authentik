@@ -41,6 +41,9 @@ resource "authentik_outpost" "outpost" {
 ### Optional
 
 - `config` (String)
-- `id` (String) The ID of this resource.
 - `service_connection` (String)
 - `type` (String) Defaults to `proxy`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

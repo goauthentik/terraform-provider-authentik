@@ -28,4 +28,7 @@ resource "authentik_stage_user_write" "name" {
 
 - `create_users_as_inactive` (Boolean) Defaults to `true`.
 - `create_users_group` (String)
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

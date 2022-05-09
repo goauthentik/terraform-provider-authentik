@@ -25,6 +25,6 @@ resource "authentik_property_mapping_notification" "name" {
 - `expression` (String)
 - `name` (String)
 
-### Optional
+### Read-Only
 
 - `id` (String) The ID of this resource.

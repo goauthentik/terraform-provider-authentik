@@ -34,4 +34,7 @@ EOF
 ### Optional
 
 - `description` (String)
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

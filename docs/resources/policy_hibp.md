@@ -27,5 +27,8 @@ resource "authentik_policy_hibp" "name" {
 
 - `allowed_count` (Number) Defaults to `1`.
 - `execution_logging` (Boolean) Defaults to `false`.
-- `id` (String) The ID of this resource.
 - `password_field` (String) Defaults to `password`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

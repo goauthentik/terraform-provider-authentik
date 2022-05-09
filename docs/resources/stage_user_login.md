@@ -25,5 +25,8 @@ resource "authentik_stage_user_login" "name" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `session_duration` (String) Defaults to `seconds=0`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

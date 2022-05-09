@@ -30,4 +30,7 @@ resource "authentik_property_mapping_saml" "saml-aws-rolessessionname" {
 ### Optional
 
 - `friendly_name` (String)
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

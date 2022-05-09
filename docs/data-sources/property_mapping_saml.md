@@ -39,9 +39,12 @@ data "authentik_property_mapping_saml" "test" {
 
 - `expression` (String)
 - `friendly_name` (String)
-- `id` (String) The ID of this resource.
 - `ids` (List of String) List of ids when `managed_list` is set.
 - `managed` (String)
 - `managed_list` (List of String) Retrive multiple property mappings
 - `name` (String)
 - `saml_name` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

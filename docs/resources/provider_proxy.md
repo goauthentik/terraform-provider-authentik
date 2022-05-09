@@ -44,9 +44,12 @@ resource "authentik_application" "name" {
 - `basic_auth_password_attribute` (String)
 - `basic_auth_username_attribute` (String)
 - `cookie_domain` (String)
-- `id` (String) The ID of this resource.
 - `internal_host` (String)
 - `internal_host_ssl_validation` (Boolean) Defaults to `true`.
 - `mode` (String) Defaults to `proxy`.
 - `skip_path_regex` (String)
 - `token_validity` (String) Defaults to `hours=24`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

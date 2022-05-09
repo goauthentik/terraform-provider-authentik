@@ -46,8 +46,11 @@ resource "authentik_service_connection_docker" "remote-host" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `local` (Boolean) Defaults to `false`.
 - `tls_authentication` (String)
 - `tls_verification` (String)
 - `url` (String) Defaults to `http+unix:///var/run/docker.sock`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

@@ -23,6 +23,6 @@ resource "authentik_stage_user_delete" "name" {
 
 - `name` (String)
 
-### Optional
+### Read-Only
 
 - `id` (String) The ID of this resource.

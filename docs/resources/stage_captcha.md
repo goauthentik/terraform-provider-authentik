@@ -27,6 +27,6 @@ resource "authentik_stage_captcha" "name" {
 - `private_key` (String, Sensitive)
 - `public_key` (String)
 
-### Optional
+### Read-Only
 
 - `id` (String) The ID of this resource.

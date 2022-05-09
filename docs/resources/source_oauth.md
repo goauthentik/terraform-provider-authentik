@@ -46,7 +46,6 @@ resource "authentik_source_oauth" "name" {
 - `additional_scopes` (String)
 - `authorization_url` (String)
 - `enabled` (Boolean) Defaults to `true`.
-- `id` (String) The ID of this resource.
 - `policy_engine_mode` (String) Defaults to `any`.
 - `profile_url` (String)
 - `request_token_url` (String)
@@ -56,3 +55,4 @@ resource "authentik_source_oauth" "name" {
 ### Read-Only
 
 - `callback_uri` (String)
+- `id` (String) The ID of this resource.

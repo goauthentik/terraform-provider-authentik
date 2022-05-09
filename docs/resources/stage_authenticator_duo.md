@@ -32,4 +32,7 @@ resource "authentik_stage_authenticator_duo" "name" {
 ### Optional
 
 - `configure_flow` (String)
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

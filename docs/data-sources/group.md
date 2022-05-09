@@ -28,11 +28,8 @@ data "authentik_group" "admins" {
 
 - `name` (String)
 
-### Optional
-
-- `id` (String) The ID of this resource.
-
 ### Read-Only
 
 - `attributes` (String)
+- `id` (String) The ID of this resource.
 - `is_superuser` (Boolean)

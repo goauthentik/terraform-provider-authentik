@@ -52,5 +52,8 @@ resource "authentik_certificate_key_pair" "name" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `key_data` (String, Sensitive)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
