@@ -35,13 +35,13 @@ resource "authentik_token" "default" {
 - `description` (String)
 - `expires` (String)
 - `expiring` (Boolean) Defaults to `true`.
-- `id` (String) The ID of this resource.
 - `intent` (String) Defaults to `api`.
 - `retrieve_key` (Boolean) Defaults to `false`.
 
 ### Read-Only
 
 - `expires_in` (Number)
+- `id` (String) The ID of this resource.
 - `key` (String, Sensitive)
 
 

@@ -43,7 +43,6 @@ resource "authentik_application" "name" {
 - `assertion_valid_not_on_or_after` (String) Defaults to `minutes=3`.
 - `audience` (String) Defaults to ``.
 - `digest_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
-- `id` (String) The ID of this resource.
 - `issuer` (String) Defaults to `authentik`.
 - `name_id_mapping` (String)
 - `property_mappings` (List of String)
@@ -52,3 +51,7 @@ resource "authentik_application" "name" {
 - `signing_kp` (String)
 - `sp_binding` (String) Defaults to `redirect`.
 - `verification_kp` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

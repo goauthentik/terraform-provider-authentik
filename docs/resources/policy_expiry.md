@@ -29,4 +29,7 @@ resource "authentik_policy_expiry" "name" {
 
 - `deny_only` (Boolean) Defaults to `false`.
 - `execution_logging` (Boolean) Defaults to `false`.
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

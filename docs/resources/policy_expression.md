@@ -28,4 +28,7 @@ resource "authentik_policy_expression" "name" {
 ### Optional
 
 - `execution_logging` (Boolean) Defaults to `false`.
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

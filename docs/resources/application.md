@@ -51,7 +51,6 @@ resource "authentik_application" "name" {
 ### Optional
 
 - `group` (String)
-- `id` (String) The ID of this resource.
 - `meta_description` (String)
 - `meta_icon` (String)
 - `meta_launch_url` (String)
@@ -59,3 +58,7 @@ resource "authentik_application" "name" {
 - `policy_engine_mode` (String) Defaults to `any`.
 - `protocol_provider` (Number)
 - `uuid` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

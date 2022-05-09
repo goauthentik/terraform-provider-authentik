@@ -32,4 +32,7 @@ resource "authentik_policy_event_matcher" "name" {
 
 - `client_ip` (String)
 - `execution_logging` (Boolean) Defaults to `false`.
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

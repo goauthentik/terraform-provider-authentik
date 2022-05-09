@@ -57,8 +57,11 @@ resource "authentik_policy_binding" "app-access" {
 
 - `enabled` (Boolean) Defaults to `true`.
 - `group` (String) UUID of the group
-- `id` (String) The ID of this resource.
 - `negate` (Boolean) Defaults to `false`.
 - `policy` (String) UUID of the policy
 - `timeout` (Number) Defaults to `30`.
 - `user` (Number) PK of the user
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

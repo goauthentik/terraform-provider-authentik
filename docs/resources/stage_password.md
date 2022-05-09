@@ -29,4 +29,7 @@ resource "authentik_stage_password" "test" {
 
 - `configure_flow` (String)
 - `failed_attempts_before_cancel` (Number) Defaults to `5`.
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

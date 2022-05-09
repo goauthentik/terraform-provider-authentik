@@ -29,8 +29,11 @@ resource "authentik_stage_prompt_field" "field" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `order` (Number)
 - `placeholder` (String)
 - `placeholder_expression` (Boolean) Defaults to `false`.
 - `required` (Boolean) Defaults to `false`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

@@ -32,7 +32,10 @@ resource "authentik_policy_password" "name" {
 - `amount_symbols` (Number)
 - `amount_uppercase` (Number)
 - `execution_logging` (Boolean) Defaults to `false`.
-- `id` (String) The ID of this resource.
 - `length_min` (Number)
 - `password_field` (String) Defaults to `password`.
 - `symbol_charset` (String) Defaults to `!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

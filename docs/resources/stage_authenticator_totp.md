@@ -27,4 +27,7 @@ resource "authentik_stage_authenticator_totp" "name" {
 
 - `configure_flow` (String)
 - `digits` (Number) Defaults to `6`.
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

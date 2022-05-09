@@ -38,7 +38,10 @@ resource "authentik_tenant" "default" {
 - `flow_recovery` (String)
 - `flow_unenrollment` (String)
 - `flow_user_settings` (String)
-- `id` (String) The ID of this resource.
 - `web_certificate` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
 
 

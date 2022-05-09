@@ -21,5 +21,8 @@ description: |-
 - `auth_password` (String, Sensitive)
 - `auth_type` (String) Defaults to `basic`.
 - `configure_flow` (String)
-- `id` (String) The ID of this resource.
 - `sms_provider` (String) Defaults to `twilio`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

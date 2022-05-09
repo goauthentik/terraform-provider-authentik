@@ -41,7 +41,6 @@ resource "authentik_source_ldap" "name" {
 - `enabled` (Boolean) Defaults to `true`.
 - `group_membership_field` (String) Defaults to `member`.
 - `group_object_filter` (String) Defaults to `(objectClass=group)`.
-- `id` (String) The ID of this resource.
 - `object_uniqueness_field` (String) Defaults to `objectSid`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
@@ -52,3 +51,7 @@ resource "authentik_source_ldap" "name" {
 - `sync_users_password` (Boolean) Defaults to `true`.
 - `user_object_filter` (String) Defaults to `(objectClass=person)`.
 - `uuid` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

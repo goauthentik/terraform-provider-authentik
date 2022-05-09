@@ -30,4 +30,7 @@ resource "authentik_stage_authenticator_validate" "name" {
 
 - `configuration_stages` (List of String)
 - `device_classes` (List of String)
+
+### Read-Only
+
 - `id` (String) The ID of this resource.

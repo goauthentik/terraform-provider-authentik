@@ -36,6 +36,9 @@ EOF
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `kubeconfig` (String) Defaults to `{}`.
 - `local` (Boolean) Defaults to `false`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

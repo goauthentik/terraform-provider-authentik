@@ -39,9 +39,14 @@ resource "authentik_application" "name" {
 
 ### Optional
 
+- `bind_mode` (String) Defaults to `direct`.
 - `certificate` (String)
 - `gid_start_number` (Number) Defaults to `4000`.
-- `id` (String) The ID of this resource.
 - `search_group` (String)
+- `search_mode` (String) Defaults to `direct`.
 - `tls_server_name` (String)
 - `uid_start_number` (Number) Defaults to `2000`.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.

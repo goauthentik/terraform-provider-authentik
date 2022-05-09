@@ -53,6 +53,16 @@ func resourceProviderLDAP() *schema.Resource {
 				Optional: true,
 				Default:  4000,
 			},
+			"search_mode": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.SEARCHMODEENUM_DIRECT,
+			},
+			"bind_mode": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.BINDMODEENUM_DIRECT,
+			},
 		},
 	}
 }
@@ -75,6 +85,8 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 	if s, sok := d.GetOk("tls_server_name"); sok && s.(string) != "" {
 		r.TlsServerName = stringToPointer(s.(string))
 	}
+	r.SetSearchMode(api.SearchModeEnum(d.Get("search_mode").(string)))
+	r.SetBindMode(api.BindModeEnum(d.Get("bind_mode").(string)))
 	return &r
 }
 
@@ -116,6 +128,8 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	d.Set("tls_server_name", res.TlsServerName)
 	d.Set("uid_start_number", res.UidStartNumber)
 	d.Set("gid_start_number", res.GidStartNumber)
+	d.Set("bind_mode", res.BindMode)
+	d.Set("search_mode", res.SearchMode)
 	return diags
 }
 
