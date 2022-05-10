@@ -79,6 +79,11 @@ func resourceStageEmail() *schema.Resource {
 				Optional: true,
 				Default:  "email/password_reset.html",
 			},
+			"activate_user_on_success": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -121,6 +126,9 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageR
 	if h, hSet := d.GetOk("template"); hSet {
 		r.Template = stringToPointer(h.(string))
 	}
+	if h, hSet := d.GetOk("activate_user_on_success"); hSet {
+		r.ActivateUserOnSuccess = boolToPointer(h.(bool))
+	}
 	return &r
 }
 
@@ -159,6 +167,7 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m inter
 	d.Set("token_expiry", res.TokenExpiry)
 	d.Set("subject", res.Subject)
 	d.Set("template", res.Template)
+	d.Set("activate_user_on_success", res.ActivateUserOnSuccess)
 	return diags
 }
 
