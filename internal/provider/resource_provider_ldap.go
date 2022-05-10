@@ -56,12 +56,12 @@ func resourceProviderLDAP() *schema.Resource {
 			"search_mode": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  api.SEARCHMODEENUM_DIRECT,
+				Default:  api.LDAPAPIACCESSMODE_DIRECT,
 			},
 			"bind_mode": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  api.BINDMODEENUM_DIRECT,
+				Default:  api.LDAPAPIACCESSMODE_DIRECT,
 			},
 		},
 	}
@@ -85,8 +85,8 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 	if s, sok := d.GetOk("tls_server_name"); sok && s.(string) != "" {
 		r.TlsServerName = stringToPointer(s.(string))
 	}
-	r.SetSearchMode(api.SearchModeEnum(d.Get("search_mode").(string)))
-	r.SetBindMode(api.BindModeEnum(d.Get("bind_mode").(string)))
+	r.SetSearchMode(api.LDAPAPIAccessMode(d.Get("search_mode").(string)))
+	r.SetBindMode(api.LDAPAPIAccessMode(d.Get("bind_mode").(string)))
 	return &r
 }
 
