@@ -25,6 +25,7 @@ resource "authentik_stage_email" "name" {
 
 ### Optional
 
+- `activate_user_on_success` (Boolean) Defaults to `false`.
 - `from_address` (String) Defaults to `system@authentik.local`.
 - `host` (String) Defaults to `localhost`.
 - `password` (String, Sensitive)
