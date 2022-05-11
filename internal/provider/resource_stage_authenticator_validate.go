@@ -40,13 +40,19 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"last_auth_threshold": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "seconds=0",
+			},
 		},
 	}
 }
 
 func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorValidateStageRequest {
 	r := api.AuthenticatorValidateStageRequest{
-		Name: d.Get("name").(string),
+		Name:              d.Get("name").(string),
+		LastAuthThreshold: stringToPointer(d.Get("last_auth_threshold").(string)),
 	}
 
 	if h, hSet := d.GetOk("not_configured_action"); hSet {
@@ -96,6 +102,7 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 		d.Set("configuration_stages", *res.ConfigurationStages)
 	}
 	d.Set("device_classes", res.DeviceClasses)
+	d.Set("last_auth_threshold", res.LastAuthThreshold)
 	return diags
 }
 
