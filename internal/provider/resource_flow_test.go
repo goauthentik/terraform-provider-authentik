@@ -38,6 +38,7 @@ resource "authentik_flow" "flow" {
   slug  ="%[1]s"
   designation = "authorization"
   background = "https://goauthentik.io"
+  layout = "stacked"
 }
 `, name)
 }

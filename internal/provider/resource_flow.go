@@ -38,6 +38,11 @@ func resourceFlow() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"layout": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "stacked",
+			},
 			"background": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -68,6 +73,9 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 
 	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
 	m.PolicyEngineMode = &pm
+
+	layout := api.LayoutEnum(d.Get("layout").(string))
+	m.Layout = &layout
 	return &m
 }
 
@@ -108,6 +116,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	d.Set("slug", res.Slug)
 	d.Set("title", res.Title)
 	d.Set("designation", res.Designation)
+	d.Set("layout", res.Layout)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
 	d.Set("compatibility_mode", res.CompatibilityMode)
 	if _, bg := d.GetOk("background"); bg {
