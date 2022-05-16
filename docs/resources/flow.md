@@ -42,6 +42,7 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 
 - `background` (String) Optional URL to an image which will be used as the background during the flow.
 - `compatibility_mode` (Boolean) Defaults to `true`.
+- `layout` (String) Defaults to `stacked`.
 - `policy_engine_mode` (String) Defaults to `any`.
 
 ### Read-Only
