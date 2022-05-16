@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
-	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
@@ -34,14 +32,7 @@ func main() {
 		ProviderFunc: func() *schema.Provider {
 			return provider.Provider(version, false)
 		},
-	}
-
-	if debugMode {
-		err := plugin.Debug(context.Background(), "registry.terraform.io/goauthentik/terraform-provider-authentik", opts)
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-		return
+		Debug: debugMode,
 	}
 
 	if versionMode {
