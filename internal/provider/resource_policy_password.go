@@ -48,6 +48,10 @@ func resourcePolicyPassword() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"amount_digits": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 			"length_min": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -79,6 +83,9 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.Passwor
 
 	if p, pSet := d.GetOk("amount_uppercase"); pSet {
 		r.AmountUppercase = intToPointer(p.(int))
+	}
+	if p, pSet := d.GetOk("amount_digits"); pSet {
+		r.AmountDigits = intToPointer(p.(int))
 	}
 	if p, pSet := d.GetOk("amount_lowercase"); pSet {
 		r.AmountLowercase = intToPointer(p.(int))
@@ -123,6 +130,7 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("amount_uppercase", res.AmountUppercase)
 	d.Set("amount_lowercase", res.AmountLowercase)
 	d.Set("amount_symbols", res.AmountSymbols)
+	d.Set("amount_digits", res.AmountDigits)
 	d.Set("length_min", res.LengthMin)
 	d.Set("symbol_charset", res.SymbolCharset)
 	return diags

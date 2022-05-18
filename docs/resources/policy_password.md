@@ -28,6 +28,7 @@ resource "authentik_policy_password" "name" {
 
 ### Optional
 
+- `amount_digits` (Number)
 - `amount_lowercase` (Number)
 - `amount_symbols` (Number)
 - `amount_uppercase` (Number)
