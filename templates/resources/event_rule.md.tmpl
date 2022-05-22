@@ -1,0 +1,33 @@
+---
+page_title: "event_rule Resource - terraform-provider-authentik"
+subcategory: "Events"
+description: |-
+---
+
+# event_rule (Resource)
+
+## Example Usage
+
+```terraform
+# Create a rule that sends notifications with a high severity
+
+resource "authentik_group" "group" {
+  name = "my_group"
+}
+
+# Create a notification transport to slack/discord
+resource "authentik_event_transport" "transport" {
+  name        = "my-transport"
+  mode        = "webhook_slack"
+  send_once   = true
+  webhook_url = "https://discord.com/...."
+}
+
+resource "authentik_event_rule" "important" {
+  name       = "my-transport"
+  group      = authentik_group.group.id
+  transports = [authentik_event_transport.transport.id]
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
