@@ -62,6 +62,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_certificate_key_pair":          tr(resourceCertificateKeyPair),
 			"authentik_flow_stage_binding":            tr(resourceFlowStageBinding),
 			"authentik_flow":                          tr(resourceFlow),
+			"authentik_event_transport":               tr(resourceEventTransport),
 			"authentik_group":                         tr(resourceGroup),
 			"authentik_outpost":                       tr(resourceOutpost),
 			"authentik_policy_binding":                tr(resourcePolicyBinding),
