@@ -59,7 +59,7 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.
 	}
 
 	transports := sliceToString(d.Get("transports").([]interface{}))
-	m.Transports = transports
+	m.Transports = &transports
 	return &m, nil
 }
 
