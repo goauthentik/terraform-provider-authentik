@@ -58,6 +58,7 @@ resource "authentik_source_saml" "name" {
 - `signing_kp` (String)
 - `slo_url` (String)
 - `temporary_user_delete_after` (String) Defaults to `days=1`.
+- `user_matching_mode` (String) Defaults to `identifier`.
 - `uuid` (String)
 
 ### Read-Only

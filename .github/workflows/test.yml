@@ -25,17 +25,17 @@ jobs:
       run: |
         go build -v .
   test:
-    name: Matrix Test
+    name: Acceptance tests - Terraform ${{ matrix.terraform }} - authentik ${{ matrix.authentik_version }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         terraform:
-          - '1.1.7'
-        authentik_beta:
-          - 'true'
-          - 'false'
+          - '1.2.1'
+        authentik_version:
+          - 'stable'
+          - 'beta'
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v3
@@ -45,7 +45,7 @@ jobs:
       uses: ./.github/actions/setup-authentik
       id: setup
       with:
-        beta: ${{ matrix.authentik_beta }}
+        beta: ${{ matrix.authentik_version }}
         sentry_env: goauthentik-terraform-ci
     - name: TF acceptance tests
       timeout-minutes: 30

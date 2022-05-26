@@ -67,7 +67,7 @@ func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData, c *APIClient)
 	m.PolicyEngineMode = &pm
 
 	ira := api.InvalidResponseActionEnum(d.Get("invalid_response_action").(string))
-	m.InvalidResponseAction = &ira
+	m.InvalidResponseAction.Set(&ira)
 	return &m
 }
 
@@ -100,7 +100,7 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("evaluate_on_plan", res.EvaluateOnPlan)
 	d.Set("re_evaluate_policies", res.ReEvaluatePolicies)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
-	d.Set("invalid_response_action", res.InvalidResponseAction)
+	d.Set("invalid_response_action", res.InvalidResponseAction.Get())
 	return diags
 }
 

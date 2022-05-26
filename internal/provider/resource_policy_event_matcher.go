@@ -52,14 +52,14 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.Eve
 	r.Name.Set(stringToPointer(d.Get("name").(string)))
 
 	act := api.EventActions(d.Get("action").(string))
-	r.Action = &act
+	r.Action.Set(&act)
 
 	if p, pSet := d.GetOk("client_ip"); pSet {
 		r.ClientIp = stringToPointer(p.(string))
 	}
 
 	app := api.AppEnum(d.Get("app").(string))
-	r.App = &app
+	r.App.Set(&app)
 
 	return &r
 }
@@ -89,9 +89,9 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 
 	d.Set("name", res.Name.Get())
 	d.Set("execution_logging", res.ExecutionLogging)
-	d.Set("action", res.Action)
+	d.Set("action", res.Action.Get())
 	d.Set("client_ip", res.ClientIp)
-	d.Set("app", res.App)
+	d.Set("app", res.App.Get())
 	return diags
 }
 

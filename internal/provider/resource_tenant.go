@@ -143,7 +143,7 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, di
 			}
 		}
 	}
-	m.Attributes = &attr
+	m.Attributes = attr
 	return &m, nil
 }
 

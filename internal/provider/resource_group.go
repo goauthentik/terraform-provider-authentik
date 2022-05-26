@@ -75,7 +75,7 @@ func resourceGroupSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Grou
 			}
 		}
 	}
-	m.Attributes = &attr
+	m.Attributes = attr
 	return &m, nil
 }
 

@@ -98,11 +98,9 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 	r.PolicyEngineMode = &pm
 
 	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
-	r.UserMatchingMode = &umm
+	r.UserMatchingMode.Set(&umm)
 
-	allowedServers := sliceToString(d.Get("allowed_servers").([]interface{}))
-	r.AllowedServers = &allowedServers
-
+	r.AllowedServers = sliceToString(d.Get("allowed_servers").([]interface{}))
 	return &r
 }
 
@@ -140,11 +138,11 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	d.Set("enabled", res.Enabled)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
-	d.Set("user_matching_mode", res.UserMatchingMode)
+	d.Set("user_matching_mode", res.UserMatchingMode.Get())
 
 	d.Set("client_id", res.ClientId)
 	localServers := sliceToString(d.Get("allowed_servers").([]interface{}))
-	d.Set("allowed_servers", stringListConsistentMerge(localServers, *res.AllowedServers))
+	d.Set("allowed_servers", stringListConsistentMerge(localServers, res.AllowedServers))
 	d.Set("allow_friends", res.AllowFriends)
 	d.Set("plex_token", res.PlexToken)
 	return diags

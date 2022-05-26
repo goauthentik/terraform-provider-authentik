@@ -52,7 +52,7 @@ func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
-		m.Kubeconfig = &c
+		m.Kubeconfig = c
 	}
 
 	return &m, nil

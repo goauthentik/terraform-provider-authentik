@@ -78,7 +78,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 			}
 		}
 	}
-	m.Attributes = &attr
+	m.Attributes = attr
 	return &m, nil
 }
 

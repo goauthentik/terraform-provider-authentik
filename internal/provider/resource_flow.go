@@ -67,9 +67,11 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
 		Title:             d.Get("title").(string),
-		Designation:       api.FlowDesignationEnum(d.Get("designation").(string)),
 		CompatibilityMode: boolToPointer(d.Get("compatibility_mode").(bool)),
 	}
+
+	designation := api.FlowDesignationEnum(d.Get("designation").(string))
+	m.Designation.Set(&designation)
 
 	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
 	m.PolicyEngineMode = &pm
@@ -115,7 +117,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	d.Set("name", res.Name)
 	d.Set("slug", res.Slug)
 	d.Set("title", res.Title)
-	d.Set("designation", res.Designation)
+	d.Set("designation", res.Designation.Get())
 	d.Set("layout", res.Layout)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
 	d.Set("compatibility_mode", res.CompatibilityMode)

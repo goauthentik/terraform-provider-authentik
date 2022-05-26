@@ -37,9 +37,10 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 
 func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorTOTPStageRequest {
 	r := api.AuthenticatorTOTPStageRequest{
-		Name:   d.Get("name").(string),
-		Digits: api.DigitsEnum((d.Get("digits").(int))),
+		Name: d.Get("name").(string),
 	}
+	digits := api.DigitsEnum((d.Get("digits").(int)))
+	r.Digits.Set(&digits)
 
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
@@ -71,7 +72,7 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 	}
 
 	d.Set("name", res.Name)
-	d.Set("digits", res.Digits)
+	d.Set("digits", res.Digits.Get())
 	if res.ConfigureFlow.IsSet() {
 		d.Set("configure_flow", res.ConfigureFlow.Get())
 	}

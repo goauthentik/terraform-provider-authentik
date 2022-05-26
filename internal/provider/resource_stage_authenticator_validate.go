@@ -61,15 +61,14 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 	}
 	if h, hSet := d.GetOk("configuration_stages"); hSet {
 		stages := h.([]string)
-		r.ConfigurationStages = &stages
+		r.ConfigurationStages = stages
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)
 	for _, classesS := range d.Get("device_classes").([]interface{}) {
 		classes = append(classes, api.DeviceClassesEnum(classesS.(string)))
 	}
-	r.DeviceClasses = &classes
-
+	r.DeviceClasses = classes
 	return &r
 }
 
@@ -99,7 +98,7 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	d.Set("name", res.Name)
 	d.Set("not_configured_action", res.NotConfiguredAction)
 	if res.ConfigurationStages != nil {
-		d.Set("configuration_stages", *res.ConfigurationStages)
+		d.Set("configuration_stages", res.ConfigurationStages)
 	}
 	d.Set("device_classes", res.DeviceClasses)
 	d.Set("last_auth_threshold", res.LastAuthThreshold)

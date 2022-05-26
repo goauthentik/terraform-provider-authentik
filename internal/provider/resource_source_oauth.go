@@ -115,7 +115,7 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) *api.OAuthSourceR
 	r.PolicyEngineMode = &pm
 
 	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
-	r.UserMatchingMode = &umm
+	r.UserMatchingMode.Set(&umm)
 
 	if s, sok := d.GetOk("request_token_url"); sok && s.(string) != "" {
 		r.RequestTokenUrl.Set(stringToPointer(s.(string)))
@@ -169,7 +169,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	d.Set("enabled", res.Enabled)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
-	d.Set("user_matching_mode", res.UserMatchingMode)
+	d.Set("user_matching_mode", res.UserMatchingMode.Get())
 	d.Set("additional_scopes", res.AdditionalScopes)
 	d.Set("provider_type", res.ProviderType)
 	d.Set("consumer_key", res.ConsumerKey)

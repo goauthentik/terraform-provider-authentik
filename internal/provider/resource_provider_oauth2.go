@@ -116,11 +116,11 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 
 	subMode := d.Get("sub_mode").(string)
 	a := api.SubModeEnum(subMode)
-	r.SubMode = &a
+	r.SubMode.Set(&a)
 
 	clientType := d.Get("client_type").(string)
 	c := api.ClientTypeEnum(clientType)
-	r.ClientType = &c
+	r.ClientType.Set(&c)
 
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
@@ -129,9 +129,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		r.SetVerificationKeys(sliceToString(vk.([]interface{})))
 	}
 
-	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	r.PropertyMappings = &propertyMappings
-
+	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
 	return &r
 }
 
@@ -166,11 +164,11 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	d.Set("authorization_flow", res.AuthorizationFlow)
 	d.Set("client_id", res.ClientId)
 	d.Set("client_secret", res.ClientSecret)
-	d.Set("client_type", res.ClientType)
+	d.Set("client_type", res.ClientType.Get())
 	d.Set("include_claims_in_id_token", res.IncludeClaimsInIdToken)
-	d.Set("issuer_mode", res.IssuerMode)
+	d.Set("issuer_mode", res.IssuerMode.Get())
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", stringListConsistentMerge(localMappings, *res.PropertyMappings))
+	d.Set("property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 	if stringPointerResolve(res.RedirectUris) != "" {
 		d.Set("redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
 	} else {
@@ -180,7 +178,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	if res.SigningKey.IsSet() {
 		d.Set("signing_key", res.SigningKey.Get())
 	}
-	d.Set("sub_mode", res.SubMode)
+	d.Set("sub_mode", res.SubMode.Get())
 	d.Set("token_validity", res.TokenValidity)
 	return diags
 }

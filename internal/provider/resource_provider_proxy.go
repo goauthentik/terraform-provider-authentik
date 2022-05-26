@@ -112,7 +112,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	}
 
 	pm := api.ProxyMode(d.Get("mode").(string))
-	r.Mode = &pm
+	r.Mode.Set(&pm)
 	return &r
 }
 
@@ -151,7 +151,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	d.Set("basic_auth_enabled", res.BasicAuthEnabled)
 	d.Set("basic_auth_username_attribute", res.BasicAuthUserAttribute)
 	d.Set("basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
-	d.Set("mode", res.Mode)
+	d.Set("mode", res.Mode.Get())
 	d.Set("cookie_domain", res.CookieDomain)
 	d.Set("token_validity", res.TokenValidity)
 	return diags
