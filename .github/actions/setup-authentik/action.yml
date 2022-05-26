@@ -1,10 +1,10 @@
 name: 'authentik Setup'
 description: 'Sets up an authentik test environment'
 inputs:
-  beta:
-    description: 'Use beta images instead of stable images'
+  version:
+    description: 'stable/beta'
     required: false
-    default: "false"
+    default: "stable"
   wait:
     description: 'If the action should wait for authentik to be available'
     required: false
@@ -51,9 +51,9 @@ runs:
     - name: Configure
       shell: bash
       env:
-        USE_BETA: ${{ inputs.beta }}
+        USE_BETA: ${{ inputs.version }}
       run: |
-        if [ "$USE_BETA" = "true" ]; then
+        if [ "$USE_BETA" = "beta" ]; then
           echo "AUTHENTIK_IMAGE=goauthentik.io/dev-server" >> .env
           echo "AUTHENTIK_TAG=gh-next" >> .env
           echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next" >> .env
