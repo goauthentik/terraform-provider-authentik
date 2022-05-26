@@ -45,18 +45,8 @@ func resourceStagePromptSchemaToProvider(d *schema.ResourceData) *api.PromptStag
 		Name: d.Get("name").(string),
 	}
 
-	fields := make([]string, 0)
-	for _, fieldsS := range d.Get("fields").([]interface{}) {
-		fields = append(fields, fieldsS.(string))
-	}
-	r.Fields = fields
-
-	vp := make([]string, 0)
-	for _, vpS := range d.Get("validation_policies").([]interface{}) {
-		vp = append(vp, vpS.(string))
-	}
-	r.ValidationPolicies = &vp
-
+	r.Fields = sliceToString(d.Get("fields").([]interface{}))
+	r.ValidationPolicies = sliceToString(d.Get("validation_policies").([]interface{}))
 	return &r
 }
 

@@ -49,6 +49,11 @@ func resourceSourceSAML() *schema.Resource {
 				Optional: true,
 				Default:  api.POLICYENGINEMODE_ANY,
 			},
+			"user_matching_mode": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.USERMATCHINGMODEENUM_IDENTIFIER,
+			},
 
 			"pre_authentication_flow": {
 				Type:     schema.TypeString,
@@ -128,7 +133,7 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	r.BindingType = &bt
 
 	nip := api.NameIdPolicyEnum(d.Get("name_id_policy").(string))
-	r.NameIdPolicy = &nip
+	r.NameIdPolicy.Set(&nip)
 
 	da := api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string))
 	r.DigestAlgorithm = &da
@@ -142,6 +147,9 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
 		r.SigningKp.Set(stringToPointer(s.(string)))
 	}
+
+	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
+	r.UserMatchingMode.Set(&umm)
 	return &r
 }
 
@@ -179,6 +187,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	d.Set("enabled", res.Enabled)
 	d.Set("policy_engine_mode", res.PolicyEngineMode)
+	d.Set("user_matching_mode", res.UserMatchingMode.Get())
 
 	d.Set("pre_authentication_flow", res.PreAuthenticationFlow)
 	d.Set("issuer", res.Issuer)
@@ -187,7 +196,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 		d.Set("slo_url", res.SloUrl.Get())
 	}
 	d.Set("allow_idp_initiated", res.AllowIdpInitiated)
-	d.Set("name_id_policy", res.NameIdPolicy)
+	d.Set("name_id_policy", res.NameIdPolicy.Get())
 	d.Set("binding_type", res.BindingType)
 	if res.SigningKp.IsSet() {
 		d.Set("signing_kp", res.SigningKp.Get())

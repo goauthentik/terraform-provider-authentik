@@ -154,12 +154,8 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		r.SyncParentGroup.Set(stringToPointer(s.(string)))
 	}
 
-	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	r.PropertyMappings = &propertyMappings
-
-	propertyMappingsGroup := sliceToString(d.Get("property_mappings_group").([]interface{}))
-	r.PropertyMappingsGroup = &propertyMappingsGroup
-
+	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
+	r.PropertyMappingsGroup = sliceToString(d.Get("property_mappings_group").([]interface{}))
 	return &r
 }
 
@@ -208,9 +204,9 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 		d.Set("sync_parent_group", res.SyncParentGroup.Get())
 	}
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", stringListConsistentMerge(localMappings, *res.PropertyMappings))
+	d.Set("property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 	localGroupMappings := sliceToString(d.Get("property_mappings_group").([]interface{}))
-	d.Set("property_mappings_group", stringListConsistentMerge(localGroupMappings, *res.PropertyMappingsGroup))
+	d.Set("property_mappings_group", stringListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	return diags
 }
 

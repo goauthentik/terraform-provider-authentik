@@ -95,16 +95,9 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 	for _, userFieldsS := range d.Get("user_fields").([]interface{}) {
 		userFields = append(userFields, api.UserFieldsEnum(userFieldsS.(string)))
 	}
-	r.UserFields = &userFields
+	r.UserFields = userFields
 
-	sources := make([]string, 0)
-	for _, sourcesS := range d.Get("sources").([]interface{}) {
-		sources = append(sources, sourcesS.(string))
-	}
-	if len(sources) > 0 {
-		r.Sources = &sources
-	}
-
+	r.Sources = sliceToString(d.Get("sources").([]interface{}))
 	return &r
 }
 

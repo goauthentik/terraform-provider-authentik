@@ -59,6 +59,6 @@ func dataSourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface
 	d.Set("title", f.Title)
 	d.Set("name", f.Name)
 	d.Set("slug", f.Slug)
-	d.Set("designation", f.Designation)
+	d.Set("designation", f.Designation.Get())
 	return diags
 }

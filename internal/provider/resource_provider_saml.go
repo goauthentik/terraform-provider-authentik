@@ -126,10 +126,9 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 
 	binding := d.Get("sp_binding").(string)
 	j := api.SpBindingEnum(binding)
-	r.SpBinding = &j
+	r.SpBinding.Set(&j)
 
-	propertyMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	r.PropertyMappings = &propertyMappings
+	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
 
 	return &r
 }
@@ -163,12 +162,12 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	d.Set("name", res.Name)
 	d.Set("authorization_flow", res.AuthorizationFlow)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", stringListConsistentMerge(localMappings, *res.PropertyMappings))
+	d.Set("property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 
 	d.Set("acs_url", res.AcsUrl)
 	d.Set("audience", res.Audience)
 	d.Set("issuer", res.Issuer)
-	d.Set("sp_binding", res.SpBinding)
+	d.Set("sp_binding", res.SpBinding.Get())
 	d.Set("assertion_valid_not_before", res.AssertionValidNotBefore)
 	d.Set("assertion_valid_not_on_or_after", res.AssertionValidNotOnOrAfter)
 	d.Set("session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)
