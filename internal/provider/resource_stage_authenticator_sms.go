@@ -55,6 +55,11 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Optional:  true,
 				Sensitive: true,
 			},
+			"verify_only": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -76,6 +81,9 @@ func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.
 	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
+	}
+	if verify, verifySet := d.GetOk("verify_only"); verifySet {
+		r.VerifyOnly = boolToPointer(verify.(bool))
 	}
 	return &r
 }
@@ -110,6 +118,7 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 	d.Set("auth", res.Auth)
 	d.Set("auth_password", res.AuthPassword)
 	d.Set("auth_type", res.AuthType)
+	d.Set("verify_only", res.VerifyOnly)
 	if res.ConfigureFlow.IsSet() {
 		d.Set("configure_flow", res.ConfigureFlow.Get())
 	}

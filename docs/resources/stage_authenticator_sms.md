@@ -22,6 +22,7 @@ description: |-
 - `auth_type` (String) Defaults to `basic`.
 - `configure_flow` (String)
 - `sms_provider` (String) Defaults to `twilio`.
+- `verify_only` (Boolean) Defaults to `false`.
 
 ### Read-Only
 
