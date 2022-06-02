@@ -46,9 +46,10 @@ func resourceEventTransport() *schema.Resource {
 func resourceEventTransportSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.NotificationTransportRequest, diag.Diagnostics) {
 	m := api.NotificationTransportRequest{
 		Name:     d.Get("name").(string),
-		Mode:     api.NotificationTransportModeEnum(d.Get("mode").(string)),
 		SendOnce: boolToPointer(d.Get("send_once").(bool)),
 	}
+	mode := api.NotificationTransportModeEnum(d.Get("mode").(string))
+	m.Mode = &mode
 
 	if w, ok := d.Get("webhook_url").(string); ok {
 		m.WebhookUrl = &w
