@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -59,22 +61,44 @@ func resourceSourceOAuth() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+
 			"request_token_url": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
 			},
 			"authorization_url": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
 			},
 			"access_token_url": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Only required for OAuth1.",
 			},
 			"profile_url": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
 			},
+
+			"oidc_well_known_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Automatically configure source from OIDC well-known endpoint. URL is taken as is, and should end with `.well-known/openid-configuration`.",
+			},
+			"oidc_jwks_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Automatically configure JWKS if not specified by `oidc_well_known_url`.",
+			},
+			"oidc_jwks": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Manually configure JWKS keys for use with machine-to-machine authentication.",
+			},
+
 			"additional_scopes": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -97,7 +121,7 @@ func resourceSourceOAuth() *schema.Resource {
 	}
 }
 
-func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) *api.OAuthSourceRequest {
+func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSourceRequest, diag.Diagnostics) {
 	r := api.OAuthSourceRequest{
 		Name:    d.Get("name").(string),
 		Slug:    d.Get("slug").(string),
@@ -132,13 +156,32 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) *api.OAuthSourceR
 	if s, sok := d.GetOk("additional_scopes"); sok && s.(string) != "" {
 		r.AdditionalScopes = stringToPointer(s.(string))
 	}
-	return &r
+	if s, sok := d.GetOk("oidc_well_known_url"); sok && s.(string) != "" {
+		r.OidcWellKnownUrl = stringToPointer(s.(string))
+	}
+	if s, sok := d.GetOk("oidc_jwks_url"); sok && s.(string) != "" {
+		r.OidcJwksUrl = stringToPointer(s.(string))
+	}
+	if l, ok := d.Get("oidc_jwks").(string); ok {
+		if l != "" {
+			var c map[string]interface{}
+			err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
+			r.OidcJwks = c
+		}
+	}
+	return &r, nil
 }
 
 func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceSourceOAuthSchemaToSource(d)
+	r, diags := resourceSourceOAuthSchemaToSource(d)
+	if diags != nil {
+		return diags
+	}
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthCreate(ctx).OAuthSourceRequest(*r).Execute()
 	if err != nil {
@@ -186,12 +229,22 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 		d.Set("profile_url", res.ProfileUrl.Get())
 	}
 	d.Set("callback_uri", res.CallbackUrl)
+	d.Set("oidc_well_known_url", res.GetOidcWellKnownUrl())
+	d.Set("oidc_jwks_url", res.GetOidcJwksUrl())
+	b, err := json.Marshal(res.GetOidcJwks())
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	d.Set("oidc_jwks", b)
 	return diags
 }
 
 func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	app := resourceSourceOAuthSchemaToSource(d)
+	app, diags := resourceSourceOAuthSchemaToSource(d)
+	if diags != nil {
+		return diags
+	}
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthUpdate(ctx, d.Id()).OAuthSourceRequest(*app).Execute()
 	if err != nil {

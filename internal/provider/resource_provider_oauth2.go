@@ -81,6 +81,7 @@ func resourceProviderOAuth2() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+				Deprecated: "Will be removed in 2022.7, use `jwks_sources`.",
 			},
 			"sub_mode": {
 				Type:     schema.TypeString,
@@ -91,6 +92,15 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:     schema.TypeString,
 				Default:  api.ISSUERMODEENUM_PER_PROVIDER,
 				Optional: true,
+			},
+			"jwks_sources": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Default:  []string{},
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
 			},
 		},
 	}
@@ -130,6 +140,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	}
 
 	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
+
+	r.JwksSources = sliceToString(d.Get("jwks_sources").([]interface{}))
 	return &r
 }
 
@@ -180,6 +192,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	}
 	d.Set("sub_mode", res.SubMode.Get())
 	d.Set("token_validity", res.TokenValidity)
+	d.Set("jwks_sources", res.JwksSources)
 	return diags
 }
 
