@@ -97,6 +97,7 @@ func resourceSourceOAuth() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Manually configure JWKS keys for use with machine-to-machine authentication.",
+				Computed:    true,
 			},
 
 			"additional_scopes": {
@@ -235,7 +236,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("oidc_jwks", b)
+	d.Set("oidc_jwks", string(b))
 	return diags
 }
 
