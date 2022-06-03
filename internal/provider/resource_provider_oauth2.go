@@ -96,7 +96,6 @@ func resourceProviderOAuth2() *schema.Resource {
 			"jwks_sources": {
 				Type:     schema.TypeList,
 				Optional: true,
-				Default:  []string{},
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},

@@ -39,7 +39,7 @@ resource "authentik_application" "name" {
 - `client_type` (String) Defaults to `confidential`.
 - `include_claims_in_id_token` (Boolean) Defaults to `true`.
 - `issuer_mode` (String) Defaults to `per_provider`.
-- `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider. Defaults to `[]`.
+- `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
 - `property_mappings` (List of String)
 - `redirect_uris` (List of String)
 - `signing_key` (String)
