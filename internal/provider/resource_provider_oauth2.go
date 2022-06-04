@@ -191,7 +191,8 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	}
 	d.Set("sub_mode", res.SubMode.Get())
 	d.Set("token_validity", res.TokenValidity)
-	d.Set("jwks_sources", res.JwksSources)
+	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
+	d.Set("jwks_sources", stringListConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags
 }
 
