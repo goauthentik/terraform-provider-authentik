@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"sort"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -72,6 +73,9 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
+
+	sort.Strings(res.Fields)
+	sort.Strings(res.ValidationPolicies)
 
 	d.Set("name", res.Name)
 	d.Set("fields", res.Fields)
