@@ -55,6 +55,7 @@ resource "authentik_application" "name" {
 - `meta_icon` (String)
 - `meta_launch_url` (String)
 - `meta_publisher` (String)
+- `open_in_new_tab` (Boolean) Defaults to `false`.
 - `policy_engine_mode` (String) Defaults to `any`.
 - `protocol_provider` (Number)
 - `uuid` (String)

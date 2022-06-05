@@ -60,15 +60,21 @@ func resourceApplication() *schema.Resource {
 				Optional: true,
 				Default:  api.POLICYENGINEMODE_ANY,
 			},
+			"open_in_new_tab": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
 
 func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRequest {
 	m := api.ApplicationRequest{
-		Name:     d.Get("name").(string),
-		Slug:     d.Get("slug").(string),
-		Provider: api.NullableInt32{},
+		Name:         d.Get("name").(string),
+		Slug:         d.Get("slug").(string),
+		Provider:     api.NullableInt32{},
+		OpenInNewTab: boolToPointer(d.Get("open_in_new_tab").(bool)),
 	}
 
 	if p, pSet := d.GetOk("protocol_provider"); pSet {
@@ -132,6 +138,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	d.Set("name", res.Name)
 	d.Set("group", res.Group)
 	d.Set("slug", res.Slug)
+	d.Set("open_in_new_tab", res.OpenInNewTab)
 	d.Set("protocol_provider", 0)
 	if prov := res.Provider.Get(); prov != nil {
 		d.Set("protocol_provider", int(*prov))
