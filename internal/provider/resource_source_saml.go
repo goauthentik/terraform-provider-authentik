@@ -175,35 +175,35 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("slug", res.Slug)
-	d.Set("uuid", res.Pk)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "slug", res.Slug)
+	setWrapper(d, "uuid", res.Pk)
 
 	if res.AuthenticationFlow.IsSet() {
-		d.Set("authentication_flow", res.AuthenticationFlow.Get())
+		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		d.Set("enrollment_flow", res.EnrollmentFlow.Get())
+		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	d.Set("enabled", res.Enabled)
-	d.Set("policy_engine_mode", res.PolicyEngineMode)
-	d.Set("user_matching_mode", res.UserMatchingMode.Get())
+	setWrapper(d, "enabled", res.Enabled)
+	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	setWrapper(d, "user_matching_mode", res.UserMatchingMode.Get())
 
-	d.Set("pre_authentication_flow", res.PreAuthenticationFlow)
-	d.Set("issuer", res.Issuer)
-	d.Set("sso_url", res.SsoUrl)
+	setWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
+	setWrapper(d, "issuer", res.Issuer)
+	setWrapper(d, "sso_url", res.SsoUrl)
 	if res.SloUrl.IsSet() {
-		d.Set("slo_url", res.SloUrl.Get())
+		setWrapper(d, "slo_url", res.SloUrl.Get())
 	}
-	d.Set("allow_idp_initiated", res.AllowIdpInitiated)
-	d.Set("name_id_policy", res.NameIdPolicy.Get())
-	d.Set("binding_type", res.BindingType)
+	setWrapper(d, "allow_idp_initiated", res.AllowIdpInitiated)
+	setWrapper(d, "name_id_policy", res.NameIdPolicy.Get())
+	setWrapper(d, "binding_type", res.BindingType)
 	if res.SigningKp.IsSet() {
-		d.Set("signing_kp", res.SigningKp.Get())
+		setWrapper(d, "signing_kp", res.SigningKp.Get())
 	}
-	d.Set("digest_algorithm", res.DigestAlgorithm)
-	d.Set("signature_algorithm", res.SignatureAlgorithm)
-	d.Set("temporary_user_delete_after", res.TemporaryUserDeleteAfter)
+	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
+	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
+	setWrapper(d, "temporary_user_delete_after", res.TemporaryUserDeleteAfter)
 	return diags
 }
 

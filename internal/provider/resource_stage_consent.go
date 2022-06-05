@@ -76,9 +76,9 @@ func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m int
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("mode", res.Mode)
-	d.Set("consent_expire_in", res.ConsentExpireIn)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "mode", res.Mode)
+	setWrapper(d, "consent_expire_in", res.ConsentExpireIn)
 	return diags
 }
 

@@ -115,17 +115,17 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("identifier", res.Identifier)
-	d.Set("user", res.User)
-	d.Set("description", res.Description)
-	d.Set("intent", res.Intent)
-	d.Set("expires_in", time.Until(*res.Expires).Seconds())
+	setWrapper(d, "identifier", res.Identifier)
+	setWrapper(d, "user", res.User)
+	setWrapper(d, "description", res.Description)
+	setWrapper(d, "intent", res.Intent)
+	setWrapper(d, "expires_in", time.Until(*res.Expires).Seconds())
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
 		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return httpToDiag(d, hr, err)
 		}
-		d.Set("key", res.Key)
+		setWrapper(d, "key", res.Key)
 	}
 	return diags
 }

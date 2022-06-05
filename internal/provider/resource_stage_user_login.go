@@ -62,8 +62,8 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("session_duration", res.SessionDuration)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "session_duration", res.SessionDuration)
 	return diags
 }
 

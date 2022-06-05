@@ -123,16 +123,16 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m i
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name.Get())
-	d.Set("execution_logging", res.ExecutionLogging)
-	d.Set("password_field", res.PasswordField)
-	d.Set("error_message", res.ErrorMessage)
-	d.Set("amount_uppercase", res.AmountUppercase)
-	d.Set("amount_lowercase", res.AmountLowercase)
-	d.Set("amount_symbols", res.AmountSymbols)
-	d.Set("amount_digits", res.AmountDigits)
-	d.Set("length_min", res.LengthMin)
-	d.Set("symbol_charset", res.SymbolCharset)
+	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "execution_logging", res.ExecutionLogging)
+	setWrapper(d, "password_field", res.PasswordField)
+	setWrapper(d, "error_message", res.ErrorMessage)
+	setWrapper(d, "amount_uppercase", res.AmountUppercase)
+	setWrapper(d, "amount_lowercase", res.AmountLowercase)
+	setWrapper(d, "amount_symbols", res.AmountSymbols)
+	setWrapper(d, "amount_digits", res.AmountDigits)
+	setWrapper(d, "length_min", res.LengthMin)
+	setWrapper(d, "symbol_charset", res.SymbolCharset)
 	return diags
 }
 

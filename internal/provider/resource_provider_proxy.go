@@ -142,18 +142,18 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("authorization_flow", res.AuthorizationFlow)
-	d.Set("internal_host", res.InternalHost)
-	d.Set("external_host", res.ExternalHost)
-	d.Set("internal_host_ssl_validation", res.InternalHostSslValidation)
-	d.Set("skip_path_regex", res.SkipPathRegex)
-	d.Set("basic_auth_enabled", res.BasicAuthEnabled)
-	d.Set("basic_auth_username_attribute", res.BasicAuthUserAttribute)
-	d.Set("basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
-	d.Set("mode", res.Mode.Get())
-	d.Set("cookie_domain", res.CookieDomain)
-	d.Set("token_validity", res.TokenValidity)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	setWrapper(d, "internal_host", res.InternalHost)
+	setWrapper(d, "external_host", res.ExternalHost)
+	setWrapper(d, "internal_host_ssl_validation", res.InternalHostSslValidation)
+	setWrapper(d, "skip_path_regex", res.SkipPathRegex)
+	setWrapper(d, "basic_auth_enabled", res.BasicAuthEnabled)
+	setWrapper(d, "basic_auth_username_attribute", res.BasicAuthUserAttribute)
+	setWrapper(d, "basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
+	setWrapper(d, "mode", res.Mode.Get())
+	setWrapper(d, "cookie_domain", res.CookieDomain)
+	setWrapper(d, "token_validity", res.TokenValidity)
 	return diags
 }
 

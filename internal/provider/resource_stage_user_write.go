@@ -70,9 +70,9 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("create_users_as_inactive", res.CreateUsersAsInactive)
-	d.Set("create_users_group", res.CreateUsersGroup.Get())
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "create_users_as_inactive", res.CreateUsersAsInactive)
+	setWrapper(d, "create_users_group", res.CreateUsersGroup.Get())
 	return diags
 }
 

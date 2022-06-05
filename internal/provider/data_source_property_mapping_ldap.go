@@ -87,14 +87,14 @@ func dataSourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		d.Set("ids", ids)
+		setWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		d.Set("name", f.Name)
-		d.Set("name", f.Name)
-		d.Set("expression", f.Expression)
-		d.Set("object_field", f.ObjectField)
+		setWrapper(d, "name", f.Name)
+		setWrapper(d, "name", f.Name)
+		setWrapper(d, "expression", f.Expression)
+		setWrapper(d, "object_field", f.ObjectField)
 	}
 	return diags
 }

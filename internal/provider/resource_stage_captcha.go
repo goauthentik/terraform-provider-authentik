@@ -67,8 +67,8 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("public_key", res.PublicKey)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "public_key", res.PublicKey)
 	return diags
 }
 

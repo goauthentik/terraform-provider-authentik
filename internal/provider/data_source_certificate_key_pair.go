@@ -71,21 +71,21 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 	f := res.Results[0]
 
 	d.SetId(f.Pk)
-	d.Set("name", f.Name)
-	d.Set("expiry", f.CertExpiry.String())
-	d.Set("subject", f.CertSubject)
-	d.Set("fingerprint1", f.FingerprintSha1)
-	d.Set("fingerprint256", f.FingerprintSha256)
+	setWrapper(d, "name", f.Name)
+	setWrapper(d, "expiry", f.CertExpiry.String())
+	setWrapper(d, "subject", f.CertSubject)
+	setWrapper(d, "fingerprint1", f.FingerprintSha1)
+	setWrapper(d, "fingerprint256", f.FingerprintSha256)
 
 	rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
-	d.Set("certificate_data", rc.Data+"\n")
+	setWrapper(d, "certificate_data", rc.Data+"\n")
 
 	rk, _, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
 	if err == nil {
-		d.Set("key_data", rk.Data+"\n")
+		setWrapper(d, "key_data", rk.Data+"\n")
 	}
 	return diags
 }

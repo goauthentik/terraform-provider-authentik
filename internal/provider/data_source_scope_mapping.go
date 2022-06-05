@@ -91,14 +91,14 @@ func dataSourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m i
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		d.Set("ids", ids)
+		setWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		d.Set("name", f.Name)
-		d.Set("expression", f.Expression)
-		d.Set("scope_name", f.ScopeName)
-		d.Set("description", f.Description)
+		setWrapper(d, "name", f.Name)
+		setWrapper(d, "expression", f.Expression)
+		setWrapper(d, "scope_name", f.ScopeName)
+		setWrapper(d, "description", f.Description)
 	}
 	return diags
 }

@@ -62,8 +62,8 @@ func resourceNotificationPropertyMappingRead(ctx context.Context, d *schema.Reso
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("expression", res.Expression)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "expression", res.Expression)
 	return diags
 }
 

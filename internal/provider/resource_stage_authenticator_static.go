@@ -70,10 +70,10 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("token_count", res.TokenCount)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "token_count", res.TokenCount)
 	if res.ConfigureFlow.IsSet() {
-		d.Set("configure_flow", res.ConfigureFlow.Get())
+		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

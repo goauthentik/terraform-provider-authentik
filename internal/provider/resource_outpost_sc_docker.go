@@ -90,14 +90,14 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("url", res.Url)
-	d.Set("local", res.Local)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "url", res.Url)
+	setWrapper(d, "local", res.Local)
 	if res.TlsVerification.IsSet() {
-		d.Set("tls_verification", res.TlsVerification.Get())
+		setWrapper(d, "tls_verification", res.TlsVerification.Get())
 	}
 	if res.TlsAuthentication.IsSet() {
-		d.Set("tls_authentication", res.TlsAuthentication.Get())
+		setWrapper(d, "tls_authentication", res.TlsAuthentication.Get())
 	}
 	return diags
 }

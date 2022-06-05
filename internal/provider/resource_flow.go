@@ -113,16 +113,16 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("uuid", res.Pk)
-	d.Set("name", res.Name)
-	d.Set("slug", res.Slug)
-	d.Set("title", res.Title)
-	d.Set("designation", res.Designation.Get())
-	d.Set("layout", res.Layout)
-	d.Set("policy_engine_mode", res.PolicyEngineMode)
-	d.Set("compatibility_mode", res.CompatibilityMode)
+	setWrapper(d, "uuid", res.Pk)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "slug", res.Slug)
+	setWrapper(d, "title", res.Title)
+	setWrapper(d, "designation", res.Designation.Get())
+	setWrapper(d, "layout", res.Layout)
+	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	setWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	if _, bg := d.GetOk("background"); bg {
-		d.Set("background", res.Background)
+		setWrapper(d, "background", res.Background)
 	}
 	return diags
 }

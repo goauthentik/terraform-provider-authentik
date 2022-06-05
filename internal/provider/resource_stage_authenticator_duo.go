@@ -80,11 +80,11 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("client_id", res.ClientId)
-	d.Set("api_hostname", res.ApiHostname)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "client_id", res.ClientId)
+	setWrapper(d, "api_hostname", res.ApiHostname)
 	if res.ConfigureFlow.IsSet() {
-		d.Set("configure_flow", res.ConfigureFlow.Get())
+		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

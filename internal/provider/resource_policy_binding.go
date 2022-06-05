@@ -116,20 +116,20 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("target", res.Target)
+	setWrapper(d, "target", res.Target)
 	if res.Policy.IsSet() {
-		d.Set("policy", res.Policy.Get())
+		setWrapper(d, "policy", res.Policy.Get())
 	}
 	if res.User.IsSet() {
-		d.Set("user", res.User.Get())
+		setWrapper(d, "user", res.User.Get())
 	}
 	if res.Group.IsSet() {
-		d.Set("group", res.Group.Get())
+		setWrapper(d, "group", res.Group.Get())
 	}
-	d.Set("order", res.Order)
-	d.Set("negate", res.Negate)
-	d.Set("enabled", res.Enabled)
-	d.Set("timeout", res.Timeout)
+	setWrapper(d, "order", res.Order)
+	setWrapper(d, "negate", res.Negate)
+	setWrapper(d, "enabled", res.Enabled)
+	setWrapper(d, "timeout", res.Timeout)
 	return diags
 }
 

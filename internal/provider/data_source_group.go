@@ -50,7 +50,7 @@ func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	f := res.Results[0]
 	d.SetId(f.Pk)
-	d.Set("name", f.Name)
-	d.Set("is_superuser", f.IsSuperuser)
+	setWrapper(d, "name", f.Name)
+	setWrapper(d, "is_superuser", f.IsSuperuser)
 	return diags
 }

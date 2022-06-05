@@ -56,7 +56,7 @@ func resourceStageUserDeleteRead(ctx context.Context, d *schema.ResourceData, m 
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
+	setWrapper(d, "name", res.Name)
 	return diags
 }
 

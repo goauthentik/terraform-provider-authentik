@@ -88,10 +88,10 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("group", res.Group.Get())
-	d.Set("transports", res.Transports)
-	d.Set("severity", res.Severity.Get())
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "group", res.Group.Get())
+	setWrapper(d, "transports", res.Transports)
+	setWrapper(d, "severity", res.Severity.Get())
 	return diags
 }
 

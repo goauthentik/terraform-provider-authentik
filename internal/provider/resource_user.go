@@ -113,17 +113,17 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("username", res.Username)
-	d.Set("email", res.Email)
-	d.Set("is_active", res.IsActive)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "username", res.Username)
+	setWrapper(d, "email", res.Email)
+	setWrapper(d, "is_active", res.IsActive)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("attributes", string(b))
+	setWrapper(d, "attributes", string(b))
 	localGroups := sliceToString(d.Get("groups").([]interface{}))
-	d.Set("groups", stringListConsistentMerge(localGroups, res.Groups))
+	setWrapper(d, "groups", stringListConsistentMerge(localGroups, res.Groups))
 	return diags
 }
 

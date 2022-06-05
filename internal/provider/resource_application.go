@@ -134,22 +134,22 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	d.SetId(res.Slug)
-	d.Set("uuid", res.Pk)
-	d.Set("name", res.Name)
-	d.Set("group", res.Group)
-	d.Set("slug", res.Slug)
-	d.Set("open_in_new_tab", res.OpenInNewTab)
-	d.Set("protocol_provider", 0)
+	setWrapper(d, "uuid", res.Pk)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "group", res.Group)
+	setWrapper(d, "slug", res.Slug)
+	setWrapper(d, "open_in_new_tab", res.OpenInNewTab)
+	setWrapper(d, "protocol_provider", 0)
 	if prov := res.Provider.Get(); prov != nil {
-		d.Set("protocol_provider", int(*prov))
+		setWrapper(d, "protocol_provider", int(*prov))
 	}
-	d.Set("meta_launch_url", res.MetaLaunchUrl)
+	setWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
 	if res.MetaIcon.IsSet() {
-		d.Set("meta_icon", res.MetaIcon.Get())
+		setWrapper(d, "meta_icon", res.MetaIcon.Get())
 	}
-	d.Set("meta_description", res.MetaDescription)
-	d.Set("meta_publisher", res.MetaPublisher)
-	d.Set("policy_engine_mode", res.PolicyEngineMode)
+	setWrapper(d, "meta_description", res.MetaDescription)
+	setWrapper(d, "meta_publisher", res.MetaPublisher)
+	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	return diags
 }
 

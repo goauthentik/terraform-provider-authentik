@@ -87,11 +87,11 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("mode", res.Mode)
-	d.Set("send_once", res.SendOnce)
-	d.Set("webhook_url", res.WebhookUrl)
-	d.Set("webhook_mapping", res.WebhookMapping.Get())
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "mode", res.Mode)
+	setWrapper(d, "send_once", res.SendOnce)
+	setWrapper(d, "webhook_url", res.WebhookUrl)
+	setWrapper(d, "webhook_mapping", res.WebhookMapping.Get())
 	return diags
 }
 

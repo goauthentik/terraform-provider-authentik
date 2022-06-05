@@ -170,29 +170,29 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("access_code_validity", res.AccessCodeValidity)
-	d.Set("authorization_flow", res.AuthorizationFlow)
-	d.Set("client_id", res.ClientId)
-	d.Set("client_secret", res.ClientSecret)
-	d.Set("client_type", res.ClientType.Get())
-	d.Set("include_claims_in_id_token", res.IncludeClaimsInIdToken)
-	d.Set("issuer_mode", res.IssuerMode.Get())
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
+	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	setWrapper(d, "client_id", res.ClientId)
+	setWrapper(d, "client_secret", res.ClientSecret)
+	setWrapper(d, "client_type", res.ClientType.Get())
+	setWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
+	setWrapper(d, "issuer_mode", res.IssuerMode.Get())
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
+	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 	if stringPointerResolve(res.RedirectUris) != "" {
-		d.Set("redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
+		setWrapper(d, "redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
 	} else {
-		d.Set("redirect_uris", []string{})
+		setWrapper(d, "redirect_uris", []string{})
 	}
-	d.Set("verification_keys", res.GetVerificationKeys())
+	setWrapper(d, "verification_keys", res.GetVerificationKeys())
 	if res.SigningKey.IsSet() {
-		d.Set("signing_key", res.SigningKey.Get())
+		setWrapper(d, "signing_key", res.SigningKey.Get())
 	}
-	d.Set("sub_mode", res.SubMode.Get())
-	d.Set("token_validity", res.TokenValidity)
+	setWrapper(d, "sub_mode", res.SubMode.Get())
+	setWrapper(d, "token_validity", res.TokenValidity)
 	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
-	d.Set("jwks_sources", stringListConsistentMerge(localJWKSSources, res.JwksSources))
+	setWrapper(d, "jwks_sources", stringListConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags
 }
 

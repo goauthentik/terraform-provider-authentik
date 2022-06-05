@@ -74,11 +74,11 @@ func resourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("expression", res.Expression)
-	d.Set("saml_name", res.SamlName)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "expression", res.Expression)
+	setWrapper(d, "saml_name", res.SamlName)
 	if res.FriendlyName.IsSet() {
-		d.Set("friendly_name", res.FriendlyName.Get())
+		setWrapper(d, "friendly_name", res.FriendlyName.Get())
 	}
 	return diags
 }

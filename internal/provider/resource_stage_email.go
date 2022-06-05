@@ -155,19 +155,19 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m inter
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("use_global_settings", res.UseGlobalSettings)
-	d.Set("host", res.Host)
-	d.Set("port", res.Port)
-	d.Set("username", res.Username)
-	d.Set("use_tls", res.UseTls)
-	d.Set("use_ssl", res.UseSsl)
-	d.Set("timeout", res.Timeout)
-	d.Set("from_address", res.FromAddress)
-	d.Set("token_expiry", res.TokenExpiry)
-	d.Set("subject", res.Subject)
-	d.Set("template", res.Template)
-	d.Set("activate_user_on_success", res.ActivateUserOnSuccess)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "use_global_settings", res.UseGlobalSettings)
+	setWrapper(d, "host", res.Host)
+	setWrapper(d, "port", res.Port)
+	setWrapper(d, "username", res.Username)
+	setWrapper(d, "use_tls", res.UseTls)
+	setWrapper(d, "use_ssl", res.UseSsl)
+	setWrapper(d, "timeout", res.Timeout)
+	setWrapper(d, "from_address", res.FromAddress)
+	setWrapper(d, "token_expiry", res.TokenExpiry)
+	setWrapper(d, "subject", res.Subject)
+	setWrapper(d, "template", res.Template)
+	setWrapper(d, "activate_user_on_success", res.ActivateUserOnSuccess)
 	return diags
 }
 

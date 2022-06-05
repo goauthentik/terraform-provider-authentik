@@ -11,6 +11,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+func setWrapper(d *schema.ResourceData, key string, data interface{}) {
+	err := d.Set(key, data)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func diffSuppressExpression(k, old, new string, d *schema.ResourceData) bool {
 	return strings.TrimSuffix(new, "\n") == old
 }

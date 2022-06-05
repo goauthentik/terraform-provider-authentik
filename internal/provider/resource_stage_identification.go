@@ -124,24 +124,24 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("user_fields", res.UserFields)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "user_fields", res.UserFields)
 	if res.PasswordStage.IsSet() {
-		d.Set("password_stage", res.PasswordStage.Get())
+		setWrapper(d, "password_stage", res.PasswordStage.Get())
 	}
-	d.Set("case_insensitive_matching", res.CaseInsensitiveMatching)
-	d.Set("show_matched_user", res.ShowMatchedUser)
-	d.Set("show_source_labels", res.ShowSourceLabels)
+	setWrapper(d, "case_insensitive_matching", res.CaseInsensitiveMatching)
+	setWrapper(d, "show_matched_user", res.ShowMatchedUser)
+	setWrapper(d, "show_source_labels", res.ShowSourceLabels)
 	if res.EnrollmentFlow.IsSet() {
-		d.Set("enrollment_flow", res.EnrollmentFlow.Get())
+		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
 	if res.RecoveryFlow.IsSet() {
-		d.Set("recovery_flow", res.RecoveryFlow.Get())
+		setWrapper(d, "recovery_flow", res.RecoveryFlow.Get())
 	}
 	if res.PasswordlessFlow.IsSet() {
-		d.Set("passwordless_flow", res.PasswordlessFlow.Get())
+		setWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
 	}
-	d.Set("sources", res.Sources)
+	setWrapper(d, "sources", res.Sources)
 	return diags
 }
 

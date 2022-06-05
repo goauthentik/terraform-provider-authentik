@@ -64,9 +64,9 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
+	setWrapper(d, "name", res.Name)
 	if res.ConfigureFlow.IsSet() {
-		d.Set("configure_flow", res.ConfigureFlow.Get())
+		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

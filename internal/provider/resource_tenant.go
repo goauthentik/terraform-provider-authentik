@@ -173,34 +173,34 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("domain", res.Domain)
-	d.Set("branding_title", res.BrandingTitle)
-	d.Set("branding_logo", res.BrandingLogo)
-	d.Set("branding_favicon", res.BrandingFavicon)
+	setWrapper(d, "domain", res.Domain)
+	setWrapper(d, "branding_title", res.BrandingTitle)
+	setWrapper(d, "branding_logo", res.BrandingLogo)
+	setWrapper(d, "branding_favicon", res.BrandingFavicon)
 	if res.FlowAuthentication.IsSet() {
-		d.Set("flow_authentication", res.FlowAuthentication.Get())
+		setWrapper(d, "flow_authentication", res.FlowAuthentication.Get())
 	}
 	if res.FlowInvalidation.IsSet() {
-		d.Set("flow_invalidation", res.FlowInvalidation.Get())
+		setWrapper(d, "flow_invalidation", res.FlowInvalidation.Get())
 	}
 	if res.FlowRecovery.IsSet() {
-		d.Set("flow_recovery", res.FlowRecovery.Get())
+		setWrapper(d, "flow_recovery", res.FlowRecovery.Get())
 	}
 	if res.FlowUnenrollment.IsSet() {
-		d.Set("flow_unenrollment", res.FlowUnenrollment.Get())
+		setWrapper(d, "flow_unenrollment", res.FlowUnenrollment.Get())
 	}
 	if res.FlowUserSettings.IsSet() {
-		d.Set("flow_user_settings", res.FlowUserSettings.Get())
+		setWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
 	}
-	d.Set("event_retention", res.EventRetention)
+	setWrapper(d, "event_retention", res.EventRetention)
 	if res.WebCertificate.IsSet() {
-		d.Set("web_certificate", res.WebCertificate.Get())
+		setWrapper(d, "web_certificate", res.WebCertificate.Get())
 	}
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("attributes", string(b))
+	setWrapper(d, "attributes", string(b))
 	return diags
 }
 
