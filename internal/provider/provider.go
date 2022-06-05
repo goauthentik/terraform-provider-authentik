@@ -115,6 +115,7 @@ func Provider(version string, testing bool) *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"authentik_certificate_key_pair":  td(dataSourceCertificateKeyPair),
 			"authentik_flow":                  td(dataSourceFlow),
+			"authentik_source":                td(dataSourceSource),
 			"authentik_group":                 td(dataSourceGroup),
 			"authentik_property_mapping_ldap": td(dataSourceLDAPPropertyMapping),
 			"authentik_property_mapping_saml": td(dataSourceSAMLPropertyMapping),
