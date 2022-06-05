@@ -74,8 +74,10 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	d.Set("name", res.Name)
-	d.Set("fields", res.Fields)
-	d.Set("validation_policies", res.ValidationPolicies)
+	fields := sliceToString(d.Get("fields").([]interface{}))
+	d.Set("fields", stringListConsistentMerge(fields, res.Fields))
+	validationPolicies := sliceToString(d.Get("validation_policies").([]interface{}))
+	d.Set("validation_policies", stringListConsistentMerge(validationPolicies, res.ValidationPolicies))
 	return diags
 }
 
