@@ -201,42 +201,42 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("slug", res.Slug)
-	d.Set("uuid", res.Pk)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "slug", res.Slug)
+	setWrapper(d, "uuid", res.Pk)
 
 	if res.AuthenticationFlow.IsSet() {
-		d.Set("authentication_flow", res.AuthenticationFlow.Get())
+		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		d.Set("enrollment_flow", res.EnrollmentFlow.Get())
+		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	d.Set("enabled", res.Enabled)
-	d.Set("policy_engine_mode", res.PolicyEngineMode)
-	d.Set("user_matching_mode", res.UserMatchingMode.Get())
-	d.Set("additional_scopes", res.AdditionalScopes)
-	d.Set("provider_type", res.ProviderType)
-	d.Set("consumer_key", res.ConsumerKey)
+	setWrapper(d, "enabled", res.Enabled)
+	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	setWrapper(d, "user_matching_mode", res.UserMatchingMode.Get())
+	setWrapper(d, "additional_scopes", res.AdditionalScopes)
+	setWrapper(d, "provider_type", res.ProviderType)
+	setWrapper(d, "consumer_key", res.ConsumerKey)
 	if res.RequestTokenUrl.IsSet() {
-		d.Set("request_token_url", res.RequestTokenUrl.Get())
+		setWrapper(d, "request_token_url", res.RequestTokenUrl.Get())
 	}
 	if res.AuthorizationUrl.IsSet() {
-		d.Set("authorization_url", res.AuthorizationUrl.Get())
+		setWrapper(d, "authorization_url", res.AuthorizationUrl.Get())
 	}
 	if res.AccessTokenUrl.IsSet() {
-		d.Set("access_token_url", res.AccessTokenUrl.Get())
+		setWrapper(d, "access_token_url", res.AccessTokenUrl.Get())
 	}
 	if res.ProfileUrl.IsSet() {
-		d.Set("profile_url", res.ProfileUrl.Get())
+		setWrapper(d, "profile_url", res.ProfileUrl.Get())
 	}
-	d.Set("callback_uri", res.CallbackUrl)
-	d.Set("oidc_well_known_url", res.GetOidcWellKnownUrl())
-	d.Set("oidc_jwks_url", res.GetOidcJwksUrl())
+	setWrapper(d, "callback_uri", res.CallbackUrl)
+	setWrapper(d, "oidc_well_known_url", res.GetOidcWellKnownUrl())
+	setWrapper(d, "oidc_jwks_url", res.GetOidcJwksUrl())
 	b, err := json.Marshal(res.GetOidcJwks())
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("oidc_jwks", string(b))
+	setWrapper(d, "oidc_jwks", string(b))
 	return diags
 }
 

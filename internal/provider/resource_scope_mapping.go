@@ -74,10 +74,10 @@ func resourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m int
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("expression", res.Expression)
-	d.Set("scope_name", res.ScopeName)
-	d.Set("description", res.Description)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "expression", res.Expression)
+	setWrapper(d, "scope_name", res.ScopeName)
+	setWrapper(d, "description", res.Description)
 	return diags
 }
 

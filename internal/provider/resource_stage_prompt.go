@@ -73,11 +73,11 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
+	setWrapper(d, "name", res.Name)
 	fields := sliceToString(d.Get("fields").([]interface{}))
-	d.Set("fields", stringListConsistentMerge(fields, res.Fields))
+	setWrapper(d, "fields", stringListConsistentMerge(fields, res.Fields))
 	validationPolicies := sliceToString(d.Get("validation_policies").([]interface{}))
-	d.Set("validation_policies", stringListConsistentMerge(validationPolicies, res.ValidationPolicies))
+	setWrapper(d, "validation_policies", stringListConsistentMerge(validationPolicies, res.ValidationPolicies))
 	return diags
 }
 

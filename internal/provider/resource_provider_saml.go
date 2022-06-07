@@ -159,29 +159,29 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("authorization_flow", res.AuthorizationFlow)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	d.Set("property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
+	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 
-	d.Set("acs_url", res.AcsUrl)
-	d.Set("audience", res.Audience)
-	d.Set("issuer", res.Issuer)
-	d.Set("sp_binding", res.SpBinding.Get())
-	d.Set("assertion_valid_not_before", res.AssertionValidNotBefore)
-	d.Set("assertion_valid_not_on_or_after", res.AssertionValidNotOnOrAfter)
-	d.Set("session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)
+	setWrapper(d, "acs_url", res.AcsUrl)
+	setWrapper(d, "audience", res.Audience)
+	setWrapper(d, "issuer", res.Issuer)
+	setWrapper(d, "sp_binding", res.SpBinding.Get())
+	setWrapper(d, "assertion_valid_not_before", res.AssertionValidNotBefore)
+	setWrapper(d, "assertion_valid_not_on_or_after", res.AssertionValidNotOnOrAfter)
+	setWrapper(d, "session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)
 	if res.NameIdMapping.IsSet() {
-		d.Set("name_id_mapping", res.NameIdMapping.Get())
+		setWrapper(d, "name_id_mapping", res.NameIdMapping.Get())
 	}
 	if res.SigningKp.IsSet() {
-		d.Set("signing_kp", res.SigningKp.Get())
+		setWrapper(d, "signing_kp", res.SigningKp.Get())
 	}
 	if res.VerificationKp.IsSet() {
-		d.Set("verification_kp", res.VerificationKp.Get())
+		setWrapper(d, "verification_kp", res.VerificationKp.Get())
 	}
-	d.Set("digest_algorithm", res.DigestAlgorithm)
-	d.Set("signature_algorithm", res.SignatureAlgorithm)
+	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
+	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
 
 	return diags
 }

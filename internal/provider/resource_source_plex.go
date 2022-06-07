@@ -126,25 +126,25 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("slug", res.Slug)
-	d.Set("uuid", res.Pk)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "slug", res.Slug)
+	setWrapper(d, "uuid", res.Pk)
 
 	if res.AuthenticationFlow.IsSet() {
-		d.Set("authentication_flow", res.AuthenticationFlow.Get())
+		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		d.Set("enrollment_flow", res.EnrollmentFlow.Get())
+		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	d.Set("enabled", res.Enabled)
-	d.Set("policy_engine_mode", res.PolicyEngineMode)
-	d.Set("user_matching_mode", res.UserMatchingMode.Get())
+	setWrapper(d, "enabled", res.Enabled)
+	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	setWrapper(d, "user_matching_mode", res.UserMatchingMode.Get())
 
-	d.Set("client_id", res.ClientId)
+	setWrapper(d, "client_id", res.ClientId)
 	localServers := sliceToString(d.Get("allowed_servers").([]interface{}))
-	d.Set("allowed_servers", stringListConsistentMerge(localServers, res.AllowedServers))
-	d.Set("allow_friends", res.AllowFriends)
-	d.Set("plex_token", res.PlexToken)
+	setWrapper(d, "allowed_servers", stringListConsistentMerge(localServers, res.AllowedServers))
+	setWrapper(d, "allow_friends", res.AllowFriends)
+	setWrapper(d, "plex_token", res.PlexToken)
 	return diags
 }
 

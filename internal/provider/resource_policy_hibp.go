@@ -79,10 +79,10 @@ func resourcePolicyHaveIBeenPwendRead(ctx context.Context, d *schema.ResourceDat
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name.Get())
-	d.Set("execution_logging", res.ExecutionLogging)
-	d.Set("password_field", res.PasswordField)
-	d.Set("allowed_count", res.AllowedCount)
+	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "execution_logging", res.ExecutionLogging)
+	setWrapper(d, "password_field", res.PasswordField)
+	setWrapper(d, "allowed_count", res.AllowedCount)
 	return diags
 }
 

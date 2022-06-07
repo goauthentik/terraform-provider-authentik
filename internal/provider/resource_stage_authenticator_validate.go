@@ -95,13 +95,13 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("not_configured_action", res.NotConfiguredAction)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "not_configured_action", res.NotConfiguredAction)
 	if res.ConfigurationStages != nil {
-		d.Set("configuration_stages", res.ConfigurationStages)
+		setWrapper(d, "configuration_stages", res.ConfigurationStages)
 	}
-	d.Set("device_classes", res.DeviceClasses)
-	d.Set("last_auth_threshold", res.LastAuthThreshold)
+	setWrapper(d, "device_classes", res.DeviceClasses)
+	setWrapper(d, "last_auth_threshold", res.LastAuthThreshold)
 	return diags
 }
 

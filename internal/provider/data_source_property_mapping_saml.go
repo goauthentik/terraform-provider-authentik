@@ -96,15 +96,15 @@ func dataSourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		d.Set("ids", ids)
+		setWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		d.Set("name", f.Name)
-		d.Set("expression", f.Expression)
-		d.Set("saml_name", f.SamlName)
+		setWrapper(d, "name", f.Name)
+		setWrapper(d, "expression", f.Expression)
+		setWrapper(d, "saml_name", f.SamlName)
 		if f.FriendlyName.IsSet() {
-			d.Set("friendly_name", f.FriendlyName.Get())
+			setWrapper(d, "friendly_name", f.FriendlyName.Get())
 		}
 	}
 	return diags

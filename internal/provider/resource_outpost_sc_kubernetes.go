@@ -84,13 +84,13 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("local", res.Local)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "local", res.Local)
 	b, err := json.Marshal(res.Kubeconfig)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("kubeconfig", string(b))
+	setWrapper(d, "kubeconfig", string(b))
 	return diags
 }
 

@@ -87,11 +87,11 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name.Get())
-	d.Set("execution_logging", res.ExecutionLogging)
-	d.Set("action", res.Action.Get())
-	d.Set("client_ip", res.ClientIp)
-	d.Set("app", res.App.Get())
+	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "execution_logging", res.ExecutionLogging)
+	setWrapper(d, "action", res.Action.Get())
+	setWrapper(d, "client_ip", res.ClientIp)
+	setWrapper(d, "app", res.App.Get())
 	return diags
 }
 

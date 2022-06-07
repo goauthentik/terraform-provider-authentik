@@ -116,20 +116,20 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("bind_flow", res.AuthorizationFlow)
-	d.Set("base_dn", res.BaseDn)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "bind_flow", res.AuthorizationFlow)
+	setWrapper(d, "base_dn", res.BaseDn)
 	if res.SearchGroup.IsSet() {
-		d.Set("search_group", res.SearchGroup.Get())
+		setWrapper(d, "search_group", res.SearchGroup.Get())
 	}
 	if res.Certificate.IsSet() {
-		d.Set("certificate", res.Certificate.Get())
+		setWrapper(d, "certificate", res.Certificate.Get())
 	}
-	d.Set("tls_server_name", res.TlsServerName)
-	d.Set("uid_start_number", res.UidStartNumber)
-	d.Set("gid_start_number", res.GidStartNumber)
-	d.Set("bind_mode", res.BindMode)
-	d.Set("search_mode", res.SearchMode)
+	setWrapper(d, "tls_server_name", res.TlsServerName)
+	setWrapper(d, "uid_start_number", res.UidStartNumber)
+	setWrapper(d, "gid_start_number", res.GidStartNumber)
+	setWrapper(d, "bind_mode", res.BindMode)
+	setWrapper(d, "search_mode", res.SearchMode)
 	return diags
 }
 

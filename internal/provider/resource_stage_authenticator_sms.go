@@ -111,16 +111,16 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("sms_provider", res.Provider)
-	d.Set("from_number", res.FromNumber)
-	d.Set("account_sid", res.AccountSid)
-	d.Set("auth", res.Auth)
-	d.Set("auth_password", res.AuthPassword)
-	d.Set("auth_type", res.AuthType)
-	d.Set("verify_only", res.VerifyOnly)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "sms_provider", res.Provider)
+	setWrapper(d, "from_number", res.FromNumber)
+	setWrapper(d, "account_sid", res.AccountSid)
+	setWrapper(d, "auth", res.Auth)
+	setWrapper(d, "auth_password", res.AuthPassword)
+	setWrapper(d, "auth_type", res.AuthType)
+	setWrapper(d, "verify_only", res.VerifyOnly)
 	if res.ConfigureFlow.IsSet() {
-		d.Set("configure_flow", res.ConfigureFlow.Get())
+		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

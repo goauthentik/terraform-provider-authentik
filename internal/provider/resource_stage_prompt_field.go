@@ -95,13 +95,13 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("field_key", res.FieldKey)
-	d.Set("label", res.Label)
-	d.Set("type", res.Type)
-	d.Set("required", res.Required)
-	d.Set("placeholder", res.Placeholder)
-	d.Set("placeholder_expression", res.PlaceholderExpression)
-	d.Set("order", res.Order)
+	setWrapper(d, "field_key", res.FieldKey)
+	setWrapper(d, "label", res.Label)
+	setWrapper(d, "type", res.Type)
+	setWrapper(d, "required", res.Required)
+	setWrapper(d, "placeholder", res.Placeholder)
+	setWrapper(d, "placeholder_expression", res.PlaceholderExpression)
+	setWrapper(d, "order", res.Order)
 	return diags
 }
 

@@ -71,10 +71,10 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("digits", res.Digits.Get())
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "digits", res.Digits.Get())
 	if res.ConfigureFlow.IsSet() {
-		d.Set("configure_flow", res.ConfigureFlow.Get())
+		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

@@ -84,11 +84,11 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name.Get())
-	d.Set("execution_logging", res.ExecutionLogging)
-	d.Set("check_ip", res.CheckIp)
-	d.Set("check_username", res.CheckUsername)
-	d.Set("threshold", res.Threshold)
+	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "execution_logging", res.ExecutionLogging)
+	setWrapper(d, "check_ip", res.CheckIp)
+	setWrapper(d, "check_username", res.CheckUsername)
+	setWrapper(d, "threshold", res.Threshold)
 	return diags
 }
 

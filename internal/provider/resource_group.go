@@ -105,15 +105,15 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("is_superuser", res.IsSuperuser)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "is_superuser", res.IsSuperuser)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("attributes", string(b))
+	setWrapper(d, "attributes", string(b))
 	localUsers := sliceToInt(d.Get("users").([]interface{}))
-	d.Set("users", intListConsistentMerge(localUsers, slice32ToInt(res.Users)))
+	setWrapper(d, "users", intListConsistentMerge(localUsers, slice32ToInt(res.Users)))
 	return diags
 }
 

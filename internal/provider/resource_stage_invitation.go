@@ -62,8 +62,8 @@ func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m 
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("continue_flow_without_invitation", res.ContinueFlowWithoutInvitation)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "continue_flow_without_invitation", res.ContinueFlowWithoutInvitation)
 	return diags
 }
 

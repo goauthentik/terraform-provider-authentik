@@ -67,9 +67,9 @@ func resourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("expression", res.Expression)
-	d.Set("object_field", res.ObjectField)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "expression", res.Expression)
+	setWrapper(d, "object_field", res.ObjectField)
 	return diags
 }
 

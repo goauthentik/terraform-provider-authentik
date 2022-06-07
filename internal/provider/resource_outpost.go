@@ -113,18 +113,18 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("type", res.Type)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "type", res.Type)
 	localProviders := sliceToInt(d.Get("protocol_providers").([]interface{}))
-	d.Set("protocol_providers", intListConsistentMerge(localProviders, slice32ToInt(res.Providers)))
+	setWrapper(d, "protocol_providers", intListConsistentMerge(localProviders, slice32ToInt(res.Providers)))
 	if res.ServiceConnection.IsSet() {
-		d.Set("service_connection", res.ServiceConnection.Get())
+		setWrapper(d, "service_connection", res.ServiceConnection.Get())
 	}
 	b, err := json.Marshal(res.Config)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("config", string(b))
+	setWrapper(d, "config", string(b))
 	return diags
 }
 

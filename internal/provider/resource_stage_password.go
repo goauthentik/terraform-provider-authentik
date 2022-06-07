@@ -87,12 +87,12 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name)
-	d.Set("backends", res.Backends)
+	setWrapper(d, "name", res.Name)
+	setWrapper(d, "backends", res.Backends)
 	if res.ConfigureFlow.IsSet() {
-		d.Set("configure_flow", res.ConfigureFlow.Get())
+		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
-	d.Set("failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
+	setWrapper(d, "failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
 	return diags
 }
 

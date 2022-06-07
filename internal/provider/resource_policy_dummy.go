@@ -86,11 +86,11 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m inte
 		return httpToDiag(d, hr, err)
 	}
 
-	d.Set("name", res.Name.Get())
-	d.Set("execution_logging", res.ExecutionLogging)
-	d.Set("result", res.Result)
-	d.Set("wait_min", res.WaitMin)
-	d.Set("wait_max", res.WaitMax)
+	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "execution_logging", res.ExecutionLogging)
+	setWrapper(d, "result", res.Result)
+	setWrapper(d, "wait_min", res.WaitMin)
+	setWrapper(d, "wait_max", res.WaitMax)
 	return diags
 }
 
