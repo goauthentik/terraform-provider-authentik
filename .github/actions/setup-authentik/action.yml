@@ -30,13 +30,11 @@ runs:
   steps:
     - name: Prepare common variables
       shell: bash
-      env:
-        sentry_env: ${{ inputs.sentry_env }}
       run: |
         echo "PG_PASS=$(openssl rand -base64 32)" >> .env
         echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
         echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
-        echo "AUTHENTIK_ERROR_REPORTING__ENVIRONMENT=$sentry_env" >> .env
+        echo "AUTHENTIK_ERROR_REPORTING__ENVIRONMENT=${{ inputs.sentry_env }}" >> .env
         echo "AUTHENTIK_DISABLE_UPDATE_CHECK=true" >> .env
         echo "AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true" >> .env
 
@@ -50,10 +48,8 @@ runs:
 
     - name: Configure
       shell: bash
-      env:
-        VERSION: ${{ inputs.version }}
       run: |
-        if [ "$VERSION" = "beta" ]; then
+        if [ "${{ inputs.version }}" = "beta" ]; then
           echo "AUTHENTIK_IMAGE=goauthentik.io/dev-server" >> .env
           echo "AUTHENTIK_TAG=gh-next" >> .env
           echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next" >> .env
@@ -62,12 +58,10 @@ runs:
 
     - name: Run
       shell: bash
-      env:
-        DO_WAIT: ${{ inputs.wait }}
       run: |
         export COMPOSE_PROJECT_NAME=authentik
         docker-compose pull -q
         docker-compose up -d
-        if [ "$DO_WAIT" = "true" ]; then
+        if [ "${{ inputs.wait }}" = "true" ]; then
           timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v3/root/config/)" != "200" ]]; do sleep 5; done' || false
         fi
