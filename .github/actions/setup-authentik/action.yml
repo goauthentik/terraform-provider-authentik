@@ -44,16 +44,16 @@ runs:
       shell: bash
       id: credentials
       run: |
-        AK_ADMIN_TOKEN=$(openssl rand -base64 32)
-        echo "AK_ADMIN_TOKEN=${AK_ADMIN_TOKEN}" >> .env
-        echo "::set-output name=admin_token::${AK_ADMIN_TOKEN}"
+        AUTHENTIK_BOOTSTRAP_TOKEN=$(openssl rand -base64 32)
+        echo "AUTHENTIK_BOOTSTRAP_TOKEN=${AUTHENTIK_BOOTSTRAP_TOKEN}" >> .env
+        echo "::set-output name=admin_token::${AUTHENTIK_BOOTSTRAP_TOKEN}"
 
     - name: Configure
       shell: bash
       env:
-        USE_BETA: ${{ inputs.version }}
+        VERSION: ${{ inputs.version }}
       run: |
-        if [ "$USE_BETA" = "beta" ]; then
+        if [ "$VERSION" = "beta" ]; then
           echo "AUTHENTIK_IMAGE=goauthentik.io/dev-server" >> .env
           echo "AUTHENTIK_TAG=gh-next" >> .env
           echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next" >> .env

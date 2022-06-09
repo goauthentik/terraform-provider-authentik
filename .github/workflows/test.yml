@@ -45,7 +45,7 @@ jobs:
       uses: ./.github/actions/setup-authentik
       id: setup
       with:
-        beta: ${{ matrix.authentik_version }}
+        version: ${{ matrix.authentik_version }}
         sentry_env: goauthentik-terraform-ci
     - name: TF acceptance tests
       timeout-minutes: 30
