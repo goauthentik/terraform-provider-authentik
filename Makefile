@@ -24,5 +24,5 @@ install: build
 	cd examples_local && terraform init
 
 gen:
-	golangci-lint run -v || true
+	golangci-lint run -v
 	go generate

@@ -75,14 +75,6 @@ func resourceProviderOAuth2() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"verification_keys": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Deprecated: "Will be removed in 2022.7, use `jwks_sources`.",
-			},
 			"sub_mode": {
 				Type:     schema.TypeString,
 				Default:  api.SUBMODEENUM_HASHED_USER_ID,
@@ -134,10 +126,6 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
 
-	if vk, sok := d.GetOk("verification_keys"); sok {
-		r.SetVerificationKeys(sliceToString(vk.([]interface{})))
-	}
-
 	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
 
 	r.JwksSources = sliceToString(d.Get("jwks_sources").([]interface{}))
@@ -185,7 +173,6 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	} else {
 		setWrapper(d, "redirect_uris", []string{})
 	}
-	setWrapper(d, "verification_keys", res.GetVerificationKeys())
 	if res.SigningKey.IsSet() {
 		setWrapper(d, "signing_key", res.SigningKey.Get())
 	}
