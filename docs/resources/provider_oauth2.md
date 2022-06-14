@@ -45,7 +45,6 @@ resource "authentik_application" "name" {
 - `signing_key` (String)
 - `sub_mode` (String) Defaults to `hashed_user_id`.
 - `token_validity` (String) Defaults to `minutes=10`.
-- `verification_keys` (List of String, Deprecated)
 
 ### Read-Only
 
