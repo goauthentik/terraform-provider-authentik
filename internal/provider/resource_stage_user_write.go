@@ -31,6 +31,11 @@ func resourceStageUserWrite() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"user_path_template": {
+				Type:     schema.TypeString,
+				Default:  "",
+				Optional: true,
+			},
 		},
 	}
 }
@@ -39,6 +44,7 @@ func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWri
 	r := api.UserWriteStageRequest{
 		Name:                  d.Get("name").(string),
 		CreateUsersAsInactive: boolToPointer(d.Get("create_users_as_inactive").(bool)),
+		UserPathTemplate:      stringToPointer(d.Get("user_path_template").(string)),
 	}
 
 	if h, hSet := d.GetOk("create_users_group"); hSet {
@@ -73,6 +79,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "create_users_as_inactive", res.CreateUsersAsInactive)
 	setWrapper(d, "create_users_group", res.CreateUsersGroup.Get())
+	setWrapper(d, "user_path_template", res.UserPathTemplate)
 	return diags
 }
 

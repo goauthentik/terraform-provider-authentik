@@ -33,6 +33,11 @@ func resourceSourceOAuth() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"user_path_template": {
+				Type:     schema.TypeString,
+				Default:  "goauthentik.io/sources/%(slug)s",
+				Optional: true,
+			},
 			"authentication_flow": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -124,9 +129,10 @@ func resourceSourceOAuth() *schema.Resource {
 
 func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSourceRequest, diag.Diagnostics) {
 	r := api.OAuthSourceRequest{
-		Name:    d.Get("name").(string),
-		Slug:    d.Get("slug").(string),
-		Enabled: boolToPointer(d.Get("enabled").(bool)),
+		Name:             d.Get("name").(string),
+		Slug:             d.Get("slug").(string),
+		Enabled:          boolToPointer(d.Get("enabled").(bool)),
+		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
 
 		ProviderType:   api.ProviderTypeEnum(d.Get("provider_type").(string)),
 		ConsumerKey:    d.Get("consumer_key").(string),
@@ -204,6 +210,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "slug", res.Slug)
 	setWrapper(d, "uuid", res.Pk)
+	setWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	if res.AuthenticationFlow.IsSet() {
 		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())

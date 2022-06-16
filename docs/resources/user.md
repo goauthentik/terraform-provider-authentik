@@ -43,6 +43,7 @@ resource "authentik_user" "name" {
 - `groups` (List of String)
 - `is_active` (Boolean) Defaults to `true`.
 - `name` (String) Defaults to ``.
+- `path` (String) Defaults to `users`.
 
 ### Read-Only
 

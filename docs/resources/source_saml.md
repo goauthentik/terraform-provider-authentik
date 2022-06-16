@@ -59,6 +59,7 @@ resource "authentik_source_saml" "name" {
 - `slo_url` (String)
 - `temporary_user_delete_after` (String) Defaults to `days=1`.
 - `user_matching_mode` (String) Defaults to `identifier`.
+- `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String)
 
 ### Read-Only

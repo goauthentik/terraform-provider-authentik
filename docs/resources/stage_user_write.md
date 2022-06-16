@@ -28,6 +28,7 @@ resource "authentik_stage_user_write" "name" {
 
 - `create_users_as_inactive` (Boolean) Defaults to `true`.
 - `create_users_group` (String)
+- `user_path_template` (String) Defaults to ``.
 
 ### Read-Only
 

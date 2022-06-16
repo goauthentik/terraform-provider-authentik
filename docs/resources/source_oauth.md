@@ -53,6 +53,7 @@ resource "authentik_source_oauth" "name" {
 - `profile_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
 - `request_token_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
 - `user_matching_mode` (String) Defaults to `identifier`.
+- `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String)
 
 ### Read-Only
