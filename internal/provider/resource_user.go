@@ -39,6 +39,11 @@ func resourceUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"path": {
+				Type:     schema.TypeString,
+				Default:  "users",
+				Optional: true,
+			},
 			"groups": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -61,6 +66,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 		Name:     d.Get("name").(string),
 		Username: d.Get("username").(string),
 		IsActive: boolToPointer(d.Get("is_active").(bool)),
+		Path:     stringToPointer(d.Get("path").(string)),
 	}
 
 	if l, ok := d.Get("email").(string); ok {
@@ -117,6 +123,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	setWrapper(d, "username", res.Username)
 	setWrapper(d, "email", res.Email)
 	setWrapper(d, "is_active", res.IsActive)
+	setWrapper(d, "path", res.Path)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)

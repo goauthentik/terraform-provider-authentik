@@ -31,6 +31,11 @@ func resourceSourcePlex() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"user_path_template": {
+				Type:     schema.TypeString,
+				Default:  "goauthentik.io/sources/%(slug)s",
+				Optional: true,
+			},
 			"authentication_flow": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -82,9 +87,10 @@ func resourceSourcePlex() *schema.Resource {
 
 func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceRequest {
 	r := api.PlexSourceRequest{
-		Name:    d.Get("name").(string),
-		Slug:    d.Get("slug").(string),
-		Enabled: boolToPointer(d.Get("enabled").(bool)),
+		Name:             d.Get("name").(string),
+		Slug:             d.Get("slug").(string),
+		Enabled:          boolToPointer(d.Get("enabled").(bool)),
+		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
 
 		ClientId:     stringToPointer(d.Get("client_id").(string)),
 		AllowFriends: boolToPointer(d.Get("allow_friends").(bool)),
@@ -129,6 +135,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "slug", res.Slug)
 	setWrapper(d, "uuid", res.Pk)
+	setWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	if res.AuthenticationFlow.IsSet() {
 		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())

@@ -31,6 +31,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"user_path_template": {
+				Type:     schema.TypeString,
+				Default:  "goauthentik.io/sources/%(slug)s",
+				Optional: true,
+			},
 			"enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -128,9 +133,10 @@ func resourceSourceLDAP() *schema.Resource {
 
 func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceRequest {
 	r := api.LDAPSourceRequest{
-		Name:    d.Get("name").(string),
-		Slug:    d.Get("slug").(string),
-		Enabled: boolToPointer(d.Get("enabled").(bool)),
+		Name:             d.Get("name").(string),
+		Slug:             d.Get("slug").(string),
+		Enabled:          boolToPointer(d.Get("enabled").(bool)),
+		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
 
 		BaseDn:       d.Get("base_dn").(string),
 		ServerUri:    d.Get("server_uri").(string),
@@ -185,6 +191,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "slug", res.Slug)
 	setWrapper(d, "uuid", res.Pk)
 	setWrapper(d, "enabled", res.Enabled)
+	setWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	setWrapper(d, "base_dn", res.BaseDn)
 	setWrapper(d, "server_uri", res.ServerUri)
