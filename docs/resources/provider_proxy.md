@@ -40,6 +40,7 @@ resource "authentik_application" "name" {
 
 ### Optional
 
+- `additional_scopes` (List of String)
 - `basic_auth_enabled` (Boolean) Defaults to `false`.
 - `basic_auth_password_attribute` (String)
 - `basic_auth_username_attribute` (String)
