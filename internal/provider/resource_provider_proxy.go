@@ -121,7 +121,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	pm := api.ProxyMode(d.Get("mode").(string))
 	r.Mode.Set(&pm)
 
-	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
+	r.PropertyMappings = sliceToString(d.Get("additional_scopes").([]interface{}))
 	return &r
 }
 
@@ -163,8 +163,8 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "mode", res.Mode.Get())
 	setWrapper(d, "cookie_domain", res.CookieDomain)
 	setWrapper(d, "token_validity", res.TokenValidity)
-	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
+	localMappings := sliceToString(d.Get("additional_scopes").([]interface{}))
+	setWrapper(d, "additional_scopes", stringListConsistentMerge(localMappings, res.PropertyMappings))
 	return diags
 }
 
