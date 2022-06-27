@@ -40,7 +40,7 @@ func resourceProviderProxy() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
-			"additional_scopes": {
+			"property_mappings": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -121,7 +121,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	pm := api.ProxyMode(d.Get("mode").(string))
 	r.Mode.Set(&pm)
 
-	r.PropertyMappings = sliceToString(d.Get("additional_scopes").([]interface{}))
+	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
 	return &r
 }
 
@@ -163,8 +163,10 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "mode", res.Mode.Get())
 	setWrapper(d, "cookie_domain", res.CookieDomain)
 	setWrapper(d, "token_validity", res.TokenValidity)
-	localMappings := sliceToString(d.Get("additional_scopes").([]interface{}))
-	setWrapper(d, "additional_scopes", stringListConsistentMerge(localMappings, res.PropertyMappings))
+	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
+	if len(localMappings) > 0 {
+		setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
+	}
 	return diags
 }
 
