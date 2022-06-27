@@ -40,7 +40,6 @@ resource "authentik_application" "name" {
 
 ### Optional
 
-- `additional_scopes` (List of String)
 - `basic_auth_enabled` (Boolean) Defaults to `false`.
 - `basic_auth_password_attribute` (String)
 - `basic_auth_username_attribute` (String)
@@ -48,6 +47,7 @@ resource "authentik_application" "name" {
 - `internal_host` (String)
 - `internal_host_ssl_validation` (Boolean) Defaults to `true`.
 - `mode` (String) Defaults to `proxy`.
+- `property_mappings` (List of String)
 - `skip_path_regex` (String)
 - `token_validity` (String) Defaults to `hours=24`.
 
