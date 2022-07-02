@@ -52,7 +52,4 @@ release:
   # draft: true
 changelog:
   skip: false
-  filters:
-    exclude:
-      - '^Update Schema version:'
-      - '^Bump'
+  use: github
