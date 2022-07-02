@@ -4,11 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    assignees:
-    - BeryJu
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "daily"
-    assignees:
-    - BeryJu
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"

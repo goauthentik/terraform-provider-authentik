@@ -53,6 +53,11 @@ func resourceFlow() *schema.Resource {
 				Optional: true,
 				Default:  api.POLICYENGINEMODE_ANY,
 			},
+			"denied_action": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.DENIEDACTIONENUM_MESSAGE_CONTINUE,
+			},
 			"compatibility_mode": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -78,6 +83,9 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 
 	layout := api.LayoutEnum(d.Get("layout").(string))
 	m.Layout = &layout
+
+	deniedAction := api.DeniedActionEnum(d.Get("denied_action").(string))
+	m.DeniedAction.Set(&deniedAction)
 	return &m
 }
 
@@ -118,6 +126,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	setWrapper(d, "slug", res.Slug)
 	setWrapper(d, "title", res.Title)
 	setWrapper(d, "designation", res.Designation.Get())
+	setWrapper(d, "denied_action", res.DeniedAction.Get())
 	setWrapper(d, "layout", res.Layout)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	setWrapper(d, "compatibility_mode", res.CompatibilityMode)
