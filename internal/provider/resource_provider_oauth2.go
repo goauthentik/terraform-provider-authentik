@@ -48,6 +48,7 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
+				Computed:  true,
 			},
 			"access_code_validity": {
 				Type:     schema.TypeString,
