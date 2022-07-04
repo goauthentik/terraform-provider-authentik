@@ -20,6 +20,12 @@ func dataSourceCertificateKeyPair() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"fetch_certificate": {
+				Type:        schema.TypeBool,
+				Default:     true,
+				Optional:    true,
+				Description: "If set to true, certificate data will be fetched.",
+			},
 			"certificate_data": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -41,6 +47,12 @@ func dataSourceCertificateKeyPair() *schema.Resource {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "SHA256-hashed certificate fingerprint",
+			},
+			"fetch_key": {
+				Type:        schema.TypeBool,
+				Default:     true,
+				Optional:    true,
+				Description: "If set to true, private key data will be fetched.",
 			},
 			"key_data": {
 				Type:      schema.TypeString,
@@ -77,14 +89,19 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 	setWrapper(d, "fingerprint1", f.FingerprintSha1)
 	setWrapper(d, "fingerprint256", f.FingerprintSha256)
 
-	rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
-	if err != nil {
-		return httpToDiag(d, hr, err)
+	if d.Get("fetch_certificate").(bool) {
+		rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
+		setWrapper(d, "certificate_data", rc.Data+"\n")
 	}
-	setWrapper(d, "certificate_data", rc.Data+"\n")
 
-	rk, _, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
-	if err == nil {
+	if d.Get("fetch_key").(bool) {
+		rk, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
 		setWrapper(d, "key_data", rk.Data+"\n")
 	}
 	return diags

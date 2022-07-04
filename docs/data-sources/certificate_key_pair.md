@@ -30,6 +30,8 @@ data "authentik_certificate_key_pair" "generated" {
 
 ### Optional
 
+- `fetch_certificate` (Boolean) If set to true, certificate data will be fetched. Defaults to `true`.
+- `fetch_key` (Boolean) If set to true, private key data will be fetched. Defaults to `true`.
 - `key_data` (String, Sensitive)
 
 ### Read-Only
