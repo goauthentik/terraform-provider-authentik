@@ -12,5 +12,11 @@
         "plex"
     ],
     "todo-tree.tree.showCountsInTree": true,
-    "todo-tree.tree.showBadges": true
+    "todo-tree.tree.showBadges": true,
+    "go.testEnvVars": {
+        "TF_LOG": "trace",
+        "TF_ACC": "1",
+        "AUTHENTIK_URL": "http://localhost:9000",
+        "AUTHENTIK_TOKEN": "this-password-is-for-testing-dont-use",
+    }
 }

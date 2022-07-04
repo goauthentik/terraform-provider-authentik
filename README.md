@@ -20,21 +20,14 @@ make build
 ```
 
 ### Generate Documentation
-Run `go generate` from the project root to regenerate the latest provider documentation
 
-## Test sample configuration
+Run `make` from the project root to regenerate the latest provider documentation
 
-First, build and install the provider.
+## Testing
 
-```shell
-make install
-```
+In `./tests`, run `docker compose up -d` to start a testing instance with a fixed token.
 
-Then, run the following command to initialize the workspace and apply the sample configuration.
-
-```shell
-terraform init && terraform apply
-```
+Source `./tests/.env` and run go tests to start testing against the local instance.
 
 ## Versioning
 

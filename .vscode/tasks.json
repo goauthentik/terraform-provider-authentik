@@ -6,5 +6,53 @@
             "command": "make",
             "group": "build",
         },
+        {
+            "label": "test-env: start",
+            "command": "docker",
+            "args": [
+                "compose",
+                "up",
+                "-d",
+                "--remove-orphans"
+            ],
+            "group": "build",
+            "options": {
+                "cwd": "tests/",
+                "env": {
+                    "COMPOSE_PROJECT_NAME": "authentik-terraform-testing",
+                }
+            }
+        },
+        {
+            "label": "test-env: stop",
+            "command": "docker",
+            "args": [
+                "compose",
+                "down",
+            ],
+            "group": "build",
+            "options": {
+                "cwd": "tests/",
+                "env": {
+                    "COMPOSE_PROJECT_NAME": "authentik-terraform-testing",
+                }
+            }
+        },
+        {
+            "label": "test-env: delete",
+            "command": "docker",
+            "args": [
+                "compose",
+                "down",
+                "-v"
+            ],
+            "group": "build",
+            "options": {
+                "cwd": "tests/",
+                "env": {
+                    "COMPOSE_PROJECT_NAME": "authentik-terraform-testing",
+                }
+            }
+        },
     ]
 }
