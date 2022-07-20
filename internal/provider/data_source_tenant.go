@@ -100,12 +100,12 @@ func dataSourceTenantRead(ctx context.Context, d *schema.ResourceData, m interfa
 	setWrapper(d, "branding_title", f.BrandingTitle)
 	setWrapper(d, "branding_logo", f.BrandingLogo)
 	setWrapper(d, "branding_favicon", f.BrandingFavicon)
-	setWrapper(d, "flow_authentication", f.FlowAuthentication)
-	setWrapper(d, "flow_invalidation", f.FlowInvalidation)
-	setWrapper(d, "flow_recovery", f.FlowRecovery)
-	setWrapper(d, "flow_unenrollment", f.FlowUnenrollment)
-	setWrapper(d, "flow_user_settings", f.FlowUserSettings)
+	setWrapper(d, "flow_authentication", f.FlowAuthentication.Get())
+	setWrapper(d, "flow_invalidation", f.FlowInvalidation.Get())
+	setWrapper(d, "flow_recovery", f.FlowRecovery.Get())
+	setWrapper(d, "flow_unenrollment", f.FlowUnenrollment.Get())
+	setWrapper(d, "flow_user_settings", f.FlowUserSettings.Get())
 	setWrapper(d, "event_retention", f.EventRetention)
-	setWrapper(d, "web_certificate", f.WebCertificate)
+	setWrapper(d, "web_certificate", f.WebCertificate.Get())
 	return diags
 }
