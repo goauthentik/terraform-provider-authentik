@@ -14,7 +14,7 @@ Get tenants by name
 ```terraform
 # To get the details of a tenant by domain
 
-data "authentik_stage" "authentik-default" {
+data "authentik_tenant" "authentik-default" {
   domain = "authentik-default"
 }
 

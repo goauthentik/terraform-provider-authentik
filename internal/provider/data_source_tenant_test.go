@@ -23,7 +23,7 @@ func TestAccDataSourceTenant(t *testing.T) {
 }
 
 const testAccDataSourceTenantSimple = `
-data "authentik_stage" "authentik-default" {
+data "authentik_tenant" "authentik-default" {
   domain = "authentik-default"
 }
 `
