@@ -121,7 +121,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_property_mapping_ldap": td(dataSourceLDAPPropertyMapping),
 			"authentik_property_mapping_saml": td(dataSourceSAMLPropertyMapping),
 			"authentik_scope_mapping":         td(dataSourceScopeMapping),
-			"authentik_tenant":                tr(dataSourceTenant),
+			"authentik_tenant":                td(dataSourceTenant),
 		},
 		ConfigureContextFunc: providerConfigure(version, testing),
 	}
