@@ -12,7 +12,7 @@ Get stages by name
 ## Example Usage
 
 ```terraform
-# To get the ID of a stage by name
+# To get the ID of a stage by bame
 
 data "authentik_stage" "default-authentication-identification" {
   name = "default-authentication-identification"
