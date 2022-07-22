@@ -1,0 +1,25 @@
+---
+page_title: "authentik_tenant Data Source - terraform-provider-authentik"
+subcategory: "System"
+description: |-
+  Get tenants by domain
+---
+
+# {{.Name}} ({{.Type}})
+
+Get tenants by name
+
+## Example Usage
+
+```terraform
+# To get the details of a tenant by domain
+
+data "authentik_tenant" "authentik-default" {
+  domain = "authentik-default"
+}
+
+# Then use `data.authentik_tenant.authentik-default.domain`, `data.authentik_tenant.authentik-default.branding_title`, 
+# `data.authentik_tenant.authentik-default.branding_logo`, ...
+```
+
+{{ .SchemaMarkdown | trimspace }}
