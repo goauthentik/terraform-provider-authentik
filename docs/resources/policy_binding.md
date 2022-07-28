@@ -22,7 +22,7 @@ resource "authentik_application" "name" {
 }
 
 resource "authentik_policy_binding" "app-access" {
-  target = authentik_application.name.id
+  target = authentik_application.name.uuid
   policy = authentik_policy_expression.policy.id
   order  = 0
 }
@@ -39,7 +39,7 @@ resource "authentik_application" "name" {
 }
 
 resource "authentik_policy_binding" "app-access" {
-  target = authentik_application.name.id
+  target = authentik_application.name.uuid
   group  = data.authentik_group.admins.id
   order  = 0
 }
