@@ -2,29 +2,25 @@
 page_title: "authentik_service_connection_kubernetes Resource - terraform-provider-authentik"
 subcategory: "Applications"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_service_connection_kubernetes (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a local kubernetes connection
-
-resource "authentik_service_connection_kubernetes" "local" {
-  name  = "local"
-  local = true
-}
-
-# Create a remote kubernetes connection
-
-resource "authentik_service_connection_kubernetes" "remote-test-cluster" {
-  name       = "test-cluster"
-  kubeconfig = <<EOF
-kind: Config
-users: [...]
-EOF
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

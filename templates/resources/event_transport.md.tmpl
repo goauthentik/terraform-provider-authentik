@@ -2,28 +2,25 @@
 page_title: "authentik_event_transport Resource - terraform-provider-authentik"
 subcategory: "Events"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_event_transport (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a notification transport to a generic webhook URL
-resource "authentik_event_transport" "transport" {
-  name        = "my-transport"
-  mode        = "webhook"
-  send_once   = true
-  webhook_url = "https://foo.bar"
-}
-
-# Create a notification transport to slack/discord
-resource "authentik_event_transport" "transport" {
-  name        = "my-transport"
-  mode        = "webhook_slack"
-  send_once   = true
-  webhook_url = "https://discord.com/...."
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

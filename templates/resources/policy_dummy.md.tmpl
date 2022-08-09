@@ -2,18 +2,25 @@
 page_title: "authentik_policy_dummy Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_policy_dummy (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a dummy policy for testing
-
-resource "authentik_policy_dummy" "name" {
-  name = "dummy"
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

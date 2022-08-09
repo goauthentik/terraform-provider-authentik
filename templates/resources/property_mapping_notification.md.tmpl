@@ -2,19 +2,25 @@
 page_title: "authentik_property_mapping_notification Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_property_mapping_notification (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a custom Notification transport mapping
-
-resource "authentik_property_mapping_notification" "name" {
-  name       = "custom-field"
-  expression = "return {\"foo\": context['foo']}"
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

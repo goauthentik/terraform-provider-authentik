@@ -2,24 +2,25 @@
 page_title: "authentik_scope_mapping Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_scope_mapping (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a scope mapping
-
-resource "authentik_scope_mapping" "name" {
-  name       = "minio"
-  scope_name = "minio"
-  expression = <<EOF
-return {
-  "policy": "readwrite",
-}
-EOF
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

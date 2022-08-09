@@ -2,20 +2,25 @@
 page_title: "authentik_property_mapping_saml Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_property_mapping_saml (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a custom SAML property mapping
-
-resource "authentik_property_mapping_saml" "saml-aws-rolessessionname" {
-  name       = "SAML AWS RoleSessionName"
-  saml_name  = "https://aws.amazon.com/SAML/Attributes/RoleSessionName"
-  expression = "return user.email"
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

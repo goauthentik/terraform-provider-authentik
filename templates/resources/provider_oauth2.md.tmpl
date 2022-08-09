@@ -2,25 +2,25 @@
 page_title: "authentik_provider_oauth2 Resource - terraform-provider-authentik"
 subcategory: "Applications"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_provider_oauth2 (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create an OAuth2 Provider
-
-resource "authentik_provider_oauth2" "name" {
-  name      = "grafana"
-  client_id = "grafana"
-}
-
-resource "authentik_application" "name" {
-  name              = "test app"
-  slug              = "test-app"
-  protocol_provider = authentik_provider_oauth2.name.id
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

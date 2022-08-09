@@ -2,27 +2,25 @@
 page_title: "authentik_source_plex Resource - terraform-provider-authentik"
 subcategory: "Directory"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_source_plex (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a plex source
-
-data "authentik_flow" "default-authorization-flow" {
-  slug = "default-provider-authorization-implicit-consent"
-}
-
-resource "authentik_source_plex" "name" {
-  name                = "plex"
-  slug                = "plex"
-  authentication_flow = data.authentik_flow.default-authorization-flow.id
-  enrollment_flow     = data.authentik_flow.default-authorization-flow.id
-  client_id           = "foo-bar-baz"
-  plex_token          = "foo"
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

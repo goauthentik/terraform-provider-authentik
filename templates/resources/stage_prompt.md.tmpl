@@ -2,27 +2,25 @@
 page_title: "authentik_stage_prompt Resource - terraform-provider-authentik"
 subcategory: "Flows & Stages"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_stage_prompt (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a prompt stage with 1 field
-
-resource "authentik_stage_prompt_field" "field" {
-  field_key = "username"
-  label     = "Username"
-  type      = "username"
-}
-resource "authentik_stage_prompt" "name" {
-  name = "test"
-  fields = [
-    resource.authentik_stage_prompt_field.field.id,
-  ]
-}
-```
-
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

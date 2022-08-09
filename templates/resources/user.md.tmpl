@@ -2,31 +2,25 @@
 page_title: "authentik_user Resource - terraform-provider-authentik"
 subcategory: "Directory"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_user (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create a user
-
-resource "authentik_user" "name" {
-  username = "user"
-  name     = "User"
-}
-
-# Create a user that is member of a group
-
-resource "authentik_group" "group" {
-  name = "group-name"
-}
-
-resource "authentik_user" "name" {
-  username = "user"
-  name     = "User"
-  groups   = [authentik_group.group.id]
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}
