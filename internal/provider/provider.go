@@ -59,6 +59,7 @@ func Provider(version string, testing bool) *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"authentik_application":                   tr(resourceApplication),
+			"authentik_blueprint":                     tr(resourceBlueprintInstance),
 			"authentik_certificate_key_pair":          tr(resourceCertificateKeyPair),
 			"authentik_flow_stage_binding":            tr(resourceFlowStageBinding),
 			"authentik_flow":                          tr(resourceFlow),
