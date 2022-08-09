@@ -1,7 +1,8 @@
 package provider
 
 import (
-	"io/ioutil"
+	"bytes"
+	"io"
 	"log"
 	"net/http"
 	"sort"
@@ -169,11 +170,11 @@ func httpToDiag(d *schema.ResourceData, r *http.Response, err error) diag.Diagno
 		d.SetId("")
 		return diag.Diagnostics{}
 	}
-	b, er := ioutil.ReadAll(r.Body)
+	buff := &bytes.Buffer{}
+	_, er := io.Copy(buff, r.Body)
 	if er != nil {
 		log.Printf("[DEBUG] authentik: failed to read response: %s", er.Error())
-		b = []byte{}
 	}
-	log.Printf("[DEBUG] authentik: error response: %s", string(b))
-	return diag.Errorf("HTTP Error '%s' during request '%s %s': \"%s\"", err.Error(), r.Request.Method, r.Request.URL.Path, string(b))
+	log.Printf("[DEBUG] authentik: error response: %s", buff.String())
+	return diag.Errorf("HTTP Error '%s' during request '%s %s': \"%s\"", err.Error(), r.Request.Method, r.Request.URL.Path, buff.String())
 }
