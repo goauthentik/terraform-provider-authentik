@@ -50,12 +50,10 @@ func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData, c *APIClient
 	}
 
 	ctx := make(map[string]interface{})
-	if l, ok := d.Get("context").(string); ok {
-		if l != "" {
-			err := json.NewDecoder(strings.NewReader(l)).Decode(&ctx)
-			if err != nil {
-				return nil, diag.FromErr(err)
-			}
+	if l, ok := d.Get("context").(string); ok && l != "" {
+		err := json.NewDecoder(strings.NewReader(l)).Decode(&ctx)
+		if err != nil {
+			return nil, diag.FromErr(err)
 		}
 	}
 	m.Context = ctx
