@@ -2,20 +2,25 @@
 page_title: "authentik_tenant Resource - terraform-provider-authentik"
 subcategory: "System"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_tenant (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create/manage a default tenant
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
-resource "authentik_tenant" "default" {
-  domain         = "."
-  default        = true
-  branding_title = "test"
-}
-```
+{{ .SchemaMarkdown | trimspace }}
 
-{{ .SchemaMarkdown }}
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

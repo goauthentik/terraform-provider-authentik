@@ -2,24 +2,25 @@
 page_title: "authentik_token Resource - terraform-provider-authentik"
 subcategory: "Directory"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_token (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create/manage API/App Password tokens
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
-resource "authentik_token" "default" {
-  identifier = "my-token"
-  user = authentik_user.some_user.id
-  intent = "api"
-  # If this is not set then the actual token won't be retrieved
-  retrieve_key = true
-}
+{{ .SchemaMarkdown | trimspace }}
 
-# Use authentik_token.default.key
-```
+{{ if .HasImport -}}
+## Import
 
-{{ .SchemaMarkdown }}
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

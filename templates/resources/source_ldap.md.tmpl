@@ -2,24 +2,25 @@
 page_title: "authentik_source_ldap Resource - terraform-provider-authentik"
 subcategory: "Directory"
 description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_source_ldap (Resource)
+# {{.Name}} ({{.Type}})
 
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# Create LDAP Source
-
-resource "authentik_source_ldap" "name" {
-  name = "ldap-test"
-  slug = "ldap-test"
-
-  server_uri    = "ldaps://1.2.3.4"
-  bind_cn       = "foo"
-  bind_password = "bar"
-  base_dn       = "dn=foo"
-}
-```
+{{ printf "{{tffile %q}}" .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{- end }}

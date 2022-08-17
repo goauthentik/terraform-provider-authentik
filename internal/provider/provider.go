@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -59,6 +59,7 @@ func Provider(version string, testing bool) *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"authentik_application":                   tr(resourceApplication),
+			"authentik_blueprint":                     tr(resourceBlueprintInstance),
 			"authentik_certificate_key_pair":          tr(resourceCertificateKeyPair),
 			"authentik_flow_stage_binding":            tr(resourceFlowStageBinding),
 			"authentik_flow":                          tr(resourceFlow),
@@ -208,7 +209,7 @@ func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 		Proto:         "HTTP/1.1",
 		ProtoMajor:    1,
 		ProtoMinor:    1,
-		Body:          ioutil.NopCloser(bytes.NewBufferString(body)),
+		Body:          io.NopCloser(bytes.NewBufferString(body)),
 		ContentLength: int64(len(body)),
 		Request:       r,
 		Header:        make(http.Header),

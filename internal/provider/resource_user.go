@@ -76,12 +76,10 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 	m.Groups = sliceToString(d.Get("groups").([]interface{}))
 
 	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok {
-		if l != "" {
-			err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-			if err != nil {
-				return nil, diag.FromErr(err)
-			}
+	if l, ok := d.Get("attributes").(string); ok && l != "" {
+		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
+		if err != nil {
+			return nil, diag.FromErr(err)
 		}
 	}
 	m.Attributes = attr

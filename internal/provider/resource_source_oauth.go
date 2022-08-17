@@ -169,15 +169,13 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 	if s, sok := d.GetOk("oidc_jwks_url"); sok && s.(string) != "" {
 		r.OidcJwksUrl = stringToPointer(s.(string))
 	}
-	if l, ok := d.Get("oidc_jwks").(string); ok {
-		if l != "" {
-			var c map[string]interface{}
-			err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
-			if err != nil {
-				return nil, diag.FromErr(err)
-			}
-			r.OidcJwks = c
+	if l, ok := d.Get("oidc_jwks").(string); ok && l != "" {
+		var c map[string]interface{}
+		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
+		if err != nil {
+			return nil, diag.FromErr(err)
 		}
+		r.OidcJwks = c
 	}
 	return &r, nil
 }

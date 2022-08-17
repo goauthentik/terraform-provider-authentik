@@ -70,15 +70,13 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 	if err != nil {
 		return nil, httpToDiag(d, hr, err)
 	}
-	if l, ok := d.Get("config").(string); ok {
-		if l != "" {
-			var c map[string]interface{}
-			err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
-			if err != nil {
-				return nil, diag.FromErr(err)
-			}
-			m.Config = c
+	if l, ok := d.Get("config").(string); ok && l != "" {
+		var c map[string]interface{}
+		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
+		if err != nil {
+			return nil, diag.FromErr(err)
 		}
+		m.Config = c
 	} else {
 		m.Config = defaultConfig.Config
 	}

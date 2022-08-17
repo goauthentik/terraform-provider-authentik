@@ -135,12 +135,10 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, di
 	}
 
 	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok {
-		if l != "" {
-			err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-			if err != nil {
-				return nil, diag.FromErr(err)
-			}
+	if l, ok := d.Get("attributes").(string); ok && l != "" {
+		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
+		if err != nil {
+			return nil, diag.FromErr(err)
 		}
 	}
 	m.Attributes = attr

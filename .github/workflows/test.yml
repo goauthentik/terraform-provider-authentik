@@ -42,7 +42,7 @@ jobs:
       with:
         go-version: '1.18'
     - name: Setup authentik
-      uses: goauthentik/action-setup-authentik@v1
+      uses: goauthentik/action-setup-authentik@main
       id: setup
       with:
         version: ${{ matrix.authentik_version }}
