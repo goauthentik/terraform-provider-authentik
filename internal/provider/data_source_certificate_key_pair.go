@@ -68,7 +68,7 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.CryptoApi.CryptoCertificatekeypairsList(ctx)
+	req := c.client.CryptoApi.CryptoCertificatekeypairsList(ctx).IncludeDetails(true)
 	if n, ok := d.GetOk("name"); ok {
 		req = req.Name(n.(string))
 	}
@@ -84,10 +84,10 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 
 	d.SetId(f.Pk)
 	setWrapper(d, "name", f.Name)
-	setWrapper(d, "expiry", f.CertExpiry.String())
-	setWrapper(d, "subject", f.CertSubject)
-	setWrapper(d, "fingerprint1", f.FingerprintSha1)
-	setWrapper(d, "fingerprint256", f.FingerprintSha256)
+	setWrapper(d, "expiry", f.CertExpiry.Get().String())
+	setWrapper(d, "subject", f.CertSubject.Get())
+	setWrapper(d, "fingerprint1", f.FingerprintSha1.Get())
+	setWrapper(d, "fingerprint256", f.FingerprintSha256.Get())
 
 	if d.Get("fetch_certificate").(bool) {
 		rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
