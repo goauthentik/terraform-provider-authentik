@@ -56,3 +56,12 @@ jobs:
         AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
       run: |
         go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
+        echo "---------- server logs"
+    - name: authentik Server logs
+      if: ${{ always() }}
+      run: |
+        docker logs ${{ steps.setup.outputs.server_container_id }}
+    - name: authentik Worker logs
+      if: ${{ always() }}
+      run: |
+        docker logs ${{ steps.setup.outputs.worker_container_id }}
