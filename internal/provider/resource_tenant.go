@@ -62,6 +62,10 @@ func resourceTenant() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"flow_device_code": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"event_retention": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -128,6 +132,12 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, di
 		m.FlowUserSettings.Set(nil)
 	}
 
+	if l, ok := d.Get("flow_device_code").(string); ok {
+		m.FlowDeviceCode.Set(&l)
+	} else {
+		m.FlowDeviceCode.Set(nil)
+	}
+
 	if l, ok := d.Get("web_certificate").(string); ok {
 		m.WebCertificate.Set(&l)
 	} else {
@@ -189,6 +199,9 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	if res.FlowUserSettings.IsSet() {
 		setWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
+	}
+	if res.FlowDeviceCode.IsSet() {
+		setWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
 	}
 	setWrapper(d, "event_retention", res.EventRetention)
 	if res.WebCertificate.IsSet() {

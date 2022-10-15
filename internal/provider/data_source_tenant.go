@@ -62,6 +62,11 @@ func dataSourceTenant() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"flow_device_code": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"event_retention": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -105,6 +110,7 @@ func dataSourceTenantRead(ctx context.Context, d *schema.ResourceData, m interfa
 	setWrapper(d, "flow_recovery", f.FlowRecovery.Get())
 	setWrapper(d, "flow_unenrollment", f.FlowUnenrollment.Get())
 	setWrapper(d, "flow_user_settings", f.FlowUserSettings.Get())
+	setWrapper(d, "flow_device_code", f.FlowDeviceCode.Get())
 	setWrapper(d, "event_retention", f.EventRetention)
 	setWrapper(d, "web_certificate", f.WebCertificate.Get())
 	return diags
