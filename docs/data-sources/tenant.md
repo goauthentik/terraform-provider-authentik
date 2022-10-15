@@ -34,6 +34,7 @@ data "authentik_tenant" "authentik-default" {
 - `domain` (String)
 - `event_retention` (String)
 - `flow_authentication` (String)
+- `flow_device_code` (String)
 - `flow_invalidation` (String)
 - `flow_recovery` (String)
 - `flow_unenrollment` (String)

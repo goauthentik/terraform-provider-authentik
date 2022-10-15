@@ -26,6 +26,7 @@ description: |-
 - `auth_password` (String, Sensitive)
 - `auth_type` (String) Defaults to `basic`.
 - `configure_flow` (String)
+- `mapping` (String)
 - `sms_provider` (String) Defaults to `twilio`.
 - `verify_only` (Boolean) Defaults to `false`.
 

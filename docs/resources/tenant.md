@@ -29,6 +29,7 @@ description: |-
 - `default` (Boolean) Defaults to `false`.
 - `event_retention` (String) Defaults to `days=365`.
 - `flow_authentication` (String)
+- `flow_device_code` (String)
 - `flow_invalidation` (String)
 - `flow_recovery` (String)
 - `flow_unenrollment` (String)
