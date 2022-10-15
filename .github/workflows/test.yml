@@ -1,29 +1,26 @@
-name: test-acc-authentik
+name: test
 on:
   push:
     branches:
       - main
   pull_request:
   schedule:
-    - cron: '0 13 * * *'
+    - cron: "0 13 * * *"
+
 jobs:
-  # ensure the code builds...
   build:
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-go@v3
-      with:
-        go-version: '1.18'
-    - name: Get dependencies
-      run: |
-        go mod download
-
-    - name: Build
-      run: |
-        go build -v .
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Build
+        run: |
+          go build -v .
   test:
     name: Acceptance tests - Terraform ${{ matrix.terraform }} - authentik ${{ matrix.authentik_version }}
     runs-on: ubuntu-latest
@@ -32,36 +29,36 @@ jobs:
       fail-fast: false
       matrix:
         terraform:
-          - '1.2.1'
+          - "1.2.1"
         authentik_version:
-          - 'stable'
-          - 'beta'
+          - "stable"
+          - "beta"
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-go@v3
-      with:
-        go-version: '1.18'
-    - name: Setup authentik
-      uses: goauthentik/action-setup-authentik@main
-      id: setup
-      with:
-        version: ${{ matrix.authentik_version }}
-        sentry_env: goauthentik-terraform-ci
-    - name: TF acceptance tests
-      timeout-minutes: 30
-      env:
-        TF_ACC: "1"
-        TF_ACC_TERRAFORM_VERSION: ${{ matrix.terraform }}
-        AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
-        AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
-      run: |
-        go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
-        echo "---------- server logs"
-    - name: authentik Server logs
-      if: ${{ always() }}
-      run: |
-        docker logs ${{ steps.setup.outputs.server_container_id }}
-    - name: authentik Worker logs
-      if: ${{ always() }}
-      run: |
-        docker logs ${{ steps.setup.outputs.worker_container_id }}
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Setup authentik
+        uses: goauthentik/action-setup-authentik@main
+        id: setup
+        with:
+          version: ${{ matrix.authentik_version }}
+          sentry_env: goauthentik-terraform-ci
+      - name: TF acceptance tests
+        timeout-minutes: 30
+        env:
+          TF_ACC: "1"
+          TF_ACC_TERRAFORM_VERSION: ${{ matrix.terraform }}
+          AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
+          AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
+        run: |
+          go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./internal/provider/
+      - name: authentik Server logs
+        if: ${{ always() }}
+        run: |
+          docker logs ${{ steps.setup.outputs.server_container_id }}
+      - name: authentik Worker logs
+        if: ${{ always() }}
+        run: |
+          docker logs ${{ steps.setup.outputs.worker_container_id }}
