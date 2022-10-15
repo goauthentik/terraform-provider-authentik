@@ -65,3 +65,4 @@ terraform.rc
 terraform
 api/
 examples_local
+coverage.*
