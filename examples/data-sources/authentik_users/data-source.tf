@@ -11,4 +11,4 @@ data "authentik_users" "admins" {
   is_superuser = true
 }
 
-# Then use `data.authentik-users.admins.users`
+# Then use `data.authentik_users.admins.users`
