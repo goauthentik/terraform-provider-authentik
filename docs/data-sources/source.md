@@ -32,3 +32,5 @@ data "authentik_source" "inbuilt" {
 - `id` (String) The ID of this resource.
 - `name` (String)
 - `uuid` (String)
+
+

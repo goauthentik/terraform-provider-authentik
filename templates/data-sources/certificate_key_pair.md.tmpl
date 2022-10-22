@@ -1,24 +1,26 @@
 ---
-page_title: "authentik_certificate_key_pair Data Source - terraform-provider-authentik"
+page_title: "{{ .Name }} {{ .Type }} - {{ .ProviderName }}"
 subcategory: "System"
 description: |-
-  Get certificate-key pairs by name
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_certificate_key_pair (Data Source)
+# {{ .Name }} ({{ .Type }})
 
-Get certificate-key pairs by name
+{{ .Description | trimspace }}
 
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# To get the the ID and other info about a certificate
-
-data "authentik_certificate_key_pair" "generated" {
-  name = "authentik Self-signed Certificate"
-}
-
-# Then use `data.authentik_certificate_key_pair.generated.id`
-```
+{{ tffile .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ codefile "shell" .ImportFile }}
+{{- end }}

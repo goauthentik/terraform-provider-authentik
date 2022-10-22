@@ -1,18 +1,18 @@
 ---
-page_title: "authentik_policy_reputation Resource - terraform-provider-authentik"
+page_title: "{{ .Name }} {{ .Type }} - {{ .ProviderName }}"
 subcategory: "Customization"
 description: |-
 {{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# {{.Name}} ({{.Type}})
+# {{ .Name }} ({{ .Type }})
 
 {{ .Description | trimspace }}
 
 {{ if .HasExample -}}
 ## Example Usage
 
-{{ printf "{{tffile %q}}" .ExampleFile }}
+{{ tffile .ExampleFile }}
 {{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
@@ -22,5 +22,5 @@ description: |-
 
 Import is supported using the following syntax:
 
-{{ printf "{{codefile \"shell\" %q}}" .ImportFile }}
+{{ codefile "shell" .ImportFile }}
 {{- end }}
