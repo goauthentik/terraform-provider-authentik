@@ -47,3 +47,5 @@ data "authentik_property_mapping_ldap" "test" {
 
 - `expression` (String)
 - `id` (String) The ID of this resource.
+
+

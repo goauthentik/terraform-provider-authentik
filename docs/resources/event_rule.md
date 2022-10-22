@@ -1,5 +1,5 @@
 ---
-page_title: "event_rule Resource - terraform-provider-authentik"
+page_title: "authentik_event_rule Resource - terraform-provider-authentik"
 subcategory: "Events"
 description: |-
   

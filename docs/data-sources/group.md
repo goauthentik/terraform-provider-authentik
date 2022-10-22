@@ -7,7 +7,7 @@ description: |-
 
 # authentik_group (Data Source)
 
-Get groups by name or pk
+Get groups by pk or name
 
 ## Example Usage
 
@@ -54,3 +54,5 @@ Read-Only:
 - `pk` (Number)
 - `uid` (String)
 - `username` (String)
+
+

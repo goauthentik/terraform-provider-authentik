@@ -10,7 +10,7 @@ import (
 func dataSourceStage() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceStageRead,
-		Description: "Get stages by name and/or designation",
+		Description: "Get stages by name",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

@@ -1,24 +1,26 @@
 ---
-page_title: "authentik_stage Data Source - terraform-provider-authentik"
+page_title: "{{ .Name }} {{ .Type }} - {{ .ProviderName }}"
 subcategory: "Flows & Stages"
 description: |-
-  Get stages by name
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# authentik_stage (Data Source)
+# {{ .Name }} ({{ .Type }})
 
-Get stages by name
+{{ .Description | trimspace }}
 
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# To get the ID of a stage by name
-
-data "authentik_stage" "default-authentication-identification" {
-  name = "default-authentication-identification"
-}
-
-# Then use `data.authentik_stage.default-authentication-identification.id`
-```
+{{ tffile .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ codefile "shell" .ImportFile }}
+{{- end }}

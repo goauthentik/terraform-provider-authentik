@@ -50,3 +50,5 @@ data "authentik_scope_mapping" "test" {
 - `description` (String)
 - `expression` (String)
 - `id` (String) The ID of this resource.
+
+

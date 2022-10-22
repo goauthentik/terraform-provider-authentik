@@ -7,7 +7,7 @@ description: |-
 
 # authentik_tenant (Data Source)
 
-Get tenants by name
+Get tenants by domain
 
 ## Example Usage
 
@@ -18,7 +18,7 @@ data "authentik_tenant" "authentik-default" {
   domain = "authentik-default"
 }
 
-# Then use `data.authentik_tenant.authentik-default.domain`, `data.authentik_tenant.authentik-default.branding_title`, 
+# Then use `data.authentik_tenant.authentik-default.domain`, `data.authentik_tenant.authentik-default.branding_title`,
 # `data.authentik_tenant.authentik-default.branding_logo`, ...
 ```
 
@@ -44,3 +44,5 @@ data "authentik_tenant" "authentik-default" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+

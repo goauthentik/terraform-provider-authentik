@@ -1,25 +1,26 @@
 ---
-page_title: "authentik_tenant Data Source - terraform-provider-authentik"
+page_title: "{{ .Name }} {{ .Type }} - {{ .ProviderName }}"
 subcategory: "System"
 description: |-
-  Get tenants by domain
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
 ---
 
-# {{.Name}} ({{.Type}})
+# {{ .Name }} ({{ .Type }})
 
-Get tenants by name
+{{ .Description | trimspace }}
 
+{{ if .HasExample -}}
 ## Example Usage
 
-```terraform
-# To get the details of a tenant by domain
-
-data "authentik_tenant" "authentik-default" {
-  domain = "authentik-default"
-}
-
-# Then use `data.authentik_tenant.authentik-default.domain`, `data.authentik_tenant.authentik-default.branding_title`, 
-# `data.authentik_tenant.authentik-default.branding_logo`, ...
-```
+{{ tffile .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{ codefile "shell" .ImportFile }}
+{{- end }}
