@@ -35,6 +35,15 @@ func resourceStageAuthenticatorDuo() *schema.Resource {
 				Required:  true,
 				Sensitive: true,
 			},
+			"admin_integration_key": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"admin_secret_key": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
+			},
 			"api_hostname": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -51,6 +60,12 @@ func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.
 		ApiHostname:  d.Get("api_hostname").(string),
 	}
 
+	if h, hSet := d.GetOk("admin_integration_key"); hSet {
+		r.AdminIntegrationKey = stringToPointer(h.(string))
+	}
+	if h, hSet := d.GetOk("admin_secret_key"); hSet {
+		r.AdminSecretKey = stringToPointer(h.(string))
+	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
 	}
@@ -82,6 +97,7 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "client_id", res.ClientId)
+	setWrapper(d, "admin_integration_key", res.AdminIntegrationKey)
 	setWrapper(d, "api_hostname", res.ApiHostname)
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())

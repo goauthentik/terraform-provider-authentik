@@ -34,6 +34,8 @@ resource "authentik_stage_authenticator_duo" "name" {
 
 ### Optional
 
+- `admin_integration_key` (String)
+- `admin_secret_key` (String, Sensitive)
 - `configure_flow` (String)
 
 ### Read-Only
