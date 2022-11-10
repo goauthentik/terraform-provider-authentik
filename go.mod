@@ -3,7 +3,7 @@ module goauthentik.io/terraform-provider-authentik
 go 1.18
 
 require (
-	github.com/getsentry/sentry-go v0.14.0
+	github.com/getsentry/sentry-go v0.15.0
 	github.com/go-openapi/runtime v0.24.2
 	github.com/hashicorp/terraform-plugin-docs v0.13.0
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
