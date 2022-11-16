@@ -32,6 +32,23 @@ func resourcePolicyPassword() *schema.Resource {
 				Optional: true,
 				Default:  "password",
 			},
+
+			"check_static_rules": {
+				Type:     schema.TypeBool,
+				Default:  true,
+				Optional: true,
+			},
+			"check_have_i_been_pwned": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
+			"check_zxcvbn": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
+
 			"error_message": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -61,6 +78,18 @@ func resourcePolicyPassword() *schema.Resource {
 				Optional: true,
 				Default:  "!\\\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
 			},
+
+			"hibp_allowed_count": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  1,
+			},
+
+			"zxcvbn_score_threshold": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  2,
+			},
 		},
 	}
 }
@@ -71,16 +100,26 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.Passwor
 	}
 	r.Name.Set(stringToPointer(d.Get("name").(string)))
 
-	if s, sSet := d.GetOk("symbol_charset"); sSet {
-		r.SymbolCharset = stringToPointer(s.(string))
-	}
 	if s, sSet := d.GetOk("password_field"); sSet {
 		r.PasswordField = stringToPointer(s.(string))
 	}
-	if s, sSet := d.GetOk("error_message"); sSet {
-		r.ErrorMessage = s.(string)
+
+	if e, eSet := d.GetOk("check_static_rules"); eSet {
+		r.CheckStaticRules = boolToPointer(e.(bool))
+	}
+	if e, eSet := d.GetOk("check_have_i_been_pwned"); eSet {
+		r.CheckHaveIBeenPwned = boolToPointer(e.(bool))
+	}
+	if e, eSet := d.GetOk("check_zxcvbn"); eSet {
+		r.CheckZxcvbn = boolToPointer(e.(bool))
 	}
 
+	if s, sSet := d.GetOk("symbol_charset"); sSet {
+		r.SymbolCharset = stringToPointer(s.(string))
+	}
+	if s, sSet := d.GetOk("error_message"); sSet {
+		r.ErrorMessage = stringToPointer(s.(string))
+	}
 	if p, pSet := d.GetOk("amount_uppercase"); pSet {
 		r.AmountUppercase = intToPointer(p.(int))
 	}
@@ -97,6 +136,13 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.Passwor
 		r.LengthMin = intToPointer(p.(int))
 	}
 
+	if p, pSet := d.GetOk("hibp_allowed_count"); pSet {
+		r.HibpAllowedCount = intToPointer(p.(int))
+	}
+
+	if p, pSet := d.GetOk("zxcvbn_score_threshold"); pSet {
+		r.ZxcvbnScoreThreshold = intToPointer(p.(int))
+	}
 	return &r
 }
 
