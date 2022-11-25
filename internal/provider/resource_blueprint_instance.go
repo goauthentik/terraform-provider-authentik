@@ -2,12 +2,12 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"gopkg.in/yaml.v3"
 )
 
 func resourceBlueprintInstance() *schema.Resource {
@@ -53,7 +53,7 @@ func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData, c *APIClient
 
 	ctx := make(map[string]interface{})
 	if l, ok := d.Get("context").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&ctx)
+		err := yaml.NewDecoder(strings.NewReader(l)).Decode(&ctx)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
@@ -92,7 +92,7 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "path", res.Path)
 	setWrapper(d, "enabled", res.Enabled)
-	b, err := json.Marshal(res.Context)
+	b, err := yaml.Marshal(res.Context)
 	if err != nil {
 		return diag.FromErr(err)
 	}

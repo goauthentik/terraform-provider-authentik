@@ -2,12 +2,12 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"gopkg.in/yaml.v3"
 )
 
 func resourceSourceOAuth() *schema.Resource {
@@ -172,7 +172,7 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 	}
 	if l, ok := d.Get("oidc_jwks").(string); ok && l != "" {
 		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
+		err := yaml.NewDecoder(strings.NewReader(l)).Decode(&c)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
@@ -238,7 +238,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	setWrapper(d, "callback_uri", res.CallbackUrl)
 	setWrapper(d, "oidc_well_known_url", res.GetOidcWellKnownUrl())
 	setWrapper(d, "oidc_jwks_url", res.GetOidcJwksUrl())
-	b, err := json.Marshal(res.GetOidcJwks())
+	b, err := yaml.Marshal(res.GetOidcJwks())
 	if err != nil {
 		return diag.FromErr(err)
 	}

@@ -2,12 +2,12 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"gopkg.in/yaml.v3"
 )
 
 func resourceServiceConnectionKubernetes() *schema.Resource {
@@ -51,7 +51,7 @@ func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*
 
 	if l, ok := d.Get("kubeconfig").(string); ok {
 		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
+		err := yaml.NewDecoder(strings.NewReader(l)).Decode(&c)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
@@ -89,7 +89,7 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "local", res.Local)
-	b, err := json.Marshal(res.Kubeconfig)
+	b, err := yaml.Marshal(res.Kubeconfig)
 	if err != nil {
 		return diag.FromErr(err)
 	}

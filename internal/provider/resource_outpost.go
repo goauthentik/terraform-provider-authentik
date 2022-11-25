@@ -2,12 +2,12 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"gopkg.in/yaml.v3"
 )
 
 func resourceOutpost() *schema.Resource {
@@ -74,7 +74,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 	}
 	if l, ok := d.Get("config").(string); ok && l != "" {
 		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
+		err := yaml.NewDecoder(strings.NewReader(l)).Decode(&c)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
@@ -120,7 +120,7 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 	if res.ServiceConnection.IsSet() {
 		setWrapper(d, "service_connection", res.ServiceConnection.Get())
 	}
-	b, err := json.Marshal(res.Config)
+	b, err := yaml.Marshal(res.Config)
 	if err != nil {
 		return diag.FromErr(err)
 	}

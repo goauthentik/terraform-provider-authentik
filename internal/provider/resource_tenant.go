@@ -2,12 +2,12 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"gopkg.in/yaml.v3"
 )
 
 func resourceTenant() *schema.Resource {
@@ -148,7 +148,7 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, di
 
 	attr := make(map[string]interface{})
 	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
+		err := yaml.NewDecoder(strings.NewReader(l)).Decode(&attr)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
@@ -209,7 +209,7 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 	if res.WebCertificate.IsSet() {
 		setWrapper(d, "web_certificate", res.WebCertificate.Get())
 	}
-	b, err := json.Marshal(res.Attributes)
+	b, err := yaml.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}

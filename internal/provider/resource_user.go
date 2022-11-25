@@ -2,13 +2,13 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"gopkg.in/yaml.v3"
 )
 
 func resourceUser() *schema.Resource {
@@ -79,7 +79,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 
 	attr := make(map[string]interface{})
 	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
+		err := yaml.NewDecoder(strings.NewReader(l)).Decode(&attr)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
@@ -124,7 +124,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	setWrapper(d, "email", res.Email)
 	setWrapper(d, "is_active", res.IsActive)
 	setWrapper(d, "path", res.Path)
-	b, err := json.Marshal(res.Attributes)
+	b, err := yaml.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
