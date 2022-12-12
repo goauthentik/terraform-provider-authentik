@@ -42,9 +42,10 @@ func resourceGroup() *schema.Resource {
 				},
 			},
 			"attributes": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "{}",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "{}",
+				DiffSuppressFunc: diffSuppressJSON,
 			},
 		},
 	}

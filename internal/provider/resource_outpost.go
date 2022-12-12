@@ -41,9 +41,10 @@ func resourceOutpost() *schema.Resource {
 				Optional: true,
 			},
 			"config": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Computed:         true,
+				DiffSuppressFunc: diffSuppressJSON,
 			},
 		},
 	}

@@ -2,9 +2,11 @@ package provider
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -21,6 +23,17 @@ func setWrapper(d *schema.ResourceData, key string, data interface{}) {
 
 func diffSuppressExpression(k, old, new string, d *schema.ResourceData) bool {
 	return strings.TrimSuffix(new, "\n") == old
+}
+
+func diffSuppressJSON(k, old, new string, d *schema.ResourceData) bool {
+	var j, j2 interface{}
+	if err := json.Unmarshal([]byte(old), &j); err != nil {
+		return false
+	}
+	if err := json.Unmarshal([]byte(new), &j2); err != nil {
+		return false
+	}
+	return reflect.DeepEqual(j2, j)
 }
 
 // stringOffsetInSlice Return the offset of a matching string in a slice or -1 if not found

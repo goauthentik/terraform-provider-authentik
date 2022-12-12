@@ -99,10 +99,11 @@ func resourceSourceOAuth() *schema.Resource {
 				Description: "Automatically configure JWKS if not specified by `oidc_well_known_url`.",
 			},
 			"oidc_jwks": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Manually configure JWKS keys for use with machine-to-machine authentication.",
-				Computed:    true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication.",
+				Computed:         true,
+				DiffSuppressFunc: diffSuppressJSON,
 			},
 
 			"additional_scopes": {

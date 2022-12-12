@@ -34,9 +34,10 @@ func resourceBlueprintInstance() *schema.Resource {
 				Optional: true,
 			},
 			"context": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "{}",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "{}",
+				DiffSuppressFunc: diffSuppressJSON,
 			},
 		},
 	}

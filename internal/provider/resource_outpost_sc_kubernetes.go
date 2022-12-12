@@ -30,9 +30,10 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 				Default:  false,
 			},
 			"kubeconfig": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "{}",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "{}",
+				DiffSuppressFunc: diffSuppressJSON,
 			},
 		},
 	}

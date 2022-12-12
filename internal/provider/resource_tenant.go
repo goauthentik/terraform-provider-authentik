@@ -76,9 +76,10 @@ func resourceTenant() *schema.Resource {
 				Optional: true,
 			},
 			"attributes": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "{}",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "{}",
+				DiffSuppressFunc: diffSuppressJSON,
 			},
 		},
 	}
