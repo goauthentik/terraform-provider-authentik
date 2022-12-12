@@ -21,4 +21,4 @@ build: gen-api
 
 gen:
 	golangci-lint run -v
-	go generate
+	AUTHENTIK_URL="" go generate
