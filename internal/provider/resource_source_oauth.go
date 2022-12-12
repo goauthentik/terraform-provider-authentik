@@ -101,7 +101,7 @@ func resourceSourceOAuth() *schema.Resource {
 			"oidc_jwks": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication.",
+				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use jsonencode() to pass objects.",
 				Computed:         true,
 				DiffSuppressFunc: diffSuppressJSON,
 			},

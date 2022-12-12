@@ -32,7 +32,9 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 			"kubeconfig": {
 				Type:             schema.TypeString,
 				Optional:         true,
+				Sensitive:        true,
 				Default:          "{}",
+				Description:      "JSON format expected. Use jsonencode() to pass objects.",
 				DiffSuppressFunc: diffSuppressJSON,
 			},
 		},

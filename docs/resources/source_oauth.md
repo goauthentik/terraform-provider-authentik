@@ -49,7 +49,7 @@ resource "authentik_source_oauth" "name" {
 - `additional_scopes` (String)
 - `authorization_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
 - `enabled` (Boolean) Defaults to `true`.
-- `oidc_jwks` (String) Manually configure JWKS keys for use with machine-to-machine authentication.
+- `oidc_jwks` (String) Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use jsonencode() to pass objects.
 - `oidc_jwks_url` (String) Automatically configure JWKS if not specified by `oidc_well_known_url`.
 - `oidc_well_known_url` (String) Automatically configure source from OIDC well-known endpoint. URL is taken as is, and should end with `.well-known/openid-configuration`.
 - `policy_engine_mode` (String) Defaults to `any`.
