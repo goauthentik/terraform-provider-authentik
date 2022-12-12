@@ -17,6 +17,8 @@ func resourcePolicyHaveIBeenPwend() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		Description:        "authentik_policy_hibp has been merged with authentik_policy_password in authentik 2022.11, migrate your policies to authentik_policy_password.",
+		DeprecationMessage: "authentik_policy_hibp has been merged with authentik_policy_password in authentik 2022.11, migrate your policies to authentik_policy_password.",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

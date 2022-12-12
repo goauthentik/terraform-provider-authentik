@@ -2,12 +2,12 @@
 page_title: "authentik_policy_hibp Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  
+  authentikpolicyhibp has been merged with authentikpolicypassword in authentik 2022.11, migrate your policies to authentikpolicypassword.
 ---
 
 # authentik_policy_hibp (Resource)
 
-
+authentik_policy_hibp has been merged with authentik_policy_password in authentik 2022.11, migrate your policies to authentik_policy_password.
 
 ## Example Usage
 

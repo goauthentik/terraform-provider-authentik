@@ -35,10 +35,15 @@ resource "authentik_policy_password" "name" {
 - `amount_lowercase` (Number)
 - `amount_symbols` (Number)
 - `amount_uppercase` (Number)
+- `check_have_i_been_pwned` (Boolean) Defaults to `false`.
+- `check_static_rules` (Boolean) Defaults to `true`.
+- `check_zxcvbn` (Boolean) Defaults to `false`.
 - `execution_logging` (Boolean) Defaults to `false`.
+- `hibp_allowed_count` (Number) Defaults to `1`.
 - `length_min` (Number)
 - `password_field` (String) Defaults to `password`.
 - `symbol_charset` (String) Defaults to `!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~`.
+- `zxcvbn_score_threshold` (Number) Defaults to `2`.
 
 ### Read-Only
 
