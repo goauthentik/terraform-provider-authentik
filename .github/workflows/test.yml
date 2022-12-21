@@ -41,7 +41,7 @@ jobs:
           go-version-file: go.mod
           cache: true
       - name: Setup authentik
-        uses: goauthentik/action-setup-authentik@main
+        uses: goauthentik/action-setup-authentik@v1.1
         id: setup
         with:
           version: ${{ matrix.authentik_version }}
