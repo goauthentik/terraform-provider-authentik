@@ -39,8 +39,7 @@ jobs:
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: beryjuorg
-          SENTRY_PROJECT: authentik-terraform-provider
-          SENTRY_URL: https://sentry.beryju.org
+          SENTRY_ORG: authentik-security-inc
+          SENTRY_PROJECT: terraform-provider-authentik
         with:
-          version: authentik-terraform-provider@${{ steps.version.outputs.version }}
+          version: terraform-provider-authentik@${{ steps.version.outputs.version }}
