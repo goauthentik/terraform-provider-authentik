@@ -42,12 +42,11 @@ func resourcePolicyExpiry() *schema.Resource {
 
 func resourcePolicyExpirySchemaToProvider(d *schema.ResourceData) *api.PasswordExpiryPolicyRequest {
 	r := api.PasswordExpiryPolicyRequest{
+		Name:             d.Get("name").(string),
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 		Days:             int32(d.Get("days").(int)),
 		DenyOnly:         boolToPointer(d.Get("deny_only").(bool)),
 	}
-	r.Name.Set(stringToPointer(d.Get("name").(string)))
-
 	return &r
 }
 
@@ -74,7 +73,7 @@ func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m int
 		return httpToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
 	setWrapper(d, "days", res.Days)
 	setWrapper(d, "deny_only", res.DenyOnly)

@@ -48,11 +48,11 @@ func resourcePolicyReputation() *schema.Resource {
 
 func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.ReputationPolicyRequest {
 	r := api.ReputationPolicyRequest{
+		Name:             d.Get("name").(string),
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 		CheckIp:          boolToPointer(d.Get("check_ip").(bool)),
 		CheckUsername:    boolToPointer(d.Get("check_username").(bool)),
 	}
-	r.Name.Set(stringToPointer(d.Get("name").(string)))
 
 	if p, pSet := d.GetOk("threshold"); pSet {
 		r.Threshold = intToPointer(p.(int))
@@ -84,7 +84,7 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 		return httpToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
 	setWrapper(d, "check_ip", res.CheckIp)
 	setWrapper(d, "check_username", res.CheckUsername)

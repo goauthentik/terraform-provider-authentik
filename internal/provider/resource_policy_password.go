@@ -96,9 +96,9 @@ func resourcePolicyPassword() *schema.Resource {
 
 func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordPolicyRequest {
 	r := api.PasswordPolicyRequest{
+		Name:             d.Get("name").(string),
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 	}
-	r.Name.Set(stringToPointer(d.Get("name").(string)))
 
 	if s, sSet := d.GetOk("password_field"); sSet {
 		r.PasswordField = stringToPointer(s.(string))
@@ -169,7 +169,7 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m i
 		return httpToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
 	setWrapper(d, "password_field", res.PasswordField)
 	setWrapper(d, "error_message", res.ErrorMessage)
