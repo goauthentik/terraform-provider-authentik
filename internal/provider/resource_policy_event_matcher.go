@@ -47,9 +47,9 @@ func resourcePolicyEventMatcher() *schema.Resource {
 
 func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.EventMatcherPolicyRequest {
 	r := api.EventMatcherPolicyRequest{
+		Name:             d.Get("name").(string),
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 	}
-	r.Name.Set(stringToPointer(d.Get("name").(string)))
 
 	act := api.EventActions(d.Get("action").(string))
 	r.Action.Set(&act)
@@ -87,7 +87,7 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 		return httpToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
 	setWrapper(d, "action", res.Action.Get())
 	setWrapper(d, "client_ip", res.ClientIp)

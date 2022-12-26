@@ -48,10 +48,10 @@ func resourcePolicyDummy() *schema.Resource {
 
 func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolicyRequest {
 	r := api.DummyPolicyRequest{
+		Name:             d.Get("name").(string),
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 		Result:           boolToPointer(d.Get("result").(bool)),
 	}
-	r.Name.Set(stringToPointer(d.Get("name").(string)))
 
 	if p, pSet := d.GetOk("wait_max"); pSet {
 		r.WaitMax = intToPointer(p.(int))
@@ -86,7 +86,7 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m inte
 		return httpToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name.Get())
+	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
 	setWrapper(d, "result", res.Result)
 	setWrapper(d, "wait_min", res.WaitMin)
