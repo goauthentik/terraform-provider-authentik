@@ -29,10 +29,12 @@ func resourceStageCaptcha() *schema.Resource {
 			"js_url": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "https://www.recaptcha.net/recaptcha/api.js",
 			},
 			"api_url": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "https://www.recaptcha.net/recaptcha/api/siteverify",
 			},
 			"private_key": {
 				Type:      schema.TypeString,
