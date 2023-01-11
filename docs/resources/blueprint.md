@@ -29,12 +29,13 @@ resource "authentik_blueprint" "instance" {
 ### Required
 
 - `name` (String)
-- `path` (String)
 
 ### Optional
 
+- `content` (String)
 - `context` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
 - `enabled` (Boolean) Defaults to `true`.
+- `path` (String)
 
 ### Read-Only
 

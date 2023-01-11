@@ -26,7 +26,11 @@ func resourceBlueprintInstance() *schema.Resource {
 			},
 			"path": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
+			},
+			"content": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"enabled": {
 				Type:     schema.TypeBool,
@@ -47,8 +51,14 @@ func resourceBlueprintInstance() *schema.Resource {
 func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.BlueprintInstanceRequest, diag.Diagnostics) {
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
-		Path:    d.Get("path").(string),
 		Enabled: boolToPointer(d.Get("enabled").(bool)),
+	}
+
+	if p, ok := d.Get("path").(string); ok {
+		m.Path = stringToPointer(p)
+	}
+	if p, ok := d.Get("content").(string); ok {
+		m.Content = stringToPointer(p)
 	}
 
 	ctx := make(map[string]interface{})
@@ -91,6 +101,7 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "path", res.Path)
+	setWrapper(d, "content", res.Content)
 	setWrapper(d, "enabled", res.Enabled)
 	b, err := json.Marshal(res.Context)
 	if err != nil {
