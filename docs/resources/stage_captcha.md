@@ -30,6 +30,11 @@ resource "authentik_stage_captcha" "name" {
 - `private_key` (String, Sensitive)
 - `public_key` (String)
 
+### Optional
+
+- `api_url` (String) Defaults to `https://www.recaptcha.net/recaptcha/api/siteverify`.
+- `js_url` (String) Defaults to `https://www.recaptcha.net/recaptcha/api.js`.
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.
