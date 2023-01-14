@@ -43,7 +43,7 @@ resource "authentik_user" "name" {
 
 - `attributes` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
 - `email` (String)
-- `groups` (List of String)
+- `groups` (List of String) Generated.
 - `is_active` (Boolean) Defaults to `true`.
 - `name` (String) Defaults to ``.
 - `path` (String) Defaults to `users`.

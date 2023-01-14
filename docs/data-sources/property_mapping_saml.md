@@ -37,13 +37,13 @@ data "authentik_property_mapping_saml" "test" {
 
 ### Optional
 
-- `expression` (String)
-- `friendly_name` (String)
-- `ids` (List of String) List of ids when `managed_list` is set.
+- `expression` (String) Generated.
+- `friendly_name` (String) Generated.
+- `ids` (List of String) List of ids when `managed_list` is set. Generated.
 - `managed` (String)
 - `managed_list` (List of String) Retrive multiple property mappings
 - `name` (String)
-- `saml_name` (String)
+- `saml_name` (String) Generated.
 
 ### Read-Only
 

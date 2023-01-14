@@ -29,8 +29,8 @@ description: |-
 
 ### Read-Only
 
-- `expires_in` (Number)
+- `expires_in` (Number) Generated.
 - `id` (String) The ID of this resource.
-- `key` (String, Sensitive)
+- `key` (String, Sensitive) Generated.
 
 

@@ -26,13 +26,13 @@ data "authentik_flow" "default-authorization-flow" {
 
 ### Optional
 
-- `designation` (String)
-- `slug` (String)
+- `designation` (String) Generated.
+- `slug` (String) Generated.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `name` (String)
-- `title` (String)
+- `name` (String) Generated.
+- `title` (String) Generated.
 
 

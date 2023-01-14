@@ -24,13 +24,13 @@ data "authentik_source" "inbuilt" {
 
 ### Optional
 
-- `managed` (String)
-- `slug` (String)
+- `managed` (String) Generated.
+- `slug` (String) Generated.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `name` (String)
-- `uuid` (String)
+- `name` (String) Generated.
+- `uuid` (String) Generated.
 
 

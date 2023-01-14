@@ -31,14 +31,14 @@ data "authentik_group" "admins" {
 
 ### Read-Only
 
-- `attributes` (String)
+- `attributes` (String) Generated.
 - `id` (String) The ID of this resource.
-- `is_superuser` (Boolean)
-- `num_pk` (Number)
-- `parent` (String)
-- `parent_name` (String)
-- `users` (List of Number)
-- `users_obj` (List of Object) (see [below for nested schema](#nestedatt--users_obj))
+- `is_superuser` (Boolean) Generated.
+- `num_pk` (Number) Generated.
+- `parent` (String) Generated.
+- `parent_name` (String) Generated.
+- `users` (List of Number) Generated.
+- `users_obj` (List of Object) Generated. (see [below for nested schema](#nestedatt--users_obj))
 
 <a id="nestedatt--users_obj"></a>
 ### Nested Schema for `users_obj`

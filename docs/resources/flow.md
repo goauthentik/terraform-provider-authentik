@@ -53,6 +53,6 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `uuid` (String)
+- `uuid` (String) Generated.
 
 

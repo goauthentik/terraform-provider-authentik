@@ -43,7 +43,7 @@ resource "authentik_outpost" "outpost" {
 
 ### Optional
 
-- `config` (String) JSON format expected. Use jsonencode() to pass objects.
+- `config` (String) JSON format expected. Use jsonencode() to pass objects. Generated.
 - `service_connection` (String)
 - `type` (String) Defaults to `proxy`.
 

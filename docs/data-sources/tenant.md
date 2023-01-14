@@ -27,19 +27,19 @@ data "authentik_tenant" "authentik-default" {
 
 ### Optional
 
-- `branding_favicon` (String)
-- `branding_logo` (String)
-- `branding_title` (String)
-- `default` (Boolean)
-- `domain` (String)
-- `event_retention` (String)
-- `flow_authentication` (String)
-- `flow_device_code` (String)
-- `flow_invalidation` (String)
-- `flow_recovery` (String)
-- `flow_unenrollment` (String)
-- `flow_user_settings` (String)
-- `web_certificate` (String)
+- `branding_favicon` (String) Generated.
+- `branding_logo` (String) Generated.
+- `branding_title` (String) Generated.
+- `default` (Boolean) Generated.
+- `domain` (String) Generated.
+- `event_retention` (String) Generated.
+- `flow_authentication` (String) Generated.
+- `flow_device_code` (String) Generated.
+- `flow_invalidation` (String) Generated.
+- `flow_recovery` (String) Generated.
+- `flow_unenrollment` (String) Generated.
+- `flow_user_settings` (String) Generated.
+- `web_certificate` (String) Generated.
 
 ### Read-Only
 

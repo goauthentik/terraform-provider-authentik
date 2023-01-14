@@ -43,7 +43,7 @@ data "authentik_groups" "admins" {
 
 ### Read-Only
 
-- `groups` (List of Object) (see [below for nested schema](#nestedatt--groups))
+- `groups` (List of Object) Generated. (see [below for nested schema](#nestedatt--groups))
 - `id` (String) The ID of this resource.
 
 <a id="nestedatt--groups"></a>

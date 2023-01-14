@@ -37,15 +37,15 @@ data "authentik_property_mapping_ldap" "test" {
 
 ### Optional
 
-- `ids` (List of String) List of ids when `managed_list` is set.
+- `ids` (List of String) List of ids when `managed_list` is set. Generated.
 - `managed` (String)
 - `managed_list` (List of String) Retrive multiple property mappings
 - `name` (String)
-- `object_field` (String)
+- `object_field` (String) Generated.
 
 ### Read-Only
 
-- `expression` (String)
+- `expression` (String) Generated.
 - `id` (String) The ID of this resource.
 
 

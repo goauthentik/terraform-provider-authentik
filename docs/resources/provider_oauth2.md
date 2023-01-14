@@ -38,7 +38,7 @@ resource "authentik_application" "name" {
 ### Optional
 
 - `access_code_validity` (String) Defaults to `minutes=1`.
-- `client_secret` (String, Sensitive)
+- `client_secret` (String, Sensitive) Generated.
 - `client_type` (String) Defaults to `confidential`.
 - `include_claims_in_id_token` (Boolean) Defaults to `true`.
 - `issuer_mode` (String) Defaults to `per_provider`.

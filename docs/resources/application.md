@@ -61,7 +61,7 @@ resource "authentik_application" "name" {
 - `open_in_new_tab` (Boolean) Defaults to `false`.
 - `policy_engine_mode` (String) Defaults to `any`.
 - `protocol_provider` (Number)
-- `uuid` (String)
+- `uuid` (String) Generated.
 
 ### Read-Only
 

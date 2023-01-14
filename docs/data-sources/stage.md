@@ -26,7 +26,7 @@ data "authentik_stage" "default-authentication-identification" {
 
 ### Optional
 
-- `name` (String)
+- `name` (String) Generated.
 
 ### Read-Only
 

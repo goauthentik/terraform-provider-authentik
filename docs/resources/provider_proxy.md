@@ -57,7 +57,7 @@ resource "authentik_application" "name" {
 
 ### Read-Only
 
-- `client_id` (String)
+- `client_id` (String) Generated.
 - `id` (String) The ID of this resource.
 
 

@@ -26,21 +26,21 @@ data "authentik_user" "akadmin" {
 
 ### Optional
 
-- `pk` (Number)
-- `username` (String)
+- `pk` (Number) Generated.
+- `username` (String) Generated.
 
 ### Read-Only
 
-- `attributes` (String)
-- `avatar` (String)
-- `email` (String)
-- `groups` (List of String)
+- `attributes` (String) Generated.
+- `avatar` (String) Generated.
+- `email` (String) Generated.
+- `groups` (List of String) Generated.
 - `id` (String) The ID of this resource.
-- `is_active` (Boolean)
-- `is_superuser` (Boolean)
-- `last_login` (String)
-- `name` (String)
-- `path` (String)
-- `uid` (String)
+- `is_active` (Boolean) Generated.
+- `is_superuser` (Boolean) Generated.
+- `last_login` (String) Generated.
+- `name` (String) Generated.
+- `path` (String) Generated.
+- `uid` (String) Generated.
 
 

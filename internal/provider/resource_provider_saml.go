@@ -23,6 +23,33 @@ func resourceProviderSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+
+			"url_sso_init": {
+				Type:     schema.TypeString,
+				Computed: true,
+				Optional: true,
+			},
+			"url_sso_post": {
+				Type:     schema.TypeString,
+				Computed: true,
+				Optional: true,
+			},
+			"url_sso_redirect": {
+				Type:     schema.TypeString,
+				Computed: true,
+				Optional: true,
+			},
+			"url_slo_post": {
+				Type:     schema.TypeString,
+				Computed: true,
+				Optional: true,
+			},
+			"url_slo_redirect": {
+				Type:     schema.TypeString,
+				Computed: true,
+				Optional: true,
+			},
+
 			"authorization_flow": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -183,6 +210,11 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
 
+	setWrapper(d, "url_sso_init", res.UrlSsoInit)
+	setWrapper(d, "url_sso_post", res.UrlSsoPost)
+	setWrapper(d, "url_sso_redirect", res.UrlSsoRedirect)
+	setWrapper(d, "url_slo_post", res.UrlSloPost)
+	setWrapper(d, "url_slo_redirect", res.UrlSloRedirect)
 	return diags
 }
 

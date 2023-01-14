@@ -32,15 +32,15 @@ data "authentik_certificate_key_pair" "generated" {
 
 - `fetch_certificate` (Boolean) If set to true, certificate data will be fetched. Defaults to `true`.
 - `fetch_key` (Boolean) If set to true, private key data will be fetched. Defaults to `true`.
-- `key_data` (String, Sensitive)
+- `key_data` (String, Sensitive) Generated.
 
 ### Read-Only
 
-- `certificate_data` (String)
-- `expiry` (String)
-- `fingerprint1` (String) SHA1-hashed certificate fingerprint
-- `fingerprint256` (String) SHA256-hashed certificate fingerprint
-- `id` (String) The ID of this resource.
-- `subject` (String)
+- `certificate_data` (String) Generated.
+- `expiry` (String) Generated.
+- `fingerprint1` (String) SHA1-hashed certificate fingerprint Generated.
+- `fingerprint256` (String) SHA256-hashed certificate fingerprint Generated.
+- `id` (String) Generated.
+- `subject` (String) Generated.
 
 

@@ -48,7 +48,7 @@ resource "authentik_source_plex" "name" {
 - `policy_engine_mode` (String) Defaults to `any`.
 - `user_matching_mode` (String) Defaults to `identifier`.
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
-- `uuid` (String)
+- `uuid` (String) Generated.
 
 ### Read-Only
 

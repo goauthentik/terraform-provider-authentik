@@ -29,6 +29,9 @@ func init() {
 		if s.Default != nil {
 			desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
 		}
+		if s.Computed {
+			desc += " Generated."
+		}
 		return strings.TrimSpace(desc)
 	}
 }

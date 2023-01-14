@@ -53,6 +53,11 @@ resource "authentik_application" "name" {
 - `signature_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
 - `sp_binding` (String) Defaults to `redirect`.
+- `url_slo_post` (String) Generated.
+- `url_slo_redirect` (String) Generated.
+- `url_sso_init` (String) Generated.
+- `url_sso_post` (String) Generated.
+- `url_sso_redirect` (String) Generated.
 - `verification_kp` (String)
 
 ### Read-Only

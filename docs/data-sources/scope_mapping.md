@@ -39,16 +39,16 @@ data "authentik_scope_mapping" "test" {
 
 ### Optional
 
-- `ids` (List of String) List of ids when `managed_list` is set.
+- `ids` (List of String) List of ids when `managed_list` is set. Generated.
 - `managed` (String)
 - `managed_list` (List of String) Retrive multiple property mappings
 - `name` (String)
-- `scope_name` (String)
+- `scope_name` (String) Generated.
 
 ### Read-Only
 
-- `description` (String)
-- `expression` (String)
+- `description` (String) Generated.
+- `expression` (String) Generated.
 - `id` (String) The ID of this resource.
 
 
