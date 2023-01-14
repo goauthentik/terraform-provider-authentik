@@ -27,6 +27,11 @@ func resourceStageUserWrite() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"user_creation_mode": {
+				Type:     schema.TypeString,
+				Default:  string(api.USERCREATIONMODEENUM_CREATE_WHEN_REQUIRED),
+				Optional: true,
+			},
 			"create_users_group": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -50,6 +55,8 @@ func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWri
 	if h, hSet := d.GetOk("create_users_group"); hSet {
 		r.CreateUsersGroup.Set(stringToPointer(h.(string)))
 	}
+	ucm := api.UserCreationModeEnum(d.Get("user_creation_mode").(string))
+	r.UserCreationMode = &ucm
 	return &r
 }
 
@@ -79,7 +86,8 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "create_users_as_inactive", res.CreateUsersAsInactive)
 	setWrapper(d, "create_users_group", res.CreateUsersGroup.Get())
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	setWrapper(d, "user_path_template", res.GetUserPathTemplate())
+	setWrapper(d, "user_creation_mode", res.GetUserCreationMode())
 	return diags
 }
 
