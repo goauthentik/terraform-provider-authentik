@@ -49,6 +49,7 @@ resource "authentik_application" "name" {
 - `cookie_domain` (String)
 - `internal_host` (String)
 - `internal_host_ssl_validation` (Boolean) Defaults to `true`.
+- `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
 - `mode` (String) Defaults to `proxy`.
 - `property_mappings` (List of String)
 - `skip_path_regex` (String)
@@ -56,6 +57,7 @@ resource "authentik_application" "name" {
 
 ### Read-Only
 
+- `client_id` (String)
 - `id` (String) The ID of this resource.
 
 

@@ -23,6 +23,10 @@ func resourceProviderProxy() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"client_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"authorization_flow": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -78,6 +82,14 @@ func resourceProviderProxy() *schema.Resource {
 				Optional: true,
 				Default:  "hours=24",
 			},
+			"jwks_sources": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
+			},
 		},
 	}
 }
@@ -122,6 +134,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	r.Mode.Set(&pm)
 
 	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
+	r.JwksSources = sliceToString(d.Get("jwks_sources").([]interface{}))
 	return &r
 }
 
@@ -152,6 +165,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	setWrapper(d, "name", res.Name)
+	setWrapper(d, "client_id", res.ClientId)
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "internal_host", res.InternalHost)
 	setWrapper(d, "external_host", res.ExternalHost)
@@ -167,6 +181,8 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	if len(localMappings) > 0 {
 		setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 	}
+	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
+	setWrapper(d, "jwks_sources", stringListConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags
 }
 
