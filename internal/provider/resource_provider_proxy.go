@@ -55,6 +55,11 @@ func resourceProviderProxy() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"intercept_header_auth": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 			"basic_auth_enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -115,6 +120,9 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	if l, ok := d.Get("basic_auth_enabled").(bool); ok {
 		r.BasicAuthEnabled = &l
 	}
+	if l, ok := d.Get("intercept_header_auth").(bool); ok {
+		r.InterceptHeaderAuth = &l
+	}
 	if l, ok := d.Get("basic_auth_username_attribute").(string); ok {
 		r.BasicAuthUserAttribute = &l
 	}
@@ -166,6 +174,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "client_id", res.ClientId)
+	setWrapper(d, "intercept_header_auth", res.InterceptHeaderAuth)
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "internal_host", res.InternalHost)
 	setWrapper(d, "external_host", res.ExternalHost)
