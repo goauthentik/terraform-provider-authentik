@@ -47,6 +47,7 @@ resource "authentik_application" "name" {
 - `basic_auth_password_attribute` (String)
 - `basic_auth_username_attribute` (String)
 - `cookie_domain` (String)
+- `intercept_header_auth` (Boolean) Defaults to `true`.
 - `internal_host` (String)
 - `internal_host_ssl_validation` (Boolean) Defaults to `true`.
 - `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.

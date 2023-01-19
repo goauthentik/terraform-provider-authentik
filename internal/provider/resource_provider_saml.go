@@ -78,17 +78,17 @@ func resourceProviderSAML() *schema.Resource {
 			"assertion_valid_not_before": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "minutes=3",
+				Default:  "minutes=-5",
 			},
 			"assertion_valid_not_on_or_after": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "minutes=3",
+				Default:  "minutes=5",
 			},
 			"session_valid_not_on_or_after": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "minutes=3",
+				Default:  "minutes=86400",
 			},
 			"name_id_mapping": {
 				Type:     schema.TypeString,
