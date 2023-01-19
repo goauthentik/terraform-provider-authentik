@@ -123,6 +123,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_property_mapping_ldap":  td(dataSourceLDAPPropertyMapping),
 			"authentik_property_mapping_saml":  td(dataSourceSAMLPropertyMapping),
 			"authentik_provider_saml_metadata": td(dataSourceProviderSAMLMetadata),
+			"authentik_provider_oauth2_config": td(dataSourceProviderOAuth2Config),
 			"authentik_scope_mapping":          td(dataSourceScopeMapping),
 			"authentik_source":                 td(dataSourceSource),
 			"authentik_stage":                  td(dataSourceStage),
