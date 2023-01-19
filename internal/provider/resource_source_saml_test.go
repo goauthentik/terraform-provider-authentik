@@ -19,6 +19,7 @@ func TestAccResourceSourceSAML(t *testing.T) {
 				Config: testAccResourceSourceSAML(rName, appName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_source_saml.name", "name", rName),
+					resource.TestCheckResourceAttrSet("authentik_source_saml.name", "metadata"),
 				),
 			},
 			{

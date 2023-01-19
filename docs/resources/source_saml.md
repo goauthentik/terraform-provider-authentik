@@ -68,5 +68,6 @@ resource "authentik_source_saml" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `metadata` (String) SAML Metadata Generated.
 
 
