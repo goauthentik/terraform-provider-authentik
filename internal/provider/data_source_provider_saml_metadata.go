@@ -27,8 +27,9 @@ func dataSourceProviderSAMLMetadata() *schema.Resource {
 			},
 
 			"metadata": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "SAML Metadata",
 			},
 		},
 	}

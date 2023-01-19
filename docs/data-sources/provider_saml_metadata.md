@@ -22,6 +22,6 @@ Get SAML Provider metadata
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `metadata` (String) Generated.
+- `metadata` (String) SAML Metadata Generated.
 
 

@@ -110,6 +110,12 @@ func resourceSourceSAML() *schema.Resource {
 				Optional: true,
 				Default:  "days=1",
 			},
+
+			"metadata": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "SAML Metadata",
+			},
 		},
 	}
 }
@@ -211,6 +217,12 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
 	setWrapper(d, "temporary_user_delete_after", res.TemporaryUserDeleteAfter)
+
+	meta, hr, err := c.client.SourcesApi.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
+	if err != nil {
+		return httpToDiag(d, hr, err)
+	}
+	setWrapper(d, "metadata", meta.Metadata)
 	return diags
 }
 
