@@ -33,7 +33,8 @@ func TestAccResourceStagePrompt(t *testing.T) {
 func testAccResourceStagePrompt(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_stage_prompt_field" "field" {
-  field_key = "%[1]stest-field"
+  name = "%[1]s"
+  field_key = "%[1]s-test-field"
   label = "a label"
   type = "text"
 }

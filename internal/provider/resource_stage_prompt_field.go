@@ -18,6 +18,10 @@ func resourceStagePromptField() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
+			"name": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"field_key": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -54,6 +58,7 @@ func resourceStagePromptField() *schema.Resource {
 
 func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.PromptRequest {
 	r := api.PromptRequest{
+		Name:                  d.Get("name").(string),
 		FieldKey:              d.Get("field_key").(string),
 		Label:                 d.Get("label").(string),
 		Type:                  api.PromptTypeEnum(d.Get("type").(string)),
@@ -95,6 +100,7 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 		return httpToDiag(d, hr, err)
 	}
 
+	setWrapper(d, "name", res.Name)
 	setWrapper(d, "field_key", res.FieldKey)
 	setWrapper(d, "label", res.Label)
 	setWrapper(d, "type", res.Type)

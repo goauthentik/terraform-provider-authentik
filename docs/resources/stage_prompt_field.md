@@ -28,6 +28,7 @@ resource "authentik_stage_prompt_field" "field" {
 
 - `field_key` (String)
 - `label` (String)
+- `name` (String)
 - `type` (String)
 
 ### Optional
