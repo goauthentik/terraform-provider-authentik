@@ -34,7 +34,7 @@ func testAccResourceBlueprintInstanceSimple(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_blueprint" "instance" {
   name = "%[1]s"
-  path = "default/10-flow-default-authentication-flow.yaml"
+  path = "default/flow-default-authentication-flow.yaml"
 }
 `, name)
 }
