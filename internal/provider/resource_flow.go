@@ -38,6 +38,11 @@ func resourceFlow() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"authentication": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.AUTHENTICATIONENUM_NONE,
+			},
 			"layout": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -77,6 +82,9 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 
 	designation := api.FlowDesignationEnum(d.Get("designation").(string))
 	m.Designation.Set(&designation)
+
+	authentication := api.AuthenticationEnum(d.Get("authentication").(string))
+	m.Authentication.Set(&authentication)
 
 	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
 	m.PolicyEngineMode = &pm
@@ -126,6 +134,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	setWrapper(d, "slug", res.Slug)
 	setWrapper(d, "title", res.Title)
 	setWrapper(d, "designation", res.Designation.Get())
+	setWrapper(d, "authentication", res.Authentication.Get())
 	setWrapper(d, "denied_action", res.DeniedAction.Get())
 	setWrapper(d, "layout", res.Layout)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)

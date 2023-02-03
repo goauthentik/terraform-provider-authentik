@@ -26,6 +26,7 @@ data "authentik_flow" "default-authorization-flow" {
 
 ### Optional
 
+- `authentication` (String) Generated.
 - `designation` (String) Generated.
 - `slug` (String) Generated.
 
