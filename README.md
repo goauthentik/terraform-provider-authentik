@@ -25,9 +25,22 @@ Run `make` from the project root to regenerate the latest provider documentation
 
 ## Testing
 
-In `./tests`, run `docker compose up -d` to start a testing instance with a fixed token.
+Start a local authentik instance by following https://goauthentik.io/docs/installation/docker-compose
 
-Source `./tests/.env` and run go tests to start testing against the local instance.
+Before starting the instance, add this static token to the `.env` file:
+
+```
+AUTHENTIK_TOKEN=this-password-is-for-testing-dont-use
+```
+
+Afterwards, tests can be run from your Editor or via CLI:
+
+```
+export TF_ACC=1
+export AUTHENTIK_URL=http://localhost:9000
+export AUTHENTIK_TOKEN=this-password-is-for-testing-dont-use
+go test -timeout 30s ./... -count=1
+```
 
 ## Versioning
 
