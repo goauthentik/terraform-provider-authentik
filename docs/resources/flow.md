@@ -44,6 +44,7 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 
 ### Optional
 
+- `authentication` (String) Defaults to `none`.
 - `background` (String) Optional URL to an image which will be used as the background during the flow.
 - `compatibility_mode` (Boolean) Defaults to `true`.
 - `denied_action` (String) Defaults to `message_continue`.
