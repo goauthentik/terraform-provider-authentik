@@ -37,6 +37,12 @@ resource "authentik_stage_prompt_field" "field" {
   field_key = "%[1]s-test-field"
   label = "a label"
   type = "text"
+  placeholder            = <<-EOT
+    try:
+      return user.username
+    except:
+      return ''
+EOT
 }
 resource "authentik_stage_prompt" "name" {
   name              = "%[1]s"

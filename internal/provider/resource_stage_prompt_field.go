@@ -40,8 +40,9 @@ func resourceStagePromptField() *schema.Resource {
 				Default:  false,
 			},
 			"placeholder": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				DiffSuppressFunc: diffSuppressExpression,
 			},
 			"placeholder_expression": {
 				Type:     schema.TypeBool,
