@@ -82,10 +82,15 @@ func resourceProviderProxy() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"token_validity": {
+			"access_token_validity": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "hours=24",
+				Default:  "minutes=10",
+			},
+			"refresh_token_validity": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "days=30",
 			},
 			"jwks_sources": {
 				Type:     schema.TypeList,
@@ -134,8 +139,11 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		r.CookieDomain = &l
 	}
 
-	if l, ok := d.Get("token_validity").(string); ok {
-		r.TokenValidity = &l
+	if l, ok := d.Get("access_token_validity").(string); ok {
+		r.AccessTokenValidity = &l
+	}
+	if l, ok := d.Get("refresh_token_validity").(string); ok {
+		r.RefreshTokenValidity = &l
 	}
 
 	pm := api.ProxyMode(d.Get("mode").(string))
@@ -185,7 +193,8 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
 	setWrapper(d, "mode", res.Mode.Get())
 	setWrapper(d, "cookie_domain", res.CookieDomain)
-	setWrapper(d, "token_validity", res.TokenValidity)
+	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
+	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
 		setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
