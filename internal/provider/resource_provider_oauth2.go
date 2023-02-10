@@ -55,10 +55,15 @@ func resourceProviderOAuth2() *schema.Resource {
 				Optional: true,
 				Default:  "minutes=1",
 			},
-			"token_validity": {
+			"access_token_validity": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "minutes=10",
+			},
+			"refresh_token_validity": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "days=30",
 			},
 			"include_claims_in_id_token": {
 				Type:     schema.TypeBool,
@@ -103,7 +108,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		Name:                   d.Get("name").(string),
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
 		AccessCodeValidity:     stringToPointer(d.Get("access_code_validity").(string)),
-		TokenValidity:          stringToPointer(d.Get("token_validity").(string)),
+		AccessTokenValidity:    stringToPointer(d.Get("access_token_validity").(string)),
+		RefreshTokenValidity:   stringToPointer(d.Get("refresh_token_validity").(string)),
 		IncludeClaimsInIdToken: boolToPointer(d.Get("include_claims_in_id_token").(bool)),
 		ClientId:               stringToPointer(d.Get("client_id").(string)),
 	}
@@ -178,7 +184,8 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 		setWrapper(d, "signing_key", res.SigningKey.Get())
 	}
 	setWrapper(d, "sub_mode", res.SubMode.Get())
-	setWrapper(d, "token_validity", res.TokenValidity)
+	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
+	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
 	setWrapper(d, "jwks_sources", stringListConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags

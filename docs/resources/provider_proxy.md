@@ -43,6 +43,7 @@ resource "authentik_application" "name" {
 
 ### Optional
 
+- `access_token_validity` (String) Defaults to `minutes=10`.
 - `basic_auth_enabled` (Boolean) Defaults to `false`.
 - `basic_auth_password_attribute` (String)
 - `basic_auth_username_attribute` (String)
@@ -53,8 +54,8 @@ resource "authentik_application" "name" {
 - `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
 - `mode` (String) Defaults to `proxy`.
 - `property_mappings` (List of String)
+- `refresh_token_validity` (String) Defaults to `days=30`.
 - `skip_path_regex` (String)
-- `token_validity` (String) Defaults to `hours=24`.
 
 ### Read-Only
 
