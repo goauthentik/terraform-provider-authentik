@@ -67,7 +67,6 @@ Read-Only:
 Read-Only:
 
 - `attributes` (String)
-- `avatar` (String)
 - `email` (String)
 - `is_active` (Boolean)
 - `last_login` (String)
