@@ -46,7 +46,6 @@ data "authentik_group" "admins" {
 Read-Only:
 
 - `attributes` (String)
-- `avatar` (String)
 - `email` (String)
 - `is_active` (Boolean)
 - `last_login` (String)
