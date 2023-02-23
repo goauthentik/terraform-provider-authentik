@@ -27,14 +27,20 @@ func resourceStageUserLogin() *schema.Resource {
 				Optional: true,
 				Default:  "seconds=0",
 			},
+			"terminate_other_sessions": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
 
 func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) *api.UserLoginStageRequest {
 	r := api.UserLoginStageRequest{
-		Name:            d.Get("name").(string),
-		SessionDuration: stringToPointer(d.Get("session_duration").(string)),
+		Name:                   d.Get("name").(string),
+		SessionDuration:        stringToPointer(d.Get("session_duration").(string)),
+		TerminateOtherSessions: boolToPointer(d.Get("terminate_other_sessions").(bool)),
 	}
 	return &r
 }
@@ -64,6 +70,7 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "session_duration", res.SessionDuration)
+	setWrapper(d, "terminate_other_sessions", res.TerminateOtherSessions)
 	return diags
 }
 
