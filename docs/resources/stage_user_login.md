@@ -29,6 +29,7 @@ resource "authentik_stage_user_login" "name" {
 ### Optional
 
 - `session_duration` (String) Defaults to `seconds=0`.
+- `terminate_other_sessions` (Boolean) Defaults to `false`.
 
 ### Read-Only
 
