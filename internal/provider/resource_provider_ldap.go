@@ -70,7 +70,7 @@ func resourceProviderLDAP() *schema.Resource {
 func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProviderRequest {
 	r := api.LDAPProviderRequest{
 		Name:              d.Get("name").(string),
-		AuthorizationFlow: d.Get("bind_flow").(string),
+		AuthorizationFlow: *api.NewNullableString(stringToPointer(d.Get("bind_flow").(string))),
 		BaseDn:            stringToPointer(d.Get("base_dn").(string)),
 		UidStartNumber:    intToPointer(d.Get("uid_start_number").(int)),
 		GidStartNumber:    intToPointer(d.Get("gid_start_number").(int)),
@@ -117,7 +117,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	setWrapper(d, "name", res.Name)
-	setWrapper(d, "bind_flow", res.AuthorizationFlow)
+	setWrapper(d, "bind_flow", res.AuthorizationFlow.Get())
 	setWrapper(d, "base_dn", res.BaseDn)
 	if res.SearchGroup.IsSet() {
 		setWrapper(d, "search_group", res.SearchGroup.Get())
