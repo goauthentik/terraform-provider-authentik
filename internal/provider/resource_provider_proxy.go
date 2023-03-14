@@ -52,8 +52,9 @@ func resourceProviderProxy() *schema.Resource {
 				Optional: true,
 			},
 			"skip_path_regex": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				DiffSuppressFunc: diffSuppressExpression,
 			},
 			"intercept_header_auth": {
 				Type:     schema.TypeBool,
