@@ -58,6 +58,16 @@ resource "authentik_provider_proxy" "name" {
   external_host = "http://%[1]s"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
   property_mappings = data.authentik_scope_mapping.test.ids
+  skip_path_regex    = <<EOF
+^/$
+^/status
+^/assets/
+^/assets
+^/icon.svg
+^/api/.*
+^/upload/.*
+^/metrics
+EOF
 }
 
 resource "authentik_application" "name" {
