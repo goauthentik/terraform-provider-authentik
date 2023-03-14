@@ -9,7 +9,8 @@
         "goauthentik",
         "WebAuthn",
         "totp",
-        "plex"
+        "plex",
+        "SCIM"
     ],
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,

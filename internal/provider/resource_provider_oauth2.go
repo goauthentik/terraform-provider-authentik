@@ -106,7 +106,7 @@ func resourceProviderOAuth2() *schema.Resource {
 func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2ProviderRequest {
 	r := api.OAuth2ProviderRequest{
 		Name:                   d.Get("name").(string),
-		AuthorizationFlow:      *api.NewNullableString(stringToPointer(d.Get("authorization_flow").(string))),
+		AuthorizationFlow:      d.Get("authorization_flow").(string),
 		AccessCodeValidity:     stringToPointer(d.Get("access_code_validity").(string)),
 		AccessTokenValidity:    stringToPointer(d.Get("access_token_validity").(string)),
 		RefreshTokenValidity:   stringToPointer(d.Get("refresh_token_validity").(string)),
@@ -167,7 +167,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow.Get())
+	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "client_id", res.ClientId)
 	setWrapper(d, "client_secret", res.ClientSecret)
 	setWrapper(d, "client_type", res.ClientType.Get())
