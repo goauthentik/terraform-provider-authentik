@@ -124,7 +124,7 @@ func resourceProviderSAML() *schema.Resource {
 func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProviderRequest {
 	r := api.SAMLProviderRequest{
 		Name:                       d.Get("name").(string),
-		AuthorizationFlow:          *api.NewNullableString(stringToPointer(d.Get("authorization_flow").(string))),
+		AuthorizationFlow:          d.Get("authorization_flow").(string),
 		AcsUrl:                     d.Get("acs_url").(string),
 		Audience:                   stringToPointer(d.Get("audience").(string)),
 		Issuer:                     stringToPointer(d.Get("issuer").(string)),
@@ -187,7 +187,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	setWrapper(d, "name", res.Name)
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow.Get())
+	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 
