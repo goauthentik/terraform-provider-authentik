@@ -80,6 +80,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_property_mapping_ldap":         tr(resourceLDAPPropertyMapping),
 			"authentik_property_mapping_notification": tr(resourceNotificationPropertyMapping),
 			"authentik_property_mapping_saml":         tr(resourceSAMLPropertyMapping),
+			"authentik_property_mapping_scim":         tr(resourceSCIMPropertyMapping),
 			"authentik_provider_ldap":                 tr(resourceProviderLDAP),
 			"authentik_provider_oauth2":               tr(resourceProviderOAuth2),
 			"authentik_provider_proxy":                tr(resourceProviderProxy),
