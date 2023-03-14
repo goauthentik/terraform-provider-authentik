@@ -14,14 +14,14 @@ func TestAccDataSourceSCIMPropertyMapping(t *testing.T) {
 			{
 				Config: testAccDataSourceSCIMPropertyMappingSimple,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "name", "authentik default SCIM Mapping: User"),
-					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "managed", "goauthentik.io/providers/scim/user"),
+					resource.TestCheckResourceAttr("data.authentik_property_mapping_scim.test", "name", "authentik default SCIM Mapping: User"),
+					resource.TestCheckResourceAttr("data.authentik_property_mapping_scim.test", "managed", "goauthentik.io/providers/scim/user"),
 				),
 			},
 			{
 				Config: testAccDataSourceSCIMPropertyMappingList,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "ids.#", "2"),
+					resource.TestCheckResourceAttr("data.authentik_property_mapping_scim.test", "ids.#", "2"),
 				),
 			},
 		},
@@ -36,11 +36,10 @@ data "authentik_property_mapping_scim" "test" {
 `
 
 const testAccDataSourceSCIMPropertyMappingList = `
-data "authentik_property_mapping_ldap" "test" {
+data "authentik_property_mapping_scim" "test" {
   managed_list = [
     "goauthentik.io/providers/scim/user",
-    "goauthentik.io/providers/scim/group
-"
+    "goauthentik.io/providers/scim/group"
   ]
 }
 `
