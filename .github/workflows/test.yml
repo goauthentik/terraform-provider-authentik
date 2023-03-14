@@ -29,8 +29,8 @@ jobs:
       fail-fast: false
       matrix:
         terraform:
-          - "1.2.9"
-          - "1.3.6"
+          - "1.3.9"
+          - "1.4.0"
         authentik_version:
           - "stable"
           - "beta"
