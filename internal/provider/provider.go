@@ -84,6 +84,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_provider_ldap":                 tr(resourceProviderLDAP),
 			"authentik_provider_oauth2":               tr(resourceProviderOAuth2),
 			"authentik_provider_proxy":                tr(resourceProviderProxy),
+			"authentik_provider_radius":               tr(resourceProviderRadius),
 			"authentik_provider_saml":                 tr(resourceProviderSAML),
 			"authentik_provider_scim":                 tr(resourceProviderSCIM),
 			"authentik_scope_mapping":                 tr(resourceScopeMapping),
