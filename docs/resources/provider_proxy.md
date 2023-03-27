@@ -44,6 +44,7 @@ resource "authentik_application" "name" {
 ### Optional
 
 - `access_token_validity` (String) Defaults to `minutes=10`.
+- `authentication_flow` (String)
 - `basic_auth_enabled` (Boolean) Defaults to `false`.
 - `basic_auth_password_attribute` (String)
 - `basic_auth_username_attribute` (String)

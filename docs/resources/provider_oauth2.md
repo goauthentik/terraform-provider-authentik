@@ -39,6 +39,7 @@ resource "authentik_application" "name" {
 
 - `access_code_validity` (String) Defaults to `minutes=1`.
 - `access_token_validity` (String) Defaults to `minutes=10`.
+- `authentication_flow` (String)
 - `client_secret` (String, Sensitive) Generated.
 - `client_type` (String) Defaults to `confidential`.
 - `include_claims_in_id_token` (Boolean) Defaults to `true`.
