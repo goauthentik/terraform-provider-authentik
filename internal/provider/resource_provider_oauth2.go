@@ -24,6 +24,10 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"authentication_flow": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"authorization_flow": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -114,6 +118,9 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		ClientId:               stringToPointer(d.Get("client_id").(string)),
 	}
 
+	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
+		r.AuthenticationFlow.Set(stringToPointer(s.(string)))
+	}
 	if s, sok := d.GetOk("client_secret"); sok && s.(string) != "" {
 		r.ClientSecret = stringToPointer(s.(string))
 	}
@@ -166,7 +173,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	}
 
 	setWrapper(d, "name", res.Name)
-	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
+	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "client_id", res.ClientId)
 	setWrapper(d, "client_secret", res.ClientSecret)
@@ -184,6 +191,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 		setWrapper(d, "signing_key", res.SigningKey.Get())
 	}
 	setWrapper(d, "sub_mode", res.SubMode.Get())
+	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))

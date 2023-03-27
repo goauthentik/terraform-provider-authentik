@@ -50,6 +50,10 @@ func resourceProviderSAML() *schema.Resource {
 				Optional: true,
 			},
 
+			"authentication_flow": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"authorization_flow": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -133,6 +137,9 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SessionValidNotOnOrAfter:   stringToPointer(d.Get("session_valid_not_on_or_after").(string)),
 	}
 
+	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
+		r.AuthenticationFlow.Set(stringToPointer(s.(string)))
+	}
 	if s, sok := d.GetOk("name_id_mapping"); sok && s.(string) != "" {
 		r.NameIdMapping.Set(stringToPointer(s.(string)))
 	}
@@ -187,6 +194,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	setWrapper(d, "name", res.Name)
+	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))

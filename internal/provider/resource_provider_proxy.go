@@ -27,6 +27,11 @@ func resourceProviderProxy() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+
+			"authentication_flow": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"authorization_flow": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -112,6 +117,9 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		ExternalHost:      d.Get("external_host").(string),
 	}
 
+	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
+		r.AuthenticationFlow.Set(stringToPointer(s.(string)))
+	}
 	if l, ok := d.Get("internal_host").(string); ok {
 		r.InternalHost = &l
 	}
@@ -184,6 +192,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "client_id", res.ClientId)
 	setWrapper(d, "intercept_header_auth", res.InterceptHeaderAuth)
+	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "internal_host", res.InternalHost)
 	setWrapper(d, "external_host", res.ExternalHost)
