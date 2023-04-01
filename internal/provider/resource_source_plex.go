@@ -91,6 +91,8 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 		Slug:             d.Get("slug").(string),
 		Enabled:          boolToPointer(d.Get("enabled").(bool)),
 		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
+		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 
 		ClientId:     stringToPointer(d.Get("client_id").(string)),
 		AllowFriends: boolToPointer(d.Get("allow_friends").(bool)),
@@ -99,12 +101,6 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 
 	r.AuthenticationFlow.Set(stringToPointer(d.Get("authentication_flow").(string)))
 	r.EnrollmentFlow.Set(stringToPointer(d.Get("enrollment_flow").(string)))
-
-	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
-	r.PolicyEngineMode = &pm
-
-	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
-	r.UserMatchingMode.Set(&umm)
 
 	r.AllowedServers = sliceToString(d.Get("allowed_servers").([]interface{}))
 	return &r
@@ -145,7 +141,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	setWrapper(d, "enabled", res.Enabled)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode.Get())
+	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
 
 	setWrapper(d, "client_id", res.ClientId)
 	localServers := sliceToString(d.Get("allowed_servers").([]interface{}))

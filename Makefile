@@ -21,11 +21,11 @@ gen:
 
 # see https://github.com/goauthentik/authentik/blob/main/Makefile#LL99-L113
 gen-client-go:
-	mkdir -p gen-go-api gen-go-api/templates
+	mkdir -p ./gen-go-api ./gen-go-api/templates
 	wget https://raw.githubusercontent.com/goauthentik/authentik/master/schema.yml -O gen-go-api/schema.yml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O gen-go-api/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O gen-go-api/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O gen-go-api/templates/go.mod.mustache
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./gen-go-api/config.yaml
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./gen-go-api/templates/README.mustache
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./gen-go-api/templates/go.mod.mustache
 	docker run \
 		--rm -v ${PWD}/gen-go-api:/local \
 		--user ${UID}:${GID} \

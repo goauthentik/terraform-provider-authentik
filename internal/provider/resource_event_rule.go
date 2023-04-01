@@ -51,8 +51,7 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.
 		Name: d.Get("name").(string),
 	}
 
-	sev := api.SeverityEnum(d.Get("severity").(string))
-	m.Severity.Set(&sev)
+	m.Severity = api.SeverityEnum(d.Get("severity").(string)).Ptr()
 
 	if w, ok := d.Get("group").(string); ok {
 		m.Group.Set(&w)
@@ -91,7 +90,7 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "group", res.Group.Get())
 	setWrapper(d, "transports", res.Transports)
-	setWrapper(d, "severity", res.Severity.Get())
+	setWrapper(d, "severity", res.Severity)
 	return diags
 }
 

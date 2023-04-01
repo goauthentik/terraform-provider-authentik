@@ -64,7 +64,7 @@ func dataSourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface
 	setWrapper(d, "title", f.Title)
 	setWrapper(d, "name", f.Name)
 	setWrapper(d, "slug", f.Slug)
-	setWrapper(d, "designation", f.Designation.Get())
-	setWrapper(d, "authentication", f.Authentication.Get())
+	setWrapper(d, "designation", f.Designation)
+	setWrapper(d, "authentication", f.Authentication)
 	return diags
 }

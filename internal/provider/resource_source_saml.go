@@ -126,6 +126,8 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		Slug:             d.Get("slug").(string),
 		Enabled:          boolToPointer(d.Get("enabled").(bool)),
 		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
+		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
 
@@ -133,25 +135,14 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		Issuer:                   stringToPointer(d.Get("issuer").(string)),
 		AllowIdpInitiated:        boolToPointer(d.Get("allow_idp_initiated").(bool)),
 		TemporaryUserDeleteAfter: stringToPointer(d.Get("temporary_user_delete_after").(string)),
+		BindingType:              api.BindingTypeEnum(d.Get("binding_type").(string)).Ptr(),
+		DigestAlgorithm:          api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
+		SignatureAlgorithm:       api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
+		NameIdPolicy:             api.NameIdPolicyEnum(d.Get("name_id_policy").(string)).Ptr(),
 	}
 
 	r.AuthenticationFlow.Set(stringToPointer(d.Get("authentication_flow").(string)))
 	r.EnrollmentFlow.Set(stringToPointer(d.Get("enrollment_flow").(string)))
-
-	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
-	r.PolicyEngineMode = &pm
-
-	bt := api.BindingTypeEnum(d.Get("binding_type").(string))
-	r.BindingType = &bt
-
-	nip := api.NameIdPolicyEnum(d.Get("name_id_policy").(string))
-	r.NameIdPolicy.Set(&nip)
-
-	da := api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string))
-	r.DigestAlgorithm = &da
-
-	sa := api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string))
-	r.SignatureAlgorithm = &sa
 
 	if s, sok := d.GetOk("slo_url"); sok && s.(string) != "" {
 		r.SloUrl.Set(stringToPointer(s.(string)))
@@ -159,9 +150,6 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
 		r.SigningKp.Set(stringToPointer(s.(string)))
 	}
-
-	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
-	r.UserMatchingMode.Set(&umm)
 	return &r
 }
 
@@ -200,7 +188,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	setWrapper(d, "enabled", res.Enabled)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode.Get())
+	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
 
 	setWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
 	setWrapper(d, "issuer", res.Issuer)
@@ -209,7 +197,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 		setWrapper(d, "slo_url", res.SloUrl.Get())
 	}
 	setWrapper(d, "allow_idp_initiated", res.AllowIdpInitiated)
-	setWrapper(d, "name_id_policy", res.NameIdPolicy.Get())
+	setWrapper(d, "name_id_policy", res.NameIdPolicy)
 	setWrapper(d, "binding_type", res.BindingType)
 	if res.SigningKp.IsSet() {
 		setWrapper(d, "signing_kp", res.SigningKp.Get())

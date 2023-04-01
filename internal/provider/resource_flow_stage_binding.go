@@ -56,18 +56,14 @@ func resourceFlowStageBinding() *schema.Resource {
 
 func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowStageBindingRequest {
 	m := api.FlowStageBindingRequest{
-		Target:             d.Get("target").(string),
-		Stage:              d.Get("stage").(string),
-		Order:              int32(d.Get("order").(int)),
-		EvaluateOnPlan:     boolToPointer(d.Get("evaluate_on_plan").(bool)),
-		ReEvaluatePolicies: boolToPointer(d.Get("re_evaluate_policies").(bool)),
+		Target:                d.Get("target").(string),
+		Stage:                 d.Get("stage").(string),
+		Order:                 int32(d.Get("order").(int)),
+		EvaluateOnPlan:        boolToPointer(d.Get("evaluate_on_plan").(bool)),
+		ReEvaluatePolicies:    boolToPointer(d.Get("re_evaluate_policies").(bool)),
+		PolicyEngineMode:      api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		InvalidResponseAction: api.InvalidResponseActionEnum(d.Get("invalid_response_action").(string)).Ptr(),
 	}
-
-	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
-	m.PolicyEngineMode = &pm
-
-	ira := api.InvalidResponseActionEnum(d.Get("invalid_response_action").(string))
-	m.InvalidResponseAction.Set(&ira)
 	return &m
 }
 
@@ -100,7 +96,7 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 	setWrapper(d, "evaluate_on_plan", res.EvaluateOnPlan)
 	setWrapper(d, "re_evaluate_policies", res.ReEvaluatePolicies)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "invalid_response_action", res.InvalidResponseAction.Get())
+	setWrapper(d, "invalid_response_action", res.InvalidResponseAction)
 	return diags
 }
 

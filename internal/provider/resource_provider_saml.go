@@ -135,6 +135,9 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		AssertionValidNotBefore:    stringToPointer(d.Get("assertion_valid_not_before").(string)),
 		AssertionValidNotOnOrAfter: stringToPointer(d.Get("assertion_valid_not_on_or_after").(string)),
 		SessionValidNotOnOrAfter:   stringToPointer(d.Get("session_valid_not_on_or_after").(string)),
+		DigestAlgorithm:            api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
+		SignatureAlgorithm:         api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
+		SpBinding:                  api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -150,20 +153,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		r.VerificationKp.Set(stringToPointer(s.(string)))
 	}
 
-	digA := d.Get("digest_algorithm").(string)
-	a := api.DigestAlgorithmEnum(digA)
-	r.DigestAlgorithm = &a
-
-	sigA := d.Get("signature_algorithm").(string)
-	c := api.SignatureAlgorithmEnum(sigA)
-	r.SignatureAlgorithm = &c
-
-	binding := d.Get("sp_binding").(string)
-	j := api.SpBindingEnum(binding)
-	r.SpBinding.Set(&j)
-
 	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
-
 	return &r
 }
 
@@ -202,7 +192,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "acs_url", res.AcsUrl)
 	setWrapper(d, "audience", res.Audience)
 	setWrapper(d, "issuer", res.Issuer)
-	setWrapper(d, "sp_binding", res.SpBinding.Get())
+	setWrapper(d, "sp_binding", res.SpBinding)
 	setWrapper(d, "assertion_valid_not_before", res.AssertionValidNotBefore)
 	setWrapper(d, "assertion_valid_not_on_or_after", res.AssertionValidNotOnOrAfter)
 	setWrapper(d, "session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)

@@ -71,10 +71,11 @@ func resourceApplication() *schema.Resource {
 
 func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRequest {
 	m := api.ApplicationRequest{
-		Name:         d.Get("name").(string),
-		Slug:         d.Get("slug").(string),
-		Provider:     api.NullableInt32{},
-		OpenInNewTab: boolToPointer(d.Get("open_in_new_tab").(bool)),
+		Name:             d.Get("name").(string),
+		Slug:             d.Get("slug").(string),
+		Provider:         api.NullableInt32{},
+		OpenInNewTab:     boolToPointer(d.Get("open_in_new_tab").(bool)),
+		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 	}
 
 	if p, pSet := d.GetOk("protocol_provider"); pSet {
@@ -95,9 +96,6 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 	if l, ok := d.Get("meta_publisher").(string); ok {
 		m.MetaPublisher = &l
 	}
-
-	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
-	m.PolicyEngineMode = &pm
 	return &m
 }
 
