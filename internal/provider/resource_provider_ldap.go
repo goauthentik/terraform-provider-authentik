@@ -74,6 +74,8 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 		BaseDn:            stringToPointer(d.Get("base_dn").(string)),
 		UidStartNumber:    intToPointer(d.Get("uid_start_number").(int)),
 		GidStartNumber:    intToPointer(d.Get("gid_start_number").(int)),
+		SearchMode:        api.LDAPAPIAccessMode(d.Get("search_mode").(string)).Ptr(),
+		BindMode:          api.LDAPAPIAccessMode(d.Get("bind_mode").(string)).Ptr(),
 	}
 
 	if s, sok := d.GetOk("search_group"); sok && s.(string) != "" {
@@ -85,8 +87,6 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 	if s, sok := d.GetOk("tls_server_name"); sok && s.(string) != "" {
 		r.TlsServerName = stringToPointer(s.(string))
 	}
-	r.SetSearchMode(api.LDAPAPIAccessMode(d.Get("search_mode").(string)))
-	r.SetBindMode(api.LDAPAPIAccessMode(d.Get("bind_mode").(string)))
 	return &r
 }
 

@@ -74,11 +74,9 @@ func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.
 		Provider:   api.ProviderEnum(d.Get("sms_provider").(string)),
 		FromNumber: d.Get("from_number").(string),
 		AccountSid: d.Get("account_sid").(string),
+		AuthType:   api.AuthTypeEnum(d.Get("auth_type").(string)).Ptr(),
 		Auth:       d.Get("auth").(string),
 	}
-
-	at := api.AuthTypeEnum(d.Get("auth_type").(string))
-	r.AuthType = &at
 
 	if h, hSet := d.GetOk("auth_password"); hSet {
 		r.AuthPassword = stringToPointer(h.(string))

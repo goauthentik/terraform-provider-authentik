@@ -57,7 +57,6 @@ func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.Reput
 	if p, pSet := d.GetOk("threshold"); pSet {
 		r.Threshold = intToPointer(p.(int))
 	}
-
 	return &r
 }
 

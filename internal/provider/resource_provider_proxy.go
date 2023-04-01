@@ -115,6 +115,9 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("authorization_flow").(string),
 		ExternalHost:      d.Get("external_host").(string),
+		Mode:              api.ProxyMode(d.Get("mode").(string)).Ptr(),
+		PropertyMappings:  sliceToString(d.Get("property_mappings").([]interface{})),
+		JwksSources:       sliceToString(d.Get("jwks_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -154,10 +157,6 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	if l, ok := d.Get("refresh_token_validity").(string); ok {
 		r.RefreshTokenValidity = &l
 	}
-
-	r.Mode = api.ProxyMode(d.Get("mode").(string)).Ptr()
-	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
-	r.JwksSources = sliceToString(d.Get("jwks_sources").([]interface{}))
 	return &r
 }
 

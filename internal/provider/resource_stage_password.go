@@ -60,7 +60,6 @@ func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.Password
 		backend = append(backend, api.BackendsEnum(backendS.(string)))
 	}
 	r.Backends = backend
-
 	return &r
 }
 

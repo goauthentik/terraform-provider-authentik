@@ -138,6 +138,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		DigestAlgorithm:            api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:         api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		SpBinding:                  api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
+		PropertyMappings:           sliceToString(d.Get("property_mappings").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -152,8 +153,6 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
 		r.VerificationKp.Set(stringToPointer(s.(string)))
 	}
-
-	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
 	return &r
 }
 

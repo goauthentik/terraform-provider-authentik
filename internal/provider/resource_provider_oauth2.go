@@ -119,6 +119,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
+		PropertyMappings:       sliceToString(d.Get("property_mappings").([]interface{})),
+		JwksSources:            sliceToString(d.Get("jwks_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -134,10 +136,6 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
-
-	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
-
-	r.JwksSources = sliceToString(d.Get("jwks_sources").([]interface{}))
 	return &r
 }
 

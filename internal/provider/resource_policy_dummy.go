@@ -59,7 +59,6 @@ func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolic
 	if p, pSet := d.GetOk("wait_min"); pSet {
 		r.WaitMin = intToPointer(p.(int))
 	}
-
 	return &r
 }
 
