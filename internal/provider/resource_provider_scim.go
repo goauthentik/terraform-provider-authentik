@@ -52,12 +52,12 @@ func resourceProviderSCIM() *schema.Resource {
 
 func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProviderRequest {
 	r := api.SCIMProviderRequest{
-		Name:  d.Get("name").(string),
-		Url:   d.Get("url").(string),
-		Token: d.Get("token").(string),
+		Name:                  d.Get("name").(string),
+		Url:                   d.Get("url").(string),
+		Token:                 d.Get("token").(string),
+		PropertyMappings:      sliceToString(d.Get("property_mappings").([]interface{})),
+		PropertyMappingsGroup: sliceToString(d.Get("property_mappings_group").([]interface{})),
 	}
-	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
-	r.PropertyMappingsGroup = sliceToString(d.Get("property_mappings_group").([]interface{}))
 	return &r
 }
 

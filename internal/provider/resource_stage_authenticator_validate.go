@@ -56,12 +56,10 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 	}
 
 	if h, hSet := d.GetOk("not_configured_action"); hSet {
-		action := api.NotConfiguredActionEnum(h.(string))
-		r.NotConfiguredAction = &action
+		r.NotConfiguredAction = api.NotConfiguredActionEnum(h.(string)).Ptr()
 	}
 	if h, hSet := d.GetOk("configuration_stages"); hSet {
-		stages := h.([]string)
-		r.ConfigurationStages = stages
+		r.ConfigurationStages = h.([]string)
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)

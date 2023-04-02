@@ -78,22 +78,12 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 		Slug:              d.Get("slug").(string),
 		Title:             d.Get("title").(string),
 		CompatibilityMode: boolToPointer(d.Get("compatibility_mode").(bool)),
+		Designation:       api.FlowDesignationEnum(d.Get("designation").(string)),
+		Authentication:    api.AuthenticationEnum(d.Get("authentication").(string)).Ptr(),
+		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		Layout:            api.LayoutEnum(d.Get("layout").(string)).Ptr(),
+		DeniedAction:      api.DeniedActionEnum(d.Get("denied_action").(string)).Ptr(),
 	}
-
-	designation := api.FlowDesignationEnum(d.Get("designation").(string))
-	m.Designation.Set(&designation)
-
-	authentication := api.AuthenticationEnum(d.Get("authentication").(string))
-	m.Authentication.Set(&authentication)
-
-	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
-	m.PolicyEngineMode = &pm
-
-	layout := api.LayoutEnum(d.Get("layout").(string))
-	m.Layout = &layout
-
-	deniedAction := api.DeniedActionEnum(d.Get("denied_action").(string))
-	m.DeniedAction.Set(&deniedAction)
 	return &m
 }
 
@@ -133,9 +123,9 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "slug", res.Slug)
 	setWrapper(d, "title", res.Title)
-	setWrapper(d, "designation", res.Designation.Get())
-	setWrapper(d, "authentication", res.Authentication.Get())
-	setWrapper(d, "denied_action", res.DeniedAction.Get())
+	setWrapper(d, "designation", res.Designation)
+	setWrapper(d, "authentication", res.Authentication)
+	setWrapper(d, "denied_action", res.DeniedAction)
 	setWrapper(d, "layout", res.Layout)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	setWrapper(d, "compatibility_mode", res.CompatibilityMode)

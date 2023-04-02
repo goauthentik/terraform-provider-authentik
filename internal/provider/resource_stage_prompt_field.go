@@ -74,7 +74,6 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 	if o, oSet := d.GetOk("order"); oSet {
 		r.Order = intToPointer(o.(int))
 	}
-
 	return &r
 }
 

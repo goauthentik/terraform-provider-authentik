@@ -116,6 +116,11 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		RefreshTokenValidity:   stringToPointer(d.Get("refresh_token_validity").(string)),
 		IncludeClaimsInIdToken: boolToPointer(d.Get("include_claims_in_id_token").(bool)),
 		ClientId:               stringToPointer(d.Get("client_id").(string)),
+		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
+		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
+		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
+		PropertyMappings:       sliceToString(d.Get("property_mappings").([]interface{})),
+		JwksSources:            sliceToString(d.Get("jwks_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -129,20 +134,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		r.SigningKey.Set(stringToPointer(s.(string)))
 	}
 
-	subMode := d.Get("sub_mode").(string)
-	a := api.SubModeEnum(subMode)
-	r.SubMode.Set(&a)
-
-	clientType := d.Get("client_type").(string)
-	c := api.ClientTypeEnum(clientType)
-	r.ClientType.Set(&c)
-
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
-
-	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
-
-	r.JwksSources = sliceToString(d.Get("jwks_sources").([]interface{}))
 	return &r
 }
 
@@ -177,9 +170,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "client_id", res.ClientId)
 	setWrapper(d, "client_secret", res.ClientSecret)
-	setWrapper(d, "client_type", res.ClientType.Get())
+	setWrapper(d, "client_type", res.ClientType)
 	setWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
-	setWrapper(d, "issuer_mode", res.IssuerMode.Get())
+	setWrapper(d, "issuer_mode", res.IssuerMode)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
 	if stringPointerResolve(res.RedirectUris) != "" {
@@ -190,7 +183,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	if res.SigningKey.IsSet() {
 		setWrapper(d, "signing_key", res.SigningKey.Get())
 	}
-	setWrapper(d, "sub_mode", res.SubMode.Get())
+	setWrapper(d, "sub_mode", res.SubMode)
 	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)

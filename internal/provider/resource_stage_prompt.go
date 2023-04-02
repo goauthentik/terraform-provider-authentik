@@ -42,11 +42,10 @@ func resourceStagePrompt() *schema.Resource {
 
 func resourceStagePromptSchemaToProvider(d *schema.ResourceData) *api.PromptStageRequest {
 	r := api.PromptStageRequest{
-		Name: d.Get("name").(string),
+		Name:               d.Get("name").(string),
+		Fields:             sliceToString(d.Get("fields").([]interface{})),
+		ValidationPolicies: sliceToString(d.Get("validation_policies").([]interface{})),
 	}
-
-	r.Fields = sliceToString(d.Get("fields").([]interface{}))
-	r.ValidationPolicies = sliceToString(d.Get("validation_policies").([]interface{}))
 	return &r
 }
 

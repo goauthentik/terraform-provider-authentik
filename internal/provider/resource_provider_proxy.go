@@ -115,6 +115,9 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("authorization_flow").(string),
 		ExternalHost:      d.Get("external_host").(string),
+		Mode:              api.ProxyMode(d.Get("mode").(string)).Ptr(),
+		PropertyMappings:  sliceToString(d.Get("property_mappings").([]interface{})),
+		JwksSources:       sliceToString(d.Get("jwks_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -154,12 +157,6 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	if l, ok := d.Get("refresh_token_validity").(string); ok {
 		r.RefreshTokenValidity = &l
 	}
-
-	pm := api.ProxyMode(d.Get("mode").(string))
-	r.Mode.Set(&pm)
-
-	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))
-	r.JwksSources = sliceToString(d.Get("jwks_sources").([]interface{}))
 	return &r
 }
 
@@ -201,7 +198,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "basic_auth_enabled", res.BasicAuthEnabled)
 	setWrapper(d, "basic_auth_username_attribute", res.BasicAuthUserAttribute)
 	setWrapper(d, "basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
-	setWrapper(d, "mode", res.Mode.Get())
+	setWrapper(d, "mode", res.Mode)
 	setWrapper(d, "cookie_domain", res.CookieDomain)
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)

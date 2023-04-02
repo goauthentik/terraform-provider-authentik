@@ -135,19 +135,15 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		Enabled:          boolToPointer(d.Get("enabled").(bool)),
 		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
 
-		ProviderType:   api.ProviderTypeEnum(d.Get("provider_type").(string)),
-		ConsumerKey:    d.Get("consumer_key").(string),
-		ConsumerSecret: d.Get("consumer_secret").(string),
+		ProviderType:     api.ProviderTypeEnum(d.Get("provider_type").(string)),
+		ConsumerKey:      d.Get("consumer_key").(string),
+		ConsumerSecret:   d.Get("consumer_secret").(string),
+		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 	}
 
 	r.AuthenticationFlow.Set(stringToPointer(d.Get("authentication_flow").(string)))
 	r.EnrollmentFlow.Set(stringToPointer(d.Get("enrollment_flow").(string)))
-
-	pm := api.PolicyEngineMode(d.Get("policy_engine_mode").(string))
-	r.PolicyEngineMode = &pm
-
-	umm := api.UserMatchingModeEnum(d.Get("user_matching_mode").(string))
-	r.UserMatchingMode.Set(&umm)
 
 	if s, sok := d.GetOk("request_token_url"); sok && s.(string) != "" {
 		r.RequestTokenUrl.Set(stringToPointer(s.(string)))
@@ -219,7 +215,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	setWrapper(d, "enabled", res.Enabled)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode.Get())
+	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
 	setWrapper(d, "additional_scopes", res.AdditionalScopes)
 	setWrapper(d, "provider_type", res.ProviderType)
 	setWrapper(d, "consumer_key", res.ConsumerKey)

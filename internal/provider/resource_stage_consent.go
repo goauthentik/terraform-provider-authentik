@@ -42,14 +42,12 @@ func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentSt
 	}
 
 	if m, mSet := d.GetOk("mode"); mSet {
-		mo := api.ConsentStageModeEnum(m.(string))
-		r.Mode = &mo
+		r.Mode = api.ConsentStageModeEnum(m.(string)).Ptr()
 	}
 
 	if ex, exSet := d.GetOk("consent_expire_in"); exSet {
 		r.ConsentExpireIn = stringToPointer(ex.(string))
 	}
-
 	return &r
 }
 

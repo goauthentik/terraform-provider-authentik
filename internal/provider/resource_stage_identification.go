@@ -76,6 +76,7 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		ShowMatchedUser:         boolToPointer(d.Get("show_matched_user").(bool)),
 		ShowSourceLabels:        boolToPointer(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: boolToPointer(d.Get("case_insensitive_matching").(bool)),
+		Sources:                 sliceToString(d.Get("sources").([]interface{})),
 	}
 
 	if h, hSet := d.GetOk("password_stage"); hSet {
@@ -96,8 +97,6 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		userFields = append(userFields, api.UserFieldsEnum(userFieldsS.(string)))
 	}
 	r.UserFields = userFields
-
-	r.Sources = sliceToString(d.Get("sources").([]interface{}))
 	return &r
 }
 
