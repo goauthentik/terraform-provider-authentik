@@ -29,7 +29,7 @@ gen-client-go:
 	docker run \
 		--rm -v ${PWD}/gen-go-api:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.2.0 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/ \
