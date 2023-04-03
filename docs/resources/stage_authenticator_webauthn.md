@@ -29,6 +29,7 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 ### Optional
 
 - `configure_flow` (String)
+- `friendly_name` (String)
 
 ### Read-Only
 
