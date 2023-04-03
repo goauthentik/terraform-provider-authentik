@@ -22,6 +22,10 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"friendly_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"configure_flow": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -78,6 +82,9 @@ func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.
 		Auth:       d.Get("auth").(string),
 	}
 
+	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
+		r.FriendlyName.Set(stringToPointer(fn.(string)))
+	}
 	if h, hSet := d.GetOk("auth_password"); hSet {
 		r.AuthPassword = stringToPointer(h.(string))
 	}
@@ -125,6 +132,7 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 	setWrapper(d, "auth_type", res.AuthType)
 	setWrapper(d, "verify_only", res.VerifyOnly)
 	setWrapper(d, "mapping", res.Mapping.Get())
+	setWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}

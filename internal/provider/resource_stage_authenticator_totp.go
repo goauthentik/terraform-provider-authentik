@@ -22,6 +22,10 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"friendly_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"configure_flow": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -39,6 +43,10 @@ func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api
 	r := api.AuthenticatorTOTPStageRequest{
 		Name:   d.Get("name").(string),
 		Digits: *api.DigitsEnum((d.Get("digits").(int))).Ptr(),
+	}
+
+	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
+		r.FriendlyName.Set(stringToPointer(fn.(string)))
 	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
@@ -71,6 +79,7 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "digits", res.Digits)
+	setWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}

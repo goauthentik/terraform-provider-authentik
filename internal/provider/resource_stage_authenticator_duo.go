@@ -22,6 +22,10 @@ func resourceStageAuthenticatorDuo() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"friendly_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"configure_flow": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -60,6 +64,9 @@ func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.
 		ApiHostname:  d.Get("api_hostname").(string),
 	}
 
+	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
+		r.FriendlyName.Set(stringToPointer(fn.(string)))
+	}
 	if h, hSet := d.GetOk("admin_integration_key"); hSet {
 		r.AdminIntegrationKey = stringToPointer(h.(string))
 	}
@@ -99,6 +106,7 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 	setWrapper(d, "client_id", res.ClientId)
 	setWrapper(d, "admin_integration_key", res.AdminIntegrationKey)
 	setWrapper(d, "api_hostname", res.ApiHostname)
+	setWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}

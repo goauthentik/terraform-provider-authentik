@@ -37,6 +37,7 @@ resource "authentik_stage_authenticator_duo" "name" {
 - `admin_integration_key` (String)
 - `admin_secret_key` (String, Sensitive)
 - `configure_flow` (String)
+- `friendly_name` (String)
 
 ### Read-Only
 

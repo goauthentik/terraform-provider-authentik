@@ -22,6 +22,10 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"friendly_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"configure_flow": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -41,6 +45,9 @@ func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *a
 		TokenCount: intToPointer(d.Get("token_count").(int)),
 	}
 
+	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
+		r.FriendlyName.Set(stringToPointer(fn.(string)))
+	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
 	}
@@ -72,6 +79,7 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "token_count", res.TokenCount)
+	setWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
