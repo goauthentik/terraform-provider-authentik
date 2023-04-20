@@ -33,6 +33,8 @@ resource "authentik_stage_prompt_field" "field" {
 
 ### Optional
 
+- `initial_value` (String)
+- `initial_value_expression` (Boolean) Defaults to `false`.
 - `order` (Number)
 - `placeholder` (String)
 - `placeholder_expression` (Boolean) Defaults to `false`.

@@ -1,5 +1,5 @@
 provider "authentik" {
-  url   = "https://beryjuorg-dev.my.goauthentik.io"
+  url   = "https://authentik.company"
   token = "foo-bar"
   # Optionally set insecure to ignore TLS Certificates
   # insecure = true
