@@ -49,6 +49,16 @@ func resourceStagePromptField() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"initial_value": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				DiffSuppressFunc: diffSuppressExpression,
+			},
+			"initial_value_expression": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"order": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -59,16 +69,21 @@ func resourceStagePromptField() *schema.Resource {
 
 func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.PromptRequest {
 	r := api.PromptRequest{
-		Name:                  d.Get("name").(string),
-		FieldKey:              d.Get("field_key").(string),
-		Label:                 d.Get("label").(string),
-		Type:                  api.PromptTypeEnum(d.Get("type").(string)),
-		Required:              boolToPointer(d.Get("required").(bool)),
-		PlaceholderExpression: boolToPointer(d.Get("placeholder_expression").(bool)),
+		Name:                   d.Get("name").(string),
+		FieldKey:               d.Get("field_key").(string),
+		Label:                  d.Get("label").(string),
+		Type:                   api.PromptTypeEnum(d.Get("type").(string)),
+		Required:               boolToPointer(d.Get("required").(bool)),
+		PlaceholderExpression:  boolToPointer(d.Get("placeholder_expression").(bool)),
+		InitialValueExpression: boolToPointer(d.Get("initial_value_expression").(bool)),
 	}
 
 	if p, pSet := d.GetOk("placeholder"); pSet {
 		r.Placeholder = stringToPointer(p.(string))
+	}
+
+	if p, pSet := d.GetOk("initial_value"); pSet {
+		r.InitialValue = stringToPointer(p.(string))
 	}
 
 	if o, oSet := d.GetOk("order"); oSet {
@@ -107,6 +122,8 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 	setWrapper(d, "required", res.Required)
 	setWrapper(d, "placeholder", res.Placeholder)
 	setWrapper(d, "placeholder_expression", res.PlaceholderExpression)
+	setWrapper(d, "initial_value", res.InitialValue)
+	setWrapper(d, "initial_value_expression", res.InitialValueExpression)
 	setWrapper(d, "order", res.Order)
 	return diags
 }
