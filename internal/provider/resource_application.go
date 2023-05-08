@@ -39,6 +39,13 @@ func resourceApplication() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"backchannel_providers": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+			},
 			"meta_launch_url": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -82,6 +89,10 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		m.Provider.Set(intToPointer(p.(int)))
 	} else {
 		m.Provider.Set(nil)
+	}
+	m.BackchannelProviders = []int32{}
+	for _, bp := range d.Get("backchannel_providers").([]interface{}) {
+		m.BackchannelProviders = append(m.BackchannelProviders, int32(bp.(int)))
 	}
 
 	if l, ok := d.Get("group").(string); ok {
@@ -148,6 +159,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	setWrapper(d, "meta_description", res.MetaDescription)
 	setWrapper(d, "meta_publisher", res.MetaPublisher)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	setWrapper(d, "backchannel_providers", res.BackchannelProviders)
 	return diags
 }
 

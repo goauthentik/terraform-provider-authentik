@@ -53,6 +53,7 @@ resource "authentik_application" "name" {
 
 ### Optional
 
+- `backchannel_providers` (List of Number)
 - `group` (String)
 - `meta_description` (String)
 - `meta_icon` (String)
