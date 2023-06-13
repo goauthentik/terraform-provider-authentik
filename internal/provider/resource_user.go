@@ -35,6 +35,12 @@ func resourceUser() *schema.Resource {
 				Default:  api.USERTYPEENUM_INTERNAL,
 				Optional: true,
 			},
+			"password": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				Description: `Optionally set the user's password. Changing the password in authentik will not trigger an update here.`,
+			},
 			"is_active": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -94,6 +100,25 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 	return &m, nil
 }
 
+func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.Context) diag.Diagnostics {
+	password, ok := d.Get("password").(string)
+	if !ok || password == "" {
+		return nil
+	}
+	uid, err := strconv.Atoi(d.Id())
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	hr, err := c.client.CoreApi.CoreUsersSetPasswordCreate(ctx, int32(uid)).UserPasswordSetRequest(api.UserPasswordSetRequest{
+		Password: password,
+	}).Execute()
+	if err != nil {
+		return httpToDiag(d, hr, err)
+	}
+	setWrapper(d, "password", password)
+	return nil
+}
+
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
@@ -108,6 +133,11 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
+
+	diags = resourceUserSetPassword(d, c, ctx)
+	if diags != nil {
+		return diags
+	}
 	return resourceUserRead(ctx, d, m)
 }
 
@@ -158,6 +188,11 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
+
+	diags := resourceUserSetPassword(d, c, ctx)
+	if diags != nil {
+		return diags
+	}
 	return resourceUserRead(ctx, d, m)
 }
 
