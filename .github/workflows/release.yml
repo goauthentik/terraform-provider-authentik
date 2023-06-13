@@ -26,7 +26,7 @@ jobs:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4.2.0
+        uses: goreleaser/goreleaser-action@v4.3.0
         with:
           version: latest
           args: release --rm-dist
