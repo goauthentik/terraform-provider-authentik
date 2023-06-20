@@ -63,6 +63,11 @@ func resourceProviderLDAP() *schema.Resource {
 				Optional: true,
 				Default:  api.LDAPAPIACCESSMODE_DIRECT,
 			},
+			"mfa_support": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
@@ -76,6 +81,7 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 		GidStartNumber:    intToPointer(d.Get("gid_start_number").(int)),
 		SearchMode:        api.LDAPAPIAccessMode(d.Get("search_mode").(string)).Ptr(),
 		BindMode:          api.LDAPAPIAccessMode(d.Get("bind_mode").(string)).Ptr(),
+		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
 	}
 
 	if s, sok := d.GetOk("search_group"); sok && s.(string) != "" {
@@ -130,6 +136,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "gid_start_number", res.GidStartNumber)
 	setWrapper(d, "bind_mode", res.BindMode)
 	setWrapper(d, "search_mode", res.SearchMode)
+	setWrapper(d, "mfa_support", res.MfaSupport)
 	return diags
 }
 
