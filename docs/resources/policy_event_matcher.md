@@ -29,6 +29,7 @@ resource "authentik_policy_event_matcher" "name" {
 
 - `action` (String)
 - `app` (String)
+- `model` (String)
 - `name` (String)
 
 ### Optional

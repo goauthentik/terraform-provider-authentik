@@ -41,6 +41,11 @@ func resourcePolicyEventMatcher() *schema.Resource {
 				// TODO: Fix schema not allowing blank values
 				Required: true,
 			},
+			"model": {
+				Type: schema.TypeString,
+				// TODO: Fix schema not allowing blank values
+				Required: true,
+			},
 		},
 	}
 }
@@ -59,6 +64,9 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.Eve
 	}
 	if a, aSet := d.GetOk("app"); aSet {
 		r.App = api.AppEnum(a.(string)).Ptr()
+	}
+	if m, mSet := d.GetOk("model"); mSet {
+		r.Model = api.ModelEnum(m.(string)).Ptr()
 	}
 	return &r
 }
@@ -91,6 +99,7 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 	setWrapper(d, "action", res.Action)
 	setWrapper(d, "client_ip", res.ClientIp)
 	setWrapper(d, "app", res.App)
+	setWrapper(d, "model", res.Model)
 	return diags
 }
 
