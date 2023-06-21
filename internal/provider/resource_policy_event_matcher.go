@@ -54,16 +54,16 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.Eve
 	}
 
 	if a, ok := d.Get("action").(string); ok && a != "" {
-		r.Action = api.EventActions(a).Ptr()
+		r.Action.Set(api.EventActions(a).Ptr())
 	}
 	if p, ok := d.Get("client_ip").(string); ok && p != "" {
-		r.ClientIp = stringToPointer(p)
+		r.ClientIp.Set(stringToPointer(p))
 	}
 	if a, ok := d.Get("app").(string); ok && a != "" {
-		r.App = api.AppEnum(a).Ptr()
+		r.App.Set(api.AppEnum(a).Ptr())
 	}
 	if m, ok := d.Get("model").(string); ok && m != "" {
-		r.Model = api.ModelEnum(m).Ptr()
+		r.Model.Set(api.ModelEnum(m).Ptr())
 	}
 	return &r
 }
@@ -93,10 +93,18 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "action", res.Action)
-	setWrapper(d, "client_ip", res.ClientIp)
-	setWrapper(d, "app", res.App)
-	setWrapper(d, "model", res.Model)
+	if res.HasAction() {
+		setWrapper(d, "action", res.Action.Get())
+	}
+	if res.HasClientIp() {
+		setWrapper(d, "client_ip", res.ClientIp.Get())
+	}
+	if res.HasApp() {
+		setWrapper(d, "app", res.App.Get())
+	}
+	if res.HasModel() {
+		setWrapper(d, "model", res.Model.Get())
+	}
 	return diags
 }
 
