@@ -28,18 +28,20 @@ func resourcePolicyEventMatcher() *schema.Resource {
 				Default:  false,
 			},
 			"action": {
-				Type: schema.TypeString,
-				// TODO: Fix schema not allowing blank values
-				Required: true,
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"client_ip": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"app": {
-				Type: schema.TypeString,
-				// TODO: Fix schema not allowing blank values
-				Required: true,
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"model": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 		},
 	}
@@ -51,14 +53,17 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.Eve
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 	}
 
-	if a, aSet := d.GetOk("action"); aSet {
-		r.Action = api.EventActions(a.(string)).Ptr()
+	if a, ok := d.Get("action").(string); ok && a != "" {
+		r.Action.Set(api.EventActions(a).Ptr())
 	}
-	if p, pSet := d.GetOk("client_ip"); pSet {
-		r.ClientIp = stringToPointer(p.(string))
+	if p, ok := d.Get("client_ip").(string); ok && p != "" {
+		r.ClientIp.Set(stringToPointer(p))
 	}
-	if a, aSet := d.GetOk("app"); aSet {
-		r.App = api.AppEnum(a.(string)).Ptr()
+	if a, ok := d.Get("app").(string); ok && a != "" {
+		r.App.Set(api.AppEnum(a).Ptr())
+	}
+	if m, ok := d.Get("model").(string); ok && m != "" {
+		r.Model.Set(api.ModelEnum(m).Ptr())
 	}
 	return &r
 }
@@ -88,9 +93,18 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "action", res.Action)
-	setWrapper(d, "client_ip", res.ClientIp)
-	setWrapper(d, "app", res.App)
+	if res.HasAction() {
+		setWrapper(d, "action", res.Action.Get())
+	}
+	if res.HasClientIp() {
+		setWrapper(d, "client_ip", res.ClientIp.Get())
+	}
+	if res.HasApp() {
+		setWrapper(d, "app", res.App.Get())
+	}
+	if res.HasModel() {
+		setWrapper(d, "model", res.Model.Get())
+	}
 	return diags
 }
 
