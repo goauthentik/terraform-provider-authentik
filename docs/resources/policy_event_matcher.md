@@ -27,15 +27,15 @@ resource "authentik_policy_event_matcher" "name" {
 
 ### Required
 
-- `action` (String)
-- `app` (String)
-- `model` (String)
 - `name` (String)
 
 ### Optional
 
+- `action` (String)
+- `app` (String)
 - `client_ip` (String)
 - `execution_logging` (Boolean) Defaults to `false`.
+- `model` (String)
 
 ### Read-Only
 

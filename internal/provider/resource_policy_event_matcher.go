@@ -28,23 +28,20 @@ func resourcePolicyEventMatcher() *schema.Resource {
 				Default:  false,
 			},
 			"action": {
-				Type: schema.TypeString,
-				// TODO: Fix schema not allowing blank values
-				Required: true,
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"client_ip": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"app": {
-				Type: schema.TypeString,
-				// TODO: Fix schema not allowing blank values
-				Required: true,
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"model": {
-				Type: schema.TypeString,
-				// TODO: Fix schema not allowing blank values
-				Required: true,
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 		},
 	}
@@ -56,17 +53,17 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.Eve
 		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
 	}
 
-	if a, aSet := d.GetOk("action"); aSet {
-		r.Action = api.EventActions(a.(string)).Ptr()
+	if a, ok := d.Get("action").(string); ok && a != "" {
+		r.Action = api.EventActions(a).Ptr()
 	}
-	if p, pSet := d.GetOk("client_ip"); pSet {
-		r.ClientIp = stringToPointer(p.(string))
+	if p, ok := d.Get("client_ip").(string); ok && p != "" {
+		r.ClientIp = stringToPointer(p)
 	}
-	if a, aSet := d.GetOk("app"); aSet {
-		r.App = api.AppEnum(a.(string)).Ptr()
+	if a, ok := d.Get("app").(string); ok && a != "" {
+		r.App = api.AppEnum(a).Ptr()
 	}
-	if m, mSet := d.GetOk("model"); mSet {
-		r.Model = api.ModelEnum(m.(string)).Ptr()
+	if m, ok := d.Get("model").(string); ok && m != "" {
+		r.Model = api.ModelEnum(m).Ptr()
 	}
 	return &r
 }
