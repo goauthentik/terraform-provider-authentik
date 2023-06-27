@@ -30,6 +30,18 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"user_verification": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"resident_key_requirement": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"authenticator_attachment": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -44,6 +56,15 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(stringToPointer(h.(string)))
+	}
+	if x, set := d.GetOk("user_verification"); set {
+		r.UserVerification = api.UserVerificationEnum(x.(string)).Ptr()
+	}
+	if x, set := d.GetOk("resident_key_requirement"); set {
+		r.ResidentKeyRequirement = api.ResidentKeyRequirementEnum(x.(string)).Ptr()
+	}
+	if x, set := d.GetOk("authenticator_attachment"); set {
+		r.AuthenticatorAttachment.Set(api.AuthenticatorAttachmentEnum(x.(string)).Ptr())
 	}
 	return &r
 }
@@ -73,6 +94,9 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	setWrapper(d, "user_verification", res.UserVerification)
+	setWrapper(d, "resident_key_requirement", res.ResidentKeyRequirement)
+	setWrapper(d, "authenticator_attachment", res.GetAuthenticatorAttachment())
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}

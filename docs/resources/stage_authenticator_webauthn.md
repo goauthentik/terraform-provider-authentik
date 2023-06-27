@@ -28,8 +28,11 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 
 ### Optional
 
+- `authenticator_attachment` (String)
 - `configure_flow` (String)
 - `friendly_name` (String)
+- `resident_key_requirement` (String)
+- `user_verification` (String)
 
 ### Read-Only
 
