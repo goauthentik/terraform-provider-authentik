@@ -204,10 +204,10 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
+		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
-	setWrapper(d, "jwks_sources", stringListConsistentMerge(localJWKSSources, res.JwksSources))
+	setWrapper(d, "jwks_sources", listConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags
 }
 

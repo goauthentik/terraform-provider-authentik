@@ -21,10 +21,12 @@ func setWrapper(d *schema.ResourceData, key string, data interface{}) {
 	}
 }
 
+// diffSuppressExpression Diff suppression for python expressions
 func diffSuppressExpression(k, old, new string, d *schema.ResourceData) bool {
 	return strings.TrimSuffix(new, "\n") == old
 }
 
+// diffSuppressJSON Diff suppression for JSON objects
 func diffSuppressJSON(k, old, new string, d *schema.ResourceData) bool {
 	var j, j2 interface{}
 	if err := json.Unmarshal([]byte(old), &j); err != nil {
@@ -36,8 +38,8 @@ func diffSuppressJSON(k, old, new string, d *schema.ResourceData) bool {
 	return reflect.DeepEqual(j2, j)
 }
 
-// stringOffsetInSlice Return the offset of a matching string in a slice or -1 if not found
-func stringOffsetInSlice(s string, list []string) int {
+// offsetInSlice Return the offset of a matching string in a slice or -1 if not found
+func offsetInSlice[T string | int](s T, list []T) int {
 	for offset, entry := range list {
 		if entry == s {
 			return offset
@@ -46,67 +48,17 @@ func stringOffsetInSlice(s string, list []string) int {
 	return -1
 }
 
-// stringListConsistentMerge Consistent merge of TypeList elements, maintaining entries position within the list
+// listConsistentMerge Consistent merge of TypeList elements, maintaining entries position within the list
 // Workaround to TF Plugin SDK issue https://github.com/hashicorp/terraform-plugin-sdk/issues/477
 // Taken from https://github.com/alexissavin/terraform-provider-solidserver/blob/master/solidserver/solidserver-helper.go#L62
-func stringListConsistentMerge(old []string, new []string) []interface{} {
+func listConsistentMerge[T string | int](old []T, new []T) []interface{} {
 	// Step 1 Build local list of member indexed by their offset
-	oldOffset := make(map[int]string, len(old))
-	diff := make([]string, 0, len(new))
+	oldOffset := make(map[int]T, len(old))
+	diff := make([]T, 0, len(new))
 	res := make([]interface{}, 0, len(new))
 
 	for _, n := range new {
-		if n != "" {
-			offset := stringOffsetInSlice(n, old)
-
-			if offset != -1 {
-				oldOffset[offset] = n
-			} else {
-				diff = append(diff, n)
-			}
-		}
-	}
-
-	// Merge sorted entries ordered by their offset with the diff array that contain the new ones
-	// Step 2 Sort the index
-	keys := make([]int, 0, len(old))
-	for k := range oldOffset {
-		keys = append(keys, k)
-	}
-	sort.Ints(keys)
-
-	// Step 3 build the result
-	for _, k := range keys {
-		res = append(res, oldOffset[k])
-	}
-	for _, v := range diff {
-		res = append(res, v)
-	}
-
-	return res
-}
-
-// intOffsetInSlice Return the offset of a matching string in a slice or -1 if not found
-func intOffsetInSlice(s int, list []int) int {
-	for offset, entry := range list {
-		if entry == s {
-			return offset
-		}
-	}
-	return -1
-}
-
-// intListConsistentMerge Consistent merge of TypeList elements, maintaining entries position within the list
-// Workaround to TF Plugin SDK issue https://github.com/hashicorp/terraform-plugin-sdk/issues/477
-// Taken from https://github.com/alexissavin/terraform-provider-solidserver/blob/master/solidserver/solidserver-helper.go#L62
-func intListConsistentMerge(old []int, new []int) []interface{} {
-	// Step 1 Build local list of member indexed by their offset
-	oldOffset := make(map[int]int, len(old))
-	diff := make([]int, 0, len(new))
-	res := make([]interface{}, 0, len(new))
-
-	for _, n := range new {
-		offset := intOffsetInSlice(n, old)
+		offset := offsetInSlice(n, old)
 
 		if offset != -1 {
 			oldOffset[offset] = n

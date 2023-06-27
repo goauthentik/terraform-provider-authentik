@@ -91,9 +91,9 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "url", res.Url)
 	setWrapper(d, "token", res.Token)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
+	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	localGroupMappings := sliceToString(d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", stringListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	return diags
 }
 

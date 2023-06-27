@@ -145,7 +145,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	setWrapper(d, "client_id", res.ClientId)
 	localServers := sliceToString(d.Get("allowed_servers").([]interface{}))
-	setWrapper(d, "allowed_servers", stringListConsistentMerge(localServers, res.AllowedServers))
+	setWrapper(d, "allowed_servers", listConsistentMerge(localServers, res.AllowedServers))
 	setWrapper(d, "allow_friends", res.AllowFriends)
 	setWrapper(d, "plex_token", res.PlexToken)
 	return diags

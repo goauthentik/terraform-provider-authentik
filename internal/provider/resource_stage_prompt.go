@@ -74,9 +74,9 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	setWrapper(d, "name", res.Name)
 	fields := sliceToString(d.Get("fields").([]interface{}))
-	setWrapper(d, "fields", stringListConsistentMerge(fields, res.Fields))
+	setWrapper(d, "fields", listConsistentMerge(fields, res.Fields))
 	validationPolicies := sliceToString(d.Get("validation_policies").([]interface{}))
-	setWrapper(d, "validation_policies", stringListConsistentMerge(validationPolicies, res.ValidationPolicies))
+	setWrapper(d, "validation_policies", listConsistentMerge(validationPolicies, res.ValidationPolicies))
 	return diags
 }
 

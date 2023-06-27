@@ -186,7 +186,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
+	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 
 	setWrapper(d, "acs_url", res.AcsUrl)
 	setWrapper(d, "audience", res.Audience)

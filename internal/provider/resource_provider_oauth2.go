@@ -174,9 +174,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	setWrapper(d, "issuer_mode", res.IssuerMode)
 	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", stringListConsistentMerge(localMappings, res.PropertyMappings))
-	if stringPointerResolve(res.RedirectUris) != "" {
-		setWrapper(d, "redirect_uris", strings.Split(stringPointerResolve(res.RedirectUris), "\n"))
+	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+	if *res.RedirectUris != "" {
+		setWrapper(d, "redirect_uris", strings.Split(*res.RedirectUris, "\n"))
 	} else {
 		setWrapper(d, "redirect_uris", []string{})
 	}
@@ -188,7 +188,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
-	setWrapper(d, "jwks_sources", stringListConsistentMerge(localJWKSSources, res.JwksSources))
+	setWrapper(d, "jwks_sources", listConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags
 }
 
