@@ -67,25 +67,25 @@ func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) *api.PolicyBindi
 	m := api.PolicyBindingRequest{
 		Target:  d.Get("target").(string),
 		Order:   int32(d.Get("order").(int)),
-		Negate:  boolToPointer(d.Get("negate").(bool)),
-		Enabled: boolToPointer(d.Get("enabled").(bool)),
-		Timeout: intToPointer(d.Get("timeout").(int)),
+		Negate:  api.PtrBool(d.Get("negate").(bool)),
+		Enabled: api.PtrBool(d.Get("enabled").(bool)),
+		Timeout: api.PtrInt32(int32(d.Get("timeout").(int))),
 	}
 
 	if u, uSet := d.GetOk("policy"); uSet {
-		m.Policy.Set(stringToPointer(u.(string)))
+		m.Policy.Set(api.PtrString(u.(string)))
 	} else {
 		m.Policy.Set(nil)
 	}
 
 	if u, uSet := d.GetOk("user"); uSet {
-		m.User.Set(intToPointer(u.(int)))
+		m.User.Set(api.PtrInt32(int32(u.(int))))
 	} else {
 		m.User.Set(nil)
 	}
 
 	if u, uSet := d.GetOk("group"); uSet {
-		m.Group.Set(stringToPointer(u.(string)))
+		m.Group.Set(api.PtrString(u.(string)))
 	} else {
 		m.Group.Set(nil)
 	}

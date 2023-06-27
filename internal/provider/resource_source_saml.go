@@ -124,31 +124,31 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	r := api.SAMLSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          boolToPointer(d.Get("enabled").(bool)),
-		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
+		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
 
 		SsoUrl:                   d.Get("sso_url").(string),
-		Issuer:                   stringToPointer(d.Get("issuer").(string)),
-		AllowIdpInitiated:        boolToPointer(d.Get("allow_idp_initiated").(bool)),
-		TemporaryUserDeleteAfter: stringToPointer(d.Get("temporary_user_delete_after").(string)),
+		Issuer:                   api.PtrString(d.Get("issuer").(string)),
+		AllowIdpInitiated:        api.PtrBool(d.Get("allow_idp_initiated").(bool)),
+		TemporaryUserDeleteAfter: api.PtrString(d.Get("temporary_user_delete_after").(string)),
 		BindingType:              api.BindingTypeEnum(d.Get("binding_type").(string)).Ptr(),
 		DigestAlgorithm:          api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:       api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		NameIdPolicy:             api.NameIdPolicyEnum(d.Get("name_id_policy").(string)).Ptr(),
 	}
 
-	r.AuthenticationFlow.Set(stringToPointer(d.Get("authentication_flow").(string)))
-	r.EnrollmentFlow.Set(stringToPointer(d.Get("enrollment_flow").(string)))
+	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
+	r.EnrollmentFlow.Set(api.PtrString(d.Get("enrollment_flow").(string)))
 
 	if s, sok := d.GetOk("slo_url"); sok && s.(string) != "" {
-		r.SloUrl.Set(stringToPointer(s.(string)))
+		r.SloUrl.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
-		r.SigningKp.Set(stringToPointer(s.(string)))
+		r.SigningKp.Set(api.PtrString(s.(string)))
 	}
 	return &r
 }

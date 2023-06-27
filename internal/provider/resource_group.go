@@ -55,7 +55,7 @@ func resourceGroup() *schema.Resource {
 func resourceGroupSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.GroupRequest, diag.Diagnostics) {
 	m := api.GroupRequest{
 		Name:        d.Get("name").(string),
-		IsSuperuser: boolToPointer(d.Get("is_superuser").(bool)),
+		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
 	}
 
 	if l, ok := d.Get("parent").(string); ok {

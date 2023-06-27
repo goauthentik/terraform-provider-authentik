@@ -73,23 +73,23 @@ func resourceStageIdentification() *schema.Resource {
 func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.IdentificationStageRequest {
 	r := api.IdentificationStageRequest{
 		Name:                    d.Get("name").(string),
-		ShowMatchedUser:         boolToPointer(d.Get("show_matched_user").(bool)),
-		ShowSourceLabels:        boolToPointer(d.Get("show_source_labels").(bool)),
-		CaseInsensitiveMatching: boolToPointer(d.Get("case_insensitive_matching").(bool)),
+		ShowMatchedUser:         api.PtrBool(d.Get("show_matched_user").(bool)),
+		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
+		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
 		Sources:                 sliceToString(d.Get("sources").([]interface{})),
 	}
 
 	if h, hSet := d.GetOk("password_stage"); hSet {
-		r.PasswordStage.Set(stringToPointer(h.(string)))
+		r.PasswordStage.Set(api.PtrString(h.(string)))
 	}
 	if h, hSet := d.GetOk("enrollment_flow"); hSet {
-		r.EnrollmentFlow.Set(stringToPointer(h.(string)))
+		r.EnrollmentFlow.Set(api.PtrString(h.(string)))
 	}
 	if h, hSet := d.GetOk("recovery_flow"); hSet {
-		r.RecoveryFlow.Set(stringToPointer(h.(string)))
+		r.RecoveryFlow.Set(api.PtrString(h.(string)))
 	}
 	if h, hSet := d.GetOk("passwordless_flow"); hSet {
-		r.PasswordlessFlow.Set(stringToPointer(h.(string)))
+		r.PasswordlessFlow.Set(api.PtrString(h.(string)))
 	}
 
 	userFields := make([]api.UserFieldsEnum, 0)

@@ -51,14 +51,14 @@ func resourceBlueprintInstance() *schema.Resource {
 func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.BlueprintInstanceRequest, diag.Diagnostics) {
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
-		Enabled: boolToPointer(d.Get("enabled").(bool)),
+		Enabled: api.PtrBool(d.Get("enabled").(bool)),
 	}
 
 	if p, ok := d.Get("path").(string); ok {
-		m.Path = stringToPointer(p)
+		m.Path = api.PtrString(p)
 	}
 	if p, ok := d.Get("content").(string); ok {
-		m.Content = stringToPointer(p)
+		m.Content = api.PtrString(p)
 	}
 
 	ctx := make(map[string]interface{})

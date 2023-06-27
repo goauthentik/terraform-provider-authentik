@@ -34,7 +34,7 @@ func resourceStageInvitation() *schema.Resource {
 func resourceStageInvitationSchemaToProvider(d *schema.ResourceData) *api.InvitationStageRequest {
 	r := api.InvitationStageRequest{
 		Name:                          d.Get("name").(string),
-		ContinueFlowWithoutInvitation: boolToPointer(d.Get("continue_flow_without_invitation").(bool)),
+		ContinueFlowWithoutInvitation: api.PtrBool(d.Get("continue_flow_without_invitation").(bool)),
 	}
 	return &r
 }

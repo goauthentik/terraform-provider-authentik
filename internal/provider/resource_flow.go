@@ -77,7 +77,7 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
 		Title:             d.Get("title").(string),
-		CompatibilityMode: boolToPointer(d.Get("compatibility_mode").(bool)),
+		CompatibilityMode: api.PtrBool(d.Get("compatibility_mode").(bool)),
 		Designation:       api.FlowDesignationEnum(d.Get("designation").(string)),
 		Authentication:    api.AuthenticationEnum(d.Get("authentication").(string)).Ptr(),
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),

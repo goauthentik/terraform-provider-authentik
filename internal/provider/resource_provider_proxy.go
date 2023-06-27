@@ -121,7 +121,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(stringToPointer(s.(string)))
+		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
 	}
 	if l, ok := d.Get("internal_host").(string); ok {
 		r.InternalHost = &l

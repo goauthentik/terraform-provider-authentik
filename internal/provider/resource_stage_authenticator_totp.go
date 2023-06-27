@@ -46,10 +46,10 @@ func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api
 	}
 
 	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(stringToPointer(fn.(string)))
+		r.FriendlyName.Set(api.PtrString(fn.(string)))
 	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(stringToPointer(h.(string)))
+		r.ConfigureFlow.Set(api.PtrString(h.(string)))
 	}
 	return &r
 }

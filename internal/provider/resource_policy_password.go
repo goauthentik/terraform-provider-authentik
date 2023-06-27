@@ -97,51 +97,51 @@ func resourcePolicyPassword() *schema.Resource {
 func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordPolicyRequest {
 	r := api.PasswordPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
+		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 	}
 
 	if s, sSet := d.GetOk("password_field"); sSet {
-		r.PasswordField = stringToPointer(s.(string))
+		r.PasswordField = api.PtrString(s.(string))
 	}
 
 	if e, eSet := d.GetOk("check_static_rules"); eSet {
-		r.CheckStaticRules = boolToPointer(e.(bool))
+		r.CheckStaticRules = api.PtrBool(e.(bool))
 	}
 	if e, eSet := d.GetOk("check_have_i_been_pwned"); eSet {
-		r.CheckHaveIBeenPwned = boolToPointer(e.(bool))
+		r.CheckHaveIBeenPwned = api.PtrBool(e.(bool))
 	}
 	if e, eSet := d.GetOk("check_zxcvbn"); eSet {
-		r.CheckZxcvbn = boolToPointer(e.(bool))
+		r.CheckZxcvbn = api.PtrBool(e.(bool))
 	}
 
 	if s, sSet := d.GetOk("symbol_charset"); sSet {
-		r.SymbolCharset = stringToPointer(s.(string))
+		r.SymbolCharset = api.PtrString(s.(string))
 	}
 	if s, sSet := d.GetOk("error_message"); sSet {
-		r.ErrorMessage = stringToPointer(s.(string))
+		r.ErrorMessage = api.PtrString(s.(string))
 	}
 	if p, pSet := d.GetOk("amount_uppercase"); pSet {
-		r.AmountUppercase = intToPointer(p.(int))
+		r.AmountUppercase = api.PtrInt32(int32(p.(int)))
 	}
 	if p, pSet := d.GetOk("amount_digits"); pSet {
-		r.AmountDigits = intToPointer(p.(int))
+		r.AmountDigits = api.PtrInt32(int32(p.(int)))
 	}
 	if p, pSet := d.GetOk("amount_lowercase"); pSet {
-		r.AmountLowercase = intToPointer(p.(int))
+		r.AmountLowercase = api.PtrInt32(int32(p.(int)))
 	}
 	if p, pSet := d.GetOk("amount_symbols"); pSet {
-		r.AmountSymbols = intToPointer(p.(int))
+		r.AmountSymbols = api.PtrInt32(int32(p.(int)))
 	}
 	if p, pSet := d.GetOk("length_min"); pSet {
-		r.LengthMin = intToPointer(p.(int))
+		r.LengthMin = api.PtrInt32(int32(p.(int)))
 	}
 
 	if p, pSet := d.GetOk("hibp_allowed_count"); pSet {
-		r.HibpAllowedCount = intToPointer(p.(int))
+		r.HibpAllowedCount = api.PtrInt32(int32(p.(int)))
 	}
 
 	if p, pSet := d.GetOk("zxcvbn_score_threshold"); pSet {
-		r.ZxcvbnScoreThreshold = intToPointer(p.(int))
+		r.ZxcvbnScoreThreshold = api.PtrInt32(int32(p.(int)))
 	}
 	return &r
 }

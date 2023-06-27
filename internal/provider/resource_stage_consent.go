@@ -46,7 +46,7 @@ func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentSt
 	}
 
 	if ex, exSet := d.GetOk("consent_expire_in"); exSet {
-		r.ConsentExpireIn = stringToPointer(ex.(string))
+		r.ConsentExpireIn = api.PtrString(ex.(string))
 	}
 	return &r
 }

@@ -132,8 +132,8 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 	r := api.OAuthSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          boolToPointer(d.Get("enabled").(bool)),
-		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
+		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 
 		ProviderType:     api.ProviderTypeEnum(d.Get("provider_type").(string)),
 		ConsumerKey:      d.Get("consumer_key").(string),
@@ -142,29 +142,29 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 	}
 
-	r.AuthenticationFlow.Set(stringToPointer(d.Get("authentication_flow").(string)))
-	r.EnrollmentFlow.Set(stringToPointer(d.Get("enrollment_flow").(string)))
+	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
+	r.EnrollmentFlow.Set(api.PtrString(d.Get("enrollment_flow").(string)))
 
 	if s, sok := d.GetOk("request_token_url"); sok && s.(string) != "" {
-		r.RequestTokenUrl.Set(stringToPointer(s.(string)))
+		r.RequestTokenUrl.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("authorization_url"); sok && s.(string) != "" {
-		r.AuthorizationUrl.Set(stringToPointer(s.(string)))
+		r.AuthorizationUrl.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("access_token_url"); sok && s.(string) != "" {
-		r.AccessTokenUrl.Set(stringToPointer(s.(string)))
+		r.AccessTokenUrl.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("profile_url"); sok && s.(string) != "" {
-		r.ProfileUrl.Set(stringToPointer(s.(string)))
+		r.ProfileUrl.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("additional_scopes"); sok && s.(string) != "" {
-		r.AdditionalScopes = stringToPointer(s.(string))
+		r.AdditionalScopes = api.PtrString(s.(string))
 	}
 	if s, sok := d.GetOk("oidc_well_known_url"); sok && s.(string) != "" {
-		r.OidcWellKnownUrl = stringToPointer(s.(string))
+		r.OidcWellKnownUrl = api.PtrString(s.(string))
 	}
 	if s, sok := d.GetOk("oidc_jwks_url"); sok && s.(string) != "" {
-		r.OidcJwksUrl = stringToPointer(s.(string))
+		r.OidcJwksUrl = api.PtrString(s.(string))
 	}
 	if l, ok := d.Get("oidc_jwks").(string); ok && l != "" {
 		var c map[string]interface{}

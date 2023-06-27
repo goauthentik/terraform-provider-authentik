@@ -39,7 +39,7 @@ func resourcePolicyExpression() *schema.Resource {
 func resourcePolicyExpressionSchemaToProvider(d *schema.ResourceData) *api.ExpressionPolicyRequest {
 	r := api.ExpressionPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
+		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		Expression:       d.Get("expression").(string),
 	}
 	return &r

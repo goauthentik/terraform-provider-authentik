@@ -43,9 +43,9 @@ func resourcePolicyExpiry() *schema.Resource {
 func resourcePolicyExpirySchemaToProvider(d *schema.ResourceData) *api.PasswordExpiryPolicyRequest {
 	r := api.PasswordExpiryPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
+		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		Days:             int32(d.Get("days").(int)),
-		DenyOnly:         boolToPointer(d.Get("deny_only").(bool)),
+		DenyOnly:         api.PtrBool(d.Get("deny_only").(bool)),
 	}
 	return &r
 }

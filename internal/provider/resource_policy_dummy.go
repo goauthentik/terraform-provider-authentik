@@ -49,15 +49,15 @@ func resourcePolicyDummy() *schema.Resource {
 func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolicyRequest {
 	r := api.DummyPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
-		Result:           boolToPointer(d.Get("result").(bool)),
+		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		Result:           api.PtrBool(d.Get("result").(bool)),
 	}
 
 	if p, pSet := d.GetOk("wait_max"); pSet {
-		r.WaitMax = intToPointer(p.(int))
+		r.WaitMax = api.PtrInt32(int32(p.(int)))
 	}
 	if p, pSet := d.GetOk("wait_min"); pSet {
-		r.WaitMin = intToPointer(p.(int))
+		r.WaitMin = api.PtrInt32(int32(p.(int)))
 	}
 	return &r
 }

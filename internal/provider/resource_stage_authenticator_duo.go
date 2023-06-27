@@ -65,16 +65,16 @@ func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.
 	}
 
 	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(stringToPointer(fn.(string)))
+		r.FriendlyName.Set(api.PtrString(fn.(string)))
 	}
 	if h, hSet := d.GetOk("admin_integration_key"); hSet {
-		r.AdminIntegrationKey = stringToPointer(h.(string))
+		r.AdminIntegrationKey = api.PtrString(h.(string))
 	}
 	if h, hSet := d.GetOk("admin_secret_key"); hSet {
-		r.AdminSecretKey = stringToPointer(h.(string))
+		r.AdminSecretKey = api.PtrString(h.(string))
 	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(stringToPointer(h.(string)))
+		r.ConfigureFlow.Set(api.PtrString(h.(string)))
 	}
 	return &r
 }

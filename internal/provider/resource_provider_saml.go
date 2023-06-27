@@ -130,11 +130,11 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		Name:                       d.Get("name").(string),
 		AuthorizationFlow:          d.Get("authorization_flow").(string),
 		AcsUrl:                     d.Get("acs_url").(string),
-		Audience:                   stringToPointer(d.Get("audience").(string)),
-		Issuer:                     stringToPointer(d.Get("issuer").(string)),
-		AssertionValidNotBefore:    stringToPointer(d.Get("assertion_valid_not_before").(string)),
-		AssertionValidNotOnOrAfter: stringToPointer(d.Get("assertion_valid_not_on_or_after").(string)),
-		SessionValidNotOnOrAfter:   stringToPointer(d.Get("session_valid_not_on_or_after").(string)),
+		Audience:                   api.PtrString(d.Get("audience").(string)),
+		Issuer:                     api.PtrString(d.Get("issuer").(string)),
+		AssertionValidNotBefore:    api.PtrString(d.Get("assertion_valid_not_before").(string)),
+		AssertionValidNotOnOrAfter: api.PtrString(d.Get("assertion_valid_not_on_or_after").(string)),
+		SessionValidNotOnOrAfter:   api.PtrString(d.Get("session_valid_not_on_or_after").(string)),
 		DigestAlgorithm:            api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:         api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		SpBinding:                  api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
@@ -142,16 +142,16 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(stringToPointer(s.(string)))
+		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("name_id_mapping"); sok && s.(string) != "" {
-		r.NameIdMapping.Set(stringToPointer(s.(string)))
+		r.NameIdMapping.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
-		r.SigningKp.Set(stringToPointer(s.(string)))
+		r.SigningKp.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
-		r.VerificationKp.Set(stringToPointer(s.(string)))
+		r.VerificationKp.Set(api.PtrString(s.(string)))
 	}
 	return &r
 }

@@ -48,13 +48,13 @@ func resourceStageUserWrite() *schema.Resource {
 func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWriteStageRequest {
 	r := api.UserWriteStageRequest{
 		Name:                  d.Get("name").(string),
-		CreateUsersAsInactive: boolToPointer(d.Get("create_users_as_inactive").(bool)),
-		UserPathTemplate:      stringToPointer(d.Get("user_path_template").(string)),
+		CreateUsersAsInactive: api.PtrBool(d.Get("create_users_as_inactive").(bool)),
+		UserPathTemplate:      api.PtrString(d.Get("user_path_template").(string)),
 		UserCreationMode:      api.UserCreationModeEnum(d.Get("user_creation_mode").(string)).Ptr(),
 	}
 
 	if h, hSet := d.GetOk("create_users_group"); hSet {
-		r.CreateUsersGroup.Set(stringToPointer(h.(string)))
+		r.CreateUsersGroup.Set(api.PtrString(h.(string)))
 	}
 	return &r
 }

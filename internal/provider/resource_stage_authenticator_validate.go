@@ -52,7 +52,7 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorValidateStageRequest {
 	r := api.AuthenticatorValidateStageRequest{
 		Name:              d.Get("name").(string),
-		LastAuthThreshold: stringToPointer(d.Get("last_auth_threshold").(string)),
+		LastAuthThreshold: api.PtrString(d.Get("last_auth_threshold").(string)),
 	}
 
 	if h, hSet := d.GetOk("not_configured_action"); hSet {

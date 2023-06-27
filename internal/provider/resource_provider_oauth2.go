@@ -111,11 +111,11 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	r := api.OAuth2ProviderRequest{
 		Name:                   d.Get("name").(string),
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
-		AccessCodeValidity:     stringToPointer(d.Get("access_code_validity").(string)),
-		AccessTokenValidity:    stringToPointer(d.Get("access_token_validity").(string)),
-		RefreshTokenValidity:   stringToPointer(d.Get("refresh_token_validity").(string)),
-		IncludeClaimsInIdToken: boolToPointer(d.Get("include_claims_in_id_token").(bool)),
-		ClientId:               stringToPointer(d.Get("client_id").(string)),
+		AccessCodeValidity:     api.PtrString(d.Get("access_code_validity").(string)),
+		AccessTokenValidity:    api.PtrString(d.Get("access_token_validity").(string)),
+		RefreshTokenValidity:   api.PtrString(d.Get("refresh_token_validity").(string)),
+		IncludeClaimsInIdToken: api.PtrBool(d.Get("include_claims_in_id_token").(bool)),
+		ClientId:               api.PtrString(d.Get("client_id").(string)),
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
@@ -124,18 +124,18 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(stringToPointer(s.(string)))
+		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("client_secret"); sok && s.(string) != "" {
-		r.ClientSecret = stringToPointer(s.(string))
+		r.ClientSecret = api.PtrString(s.(string))
 	}
 
 	if s, sok := d.GetOk("signing_key"); sok && s.(string) != "" {
-		r.SigningKey.Set(stringToPointer(s.(string)))
+		r.SigningKey.Set(api.PtrString(s.(string)))
 	}
 
 	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
-	r.RedirectUris = stringToPointer(strings.Join(redirectUris, "\n"))
+	r.RedirectUris = api.PtrString(strings.Join(redirectUris, "\n"))
 	return &r
 }
 

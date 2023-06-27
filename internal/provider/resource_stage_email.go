@@ -91,43 +91,43 @@ func resourceStageEmail() *schema.Resource {
 func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageRequest {
 	r := api.EmailStageRequest{
 		Name:              d.Get("name").(string),
-		UseGlobalSettings: boolToPointer(d.Get("use_global_settings").(bool)),
-		UseSsl:            boolToPointer(d.Get("use_ssl").(bool)),
-		UseTls:            boolToPointer(d.Get("use_tls").(bool)),
+		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
+		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
+		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
 	}
 
 	if h, hSet := d.GetOk("host"); hSet {
-		r.Host = stringToPointer(h.(string))
+		r.Host = api.PtrString(h.(string))
 	}
 	if p, pSet := d.GetOk("port"); pSet {
-		r.Port = intToPointer(p.(int))
+		r.Port = api.PtrInt32(int32(p.(int)))
 	}
 
 	if h, hSet := d.GetOk("username"); hSet {
-		r.Username = stringToPointer(h.(string))
+		r.Username = api.PtrString(h.(string))
 	}
 	if h, hSet := d.GetOk("password"); hSet {
-		r.Password = stringToPointer(h.(string))
+		r.Password = api.PtrString(h.(string))
 	}
 
 	if p, pSet := d.GetOk("timeout"); pSet {
-		r.Timeout = intToPointer(p.(int))
+		r.Timeout = api.PtrInt32(int32(p.(int)))
 	}
 
 	if h, hSet := d.GetOk("from_address"); hSet {
-		r.FromAddress = stringToPointer(h.(string))
+		r.FromAddress = api.PtrString(h.(string))
 	}
 	if p, pSet := d.GetOk("token_expiry"); pSet {
-		r.TokenExpiry = intToPointer(p.(int))
+		r.TokenExpiry = api.PtrInt32(int32(p.(int)))
 	}
 	if h, hSet := d.GetOk("subject"); hSet {
-		r.Subject = stringToPointer(h.(string))
+		r.Subject = api.PtrString(h.(string))
 	}
 	if h, hSet := d.GetOk("template"); hSet {
-		r.Template = stringToPointer(h.(string))
+		r.Template = api.PtrString(h.(string))
 	}
 	if h, hSet := d.GetOk("activate_user_on_success"); hSet {
-		r.ActivateUserOnSuccess = boolToPointer(h.(bool))
+		r.ActivateUserOnSuccess = api.PtrBool(h.(bool))
 	}
 	return &r
 }

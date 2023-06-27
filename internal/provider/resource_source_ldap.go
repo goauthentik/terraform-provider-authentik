@@ -135,29 +135,29 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 	r := api.LDAPSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          boolToPointer(d.Get("enabled").(bool)),
-		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
+		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 
 		BaseDn:       d.Get("base_dn").(string),
 		ServerUri:    d.Get("server_uri").(string),
-		BindCn:       stringToPointer(d.Get("bind_cn").(string)),
-		BindPassword: stringToPointer(d.Get("bind_password").(string)),
-		StartTls:     boolToPointer(d.Get("start_tls").(bool)),
+		BindCn:       api.PtrString(d.Get("bind_cn").(string)),
+		BindPassword: api.PtrString(d.Get("bind_password").(string)),
+		StartTls:     api.PtrBool(d.Get("start_tls").(bool)),
 
-		AdditionalUserDn:      stringToPointer(d.Get("additional_user_dn").(string)),
-		AdditionalGroupDn:     stringToPointer(d.Get("additional_group_dn").(string)),
-		UserObjectFilter:      stringToPointer(d.Get("user_object_filter").(string)),
-		GroupObjectFilter:     stringToPointer(d.Get("group_object_filter").(string)),
-		GroupMembershipField:  stringToPointer(d.Get("group_membership_field").(string)),
-		ObjectUniquenessField: stringToPointer(d.Get("object_uniqueness_field").(string)),
+		AdditionalUserDn:      api.PtrString(d.Get("additional_user_dn").(string)),
+		AdditionalGroupDn:     api.PtrString(d.Get("additional_group_dn").(string)),
+		UserObjectFilter:      api.PtrString(d.Get("user_object_filter").(string)),
+		GroupObjectFilter:     api.PtrString(d.Get("group_object_filter").(string)),
+		GroupMembershipField:  api.PtrString(d.Get("group_membership_field").(string)),
+		ObjectUniquenessField: api.PtrString(d.Get("object_uniqueness_field").(string)),
 
-		SyncUsers:         boolToPointer(d.Get("sync_users").(bool)),
-		SyncUsersPassword: boolToPointer(d.Get("sync_users_password").(bool)),
-		SyncGroups:        boolToPointer(d.Get("sync_groups").(bool)),
+		SyncUsers:         api.PtrBool(d.Get("sync_users").(bool)),
+		SyncUsersPassword: api.PtrBool(d.Get("sync_users_password").(bool)),
+		SyncGroups:        api.PtrBool(d.Get("sync_groups").(bool)),
 	}
 
 	if s, sok := d.GetOk("sync_parent_group"); sok && s.(string) != "" {
-		r.SyncParentGroup.Set(stringToPointer(s.(string)))
+		r.SyncParentGroup.Set(api.PtrString(s.(string)))
 	}
 
 	r.PropertyMappings = sliceToString(d.Get("property_mappings").([]interface{}))

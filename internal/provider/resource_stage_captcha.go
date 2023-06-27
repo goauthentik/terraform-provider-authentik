@@ -52,10 +52,10 @@ func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaSt
 		PrivateKey: d.Get("private_key").(string),
 	}
 	if v, ok := d.GetOk("js_url"); ok {
-		r.JsUrl = stringToPointer(v.(string))
+		r.JsUrl = api.PtrString(v.(string))
 	}
 	if v, ok := d.GetOk("api_url"); ok {
-		r.ApiUrl = stringToPointer(v.(string))
+		r.ApiUrl = api.PtrString(v.(string))
 	}
 	return &r
 }

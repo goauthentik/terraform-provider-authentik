@@ -49,13 +49,13 @@ func resourcePolicyReputation() *schema.Resource {
 func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.ReputationPolicyRequest {
 	r := api.ReputationPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
-		CheckIp:          boolToPointer(d.Get("check_ip").(bool)),
-		CheckUsername:    boolToPointer(d.Get("check_username").(bool)),
+		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		CheckIp:          api.PtrBool(d.Get("check_ip").(bool)),
+		CheckUsername:    api.PtrBool(d.Get("check_username").(bool)),
 	}
 
 	if p, pSet := d.GetOk("threshold"); pSet {
-		r.Threshold = intToPointer(p.(int))
+		r.Threshold = api.PtrInt32(int32(p.(int)))
 	}
 	return &r
 }

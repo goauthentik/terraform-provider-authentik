@@ -89,10 +89,10 @@ func resourceTenant() *schema.Resource {
 func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, diag.Diagnostics) {
 	m := api.TenantRequest{
 		Domain:  d.Get("domain").(string),
-		Default: boolToPointer(d.Get("default").(bool)),
+		Default: api.PtrBool(d.Get("default").(bool)),
 	}
 
-	m.EventRetention = stringToPointer(d.Get("event_retention").(string))
+	m.EventRetention = api.PtrString(d.Get("event_retention").(string))
 
 	if l, ok := d.Get("branding_title").(string); ok {
 		m.BrandingTitle = &l

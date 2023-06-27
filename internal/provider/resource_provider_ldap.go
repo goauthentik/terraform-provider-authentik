@@ -76,22 +76,22 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 	r := api.LDAPProviderRequest{
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("bind_flow").(string),
-		BaseDn:            stringToPointer(d.Get("base_dn").(string)),
-		UidStartNumber:    intToPointer(d.Get("uid_start_number").(int)),
-		GidStartNumber:    intToPointer(d.Get("gid_start_number").(int)),
+		BaseDn:            api.PtrString(d.Get("base_dn").(string)),
+		UidStartNumber:    api.PtrInt32(int32(d.Get("uid_start_number").(int))),
+		GidStartNumber:    api.PtrInt32(int32(d.Get("gid_start_number").(int))),
 		SearchMode:        api.LDAPAPIAccessMode(d.Get("search_mode").(string)).Ptr(),
 		BindMode:          api.LDAPAPIAccessMode(d.Get("bind_mode").(string)).Ptr(),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
 	}
 
 	if s, sok := d.GetOk("search_group"); sok && s.(string) != "" {
-		r.SearchGroup.Set(stringToPointer(s.(string)))
+		r.SearchGroup.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("certificate"); sok && s.(string) != "" {
-		r.Certificate.Set(stringToPointer(s.(string)))
+		r.Certificate.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("tls_server_name"); sok && s.(string) != "" {
-		r.TlsServerName = stringToPointer(s.(string))
+		r.TlsServerName = api.PtrString(s.(string))
 	}
 	return &r
 }

@@ -67,8 +67,8 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 	m := api.UserRequest{
 		Name:     d.Get("name").(string),
 		Username: d.Get("username").(string),
-		IsActive: boolToPointer(d.Get("is_active").(bool)),
-		Path:     stringToPointer(d.Get("path").(string)),
+		IsActive: api.PtrBool(d.Get("is_active").(bool)),
+		Path:     api.PtrString(d.Get("path").(string)),
 	}
 
 	if l, ok := d.Get("email").(string); ok {

@@ -46,7 +46,7 @@ func resourceEventTransport() *schema.Resource {
 func resourceEventTransportSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.NotificationTransportRequest, diag.Diagnostics) {
 	m := api.NotificationTransportRequest{
 		Name:     d.Get("name").(string),
-		SendOnce: boolToPointer(d.Get("send_once").(bool)),
+		SendOnce: api.PtrBool(d.Get("send_once").(bool)),
 	}
 	mode := api.NotificationTransportModeEnum(d.Get("mode").(string))
 	m.Mode = &mode

@@ -50,14 +50,14 @@ func resourcePolicyEventMatcher() *schema.Resource {
 func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.EventMatcherPolicyRequest {
 	r := api.EventMatcherPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: boolToPointer(d.Get("execution_logging").(bool)),
+		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 	}
 
 	if a, ok := d.Get("action").(string); ok && a != "" {
 		r.Action.Set(api.EventActions(a).Ptr())
 	}
 	if p, ok := d.Get("client_ip").(string); ok && p != "" {
-		r.ClientIp.Set(stringToPointer(p))
+		r.ClientIp.Set(api.PtrString(p))
 	}
 	if a, ok := d.Get("app").(string); ok && a != "" {
 		r.App.Set(api.AppEnum(a).Ptr())

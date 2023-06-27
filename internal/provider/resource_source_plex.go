@@ -89,18 +89,18 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 	r := api.PlexSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          boolToPointer(d.Get("enabled").(bool)),
-		UserPathTemplate: stringToPointer(d.Get("user_path_template").(string)),
+		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 
-		ClientId:     stringToPointer(d.Get("client_id").(string)),
-		AllowFriends: boolToPointer(d.Get("allow_friends").(bool)),
+		ClientId:     api.PtrString(d.Get("client_id").(string)),
+		AllowFriends: api.PtrBool(d.Get("allow_friends").(bool)),
 		PlexToken:    d.Get("plex_token").(string),
 	}
 
-	r.AuthenticationFlow.Set(stringToPointer(d.Get("authentication_flow").(string)))
-	r.EnrollmentFlow.Set(stringToPointer(d.Get("enrollment_flow").(string)))
+	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
+	r.EnrollmentFlow.Set(api.PtrString(d.Get("enrollment_flow").(string)))
 
 	r.AllowedServers = sliceToString(d.Get("allowed_servers").([]interface{}))
 	return &r

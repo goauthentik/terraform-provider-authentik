@@ -39,8 +39,8 @@ func resourceStageUserLogin() *schema.Resource {
 func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) *api.UserLoginStageRequest {
 	r := api.UserLoginStageRequest{
 		Name:                   d.Get("name").(string),
-		SessionDuration:        stringToPointer(d.Get("session_duration").(string)),
-		TerminateOtherSessions: boolToPointer(d.Get("terminate_other_sessions").(bool)),
+		SessionDuration:        api.PtrString(d.Get("session_duration").(string)),
+		TerminateOtherSessions: api.PtrBool(d.Get("terminate_other_sessions").(bool)),
 	}
 	return &r
 }

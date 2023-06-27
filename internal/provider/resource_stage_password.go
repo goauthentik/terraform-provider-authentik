@@ -48,11 +48,11 @@ func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.Password
 	}
 
 	if s, sok := d.GetOk("configure_flow"); sok && s.(string) != "" {
-		r.ConfigureFlow.Set(stringToPointer(s.(string)))
+		r.ConfigureFlow.Set(api.PtrString(s.(string)))
 	}
 
 	if fa, sok := d.GetOk("failed_attempts_before_cancel"); sok {
-		r.FailedAttemptsBeforeCancel = intToPointer(fa.(int))
+		r.FailedAttemptsBeforeCancel = api.PtrInt32(int32(fa.(int)))
 	}
 
 	backend := make([]api.BackendsEnum, 0)

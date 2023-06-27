@@ -158,23 +158,6 @@ func slice32ToInt(in []int32) []int {
 	return sl
 }
 
-func stringToPointer(in string) *string {
-	return &in
-}
-
-func stringPointerResolve(in *string) string {
-	return *in
-}
-
-func intToPointer(in int) *int32 {
-	i := int32(in)
-	return &i
-}
-
-func boolToPointer(in bool) *bool {
-	return &in
-}
-
 func httpToDiag(d *schema.ResourceData, r *http.Response, err error) diag.Diagnostics {
 	if r == nil {
 		return diag.Errorf("HTTP Error '%s' without http response", err.Error())

@@ -46,7 +46,7 @@ func resourceScopeMappingSchemaToProvider(d *schema.ResourceData) *api.ScopeMapp
 		Expression: d.Get("expression").(string),
 	}
 	if de, dSet := d.GetOk("description"); dSet {
-		r.Description = stringToPointer(de.(string))
+		r.Description = api.PtrString(de.(string))
 	}
 	return &r
 }

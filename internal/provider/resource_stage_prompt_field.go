@@ -78,22 +78,22 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 		FieldKey:               d.Get("field_key").(string),
 		Label:                  d.Get("label").(string),
 		Type:                   api.PromptTypeEnum(d.Get("type").(string)),
-		Required:               boolToPointer(d.Get("required").(bool)),
-		PlaceholderExpression:  boolToPointer(d.Get("placeholder_expression").(bool)),
-		InitialValueExpression: boolToPointer(d.Get("initial_value_expression").(bool)),
+		Required:               api.PtrBool(d.Get("required").(bool)),
+		PlaceholderExpression:  api.PtrBool(d.Get("placeholder_expression").(bool)),
+		InitialValueExpression: api.PtrBool(d.Get("initial_value_expression").(bool)),
 		SubText:                api.PtrString(d.Get("sub_text").(string)),
 	}
 
 	if p, pSet := d.GetOk("placeholder"); pSet {
-		r.Placeholder = stringToPointer(p.(string))
+		r.Placeholder = api.PtrString(p.(string))
 	}
 
 	if p, pSet := d.GetOk("initial_value"); pSet {
-		r.InitialValue = stringToPointer(p.(string))
+		r.InitialValue = api.PtrString(p.(string))
 	}
 
 	if o, oSet := d.GetOk("order"); oSet {
-		r.Order = intToPointer(o.(int))
+		r.Order = api.PtrInt32(int32(o.(int)))
 	}
 	return &r
 }

@@ -46,7 +46,7 @@ func resourceSAMLPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.SA
 		Expression: d.Get("expression").(string),
 	}
 	if de, dSet := d.GetOk("friendly_name"); dSet {
-		r.FriendlyName.Set(stringToPointer(de.(string)))
+		r.FriendlyName.Set(api.PtrString(de.(string)))
 	}
 	return &r
 }

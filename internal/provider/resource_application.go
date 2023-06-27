@@ -81,12 +81,12 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
 		Provider:         api.NullableInt32{},
-		OpenInNewTab:     boolToPointer(d.Get("open_in_new_tab").(bool)),
+		OpenInNewTab:     api.PtrBool(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 	}
 
 	if p, pSet := d.GetOk("protocol_provider"); pSet {
-		m.Provider.Set(intToPointer(p.(int)))
+		m.Provider.Set(api.PtrInt32(int32(p.(int))))
 	} else {
 		m.Provider.Set(nil)
 	}
