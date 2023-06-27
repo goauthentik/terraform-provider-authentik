@@ -39,6 +39,7 @@ resource "authentik_stage_prompt_field" "field" {
 - `placeholder` (String)
 - `placeholder_expression` (Boolean) Defaults to `false`.
 - `required` (Boolean) Defaults to `false`.
+- `sub_text` (String) Defaults to ``.
 
 ### Read-Only
 

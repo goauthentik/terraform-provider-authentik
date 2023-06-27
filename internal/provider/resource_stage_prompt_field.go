@@ -63,6 +63,11 @@ func resourceStagePromptField() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"sub_text": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "",
+			},
 		},
 	}
 }
@@ -76,6 +81,7 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 		Required:               boolToPointer(d.Get("required").(bool)),
 		PlaceholderExpression:  boolToPointer(d.Get("placeholder_expression").(bool)),
 		InitialValueExpression: boolToPointer(d.Get("initial_value_expression").(bool)),
+		SubText:                api.PtrString(d.Get("sub_text").(string)),
 	}
 
 	if p, pSet := d.GetOk("placeholder"); pSet {
@@ -124,6 +130,7 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 	setWrapper(d, "placeholder_expression", res.PlaceholderExpression)
 	setWrapper(d, "initial_value", res.InitialValue)
 	setWrapper(d, "initial_value_expression", res.InitialValueExpression)
+	setWrapper(d, "sub_text", res.SubText)
 	setWrapper(d, "order", res.Order)
 	return diags
 }
