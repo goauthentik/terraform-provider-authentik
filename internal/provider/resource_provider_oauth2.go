@@ -119,8 +119,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
-		PropertyMappings:       sliceToString(d.Get("property_mappings").([]interface{})),
-		JwksSources:            sliceToString(d.Get("jwks_sources").([]interface{})),
+		PropertyMappings:       castSlice[string](d.Get("property_mappings").([]interface{})),
+		JwksSources:            castSlice[string](d.Get("jwks_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -134,7 +134,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		r.SigningKey.Set(api.PtrString(s.(string)))
 	}
 
-	redirectUris := sliceToString(d.Get("redirect_uris").([]interface{}))
+	redirectUris := castSlice[string](d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = api.PtrString(strings.Join(redirectUris, "\n"))
 	return &r
 }
@@ -173,7 +173,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "client_type", res.ClientType)
 	setWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	setWrapper(d, "issuer_mode", res.IssuerMode)
-	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
+	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	if *res.RedirectUris != "" {
 		setWrapper(d, "redirect_uris", strings.Split(*res.RedirectUris, "\n"))
@@ -187,7 +187,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
+	localJWKSSources := castSlice[string](d.Get("jwks_sources").([]interface{}))
 	setWrapper(d, "jwks_sources", listConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags
 }

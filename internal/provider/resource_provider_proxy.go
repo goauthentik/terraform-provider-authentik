@@ -116,8 +116,8 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		AuthorizationFlow: d.Get("authorization_flow").(string),
 		ExternalHost:      d.Get("external_host").(string),
 		Mode:              api.ProxyMode(d.Get("mode").(string)).Ptr(),
-		PropertyMappings:  sliceToString(d.Get("property_mappings").([]interface{})),
-		JwksSources:       sliceToString(d.Get("jwks_sources").([]interface{})),
+		PropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
+		JwksSources:       castSlice[string](d.Get("jwks_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -202,11 +202,11 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "cookie_domain", res.CookieDomain)
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
+	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
 		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localJWKSSources := sliceToString(d.Get("jwks_sources").([]interface{}))
+	localJWKSSources := castSlice[string](d.Get("jwks_sources").([]interface{}))
 	setWrapper(d, "jwks_sources", listConsistentMerge(localJWKSSources, res.JwksSources))
 	return diags
 }

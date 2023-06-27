@@ -57,7 +57,7 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.
 		m.Group.Set(&w)
 	}
 
-	m.Transports = sliceToString(d.Get("transports").([]interface{}))
+	m.Transports = castSlice[string](d.Get("transports").([]interface{}))
 	return &m, nil
 }
 

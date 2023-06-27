@@ -55,8 +55,8 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		Name:                  d.Get("name").(string),
 		Url:                   d.Get("url").(string),
 		Token:                 d.Get("token").(string),
-		PropertyMappings:      sliceToString(d.Get("property_mappings").([]interface{})),
-		PropertyMappingsGroup: sliceToString(d.Get("property_mappings_group").([]interface{})),
+		PropertyMappings:      castSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappingsGroup: castSlice[string](d.Get("property_mappings_group").([]interface{})),
 	}
 	return &r
 }
@@ -90,9 +90,9 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "url", res.Url)
 	setWrapper(d, "token", res.Token)
-	localMappings := sliceToString(d.Get("property_mappings").([]interface{}))
+	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
-	localGroupMappings := sliceToString(d.Get("property_mappings_group").([]interface{}))
+	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
 	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	return diags
 }

@@ -86,18 +86,10 @@ func listConsistentMerge[T string | int](old []T, new []T) []interface{} {
 	return res
 }
 
-func sliceToString(in []interface{}) []string {
-	sl := make([]string, len(in))
+func castSlice[T string | int](in []interface{}) []T {
+	sl := make([]T, len(in))
 	for i, m := range in {
-		sl[i] = m.(string)
-	}
-	return sl
-}
-
-func sliceToInt(in []interface{}) []int {
-	sl := make([]int, len(in))
-	for i, m := range in {
-		sl[i] = m.(int)
+		sl[i] = m.(T)
 	}
 	return sl
 }

@@ -102,7 +102,7 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
 	r.EnrollmentFlow.Set(api.PtrString(d.Get("enrollment_flow").(string)))
 
-	r.AllowedServers = sliceToString(d.Get("allowed_servers").([]interface{}))
+	r.AllowedServers = castSlice[string](d.Get("allowed_servers").([]interface{}))
 	return &r
 }
 
@@ -144,7 +144,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
 
 	setWrapper(d, "client_id", res.ClientId)
-	localServers := sliceToString(d.Get("allowed_servers").([]interface{}))
+	localServers := castSlice[string](d.Get("allowed_servers").([]interface{}))
 	setWrapper(d, "allowed_servers", listConsistentMerge(localServers, res.AllowedServers))
 	setWrapper(d, "allow_friends", res.AllowFriends)
 	setWrapper(d, "plex_token", res.PlexToken)

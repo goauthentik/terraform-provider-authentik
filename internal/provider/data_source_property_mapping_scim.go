@@ -56,7 +56,7 @@ func dataSourceSCIMPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 	req := c.client.PropertymappingsApi.PropertymappingsScimList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(sliceToString(ml.([]interface{})))
+		req = req.Managed(castSlice[string](ml.([]interface{})))
 	} else if m, ok := d.GetOk("managed"); ok {
 		req = req.Managed([]string{m.(string)})
 	}

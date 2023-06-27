@@ -75,7 +75,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 		m.Email = &l
 	}
 
-	m.Groups = sliceToString(d.Get("groups").([]interface{}))
+	m.Groups = castSlice[string](d.Get("groups").([]interface{}))
 
 	attr := make(map[string]interface{})
 	if l, ok := d.Get("attributes").(string); ok && l != "" {
@@ -129,7 +129,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return diag.FromErr(err)
 	}
 	setWrapper(d, "attributes", string(b))
-	localGroups := sliceToString(d.Get("groups").([]interface{}))
+	localGroups := castSlice[string](d.Get("groups").([]interface{}))
 	setWrapper(d, "groups", listConsistentMerge(localGroups, res.Groups))
 	return diags
 }
