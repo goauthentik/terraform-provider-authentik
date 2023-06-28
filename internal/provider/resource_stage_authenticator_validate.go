@@ -45,6 +45,11 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 				Optional: true,
 				Default:  "seconds=0",
 			},
+			"webauthn_user_verification": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "preferred",
+			},
 		},
 	}
 }
@@ -60,6 +65,9 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 	}
 	if h, hSet := d.GetOk("configuration_stages"); hSet {
 		r.ConfigurationStages = h.([]string)
+	}
+	if x, set := d.GetOk("webauthn_user_verification"); set {
+		r.WebauthnUserVerification = api.UserVerificationEnum(x.(string)).Ptr()
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)
@@ -100,6 +108,7 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	}
 	setWrapper(d, "device_classes", res.DeviceClasses)
 	setWrapper(d, "last_auth_threshold", res.LastAuthThreshold)
+	setWrapper(d, "webauthn_user_verification", res.WebauthnUserVerification)
 	return diags
 }
 

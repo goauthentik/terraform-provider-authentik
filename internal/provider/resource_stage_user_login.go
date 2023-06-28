@@ -27,6 +27,11 @@ func resourceStageUserLogin() *schema.Resource {
 				Optional: true,
 				Default:  "seconds=0",
 			},
+			"remember_me_offset": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "seconds=0",
+			},
 			"terminate_other_sessions": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -41,6 +46,7 @@ func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) *api.UserLog
 		Name:                   d.Get("name").(string),
 		SessionDuration:        api.PtrString(d.Get("session_duration").(string)),
 		TerminateOtherSessions: api.PtrBool(d.Get("terminate_other_sessions").(bool)),
+		RememberMeOffset:       api.PtrString(d.Get("remember_me_offset").(string)),
 	}
 	return &r
 }
@@ -71,6 +77,7 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "session_duration", res.SessionDuration)
 	setWrapper(d, "terminate_other_sessions", res.TerminateOtherSessions)
+	setWrapper(d, "remember_me_offset", res.RememberMeOffset)
 	return diags
 }
 
