@@ -33,10 +33,12 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 			"user_verification": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "preferred",
 			},
 			"resident_key_requirement": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "preferred",
 			},
 			"authenticator_attachment": {
 				Type:     schema.TypeString,
