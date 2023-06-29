@@ -64,7 +64,7 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		r.NotConfiguredAction = api.NotConfiguredActionEnum(h.(string)).Ptr()
 	}
 	if h, hSet := d.GetOk("configuration_stages"); hSet {
-		r.ConfigurationStages = h.([]string)
+		r.ConfigurationStages = castSlice[string](h.([]interface{}))
 	}
 	if x, set := d.GetOk("webauthn_user_verification"); set {
 		r.WebauthnUserVerification = api.UserVerificationEnum(x.(string)).Ptr()
