@@ -60,7 +60,7 @@ func resourceStageIdentification() *schema.Resource {
 				Optional: true,
 			},
 			"sources": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -76,7 +76,7 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		ShowMatchedUser:         api.PtrBool(d.Get("show_matched_user").(bool)),
 		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
-		Sources:                 castSlice[string](d.Get("sources").([]interface{})),
+		Sources:                 castSlice[string](d.Get("sources").(*schema.Set).List()),
 	}
 
 	if h, hSet := d.GetOk("password_stage"); hSet {
@@ -140,7 +140,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	if res.PasswordlessFlow.IsSet() {
 		setWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
 	}
-	localSources := castSlice[string](d.Get("sources").([]interface{}))
+	localSources := castSlice[string](d.Get("sources").(*schema.Set).List())
 	setWrapper(d, "sources", listConsistentMerge(localSources, res.Sources))
 	return diags
 }
