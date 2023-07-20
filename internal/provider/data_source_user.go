@@ -93,7 +93,7 @@ func mapFromUser(user api.User) (map[string]interface{}, error) {
 		"attributes":   "",
 		"uid":          user.GetUid(),
 		"path":         user.GetPath(),
-		"user_type":    user.GetType(),
+		"user_type":    string(user.GetType()),
 	}
 
 	if t, ok := user.GetLastLoginOk(); ok && t != nil {
