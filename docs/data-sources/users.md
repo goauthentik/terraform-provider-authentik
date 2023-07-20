@@ -68,6 +68,7 @@ Read-Only:
 - `path` (String)
 - `pk` (Number)
 - `uid` (String)
+- `user_type` (String)
 - `username` (String)
 
 
