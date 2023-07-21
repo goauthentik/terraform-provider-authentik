@@ -21,14 +21,19 @@ func resourceUser() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
+			"username": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"name": {
 				Type:     schema.TypeString,
 				Default:  "",
 				Optional: true,
 			},
-			"username": {
+			"user_type": {
 				Type:     schema.TypeString,
-				Required: true,
+				Default:  api.USERTYPEENUM_DEFAULT,
+				Optional: true,
 			},
 			"is_active": {
 				Type:     schema.TypeBool,
@@ -67,6 +72,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 	m := api.UserRequest{
 		Name:     d.Get("name").(string),
 		Username: d.Get("username").(string),
+		Type:     api.UserTypeEnum(d.Get("user_type").(string)).Ptr(),
 		IsActive: api.PtrBool(d.Get("is_active").(bool)),
 		Path:     api.PtrString(d.Get("path").(string)),
 	}
@@ -120,6 +126,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	}
 
 	setWrapper(d, "name", res.Name)
+	setWrapper(d, "user_type", res.Type)
 	setWrapper(d, "username", res.Username)
 	setWrapper(d, "email", res.Email)
 	setWrapper(d, "is_active", res.IsActive)
