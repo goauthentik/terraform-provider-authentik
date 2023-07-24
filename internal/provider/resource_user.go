@@ -32,7 +32,7 @@ func resourceUser() *schema.Resource {
 			},
 			"user_type": {
 				Type:     schema.TypeString,
-				Default:  api.USERTYPEENUM_DEFAULT,
+				Default:  api.USERTYPEENUM_INTERNAL,
 				Optional: true,
 			},
 			"is_active": {
