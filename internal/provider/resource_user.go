@@ -30,7 +30,7 @@ func resourceUser() *schema.Resource {
 				Default:  "",
 				Optional: true,
 			},
-			"user_type": {
+			"type": {
 				Type:     schema.TypeString,
 				Default:  api.USERTYPEENUM_INTERNAL,
 				Optional: true,
@@ -72,7 +72,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserR
 	m := api.UserRequest{
 		Name:     d.Get("name").(string),
 		Username: d.Get("username").(string),
-		Type:     api.UserTypeEnum(d.Get("user_type").(string)).Ptr(),
+		Type:     api.UserTypeEnum(d.Get("type").(string)).Ptr(),
 		IsActive: api.PtrBool(d.Get("is_active").(bool)),
 		Path:     api.PtrString(d.Get("path").(string)),
 	}
@@ -126,7 +126,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	}
 
 	setWrapper(d, "name", res.Name)
-	setWrapper(d, "user_type", res.Type)
+	setWrapper(d, "type", res.Type)
 	setWrapper(d, "username", res.Username)
 	setWrapper(d, "email", res.Email)
 	setWrapper(d, "is_active", res.IsActive)
