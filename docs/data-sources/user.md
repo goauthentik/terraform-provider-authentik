@@ -41,7 +41,7 @@ data "authentik_user" "akadmin" {
 - `last_login` (String) Generated.
 - `name` (String) Generated.
 - `path` (String) Generated.
+- `type` (String) Generated.
 - `uid` (String) Generated.
-- `user_type` (String) Generated.
 
 

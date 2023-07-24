@@ -28,7 +28,7 @@ func dataSourceUser() *schema.Resource {
 				Computed:     true,
 				ExactlyOneOf: []string{"pk", "username"},
 			},
-			"user_type": {
+			"type": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -93,7 +93,7 @@ func mapFromUser(user api.User) (map[string]interface{}, error) {
 		"attributes":   "",
 		"uid":          user.GetUid(),
 		"path":         user.GetPath(),
-		"user_type":    string(user.GetType()),
+		"type":         string(user.GetType()),
 	}
 
 	if t, ok := user.GetLastLoginOk(); ok && t != nil {

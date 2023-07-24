@@ -47,7 +47,7 @@ resource "authentik_user" "name" {
 - `is_active` (Boolean) Defaults to `true`.
 - `name` (String) Defaults to ``.
 - `path` (String) Defaults to `users`.
-- `user_type` (String) Defaults to `default`.
+- `type` (String) Defaults to `internal`.
 
 ### Read-Only
 
