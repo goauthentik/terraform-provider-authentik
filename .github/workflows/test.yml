@@ -57,7 +57,6 @@ jobs:
           AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.txt -covermode=atomic -cover ./internal/provider/
-          go tool cover -html coverage.txt -o coverage.html
       - name: authentik Server logs
         if: ${{ always() }}
         run: |
