@@ -14,8 +14,8 @@ func TestAccDataSourceUser(t *testing.T) {
 			{
 				Config: testAccDataSourceUserSimplePk,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.authentik_user.akadmin", "username", "akadmin"),
-					resource.TestCheckResourceAttr("data.authentik_user.akadmin", "is_superuser", "true"),
+					resource.TestCheckResourceAttr("data.authentik_user.akadmin", "username", "datasource-test"),
+					resource.TestCheckResourceAttr("data.authentik_user.akadmin", "is_superuser", "false"),
 				),
 			},
 			{
@@ -36,7 +36,11 @@ data "authentik_user" "akadmin" {
 `
 
 const testAccDataSourceUserSimplePk = `
+resource "authentik_user" "test" {
+  username = "datasource-test"
+}
+
 data "authentik_user" "akadmin" {
-  pk = 1
+  pk = authentik_user.test.id
 }
 `
