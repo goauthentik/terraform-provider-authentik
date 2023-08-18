@@ -9,7 +9,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.27.0
 	github.com/stretchr/testify v1.8.4
-	goauthentik.io/api/v3 v3.2023061.11
+	goauthentik.io/api/v3 v3.2023061.12
 )
 
 require (
