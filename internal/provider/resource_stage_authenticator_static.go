@@ -35,14 +35,20 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 				Optional: true,
 				Default:  6,
 			},
+			"token_length": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  12,
+			},
 		},
 	}
 }
 
 func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorStaticStageRequest {
 	r := api.AuthenticatorStaticStageRequest{
-		Name:       d.Get("name").(string),
-		TokenCount: api.PtrInt32(int32(d.Get("token_count").(int))),
+		Name:        d.Get("name").(string),
+		TokenCount:  api.PtrInt32(int32(d.Get("token_count").(int))),
+		TokenLength: api.PtrInt32(int32(d.Get("token_length").(int))),
 	}
 
 	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
@@ -79,6 +85,7 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "token_count", res.TokenCount)
+	setWrapper(d, "token_length", res.TokenLength)
 	setWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
