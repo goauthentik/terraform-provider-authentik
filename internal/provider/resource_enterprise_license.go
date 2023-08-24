@@ -31,6 +31,14 @@ func resourceEnterpriseLicense() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"internal_users": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
+			"external_users": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -68,6 +76,8 @@ func resourceEnterpriseLicenseRead(ctx context.Context, d *schema.ResourceData, 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "expiry", res.Expiry)
 	setWrapper(d, "key", res.Key)
+	setWrapper(d, "internal_users", res.InternalUsers)
+	setWrapper(d, "external_users", res.ExternalUsers)
 	return diags
 }
 

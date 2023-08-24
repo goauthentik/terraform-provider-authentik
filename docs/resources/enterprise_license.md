@@ -21,7 +21,9 @@ description: |-
 ### Read-Only
 
 - `expiry` (String) Generated.
+- `external_users` (Number) Generated.
 - `id` (String) The ID of this resource.
+- `internal_users` (Number) Generated.
 - `name` (String) Generated.
 
 
