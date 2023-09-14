@@ -5,12 +5,8 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
