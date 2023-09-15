@@ -59,6 +59,7 @@ resource "authentik_policy_binding" "app-access" {
 ### Optional
 
 - `enabled` (Boolean) Defaults to `true`.
+- `failure_result` (Boolean) Defaults to `false`.
 - `group` (String) UUID of the group
 - `negate` (Boolean) Defaults to `false`.
 - `policy` (String) UUID of the policy
