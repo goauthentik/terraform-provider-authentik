@@ -59,17 +59,23 @@ func resourcePolicyBinding() *schema.Resource {
 				Optional: true,
 				Default:  30,
 			},
+			"failure_result": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
 
 func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) *api.PolicyBindingRequest {
 	m := api.PolicyBindingRequest{
-		Target:  d.Get("target").(string),
-		Order:   int32(d.Get("order").(int)),
-		Negate:  api.PtrBool(d.Get("negate").(bool)),
-		Enabled: api.PtrBool(d.Get("enabled").(bool)),
-		Timeout: api.PtrInt32(int32(d.Get("timeout").(int))),
+		Target:        d.Get("target").(string),
+		Order:         int32(d.Get("order").(int)),
+		Negate:        api.PtrBool(d.Get("negate").(bool)),
+		Enabled:       api.PtrBool(d.Get("enabled").(bool)),
+		Timeout:       api.PtrInt32(int32(d.Get("timeout").(int))),
+		FailureResult: api.PtrBool(d.Get("failure_result").(bool)),
 	}
 
 	if u, uSet := d.GetOk("policy"); uSet {
@@ -130,6 +136,7 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "negate", res.Negate)
 	setWrapper(d, "enabled", res.Enabled)
 	setWrapper(d, "timeout", res.Timeout)
+	setWrapper(d, "failure_result", res.FailureResult)
 	return diags
 }
 
