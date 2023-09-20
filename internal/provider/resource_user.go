@@ -105,7 +105,7 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 	if !ok || password == "" {
 		return nil
 	}
-	if !d.HasChange("password") {
+	if !d.IsNewResource() {
 		return nil
 	}
 	uid, err := strconv.Atoi(d.Id())
