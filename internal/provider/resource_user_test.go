@@ -70,6 +70,7 @@ func testAccResourceUser(name string) string {
 resource "authentik_user" "name" {
   username = "%[1]s"
   name = "%[1]s"
+  password = "%[1]s"
 }
 `, name)
 }

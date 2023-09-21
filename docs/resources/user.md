@@ -46,6 +46,7 @@ resource "authentik_user" "name" {
 - `groups` (List of String) Generated.
 - `is_active` (Boolean) Defaults to `true`.
 - `name` (String) Defaults to ``.
+- `password` (String, Sensitive) Optionally set the user's password. Changing the password in authentik will not trigger an update here.
 - `path` (String) Defaults to `users`.
 - `type` (String) Defaults to `internal`.
 
