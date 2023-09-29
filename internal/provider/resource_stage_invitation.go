@@ -25,7 +25,7 @@ func resourceStageInvitation() *schema.Resource {
 			"continue_flow_without_invitation": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default:  true,
+				Default:  false,
 			},
 		},
 	}

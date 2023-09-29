@@ -28,7 +28,7 @@ resource "authentik_stage_invitation" "name" {
 
 ### Optional
 
-- `continue_flow_without_invitation` (Boolean) Defaults to `true`.
+- `continue_flow_without_invitation` (Boolean) Defaults to `false`.
 
 ### Read-Only
 
