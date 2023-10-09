@@ -121,6 +121,11 @@ func resourceProviderSAML() *schema.Resource {
 				Optional: true,
 				Default:  api.SPBINDINGENUM_REDIRECT,
 			},
+			"default_relay_state": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "",
+			},
 		},
 	}
 }
@@ -152,6 +157,9 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	}
 	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
 		r.VerificationKp.Set(api.PtrString(s.(string)))
+	}
+	if s, sok := d.GetOk("default_relay_state"); sok && s.(string) != "" {
+		r.DefaultRelayState = api.PtrString(s.(string))
 	}
 	return &r
 }
@@ -206,6 +214,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
+	setWrapper(d, "default_relay_state", res.DefaultRelayState)
 
 	setWrapper(d, "url_sso_init", res.UrlSsoInit)
 	setWrapper(d, "url_sso_post", res.UrlSsoPost)

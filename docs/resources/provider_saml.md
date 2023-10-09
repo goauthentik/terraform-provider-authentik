@@ -46,6 +46,7 @@ resource "authentik_application" "name" {
 - `assertion_valid_not_on_or_after` (String) Defaults to `minutes=5`.
 - `audience` (String) Defaults to ``.
 - `authentication_flow` (String)
+- `default_relay_state` (String) Defaults to ``.
 - `digest_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
 - `issuer` (String) Defaults to `authentik`.
 - `name_id_mapping` (String)
