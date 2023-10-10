@@ -70,5 +70,6 @@ Read-Only:
 - `type` (String)
 - `uid` (String)
 - `username` (String)
+- `uuid` (String)
 
 

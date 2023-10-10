@@ -71,6 +71,10 @@ func dataSourceUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"uuid": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"path": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -92,6 +96,7 @@ func mapFromUser(user api.User) (map[string]interface{}, error) {
 		"avatar":       user.GetAvatar(),
 		"attributes":   "",
 		"uid":          user.GetUid(),
+		"uuid":         user.GetUuid(),
 		"path":         user.GetPath(),
 		"type":         string(user.GetType()),
 	}
