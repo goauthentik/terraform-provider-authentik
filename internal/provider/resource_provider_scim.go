@@ -68,9 +68,7 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 	}
 	if l, ok := d.Get("filter_group").(string); ok {
-		r.FilterGroup.Set(&l)
-	} else {
-		r.FilterGroup.Set(nil)
+		r.FilterGroup = *api.NewNullableString(&l)
 	}
 	return &r
 }
@@ -109,10 +107,7 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
 	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
-	setWrapper(d, "filter_group", res.FilterGroup)
-	if res.FilterGroup.IsSet() {
-		setWrapper(d, "filter_group", res.FilterGroup.Get())
-	}
+	setWrapper(d, "filter_group", res.FilterGroup.Get())
 	return diags
 }
 
