@@ -46,17 +46,29 @@ func resourceProviderSCIM() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"exclude_users_service_account": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"filter_group": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
 
 func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProviderRequest {
 	r := api.SCIMProviderRequest{
-		Name:                  d.Get("name").(string),
-		Url:                   d.Get("url").(string),
-		Token:                 d.Get("token").(string),
-		PropertyMappings:      castSlice[string](d.Get("property_mappings").([]interface{})),
-		PropertyMappingsGroup: castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		Name:                       d.Get("name").(string),
+		Url:                        d.Get("url").(string),
+		Token:                      d.Get("token").(string),
+		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
+	}
+	if l, ok := d.Get("filter_group").(string); ok {
+		r.FilterGroup = *api.NewNullableString(&l)
 	}
 	return &r
 }
@@ -94,6 +106,8 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
 	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
+	setWrapper(d, "filter_group", res.FilterGroup.Get())
 	return diags
 }
 
