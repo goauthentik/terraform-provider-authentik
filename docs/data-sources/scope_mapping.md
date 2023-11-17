@@ -9,7 +9,6 @@ description: |-
 
 Get OAuth Scope mappings
 
-
 ## Example Usage
 
 ```terraform

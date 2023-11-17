@@ -9,7 +9,6 @@ description: |-
 
 Get LDAP Property mappings
 
-
 ## Example Usage
 
 ```terraform

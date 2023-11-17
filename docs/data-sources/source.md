@@ -9,7 +9,6 @@ description: |-
 
 Get Source by name, slug or managed
 
-
 ## Example Usage
 
 ```terraform

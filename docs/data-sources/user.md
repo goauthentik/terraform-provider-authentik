@@ -9,7 +9,6 @@ description: |-
 
 Get users by pk or username
 
-
 ## Example Usage
 
 ```terraform

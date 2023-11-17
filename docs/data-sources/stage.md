@@ -9,7 +9,6 @@ description: |-
 
 Get stages by name
 
-
 ## Example Usage
 
 ```terraform

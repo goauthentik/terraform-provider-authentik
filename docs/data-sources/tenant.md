@@ -9,7 +9,6 @@ description: |-
 
 Get tenants by domain
 
-
 ## Example Usage
 
 ```terraform

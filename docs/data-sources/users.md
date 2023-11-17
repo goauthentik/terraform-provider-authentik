@@ -9,7 +9,6 @@ description: |-
 
 Get users list
 
-
 ## Example Usage
 
 ```terraform

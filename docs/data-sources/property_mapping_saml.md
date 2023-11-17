@@ -9,7 +9,6 @@ description: |-
 
 Get SAML Property mappings
 
-
 ## Example Usage
 
 ```terraform

@@ -9,7 +9,6 @@ description: |-
 
 Get SCIM Property mappings
 
-
 ## Example Usage
 
 ```terraform

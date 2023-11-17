@@ -9,7 +9,6 @@ description: |-
 
 Get groups list
 
-
 ## Example Usage
 
 ```terraform

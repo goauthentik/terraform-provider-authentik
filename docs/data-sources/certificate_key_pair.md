@@ -9,7 +9,6 @@ description: |-
 
 Get certificate-key pairs by name
 
-
 ## Example Usage
 
 ```terraform

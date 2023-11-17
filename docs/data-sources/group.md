@@ -9,7 +9,6 @@ description: |-
 
 Get groups by pk or name
 
-
 ## Example Usage
 
 ```terraform
