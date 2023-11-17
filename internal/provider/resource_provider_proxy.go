@@ -11,6 +11,7 @@ import (
 
 func resourceProviderProxy() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceProviderProxyCreate,
 		ReadContext:   resourceProviderProxyRead,
 		UpdateContext: resourceProviderProxyUpdate,

@@ -11,6 +11,7 @@ import (
 
 func resourceProviderSCIM() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceProviderSCIMCreate,
 		ReadContext:   resourceProviderSCIMRead,
 		UpdateContext: resourceProviderSCIMUpdate,

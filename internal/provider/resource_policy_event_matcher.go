@@ -10,6 +10,7 @@ import (
 
 func resourcePolicyEventMatcher() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourcePolicyEventMatcherCreate,
 		ReadContext:   resourcePolicyEventMatcherRead,
 		UpdateContext: resourcePolicyEventMatcherUpdate,

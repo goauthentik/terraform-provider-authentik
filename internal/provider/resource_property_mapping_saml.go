@@ -10,6 +10,7 @@ import (
 
 func resourceSAMLPropertyMapping() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourceSAMLPropertyMappingCreate,
 		ReadContext:   resourceSAMLPropertyMappingRead,
 		UpdateContext: resourceSAMLPropertyMappingUpdate,

@@ -10,6 +10,7 @@ import (
 
 func resourceApplication() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceApplicationCreate,
 		ReadContext:   resourceApplicationRead,
 		UpdateContext: resourceApplicationUpdate,

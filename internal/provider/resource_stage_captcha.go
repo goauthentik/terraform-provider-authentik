@@ -10,6 +10,7 @@ import (
 
 func resourceStageCaptcha() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageCaptchaCreate,
 		ReadContext:   resourceStageCaptchaRead,
 		UpdateContext: resourceStageCaptchaUpdate,

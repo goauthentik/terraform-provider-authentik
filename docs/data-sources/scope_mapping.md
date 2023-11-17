@@ -9,6 +9,7 @@ description: |-
 
 Get OAuth Scope mappings
 
+
 ## Example Usage
 
 ```terraform
@@ -50,5 +51,3 @@ data "authentik_scope_mapping" "test" {
 - `description` (String) Generated.
 - `expression` (String) Generated.
 - `id` (String) The ID of this resource.
-
-

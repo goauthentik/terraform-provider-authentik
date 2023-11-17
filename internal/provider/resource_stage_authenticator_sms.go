@@ -10,6 +10,7 @@ import (
 
 func resourceStageAuthenticatorSms() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageAuthenticatorSmsCreate,
 		ReadContext:   resourceStageAuthenticatorSmsRead,
 		UpdateContext: resourceStageAuthenticatorSmsUpdate,

@@ -9,6 +9,7 @@ description: |-
 
 
 
+
 ## Example Usage
 
 ```terraform
@@ -53,5 +54,3 @@ resource "authentik_user" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

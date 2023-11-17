@@ -11,7 +11,7 @@ import (
 func dataSourceProviderSAMLMetadata() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceProviderSAMLMetadataRead,
-		Description: "Get SAML Provider metadata",
+		Description: "Applications --- Get SAML Provider metadata",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,

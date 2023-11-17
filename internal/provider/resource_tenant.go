@@ -12,6 +12,7 @@ import (
 
 func resourceTenant() *schema.Resource {
 	return &schema.Resource{
+		Description:   "System --- ",
 		CreateContext: resourceTenantCreate,
 		ReadContext:   resourceTenantRead,
 		UpdateContext: resourceTenantUpdate,

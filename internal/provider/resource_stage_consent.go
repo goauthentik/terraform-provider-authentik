@@ -10,6 +10,7 @@ import (
 
 func resourceStageConsent() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageConsentCreate,
 		ReadContext:   resourceStageConsentRead,
 		UpdateContext: resourceStageConsentUpdate,

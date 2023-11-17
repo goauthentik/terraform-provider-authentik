@@ -10,6 +10,7 @@ import (
 
 func resourcePolicyDummy() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourcePolicyDummyCreate,
 		ReadContext:   resourcePolicyDummyRead,
 		UpdateContext: resourcePolicyDummyUpdate,

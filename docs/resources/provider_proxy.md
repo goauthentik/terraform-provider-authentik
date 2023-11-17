@@ -9,6 +9,7 @@ description: |-
 
 
 
+
 ## Example Usage
 
 ```terraform
@@ -62,5 +63,3 @@ resource "authentik_application" "name" {
 
 - `client_id` (String) Generated.
 - `id` (String) The ID of this resource.
-
-

@@ -10,6 +10,7 @@ import (
 
 func resourceScopeMapping() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourceScopeMappingCreate,
 		ReadContext:   resourceScopeMappingRead,
 		UpdateContext: resourceScopeMappingUpdate,

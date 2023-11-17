@@ -10,6 +10,7 @@ import (
 
 func resourcePolicyBinding() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourcePolicyBindingCreate,
 		ReadContext:   resourcePolicyBindingRead,
 		UpdateContext: resourcePolicyBindingUpdate,

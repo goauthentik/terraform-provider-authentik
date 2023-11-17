@@ -9,6 +9,7 @@ description: |-
 
 
 
+
 ## Example Usage
 
 ```terraform
@@ -63,5 +64,3 @@ resource "authentik_source_oauth" "name" {
 
 - `callback_uri` (String) Generated.
 - `id` (String) The ID of this resource.
-
-

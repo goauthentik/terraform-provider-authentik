@@ -9,6 +9,7 @@ description: |-
 
 Get users list
 
+
 ## Example Usage
 
 ```terraform
@@ -71,5 +72,3 @@ Read-Only:
 - `uid` (String)
 - `username` (String)
 - `uuid` (String)
-
-

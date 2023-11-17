@@ -9,6 +9,7 @@ description: |-
 
 Get stages by name
 
+
 ## Example Usage
 
 ```terraform
@@ -31,5 +32,3 @@ data "authentik_stage" "default-authentication-identification" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

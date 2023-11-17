@@ -9,6 +9,7 @@ description: |-
 
 Get SAML Property mappings
 
+
 ## Example Usage
 
 ```terraform
@@ -48,5 +49,3 @@ data "authentik_property_mapping_saml" "test" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

@@ -10,6 +10,7 @@ import (
 
 func resourceStageEmail() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageEmailCreate,
 		ReadContext:   resourceStageEmailRead,
 		UpdateContext: resourceStageEmailUpdate,

@@ -10,7 +10,7 @@ import (
 func dataSourceFlow() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceFlowRead,
-		Description: "Get flows by Slug and/or designation",
+		Description: "Flows & Stages --- Get flows by Slug and/or designation",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

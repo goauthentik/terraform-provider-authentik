@@ -9,6 +9,7 @@ description: |-
 
 Get flows by Slug and/or designation
 
+
 ## Example Usage
 
 ```terraform
@@ -35,5 +36,3 @@ data "authentik_flow" "default-authorization-flow" {
 - `id` (String) The ID of this resource.
 - `name` (String) Generated.
 - `title` (String) Generated.
-
-

@@ -12,6 +12,7 @@ import (
 
 func resourceServiceConnectionKubernetes() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceServiceConnectionKubernetesCreate,
 		ReadContext:   resourceServiceConnectionKubernetesRead,
 		UpdateContext: resourceServiceConnectionKubernetesUpdate,

@@ -10,7 +10,7 @@ import (
 func dataSourceSAMLPropertyMapping() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceSAMLPropertyMappingRead,
-		Description: "Get SAML Property mappings",
+		Description: "Customization --- Get SAML Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,

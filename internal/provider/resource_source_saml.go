@@ -10,6 +10,7 @@ import (
 
 func resourceSourceSAML() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Directory --- ",
 		CreateContext: resourceSourceSAMLCreate,
 		ReadContext:   resourceSourceSAMLRead,
 		UpdateContext: resourceSourceSAMLUpdate,

@@ -52,7 +52,7 @@ func dataSourceGroupMember() *schema.Resource {
 func dataSourceGroup() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupRead,
-		Description: "Get groups by pk or name",
+		Description: "Directory --- Get groups by pk or name",
 		Schema: map[string]*schema.Schema{
 			"pk": {
 				Type:         schema.TypeString,

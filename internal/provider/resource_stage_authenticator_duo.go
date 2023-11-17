@@ -10,6 +10,7 @@ import (
 
 func resourceStageAuthenticatorDuo() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageAuthenticatorDuoCreate,
 		ReadContext:   resourceStageAuthenticatorDuoRead,
 		UpdateContext: resourceStageAuthenticatorDuoUpdate,

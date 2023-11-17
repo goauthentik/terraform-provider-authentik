@@ -10,7 +10,7 @@ import (
 func dataSourceScopeMapping() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceScopeMappingRead,
-		Description: "Get OAuth Scope mappings",
+		Description: "Customization --- Get OAuth Scope mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,

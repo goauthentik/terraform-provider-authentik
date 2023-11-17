@@ -10,6 +10,7 @@ import (
 
 func resourceSCIMPropertyMapping() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourceSCIMPropertyMappingCreate,
 		ReadContext:   resourceSCIMPropertyMappingRead,
 		UpdateContext: resourceSCIMPropertyMappingUpdate,

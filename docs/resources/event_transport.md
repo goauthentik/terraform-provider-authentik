@@ -9,6 +9,7 @@ description: |-
 
 
 
+
 ## Example Usage
 
 ```terraform
@@ -46,5 +47,3 @@ resource "authentik_event_transport" "transport" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

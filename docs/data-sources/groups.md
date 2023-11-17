@@ -9,6 +9,7 @@ description: |-
 
 Get groups list
 
+
 ## Example Usage
 
 ```terraform
@@ -74,5 +75,3 @@ Read-Only:
 - `pk` (Number)
 - `uid` (String)
 - `username` (String)
-
-

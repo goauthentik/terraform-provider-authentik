@@ -10,6 +10,7 @@ import (
 
 func resourceEventTransport() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Events --- ",
 		CreateContext: resourceEventTransportCreate,
 		ReadContext:   resourceEventTransportRead,
 		UpdateContext: resourceEventTransportUpdate,

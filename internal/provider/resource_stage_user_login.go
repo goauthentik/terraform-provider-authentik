@@ -10,6 +10,7 @@ import (
 
 func resourceStageUserLogin() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageUserLoginCreate,
 		ReadContext:   resourceStageUserLoginRead,
 		UpdateContext: resourceStageUserLoginUpdate,

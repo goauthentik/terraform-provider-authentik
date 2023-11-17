@@ -10,6 +10,7 @@ import (
 
 func resourcePolicyExpiry() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourcePolicyExpiryCreate,
 		ReadContext:   resourcePolicyExpiryRead,
 		UpdateContext: resourcePolicyExpiryUpdate,

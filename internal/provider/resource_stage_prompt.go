@@ -10,6 +10,7 @@ import (
 
 func resourceStagePrompt() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStagePromptCreate,
 		ReadContext:   resourceStagePromptRead,
 		UpdateContext: resourceStagePromptUpdate,

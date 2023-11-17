@@ -9,6 +9,7 @@ description: |-
 
 Get SCIM Property mappings
 
+
 ## Example Usage
 
 ```terraform
@@ -46,5 +47,3 @@ data "authentik_property_mapping_scim" "test" {
 
 - `expression` (String) Generated.
 - `id` (String) The ID of this resource.
-
-

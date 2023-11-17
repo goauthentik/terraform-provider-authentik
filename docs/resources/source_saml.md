@@ -9,6 +9,7 @@ description: |-
 
 
 
+
 ## Example Usage
 
 ```terraform
@@ -69,5 +70,3 @@ resource "authentik_source_saml" "name" {
 
 - `id` (String) The ID of this resource.
 - `metadata` (String) SAML Metadata Generated.
-
-

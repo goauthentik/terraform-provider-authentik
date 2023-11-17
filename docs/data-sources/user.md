@@ -9,6 +9,7 @@ description: |-
 
 Get users by pk or username
 
+
 ## Example Usage
 
 ```terraform
@@ -44,5 +45,3 @@ data "authentik_user" "akadmin" {
 - `type` (String) Generated.
 - `uid` (String) Generated.
 - `uuid` (String) Generated.
-
-

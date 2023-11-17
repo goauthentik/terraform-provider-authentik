@@ -12,6 +12,7 @@ import (
 
 func resourceSourceOAuth() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Directory --- ",
 		CreateContext: resourceSourceOAuthCreate,
 		ReadContext:   resourceSourceOAuthRead,
 		UpdateContext: resourceSourceOAuthUpdate,

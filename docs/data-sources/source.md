@@ -9,6 +9,7 @@ description: |-
 
 Get Source by name, slug or managed
 
+
 ## Example Usage
 
 ```terraform
@@ -32,5 +33,3 @@ data "authentik_source" "inbuilt" {
 - `id` (String) The ID of this resource.
 - `name` (String) Generated.
 - `uuid` (String) Generated.
-
-
