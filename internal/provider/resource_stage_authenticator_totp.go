@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -42,7 +43,7 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorTOTPStageRequest {
 	r := api.AuthenticatorTOTPStageRequest{
 		Name:   d.Get("name").(string),
-		Digits: *api.DigitsEnum((d.Get("digits").(int))).Ptr(),
+		Digits: *api.DigitsEnum(strconv.Itoa(d.Get("digits").(int))).Ptr(),
 	}
 
 	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
