@@ -10,6 +10,7 @@ import (
 
 func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageAuthenticatorWebAuthnCreate,
 		ReadContext:   resourceStageAuthenticatorWebAuthnRead,
 		UpdateContext: resourceStageAuthenticatorWebAuthnUpdate,

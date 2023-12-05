@@ -10,6 +10,7 @@ import (
 
 func resourceStageIdentification() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageIdentificationCreate,
 		ReadContext:   resourceStageIdentificationRead,
 		UpdateContext: resourceStageIdentificationUpdate,

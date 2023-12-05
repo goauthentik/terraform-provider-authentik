@@ -1,0 +1,30 @@
+---
+page_title: "{{ .Name }} {{ .Type }} - {{ .ProviderName }}"
+{{ if gt (len (split .Description " --- ")) 1 -}}
+subcategory: "{{ index (split .Description " --- ") 0 }}"
+{{- else -}}
+subcategory: ""
+{{- end }}
+description: |-
+{{ if gt (len (split .Description " --- ")) 1 -}}
+{{ index (split .Description " --- ") 1 | plainmarkdown | trimspace | prefixlines "  " }}
+{{- else -}}
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+{{- end }}
+---
+
+# {{ .Name }} ({{ .Type }})
+
+{{ if gt (len (split .Description " --- ")) 1 -}}
+{{ index (split .Description " --- ") 1 | trimspace }}
+{{- else }}
+{{ .Description | trimspace }}
+{{- end }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{ tffile .ExampleFile }}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}

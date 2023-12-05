@@ -10,6 +10,7 @@ import (
 
 func resourceStagePassword() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStagePasswordCreate,
 		ReadContext:   resourceStagePasswordRead,
 		UpdateContext: resourceStagePasswordUpdate,

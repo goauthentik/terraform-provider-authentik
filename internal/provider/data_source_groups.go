@@ -19,7 +19,7 @@ func dataSourceGroups() *schema.Resource {
 	}
 	return &schema.Resource{
 		ReadContext: dataSourceGroupsRead,
-		Description: "Get groups list",
+		Description: "Directory --- Get groups list",
 		Schema: map[string]*schema.Schema{
 			"attributes": {
 				Type:     schema.TypeString,

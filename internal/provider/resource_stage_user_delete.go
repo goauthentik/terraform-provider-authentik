@@ -10,6 +10,7 @@ import (
 
 func resourceStageUserDelete() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageUserDeleteCreate,
 		ReadContext:   resourceStageUserDeleteRead,
 		UpdateContext: resourceStageUserDeleteUpdate,

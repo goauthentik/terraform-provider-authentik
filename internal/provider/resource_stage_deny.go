@@ -10,6 +10,7 @@ import (
 
 func resourceStageDeny() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageDenyCreate,
 		ReadContext:   resourceStageDenyRead,
 		UpdateContext: resourceStageDenyUpdate,

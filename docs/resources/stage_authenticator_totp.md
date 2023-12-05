@@ -35,5 +35,3 @@ resource "authentik_stage_authenticator_totp" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

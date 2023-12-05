@@ -39,5 +39,3 @@ resource "authentik_stage_authenticator_validate" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

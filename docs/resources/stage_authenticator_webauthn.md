@@ -37,5 +37,3 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

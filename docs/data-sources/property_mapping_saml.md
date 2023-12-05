@@ -48,5 +48,3 @@ data "authentik_property_mapping_saml" "test" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

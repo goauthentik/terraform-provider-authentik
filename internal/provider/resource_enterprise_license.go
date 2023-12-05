@@ -10,6 +10,7 @@ import (
 
 func resourceEnterpriseLicense() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Enterprise --- ",
 		CreateContext: resourceEnterpriseLicenseCreate,
 		ReadContext:   resourceEnterpriseLicenseRead,
 		UpdateContext: resourceEnterpriseLicenseUpdate,

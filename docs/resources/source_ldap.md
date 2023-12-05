@@ -59,5 +59,3 @@ resource "authentik_source_ldap" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

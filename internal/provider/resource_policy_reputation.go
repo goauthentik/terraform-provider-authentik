@@ -10,6 +10,7 @@ import (
 
 func resourcePolicyReputation() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourcePolicyReputationCreate,
 		ReadContext:   resourcePolicyReputationRead,
 		UpdateContext: resourcePolicyReputationUpdate,

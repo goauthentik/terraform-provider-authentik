@@ -10,6 +10,7 @@ import (
 
 func resourceCertificateKeyPair() *schema.Resource {
 	return &schema.Resource{
+		Description:   "System --- ",
 		CreateContext: resourceCertificateKeyPairCreate,
 		ReadContext:   resourceCertificateKeyPairRead,
 		UpdateContext: resourceCertificateKeyPairUpdate,

@@ -12,6 +12,7 @@ import (
 
 func resourceOutpost() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceOutpostCreate,
 		ReadContext:   resourceOutpostRead,
 		UpdateContext: resourceOutpostUpdate,

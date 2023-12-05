@@ -10,6 +10,7 @@ import (
 
 func resourceStageAuthenticatorStatic() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageAuthenticatorStaticCreate,
 		ReadContext:   resourceStageAuthenticatorStaticRead,
 		UpdateContext: resourceStageAuthenticatorStaticUpdate,

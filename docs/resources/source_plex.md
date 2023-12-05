@@ -53,5 +53,3 @@ resource "authentik_source_plex" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

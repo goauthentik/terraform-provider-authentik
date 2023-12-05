@@ -10,7 +10,7 @@ import (
 func dataSourceLDAPPropertyMapping() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceLDAPPropertyMappingRead,
-		Description: "Get LDAP Property mappings",
+		Description: "Customization --- Get LDAP Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,

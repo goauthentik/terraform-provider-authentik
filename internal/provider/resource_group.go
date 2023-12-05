@@ -12,6 +12,7 @@ import (
 
 func resourceGroup() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Directory --- ",
 		CreateContext: resourceGroupCreate,
 		ReadContext:   resourceGroupRead,
 		UpdateContext: resourceGroupUpdate,

@@ -10,6 +10,7 @@ import (
 
 func resourcePolicyPassword() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourcePolicyPasswordCreate,
 		ReadContext:   resourcePolicyPasswordRead,
 		UpdateContext: resourcePolicyPasswordUpdate,

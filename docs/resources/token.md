@@ -32,5 +32,3 @@ description: |-
 - `expires_in` (Number) Generated.
 - `id` (String) The ID of this resource.
 - `key` (String, Sensitive) Generated.
-
-

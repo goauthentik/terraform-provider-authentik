@@ -10,6 +10,7 @@ import (
 
 func resourceStageDummy() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageDummyCreate,
 		ReadContext:   resourceStageDummyRead,
 		UpdateContext: resourceStageDummyUpdate,

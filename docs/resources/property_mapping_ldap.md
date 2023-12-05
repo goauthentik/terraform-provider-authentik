@@ -33,5 +33,3 @@ resource "authentik_property_mapping_ldap" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

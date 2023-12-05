@@ -10,6 +10,7 @@ import (
 
 func resourceStageAuthenticatorValidate() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageAuthenticatorValidateCreate,
 		ReadContext:   resourceStageAuthenticatorValidateRead,
 		UpdateContext: resourceStageAuthenticatorValidateUpdate,

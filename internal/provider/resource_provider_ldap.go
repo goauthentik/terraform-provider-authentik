@@ -11,6 +11,7 @@ import (
 
 func resourceProviderLDAP() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceProviderLDAPCreate,
 		ReadContext:   resourceProviderLDAPRead,
 		UpdateContext: resourceProviderLDAPUpdate,

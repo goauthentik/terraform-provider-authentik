@@ -36,5 +36,3 @@ resource "authentik_policy_reputation" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

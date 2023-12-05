@@ -10,7 +10,7 @@ import (
 func dataSourceSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceSourceRead,
-		Description: "Get Source by name, slug or managed",
+		Description: "Directory --- Get Source by name, slug or managed",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

@@ -42,5 +42,3 @@ resource "authentik_stage_authenticator_duo" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

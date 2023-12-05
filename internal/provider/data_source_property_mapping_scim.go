@@ -10,7 +10,7 @@ import (
 func dataSourceSCIMropertyMapping() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceSCIMPropertyMappingRead,
-		Description: "Get SCIM Property mappings",
+		Description: "Customization --- Get SCIM Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,

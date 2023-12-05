@@ -31,5 +31,3 @@ data "authentik_stage" "default-authentication-identification" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

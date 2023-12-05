@@ -69,5 +69,3 @@ resource "authentik_policy_binding" "app-access" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

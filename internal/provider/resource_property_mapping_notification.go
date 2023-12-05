@@ -10,6 +10,7 @@ import (
 
 func resourceNotificationPropertyMapping() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourceNotificationPropertyMappingCreate,
 		ReadContext:   resourceNotificationPropertyMappingRead,
 		UpdateContext: resourceNotificationPropertyMappingUpdate,

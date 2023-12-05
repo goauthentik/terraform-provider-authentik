@@ -11,6 +11,7 @@ import (
 
 func resourceProviderRadius() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceProviderRadiusCreate,
 		ReadContext:   resourceProviderRadiusRead,
 		UpdateContext: resourceProviderRadiusUpdate,

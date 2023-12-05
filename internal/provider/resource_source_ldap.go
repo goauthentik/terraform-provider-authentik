@@ -10,6 +10,7 @@ import (
 
 func resourceSourceLDAP() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Directory --- ",
 		CreateContext: resourceSourceLDAPCreate,
 		ReadContext:   resourceSourceLDAPRead,
 		UpdateContext: resourceSourceLDAPUpdate,

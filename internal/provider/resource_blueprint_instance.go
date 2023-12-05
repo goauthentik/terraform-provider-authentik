@@ -12,6 +12,7 @@ import (
 
 func resourceBlueprintInstance() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Blueprints --- ",
 		CreateContext: resourceBlueprintInstanceCreate,
 		ReadContext:   resourceBlueprintInstanceRead,
 		UpdateContext: resourceBlueprintInstanceUpdate,

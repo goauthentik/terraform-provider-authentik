@@ -10,6 +10,7 @@ import (
 
 func resourceStageInvitation() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageInvitationCreate,
 		ReadContext:   resourceStageInvitationRead,
 		UpdateContext: resourceStageInvitationUpdate,

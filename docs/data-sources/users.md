@@ -71,5 +71,3 @@ Read-Only:
 - `uid` (String)
 - `username` (String)
 - `uuid` (String)
-
-

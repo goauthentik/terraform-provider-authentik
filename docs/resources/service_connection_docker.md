@@ -57,5 +57,3 @@ resource "authentik_service_connection_docker" "remote-host" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

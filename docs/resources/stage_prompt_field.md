@@ -44,5 +44,3 @@ resource "authentik_stage_prompt_field" "field" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

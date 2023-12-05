@@ -14,7 +14,7 @@ import (
 func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceUserRead,
-		Description: "Get users by pk or username",
+		Description: "Directory --- Get users by pk or username",
 		Schema: map[string]*schema.Schema{
 			"pk": {
 				Type:         schema.TypeInt,

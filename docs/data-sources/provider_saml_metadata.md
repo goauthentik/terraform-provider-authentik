@@ -23,5 +23,3 @@ Get SAML Provider metadata
 
 - `id` (String) The ID of this resource.
 - `metadata` (String) SAML Metadata Generated.
-
-

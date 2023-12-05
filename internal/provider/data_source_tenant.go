@@ -10,7 +10,7 @@ import (
 func dataSourceTenant() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceTenantRead,
-		Description: "Get tenants by domain",
+		Description: "System --- Get tenants by domain",
 		Schema: map[string]*schema.Schema{
 			"domain": {
 				Type:     schema.TypeString,

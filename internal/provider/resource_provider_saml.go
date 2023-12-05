@@ -11,6 +11,7 @@ import (
 
 func resourceProviderSAML() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceProviderSAMLCreate,
 		ReadContext:   resourceProviderSAMLRead,
 		UpdateContext: resourceProviderSAMLUpdate,

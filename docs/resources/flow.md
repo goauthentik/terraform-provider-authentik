@@ -55,5 +55,3 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 
 - `id` (String) The ID of this resource.
 - `uuid` (String) Generated.
-
-

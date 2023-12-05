@@ -10,6 +10,7 @@ import (
 
 func resourceServiceConnectionDocker() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceServiceConnectionDockerCreate,
 		ReadContext:   resourceServiceConnectionDockerRead,
 		UpdateContext: resourceServiceConnectionDockerUpdate,

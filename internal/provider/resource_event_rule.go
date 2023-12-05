@@ -10,6 +10,7 @@ import (
 
 func resourceEventRule() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Events --- ",
 		CreateContext: resourceEventRuleCreate,
 		ReadContext:   resourceEventRuleRead,
 		UpdateContext: resourceEventRuleUpdate,

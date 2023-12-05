@@ -11,7 +11,7 @@ import (
 func dataSourceProviderOAuth2Config() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceProviderOAuth2ConfigRead,
-		Description: "Get OAuth2 provider config",
+		Description: "Applications --- Get OAuth2 provider config",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,

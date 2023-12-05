@@ -10,6 +10,7 @@ import (
 
 func resourceFlowStageBinding() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceFlowStageBindingCreate,
 		ReadContext:   resourceFlowStageBindingRead,
 		UpdateContext: resourceFlowStageBindingUpdate,

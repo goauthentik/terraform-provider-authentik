@@ -10,6 +10,7 @@ import (
 
 func resourceSourcePlex() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Directory --- ",
 		CreateContext: resourceSourcePlexCreate,
 		ReadContext:   resourceSourcePlexRead,
 		UpdateContext: resourceSourcePlexUpdate,

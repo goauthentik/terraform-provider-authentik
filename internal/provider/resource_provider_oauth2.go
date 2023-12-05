@@ -12,6 +12,7 @@ import (
 
 func resourceProviderOAuth2() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Applications --- ",
 		CreateContext: resourceProviderOAuth2Create,
 		ReadContext:   resourceProviderOAuth2Read,
 		UpdateContext: resourceProviderOAuth2Update,

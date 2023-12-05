@@ -42,5 +42,3 @@ data "authentik_certificate_key_pair" "generated" {
 - `fingerprint256` (String) SHA256-hashed certificate fingerprint Generated.
 - `id` (String) Generated.
 - `subject` (String) Generated.
-
-

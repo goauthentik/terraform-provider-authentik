@@ -29,5 +29,3 @@ resource "authentik_stage_user_logout" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

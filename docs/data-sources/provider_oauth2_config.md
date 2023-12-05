@@ -29,5 +29,3 @@ Get OAuth2 provider config
 - `provider_info_url` (String) Generated.
 - `token_url` (String) Generated.
 - `user_info_url` (String) Generated.
-
-

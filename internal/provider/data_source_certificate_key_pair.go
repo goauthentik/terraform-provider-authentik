@@ -10,7 +10,7 @@ import (
 func dataSourceCertificateKeyPair() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceCertificateKeyPairRead,
-		Description: "Get certificate-key pairs by name",
+		Description: "System --- Get certificate-key pairs by name",
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:     schema.TypeString,

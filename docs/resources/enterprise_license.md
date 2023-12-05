@@ -25,5 +25,3 @@ description: |-
 - `id` (String) The ID of this resource.
 - `internal_users` (Number) Generated.
 - `name` (String) Generated.
-
-

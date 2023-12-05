@@ -19,7 +19,7 @@ func dataSourceUsers() *schema.Resource {
 	}
 	return &schema.Resource{
 		ReadContext: dataSourceUsersRead,
-		Description: "Get users list",
+		Description: "Directory --- Get users list",
 		Schema: map[string]*schema.Schema{
 			"attributes": {
 				Type:     schema.TypeString,

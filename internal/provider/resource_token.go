@@ -11,6 +11,7 @@ import (
 
 func resourceToken() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Directory --- ",
 		CreateContext: resourceTokenCreate,
 		ReadContext:   resourceTokenRead,
 		UpdateContext: resourceTokenUpdate,

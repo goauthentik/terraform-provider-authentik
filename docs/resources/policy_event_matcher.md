@@ -40,5 +40,3 @@ resource "authentik_policy_event_matcher" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

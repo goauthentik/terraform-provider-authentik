@@ -10,6 +10,7 @@ import (
 
 func resourcePolicyExpression() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourcePolicyExpressionCreate,
 		ReadContext:   resourcePolicyExpressionRead,
 		UpdateContext: resourcePolicyExpressionUpdate,

@@ -29,5 +29,3 @@ resource "authentik_stage_dummy" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

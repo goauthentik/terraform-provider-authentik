@@ -10,6 +10,7 @@ import (
 
 func resourceStageUserLogout() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageUserLogoutCreate,
 		ReadContext:   resourceStageUserLogoutRead,
 		UpdateContext: resourceStageUserLogoutUpdate,

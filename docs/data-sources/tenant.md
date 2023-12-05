@@ -44,5 +44,3 @@ data "authentik_tenant" "authentik-default" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

@@ -11,6 +11,7 @@ import (
 
 func resourceStageAuthenticatorTOTP() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Flows & Stages --- ",
 		CreateContext: resourceStageAuthenticatorTOTPCreate,
 		ReadContext:   resourceStageAuthenticatorTOTPRead,
 		UpdateContext: resourceStageAuthenticatorTOTPUpdate,

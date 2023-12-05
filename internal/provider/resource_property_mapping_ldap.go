@@ -10,6 +10,7 @@ import (
 
 func resourceLDAPPropertyMapping() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Customization --- ",
 		CreateContext: resourceLDAPPropertyMappingCreate,
 		ReadContext:   resourceLDAPPropertyMappingRead,
 		UpdateContext: resourceLDAPPropertyMappingUpdate,

@@ -45,5 +45,3 @@ resource "authentik_stage_email" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-
