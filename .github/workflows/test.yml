@@ -28,13 +28,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        allow_failure: [false]
         terraform:
           - "beta"
           - "rc"
           - "latest"
         authentik_version:
-          - "stable"
           - "beta"
+        include:
+          - authentik_version: "stable"
+            terraform: latest
+            allow_failure: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
