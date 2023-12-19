@@ -82,7 +82,7 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 		Designation:       api.FlowDesignationEnum(d.Get("designation").(string)),
 		Authentication:    api.AuthenticationEnum(d.Get("authentication").(string)).Ptr(),
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		Layout:            api.LayoutEnum(d.Get("layout").(string)).Ptr(),
+		Layout:            api.FlowLayoutEnum(d.Get("layout").(string)).Ptr(),
 		DeniedAction:      api.DeniedActionEnum(d.Get("denied_action").(string)).Ptr(),
 	}
 	return &m
