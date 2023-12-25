@@ -29,9 +29,11 @@ func resourceStageUserWrite() *schema.Resource {
 				Default:  true,
 			},
 			"user_creation_mode": {
-				Type:     schema.TypeString,
-				Default:  string(api.USERCREATIONMODEENUM_CREATE_WHEN_REQUIRED),
-				Optional: true,
+				Type:             schema.TypeString,
+				Default:          api.USERCREATIONMODEENUM_CREATE_WHEN_REQUIRED,
+				Optional:         true,
+				Description:      EnumToDescription(api.AllowedUserCreationModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedUserCreationModeEnumEnumValues),
 			},
 			"create_users_group": {
 				Type:     schema.TypeString,

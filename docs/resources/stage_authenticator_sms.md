@@ -24,11 +24,17 @@ description: |-
 ### Optional
 
 - `auth_password` (String, Sensitive)
-- `auth_type` (String) Defaults to `basic`.
+- `auth_type` (String) Allowed values:
+  - `basic`
+  - `bearer`
+ Defaults to `basic`.
 - `configure_flow` (String)
 - `friendly_name` (String)
 - `mapping` (String)
-- `sms_provider` (String) Defaults to `twilio`.
+- `sms_provider` (String) Allowed values:
+  - `twilio`
+  - `generic`
+ Defaults to `twilio`.
 - `verify_only` (Boolean) Defaults to `false`.
 
 ### Read-Only

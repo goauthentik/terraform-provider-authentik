@@ -32,8 +32,10 @@ func resourceStagePromptField() *schema.Resource {
 				Required: true,
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				Description:      EnumToDescription(api.AllowedPromptTypeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedPromptTypeEnumEnumValues),
 			},
 			"required": {
 				Type:     schema.TypeBool,

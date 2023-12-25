@@ -32,9 +32,11 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Optional: true,
 			},
 			"sms_provider": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.PROVIDERENUM_TWILIO,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.PROVIDERENUM_TWILIO,
+				Description:      EnumToDescription(api.AllowedProviderEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedProviderEnumEnumValues),
 			},
 			"from_number": {
 				Type:     schema.TypeString,
@@ -51,9 +53,11 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Sensitive: true,
 			},
 			"auth_type": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.AUTHTYPEENUM_BASIC,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.AUTHTYPEENUM_BASIC,
+				Description:      EnumToDescription(api.AllowedAuthTypeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedAuthTypeEnumEnumValues),
 			},
 			"auth_password": {
 				Type:      schema.TypeString,

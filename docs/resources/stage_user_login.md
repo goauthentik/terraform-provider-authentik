@@ -28,8 +28,18 @@ resource "authentik_stage_user_login" "name" {
 
 ### Optional
 
-- `geoip_binding` (String) Defaults to `no_binding`.
-- `network_binding` (String) Defaults to `no_binding`.
+- `geoip_binding` (String) Allowed values:
+  - `no_binding`
+  - `bind_continent`
+  - `bind_continent_country`
+  - `bind_continent_country_city`
+ Defaults to `no_binding`.
+- `network_binding` (String) Allowed values:
+  - `no_binding`
+  - `bind_asn`
+  - `bind_asn_network`
+  - `bind_asn_network_ip`
+ Defaults to `no_binding`.
 - `remember_me_offset` (String) Defaults to `seconds=0`.
 - `session_duration` (String) Defaults to `seconds=0`.
 - `terminate_other_sessions` (Boolean) Defaults to `false`.

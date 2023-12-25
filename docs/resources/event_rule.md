@@ -22,7 +22,11 @@ description: |-
 ### Optional
 
 - `group` (String)
-- `severity` (String) Defaults to `warning`.
+- `severity` (String) Allowed values:
+  - `notice`
+  - `warning`
+  - `alert`
+ Defaults to `warning`.
 - `webhook_mapping` (String)
 
 ### Read-Only

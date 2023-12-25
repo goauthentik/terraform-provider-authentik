@@ -29,7 +29,11 @@ resource "authentik_stage_consent" "name" {
 ### Optional
 
 - `consent_expire_in` (String) Defaults to `weeks=4`.
-- `mode` (String) Defaults to `always_require`.
+- `mode` (String) Allowed values:
+  - `always_require`
+  - `permanent`
+  - `expiring`
+ Defaults to `always_require`.
 
 ### Read-Only
 

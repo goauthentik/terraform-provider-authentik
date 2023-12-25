@@ -31,9 +31,11 @@ func resourceEventRule() *schema.Resource {
 				},
 			},
 			"severity": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.SEVERITYENUM_WARNING,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SEVERITYENUM_WARNING,
+				Description:      EnumToDescription(api.AllowedSeverityEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedSeverityEnumEnumValues),
 			},
 			"webhook_mapping": {
 				Type:     schema.TypeString,
@@ -49,10 +51,9 @@ func resourceEventRule() *schema.Resource {
 
 func resourceEventRuleSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.NotificationRuleRequest, diag.Diagnostics) {
 	m := api.NotificationRuleRequest{
-		Name: d.Get("name").(string),
+		Name:     d.Get("name").(string),
+		Severity: api.SeverityEnum(d.Get("severity").(string)).Ptr(),
 	}
-
-	m.Severity = api.SeverityEnum(d.Get("severity").(string)).Ptr()
 
 	if w, ok := d.Get("group").(string); ok {
 		m.Group.Set(&w)

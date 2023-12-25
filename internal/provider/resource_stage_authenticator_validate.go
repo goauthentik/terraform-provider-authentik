@@ -24,14 +24,18 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 				Required: true,
 			},
 			"not_configured_action": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				Description:      EnumToDescription(api.AllowedNotConfiguredActionEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedNotConfiguredActionEnumEnumValues),
 			},
 			"device_classes": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
+					Type:             schema.TypeString,
+					Description:      EnumToDescription(api.AllowedDeviceClassesEnumEnumValues),
+					ValidateDiagFunc: StringInEnum(api.AllowedDeviceClassesEnumEnumValues),
 				},
 			},
 			"configuration_stages": {
@@ -47,9 +51,11 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 				Default:  "seconds=0",
 			},
 			"webauthn_user_verification": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "preferred",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.USERVERIFICATIONENUM_PREFERRED,
+				Description:      EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedUserVerificationEnumEnumValues),
 			},
 		},
 	}

@@ -29,7 +29,10 @@ resource "authentik_stage_authenticator_totp" "name" {
 ### Optional
 
 - `configure_flow` (String)
-- `digits` (Number) Defaults to `6`.
+- `digits` (String) Allowed values:
+  - `6`
+  - `8`
+ Defaults to `6`.
 - `friendly_name` (String)
 
 ### Read-Only

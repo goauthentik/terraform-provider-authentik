@@ -60,7 +60,10 @@ resource "authentik_application" "name" {
 - `meta_launch_url` (String)
 - `meta_publisher` (String)
 - `open_in_new_tab` (Boolean) Defaults to `false`.
-- `policy_engine_mode` (String) Defaults to `any`.
+- `policy_engine_mode` (String) Allowed values:
+  - `all`
+  - `any`
+ Defaults to `any`.
 - `protocol_provider` (Number)
 - `uuid` (String) Generated.
 

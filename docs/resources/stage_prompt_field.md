@@ -29,7 +29,25 @@ resource "authentik_stage_prompt_field" "field" {
 - `field_key` (String)
 - `label` (String)
 - `name` (String)
-- `type` (String)
+- `type` (String) Allowed values:
+  - `text`
+  - `text_area`
+  - `text_read_only`
+  - `text_area_read_only`
+  - `username`
+  - `email`
+  - `password`
+  - `number`
+  - `checkbox`
+  - `radio-button-group`
+  - `dropdown`
+  - `date`
+  - `date-time`
+  - `file`
+  - `separator`
+  - `hidden`
+  - `static`
+  - `ak-locale`
 
 ### Optional
 

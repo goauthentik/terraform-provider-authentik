@@ -40,7 +40,20 @@ resource "authentik_source_oauth" "name" {
 - `consumer_secret` (String, Sensitive)
 - `enrollment_flow` (String)
 - `name` (String)
-- `provider_type` (String)
+- `provider_type` (String) Allowed values:
+  - `apple`
+  - `openidconnect`
+  - `azuread`
+  - `discord`
+  - `facebook`
+  - `github`
+  - `google`
+  - `mailcow`
+  - `okta`
+  - `patreon`
+  - `reddit`
+  - `twitch`
+  - `twitter`
 - `slug` (String)
 
 ### Optional
@@ -52,10 +65,19 @@ resource "authentik_source_oauth" "name" {
 - `oidc_jwks` (String) Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use jsonencode() to pass objects. Generated.
 - `oidc_jwks_url` (String) Automatically configure JWKS if not specified by `oidc_well_known_url`.
 - `oidc_well_known_url` (String) Automatically configure source from OIDC well-known endpoint. URL is taken as is, and should end with `.well-known/openid-configuration`.
-- `policy_engine_mode` (String) Defaults to `any`.
+- `policy_engine_mode` (String) Allowed values:
+  - `all`
+  - `any`
+ Defaults to `any`.
 - `profile_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
 - `request_token_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
-- `user_matching_mode` (String) Defaults to `identifier`.
+- `user_matching_mode` (String) Allowed values:
+  - `identifier`
+  - `email_link`
+  - `email_deny`
+  - `username_link`
+  - `username_deny`
+ Defaults to `identifier`.
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String) Generated.
 

@@ -45,7 +45,11 @@ resource "authentik_outpost" "outpost" {
 
 - `config` (String) JSON format expected. Use jsonencode() to pass objects. Generated.
 - `service_connection` (String)
-- `type` (String) Defaults to `proxy`.
+- `type` (String) Allowed values:
+  - `proxy`
+  - `ldap`
+  - `radius`
+ Defaults to `proxy`.
 
 ### Read-Only
 

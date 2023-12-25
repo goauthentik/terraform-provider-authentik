@@ -44,8 +44,15 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 ### Optional
 
 - `evaluate_on_plan` (Boolean) Defaults to `true`.
-- `invalid_response_action` (String) Defaults to `retry`.
-- `policy_engine_mode` (String) Defaults to `any`.
+- `invalid_response_action` (String) Allowed values:
+  - `retry`
+  - `restart`
+  - `restart_with_context`
+ Defaults to `retry`.
+- `policy_engine_mode` (String) Allowed values:
+  - `all`
+  - `any`
+ Defaults to `any`.
 - `re_evaluate_policies` (Boolean) Defaults to `false`.
 
 ### Read-Only

@@ -24,9 +24,11 @@ func resourceStageConsent() *schema.Resource {
 				Required: true,
 			},
 			"mode": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE,
+				Description:      EnumToDescription(api.AllowedConsentStageModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
 			},
 			"consent_expire_in": {
 				Type:     schema.TypeString,

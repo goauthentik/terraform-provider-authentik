@@ -3,6 +3,7 @@ package provider
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -12,7 +13,25 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
+
+func StringInEnum[T ~string](items []T) schema.SchemaValidateDiagFunc {
+	nv := make([]string, len(items))
+	for i, v := range items {
+		nv[i] = string(v)
+	}
+	return validation.ToDiagFunc(validation.StringInSlice(nv, false))
+}
+
+func EnumToDescription[T ~string](allowed []T) string {
+	sb := strings.Builder{}
+	sb.WriteString("Allowed values:\n")
+	for _, v := range allowed {
+		_, _ = sb.WriteString(fmt.Sprintf("  - `%s`\n", v))
+	}
+	return sb.String()
+}
 
 func setWrapper(d *schema.ResourceData, key string, data interface{}) {
 	err := d.Set(key, data)

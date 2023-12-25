@@ -47,14 +47,28 @@ resource "authentik_application" "name" {
 - `audience` (String) Defaults to ``.
 - `authentication_flow` (String)
 - `default_relay_state` (String) Defaults to ``.
-- `digest_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
+- `digest_algorithm` (String) Allowed values:
+  - `http://www.w3.org/2000/09/xmldsig#sha1`
+  - `http://www.w3.org/2001/04/xmlenc#sha256`
+  - `http://www.w3.org/2001/04/xmldsig-more#sha384`
+  - `http://www.w3.org/2001/04/xmlenc#sha512`
+ Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
 - `issuer` (String) Defaults to `authentik`.
 - `name_id_mapping` (String)
 - `property_mappings` (List of String)
 - `session_valid_not_on_or_after` (String) Defaults to `minutes=86400`.
-- `signature_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
+- `signature_algorithm` (String) Allowed values:
+  - `http://www.w3.org/2000/09/xmldsig#rsa-sha1`
+  - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`
+  - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384`
+  - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512`
+  - `http://www.w3.org/2000/09/xmldsig#dsa-sha1`
+ Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
-- `sp_binding` (String) Defaults to `redirect`.
+- `sp_binding` (String) Allowed values:
+  - `redirect`
+  - `post`
+ Defaults to `redirect`.
 - `url_slo_post` (String) Generated.
 - `url_slo_redirect` (String) Generated.
 - `url_sso_init` (String) Generated.

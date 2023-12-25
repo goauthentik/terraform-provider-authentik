@@ -37,19 +37,41 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 
 ### Required
 
-- `designation` (String)
+- `designation` (String) Allowed values:
+  - `authentication`
+  - `authorization`
+  - `invalidation`
+  - `enrollment`
+  - `unenrollment`
+  - `recovery`
+  - `stage_configuration`
 - `name` (String)
 - `slug` (String)
 - `title` (String)
 
 ### Optional
 
-- `authentication` (String) Defaults to `none`.
+- `authentication` (String) Allowed values:
+  - `none`
+  - `require_authenticated`
+  - `require_unauthenticated`
+  - `require_superuser`
+  - `require_outpost`
+ Defaults to `none`.
 - `background` (String) Optional URL to an image which will be used as the background during the flow.
 - `compatibility_mode` (Boolean) Defaults to `true`.
 - `denied_action` (String) Defaults to `message_continue`.
-- `layout` (String) Defaults to `stacked`.
-- `policy_engine_mode` (String) Defaults to `any`.
+- `layout` (String) Allowed values:
+  - `stacked`
+  - `content_left`
+  - `content_right`
+  - `sidebar_left`
+  - `sidebar_right`
+ Defaults to `stacked`.
+- `policy_engine_mode` (String) Allowed values:
+  - `all`
+  - `any`
+ Defaults to `any`.
 
 ### Read-Only
 

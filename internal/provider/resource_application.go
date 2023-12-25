@@ -64,9 +64,11 @@ func resourceApplication() *schema.Resource {
 				Optional: true,
 			},
 			"policy_engine_mode": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.POLICYENGINEMODE_ANY,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.POLICYENGINEMODE_ANY,
+				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"open_in_new_tab": {
 				Type:     schema.TypeBool,

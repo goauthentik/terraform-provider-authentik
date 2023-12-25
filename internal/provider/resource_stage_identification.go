@@ -27,7 +27,9 @@ func resourceStageIdentification() *schema.Resource {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
+					Type:             schema.TypeString,
+					Description:      EnumToDescription(api.AllowedUserFieldsEnumEnumValues),
+					ValidateDiagFunc: StringInEnum(api.AllowedUserFieldsEnumEnumValues),
 				},
 			},
 			"password_stage": {

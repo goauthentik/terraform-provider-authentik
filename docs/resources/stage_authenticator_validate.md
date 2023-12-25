@@ -27,14 +27,21 @@ resource "authentik_stage_authenticator_validate" "name" {
 ### Required
 
 - `name` (String)
-- `not_configured_action` (String)
+- `not_configured_action` (String) Allowed values:
+  - `skip`
+  - `deny`
+  - `configure`
 
 ### Optional
 
 - `configuration_stages` (List of String)
 - `device_classes` (List of String)
 - `last_auth_threshold` (String) Defaults to `seconds=0`.
-- `webauthn_user_verification` (String) Defaults to `preferred`.
+- `webauthn_user_verification` (String) Allowed values:
+  - `required`
+  - `preferred`
+  - `discouraged`
+ Defaults to `preferred`.
 
 ### Read-Only
 

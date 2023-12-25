@@ -37,12 +37,16 @@ func resourcePolicyEventMatcher() *schema.Resource {
 				Optional: true,
 			},
 			"app": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      EnumToDescription(api.AllowedAppEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedAppEnumEnumValues),
 			},
 			"model": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      EnumToDescription(api.AllowedModelEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedModelEnumEnumValues),
 			},
 		},
 	}

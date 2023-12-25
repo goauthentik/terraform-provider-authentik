@@ -45,8 +45,17 @@ resource "authentik_source_plex" "name" {
 - `allow_friends` (Boolean) Defaults to `true`.
 - `allowed_servers` (List of String)
 - `enabled` (Boolean) Defaults to `true`.
-- `policy_engine_mode` (String) Defaults to `any`.
-- `user_matching_mode` (String) Defaults to `identifier`.
+- `policy_engine_mode` (String) Allowed values:
+  - `all`
+  - `any`
+ Defaults to `any`.
+- `user_matching_mode` (String) Allowed values:
+  - `identifier`
+  - `email_link`
+  - `email_deny`
+  - `username_link`
+  - `username_deny`
+ Defaults to `identifier`.
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String) Generated.
 

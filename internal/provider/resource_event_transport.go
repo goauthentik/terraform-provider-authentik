@@ -24,8 +24,10 @@ func resourceEventTransport() *schema.Resource {
 				Required: true,
 			},
 			"mode": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				Description:      EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
 			},
 			"webhook_url": {
 				Type:     schema.TypeString,
@@ -48,9 +50,8 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData, c *APIClient) (
 	m := api.NotificationTransportRequest{
 		Name:     d.Get("name").(string),
 		SendOnce: api.PtrBool(d.Get("send_once").(bool)),
+		Mode:     api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
 	}
-	mode := api.NotificationTransportModeEnum(d.Get("mode").(string))
-	m.Mode = &mode
 
 	if w, ok := d.Get("webhook_url").(string); ok {
 		m.WebhookUrl = &w

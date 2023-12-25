@@ -26,9 +26,11 @@ func resourceOutpost() *schema.Resource {
 				Required: true,
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.OUTPOSTTYPEENUM_PROXY,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.OUTPOSTTYPEENUM_PROXY,
+				Description:      EnumToDescription(api.AllowedOutpostTypeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedOutpostTypeEnumEnumValues),
 			},
 			"protocol_providers": {
 				Type:     schema.TypeList,

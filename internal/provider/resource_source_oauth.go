@@ -53,19 +53,25 @@ func resourceSourceOAuth() *schema.Resource {
 				Default:  true,
 			},
 			"policy_engine_mode": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.POLICYENGINEMODE_ANY,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.POLICYENGINEMODE_ANY,
+				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"user_matching_mode": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.USERMATCHINGMODEENUM_IDENTIFIER,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
+				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
 
 			"provider_type": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				Description:      EnumToDescription(api.AllowedProviderTypeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedProviderTypeEnumEnumValues),
 			},
 
 			"request_token_url": {

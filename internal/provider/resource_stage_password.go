@@ -27,7 +27,9 @@ func resourceStagePassword() *schema.Resource {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
+					Type:             schema.TypeString,
+					Description:      EnumToDescription(api.AllowedBackendsEnumEnumValues),
+					ValidateDiagFunc: StringInEnum(api.AllowedBackendsEnumEnumValues),
 				},
 			},
 			"configure_flow": {

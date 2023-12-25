@@ -34,7 +34,11 @@ resource "authentik_event_transport" "transport" {
 
 ### Required
 
-- `mode` (String)
+- `mode` (String) Allowed values:
+  - `local`
+  - `webhook`
+  - `webhook_slack`
+  - `email`
 - `name` (String)
 
 ### Optional

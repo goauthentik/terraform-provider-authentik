@@ -24,7 +24,12 @@ description: |-
 - `description` (String)
 - `expires` (String)
 - `expiring` (Boolean) Defaults to `true`.
-- `intent` (String) Defaults to `api`.
+- `intent` (String) Allowed values:
+  - `verification`
+  - `api`
+  - `recovery`
+  - `app_password`
+ Defaults to `api`.
 - `retrieve_key` (Boolean) Defaults to `false`.
 
 ### Read-Only

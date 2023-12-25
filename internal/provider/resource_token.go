@@ -46,9 +46,11 @@ func resourceToken() *schema.Resource {
 				Required: true,
 			},
 			"intent": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.INTENTENUM_API,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.INTENTENUM_API,
+				Description:      EnumToDescription(api.AllowedIntentEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedIntentEnumEnumValues),
 			},
 			"expires": {
 				Type:     schema.TypeString,

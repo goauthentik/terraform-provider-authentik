@@ -51,17 +51,47 @@ resource "authentik_source_saml" "name" {
 ### Optional
 
 - `allow_idp_initiated` (Boolean) Defaults to `false`.
-- `binding_type` (String) Defaults to `REDIRECT`.
-- `digest_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
+- `binding_type` (String) Allowed values:
+  - `REDIRECT`
+  - `POST`
+  - `POST_AUTO`
+ Defaults to `REDIRECT`.
+- `digest_algorithm` (String) Allowed values:
+  - `http://www.w3.org/2000/09/xmldsig#sha1`
+  - `http://www.w3.org/2001/04/xmlenc#sha256`
+  - `http://www.w3.org/2001/04/xmldsig-more#sha384`
+  - `http://www.w3.org/2001/04/xmlenc#sha512`
+ Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
 - `enabled` (Boolean) Defaults to `true`.
 - `issuer` (String)
-- `name_id_policy` (String) Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`.
-- `policy_engine_mode` (String) Defaults to `any`.
-- `signature_algorithm` (String) Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
+- `name_id_policy` (String) Allowed values:
+  - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
+  - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`
+  - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`
+  - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`
+  - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
+ Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`.
+- `policy_engine_mode` (String) Allowed values:
+  - `all`
+  - `any`
+ Defaults to `any`.
+- `signature_algorithm` (String) Allowed values:
+  - `http://www.w3.org/2000/09/xmldsig#rsa-sha1`
+  - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`
+  - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384`
+  - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512`
+  - `http://www.w3.org/2000/09/xmldsig#dsa-sha1`
+ Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
 - `slo_url` (String)
 - `temporary_user_delete_after` (String) Defaults to `days=1`.
-- `user_matching_mode` (String) Defaults to `identifier`.
+- `user_matching_mode` (String) Allowed values:
+  - `identifier`
+  - `email_link`
+  - `email_deny`
+  - `username_link`
+  - `username_deny`
+ Defaults to `identifier`.
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String) Generated.
 

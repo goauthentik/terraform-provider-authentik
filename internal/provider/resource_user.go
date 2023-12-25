@@ -32,9 +32,11 @@ func resourceUser() *schema.Resource {
 				Optional: true,
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Default:  api.USERTYPEENUM_INTERNAL,
-				Optional: true,
+				Type:             schema.TypeString,
+				Default:          api.USERTYPEENUM_INTERNAL,
+				Optional:         true,
+				Description:      EnumToDescription(api.AllowedUserTypeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedUserTypeEnumEnumValues),
 			},
 			"password": {
 				Type:        schema.TypeString,

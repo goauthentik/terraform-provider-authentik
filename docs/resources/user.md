@@ -48,7 +48,12 @@ resource "authentik_user" "name" {
 - `name` (String) Defaults to ``.
 - `password` (String, Sensitive) Optionally set the user's password. Changing the password in authentik will not trigger an update here.
 - `path` (String) Defaults to `users`.
-- `type` (String) Defaults to `internal`.
+- `type` (String) Allowed values:
+  - `internal`
+  - `external`
+  - `service_account`
+  - `internal_service_account`
+ Defaults to `internal`.
 
 ### Read-Only
 

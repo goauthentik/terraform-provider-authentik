@@ -36,6 +36,8 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.DIGITSENUM__6,
+				Description:      EnumToDescription(api.AllowedDigitsEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedDigitsEnumEnumValues),
 			},
 		},
 	}

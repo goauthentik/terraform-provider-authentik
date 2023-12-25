@@ -28,11 +28,21 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 
 ### Optional
 
-- `authenticator_attachment` (String)
+- `authenticator_attachment` (String) Allowed values:
+  - `platform`
+  - `cross-platform`
 - `configure_flow` (String)
 - `friendly_name` (String)
-- `resident_key_requirement` (String) Defaults to `preferred`.
-- `user_verification` (String) Defaults to `preferred`.
+- `resident_key_requirement` (String) Allowed values:
+  - `discouraged`
+  - `preferred`
+  - `required`
+ Defaults to `preferred`.
+- `user_verification` (String) Allowed values:
+  - `required`
+  - `preferred`
+  - `discouraged`
+ Defaults to `preferred`.
 
 ### Read-Only
 

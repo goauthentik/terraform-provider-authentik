@@ -41,15 +41,28 @@ resource "authentik_application" "name" {
 - `access_token_validity` (String) Defaults to `minutes=10`.
 - `authentication_flow` (String)
 - `client_secret` (String, Sensitive) Generated.
-- `client_type` (String) Defaults to `confidential`.
+- `client_type` (String) Allowed values:
+  - `confidential`
+  - `public`
+ Defaults to `confidential`.
 - `include_claims_in_id_token` (Boolean) Defaults to `true`.
-- `issuer_mode` (String) Defaults to `per_provider`.
+- `issuer_mode` (String) Allowed values:
+  - `global`
+  - `per_provider`
+ Defaults to `per_provider`.
 - `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
 - `property_mappings` (List of String)
 - `redirect_uris` (List of String)
 - `refresh_token_validity` (String) Defaults to `days=30`.
 - `signing_key` (String)
-- `sub_mode` (String) Defaults to `hashed_user_id`.
+- `sub_mode` (String) Allowed values:
+  - `hashed_user_id`
+  - `user_id`
+  - `user_uuid`
+  - `user_username`
+  - `user_email`
+  - `user_upn`
+ Defaults to `hashed_user_id`.
 
 ### Read-Only
 
