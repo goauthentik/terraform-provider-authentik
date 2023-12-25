@@ -28,6 +28,8 @@ resource "authentik_stage_user_login" "name" {
 
 ### Optional
 
+- `geoip_binding` (String) Defaults to `no_binding`.
+- `network_binding` (String) Defaults to `no_binding`.
 - `remember_me_offset` (String) Defaults to `seconds=0`.
 - `session_duration` (String) Defaults to `seconds=0`.
 - `terminate_other_sessions` (Boolean) Defaults to `false`.

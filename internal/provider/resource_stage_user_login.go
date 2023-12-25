@@ -38,6 +38,16 @@ func resourceStageUserLogin() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"network_binding": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.NETWORKBINDINGENUM_NO_BINDING,
+			},
+			"geoip_binding": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  api.GEOIPBINDINGENUM_NO_BINDING,
+			},
 		},
 	}
 }
@@ -48,6 +58,8 @@ func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) *api.UserLog
 		SessionDuration:        api.PtrString(d.Get("session_duration").(string)),
 		TerminateOtherSessions: api.PtrBool(d.Get("terminate_other_sessions").(bool)),
 		RememberMeOffset:       api.PtrString(d.Get("remember_me_offset").(string)),
+		NetworkBinding:         api.NetworkBindingEnum(d.Get("network_binding").(string)).Ptr(),
+		GeoipBinding:           api.GeoipBindingEnum(d.Get("geoip_binding").(string)).Ptr(),
 	}
 	return &r
 }
