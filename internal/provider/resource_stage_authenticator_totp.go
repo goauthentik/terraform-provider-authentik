@@ -33,9 +33,9 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 				Optional: true,
 			},
 			"digits": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  6,
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.DIGITSENUM__6,
 			},
 		},
 	}
@@ -44,7 +44,7 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorTOTPStageRequest {
 	r := api.AuthenticatorTOTPStageRequest{
 		Name:   d.Get("name").(string),
-		Digits: *api.DigitsEnum(strconv.Itoa(d.Get("digits").(int))).Ptr(),
+		Digits: api.DigitsEnum(d.Get("digits").(string)),
 	}
 
 	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
