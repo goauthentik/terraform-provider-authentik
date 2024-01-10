@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -81,12 +80,8 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 		return httpToDiag(d, hr, err)
 	}
 
-	digits, err := strconv.Atoi(string(res.Digits))
-	if err != nil {
-		panic(err)
-	}
 	setWrapper(d, "name", res.Name)
-	setWrapper(d, "digits", digits)
+	setWrapper(d, "digits", res.Digits)
 	setWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
