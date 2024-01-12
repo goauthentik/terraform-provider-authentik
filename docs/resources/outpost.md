@@ -49,6 +49,7 @@ resource "authentik_outpost" "outpost" {
   - `proxy`
   - `ldap`
   - `radius`
+  - `rac`
  Defaults to `proxy`.
 
 ### Read-Only

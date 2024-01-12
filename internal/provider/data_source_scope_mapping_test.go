@@ -34,6 +34,7 @@ data "authentik_scope_mapping" "test" {
   managed = "goauthentik.io/providers/proxy/scope-proxy"
 }
 `
+
 const testAccDataSourceScopePropertyMappingList = `
 data "authentik_scope_mapping" "test" {
   managed_list = [
