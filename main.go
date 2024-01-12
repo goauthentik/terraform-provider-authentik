@@ -10,11 +10,9 @@ import (
 	"goauthentik.io/terraform-provider-authentik/internal/provider"
 )
 
-var (
-	// these will be set by the goreleaser configuration
-	// to appropriate values for the compiled binary
-	version string = "dev"
-)
+// these will be set by the goreleaser configuration
+// to appropriate values for the compiled binary
+var version string = "dev"
 
 //go:generate terraform fmt -recursive ./examples/
 
