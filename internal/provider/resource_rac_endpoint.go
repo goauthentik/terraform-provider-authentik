@@ -37,7 +37,7 @@ func resourceRACEndpoint() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedProtocolEnumEnumValues),
 			},
 			"host": {
-				Type:     schema.TypeSet,
+				Type:     schema.TypeString,
 				Required: true,
 			},
 			"maximum_connections": {

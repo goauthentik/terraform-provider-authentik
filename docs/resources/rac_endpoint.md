@@ -16,7 +16,7 @@ description: |-
 
 ### Required
 
-- `host` (Set of String)
+- `host` (String)
 - `name` (String)
 - `protocol` (String) Allowed values:
   - `rdp`
