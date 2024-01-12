@@ -82,6 +82,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.blueprints`
   - `authentik.core`
   - `authentik.enterprise`
+  - `authentik.enterprise.providers.rac`
 - `client_ip` (String)
 - `execution_logging` (Boolean) Defaults to `false`.
 - `model` (String) Allowed values:
@@ -159,6 +160,9 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_core.application`
   - `authentik_core.token`
   - `authentik_enterprise.license`
+  - `authentik_providers_rac.racprovider`
+  - `authentik_providers_rac.endpoint`
+  - `authentik_providers_rac.racpropertymapping`
 
 ### Read-Only
 
