@@ -53,7 +53,11 @@ resource "authentik_application" "name" {
 - `internal_host` (String)
 - `internal_host_ssl_validation` (Boolean) Defaults to `true`.
 - `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
-- `mode` (String) Valid values are 'proxy', 'forward_single' or 'forward_domain'. Defaults to `proxy`.
+- `mode` (String) Allowed values:
+  - `proxy`
+  - `forward_single`
+  - `forward_domain`
+ Defaults to `proxy`.
 - `property_mappings` (List of String)
 - `refresh_token_validity` (String) Defaults to `days=30`.
 - `skip_path_regex` (String)

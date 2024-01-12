@@ -81,10 +81,11 @@ func resourceProviderProxy() *schema.Resource {
 				Optional: true,
 			},
 			"mode": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     api.PROXYMODE_PROXY,
-				Description: "Valid values are 'proxy', 'forward_single' or 'forward_domain'.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.PROXYMODE_PROXY,
+				ValidateDiagFunc: StringInEnum(api.AllowedProxyModeEnumValues),
+				Description:      EnumToDescription(api.AllowedProxyModeEnumValues),
 			},
 			"cookie_domain": {
 				Type:     schema.TypeString,
