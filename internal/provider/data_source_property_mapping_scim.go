@@ -28,7 +28,7 @@ func dataSourceSCIMropertyMapping() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Description: "Retrive multiple property mappings",
+				Description: "Retrieve multiple property mappings",
 			},
 
 			"ids": {
