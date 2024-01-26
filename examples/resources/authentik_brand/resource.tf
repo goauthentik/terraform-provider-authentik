@@ -1,6 +1,6 @@
-# Create/manage a default tenant
+# Create/manage a default brand
 
-resource "authentik_tenant" "default" {
+resource "authentik_brand" "default" {
   domain         = "."
   default        = true
   branding_title = "test"

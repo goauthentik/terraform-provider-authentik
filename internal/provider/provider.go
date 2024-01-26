@@ -63,6 +63,7 @@ func Provider(version string, testing bool) *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"authentik_application":                   tr(resourceApplication),
 			"authentik_blueprint":                     tr(resourceBlueprintInstance),
+			"authentik_brand":                         tr(resourceBrand),
 			"authentik_certificate_key_pair":          tr(resourceCertificateKeyPair),
 			"authentik_enterprise_license":            tr(resourceEnterpriseLicense),
 			"authentik_event_rule":                    tr(resourceEventRule),
@@ -118,11 +119,11 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_stage_user_login":              tr(resourceStageUserLogin),
 			"authentik_stage_user_logout":             tr(resourceStageUserLogout),
 			"authentik_stage_user_write":              tr(resourceStageUserWrite),
-			"authentik_tenant":                        tr(resourceTenant),
 			"authentik_token":                         tr(resourceToken),
 			"authentik_user":                          tr(resourceUser),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
+			"authentik_brand":                  td(dataSourceBrand),
 			"authentik_certificate_key_pair":   td(dataSourceCertificateKeyPair),
 			"authentik_flow":                   td(dataSourceFlow),
 			"authentik_group":                  td(dataSourceGroup),
@@ -136,7 +137,6 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_scope_mapping":          td(dataSourceScopeMapping),
 			"authentik_source":                 td(dataSourceSource),
 			"authentik_stage":                  td(dataSourceStage),
-			"authentik_tenant":                 td(dataSourceTenant),
 			"authentik_user":                   td(dataSourceUser),
 			"authentik_users":                  td(dataSourceUsers),
 		},
