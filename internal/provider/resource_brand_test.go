@@ -8,33 +8,33 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccResourceTenant(t *testing.T) {
+func TestAccResourceBrand(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceTenant(rName),
+				Config: testAccResourceBrand(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_tenant.name", "domain", rName),
+					resource.TestCheckResourceAttr("authentik_brand.name", "domain", rName),
 				),
 			},
 			{
-				Config: testAccResourceTenant(rName + "test"),
+				Config: testAccResourceBrand(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_tenant.name", "domain", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_brand.name", "domain", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourceTenant(name string) string {
+func testAccResourceBrand(name string) string {
 	return fmt.Sprintf(`
 # TODO: branding_logo should be optional
 # TODO: branding_favicon should be optional
-resource "authentik_tenant" "name" {
+resource "authentik_brand" "name" {
   domain = "%[1]s"
   branding_logo = "test"
   branding_favicon = "test"

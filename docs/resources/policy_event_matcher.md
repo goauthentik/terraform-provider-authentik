@@ -33,6 +33,7 @@ resource "authentik_policy_event_matcher" "name" {
 
 - `action` (String)
 - `app` (String) Allowed values:
+  - `authentik.tenants`
   - `authentik.admin`
   - `authentik.api`
   - `authentik.crypto`
@@ -78,14 +79,16 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.stages.user_login`
   - `authentik.stages.user_logout`
   - `authentik.stages.user_write`
-  - `authentik.tenants`
+  - `authentik.brands`
   - `authentik.blueprints`
   - `authentik.core`
   - `authentik.enterprise`
+  - `authentik.enterprise.audit`
   - `authentik.enterprise.providers.rac`
 - `client_ip` (String)
 - `execution_logging` (Boolean) Defaults to `false`.
 - `model` (String) Allowed values:
+  - `authentik_tenants.domain`
   - `authentik_crypto.certificatekeypair`
   - `authentik_events.event`
   - `authentik_events.notificationtransport`
@@ -153,7 +156,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_stages_user_login.userloginstage`
   - `authentik_stages_user_logout.userlogoutstage`
   - `authentik_stages_user_write.userwritestage`
-  - `authentik_tenants.tenant`
+  - `authentik_brands.brand`
   - `authentik_blueprints.blueprintinstance`
   - `authentik_core.group`
   - `authentik_core.user`

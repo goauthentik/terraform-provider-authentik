@@ -10,13 +10,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceTenant() *schema.Resource {
+func resourceBrand() *schema.Resource {
 	return &schema.Resource{
 		Description:   "System --- ",
-		CreateContext: resourceTenantCreate,
-		ReadContext:   resourceTenantRead,
-		UpdateContext: resourceTenantUpdate,
-		DeleteContext: resourceTenantDelete,
+		CreateContext: resourceBrandCreate,
+		ReadContext:   resourceBrandRead,
+		UpdateContext: resourceBrandUpdate,
+		DeleteContext: resourceBrandDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -67,11 +67,6 @@ func resourceTenant() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"event_retention": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "days=365",
-			},
 			"web_certificate": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -87,13 +82,11 @@ func resourceTenant() *schema.Resource {
 	}
 }
 
-func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, diag.Diagnostics) {
-	m := api.TenantRequest{
+func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag.Diagnostics) {
+	m := api.BrandRequest{
 		Domain:  d.Get("domain").(string),
 		Default: api.PtrBool(d.Get("default").(bool)),
 	}
-
-	m.EventRetention = api.PtrString(d.Get("event_retention").(string))
 
 	if l, ok := d.Get("branding_title").(string); ok {
 		m.BrandingTitle = &l
@@ -158,28 +151,28 @@ func resourceTenantSchemaToModel(d *schema.ResourceData) (*api.TenantRequest, di
 	return &m, nil
 }
 
-func resourceTenantCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	mo, diags := resourceTenantSchemaToModel(d)
+	mo, diags := resourceBrandSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreTenantsCreate(ctx).TenantRequest(*mo).Execute()
+	res, hr, err := c.client.CoreApi.CoreBrandsCreate(ctx).BrandRequest(*mo).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
 
-	d.SetId(res.TenantUuid)
-	return resourceTenantRead(ctx, d, m)
+	d.SetId(res.BrandUuid)
+	return resourceBrandRead(ctx, d, m)
 }
 
-func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.CoreApi.CoreTenantsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.CoreApi.CoreBrandsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -206,7 +199,6 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 	if res.FlowDeviceCode.IsSet() {
 		setWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
 	}
-	setWrapper(d, "event_retention", res.EventRetention)
 	if res.WebCertificate.IsSet() {
 		setWrapper(d, "web_certificate", res.WebCertificate.Get())
 	}
@@ -218,26 +210,26 @@ func resourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface
 	return diags
 }
 
-func resourceTenantUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	obj, diags := resourceTenantSchemaToModel(d)
+	obj, diags := resourceBrandSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreTenantsUpdate(ctx, d.Id()).TenantRequest(*obj).Execute()
+	res, hr, err := c.client.CoreApi.CoreBrandsUpdate(ctx, d.Id()).BrandRequest(*obj).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
 
-	d.SetId(res.TenantUuid)
-	return resourceTenantRead(ctx, d, m)
+	d.SetId(res.BrandUuid)
+	return resourceBrandRead(ctx, d, m)
 }
 
-func resourceTenantDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.CoreApi.CoreTenantsDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.CoreApi.CoreBrandsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
