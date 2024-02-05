@@ -71,4 +71,4 @@ jobs:
         run: |
           docker logs ${{ steps.setup.outputs.worker_container_id }}
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
