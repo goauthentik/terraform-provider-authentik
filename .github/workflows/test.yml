@@ -72,3 +72,5 @@ jobs:
           docker logs ${{ steps.setup.outputs.worker_container_id }}
       - if: ${{ always() }}
         uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
