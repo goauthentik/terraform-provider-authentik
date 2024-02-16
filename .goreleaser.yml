@@ -50,6 +50,7 @@ signs:
 release:
   # If you want to manually examine the release before its live, uncomment this line:
   # draft: true
+  prerelease: auto
 changelog:
   skip: false
   use: github
