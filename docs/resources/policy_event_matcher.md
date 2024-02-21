@@ -37,7 +37,6 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.admin`
   - `authentik.api`
   - `authentik.crypto`
-  - `authentik.events`
   - `authentik.flows`
   - `authentik.outposts`
   - `authentik.policies.dummy`
@@ -85,16 +84,12 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.enterprise`
   - `authentik.enterprise.audit`
   - `authentik.enterprise.providers.rac`
+  - `authentik.events`
 - `client_ip` (String)
 - `execution_logging` (Boolean) Defaults to `false`.
 - `model` (String) Allowed values:
   - `authentik_tenants.domain`
   - `authentik_crypto.certificatekeypair`
-  - `authentik_events.event`
-  - `authentik_events.notificationtransport`
-  - `authentik_events.notification`
-  - `authentik_events.notificationrule`
-  - `authentik_events.notificationwebhookmapping`
   - `authentik_flows.flow`
   - `authentik_flows.flowstagebinding`
   - `authentik_outposts.dockerserviceconnection`
@@ -106,14 +101,10 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_policies_expression.expressionpolicy`
   - `authentik_policies_password.passwordpolicy`
   - `authentik_policies_reputation.reputationpolicy`
-  - `authentik_policies_reputation.reputation`
   - `authentik_policies.policybinding`
   - `authentik_providers_ldap.ldapprovider`
   - `authentik_providers_oauth2.scopemapping`
   - `authentik_providers_oauth2.oauth2provider`
-  - `authentik_providers_oauth2.authorizationcode`
-  - `authentik_providers_oauth2.accesstoken`
-  - `authentik_providers_oauth2.refreshtoken`
   - `authentik_providers_proxy.proxyprovider`
   - `authentik_providers_radius.radiusprovider`
   - `authentik_providers_saml.samlprovider`
@@ -166,6 +157,11 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_rac.racprovider`
   - `authentik_providers_rac.endpoint`
   - `authentik_providers_rac.racpropertymapping`
+  - `authentik_events.event`
+  - `authentik_events.notificationtransport`
+  - `authentik_events.notification`
+  - `authentik_events.notificationrule`
+  - `authentik_events.notificationwebhookmapping`
 
 ### Read-Only
 

@@ -38,17 +38,21 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 				Description:      "JSON format expected. Use jsonencode() to pass objects.",
 				DiffSuppressFunc: diffSuppressJSON,
 			},
+			"verify_ssl": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
 
 func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*api.KubernetesServiceConnectionRequest, diag.Diagnostics) {
 	m := api.KubernetesServiceConnectionRequest{
-		Name: d.Get("name").(string),
+		Name:      d.Get("name").(string),
+		VerifySsl: api.PtrBool(d.Get("verify_ssl").(bool)),
+		Local:     api.PtrBool(d.Get("local").(bool)),
 	}
-
-	local := d.Get("local").(bool)
-	m.Local = &local
 
 	if l, ok := d.Get("kubeconfig").(string); ok {
 		var c map[string]interface{}
@@ -90,6 +94,7 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "local", res.Local)
+	setWrapper(d, "verify_ssl", res.VerifySsl)
 	b, err := json.Marshal(res.Kubeconfig)
 	if err != nil {
 		return diag.FromErr(err)
