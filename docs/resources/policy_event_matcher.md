@@ -84,6 +84,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.enterprise`
   - `authentik.enterprise.audit`
   - `authentik.enterprise.providers.rac`
+  - `authentik.enterprise.stages.source`
   - `authentik.events`
 - `client_ip` (String)
 - `execution_logging` (Boolean) Defaults to `false`.
@@ -157,6 +158,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_rac.racprovider`
   - `authentik_providers_rac.endpoint`
   - `authentik_providers_rac.racpropertymapping`
+  - `authentik_stages_source.sourcestage`
   - `authentik_events.event`
   - `authentik_events.notificationtransport`
   - `authentik_events.notification`

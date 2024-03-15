@@ -47,6 +47,7 @@ resource "authentik_source_oauth" "name" {
   - `discord`
   - `facebook`
   - `github`
+  - `gitlab`
   - `google`
   - `mailcow`
   - `okta`
