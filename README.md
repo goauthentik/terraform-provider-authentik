@@ -30,7 +30,7 @@ Start a local authentik instance by following https://goauthentik.io/docs/instal
 Before starting the instance, add this static token to the `.env` file:
 
 ```
-AUTHENTIK_TOKEN=this-password-is-for-testing-dont-use
+AUTHENTIK_TOKEN=this-token-is-for-testing-dont-use
 ```
 
 Afterwards, tests can be run from your Editor or via CLI:
@@ -38,9 +38,20 @@ Afterwards, tests can be run from your Editor or via CLI:
 ```
 export TF_ACC=1
 export AUTHENTIK_URL=http://localhost:9000
-export AUTHENTIK_TOKEN=this-password-is-for-testing-dont-use
-go test -timeout 30s ./... -count=1
+export AUTHENTIK_TOKEN=this-token-is-for-testing-dont-use
+go test -timeout 0 ./... -count=1
 ```
+
+If running from within the devcontainer, use the following instead with the correct URL:
+
+```
+export TF_ACC=1
+export AUTHENTIK_URL=http://server:9000
+export AUTHENTIK_TOKEN=this-token-is-for-testing-dont-use
+go test -timeout 0 ./... -count=1
+```
+
+If you're trying to run tests with VS Code inside the devcontainer, be sure to change `AUTHENTIK_URL` in `.vscode/settings.json` to: `"AUTHENTIK_URL": "http://server:9000"`
 
 ## Versioning
 
