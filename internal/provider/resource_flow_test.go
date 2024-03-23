@@ -18,12 +18,14 @@ func TestAccResourceFlow(t *testing.T) {
 				Config: testAccResourceFlowSimple(rName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_flow.flow", "name", rName),
+					resource.TestCheckResourceAttr("authentik_flow.flow", "background", "/media/"+rName+".jpg"),
 				),
 			},
 			{
 				Config: testAccResourceFlowSimple(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_flow.flow", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_flow.flow", "background", "/media/"+rName+"test"+".jpg"),
 				),
 			},
 		},
@@ -38,7 +40,7 @@ resource "authentik_flow" "flow" {
   slug  ="%[1]s"
   designation = "authorization"
   authentication = "none"
-  background = "https://goauthentik.io"
+  background = "/media/%[1]s.jpg"
   layout = "stacked"
 }
 `, name)
