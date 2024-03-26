@@ -45,6 +45,7 @@ resource "authentik_source_ldap" "name" {
 - `group_membership_field` (String) Defaults to `member`.
 - `group_object_filter` (String) Defaults to `(objectClass=group)`.
 - `object_uniqueness_field` (String) Defaults to `objectSid`.
+- `password_login_update_internal_password` (Boolean) Defaults to `false`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
 - `start_tls` (Boolean) Defaults to `true`.

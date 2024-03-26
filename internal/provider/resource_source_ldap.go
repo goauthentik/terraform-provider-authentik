@@ -114,6 +114,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"password_login_update_internal_password": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"property_mappings": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -152,9 +157,10 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		GroupMembershipField:  api.PtrString(d.Get("group_membership_field").(string)),
 		ObjectUniquenessField: api.PtrString(d.Get("object_uniqueness_field").(string)),
 
-		SyncUsers:         api.PtrBool(d.Get("sync_users").(bool)),
-		SyncUsersPassword: api.PtrBool(d.Get("sync_users_password").(bool)),
-		SyncGroups:        api.PtrBool(d.Get("sync_groups").(bool)),
+		SyncUsers:                           api.PtrBool(d.Get("sync_users").(bool)),
+		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
+		SyncGroups:                          api.PtrBool(d.Get("sync_groups").(bool)),
+		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 	}
 
 	if s, sok := d.GetOk("sync_parent_group"); sok && s.(string) != "" {
@@ -208,6 +214,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "sync_users", res.SyncUsers)
 	setWrapper(d, "sync_users_password", res.SyncUsersPassword)
 	setWrapper(d, "sync_groups", res.SyncGroups)
+	setWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
 	if res.SyncParentGroup.IsSet() {
 		setWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
 	}
