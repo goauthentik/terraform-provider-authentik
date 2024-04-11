@@ -23,24 +23,36 @@ make build
 
 Run `make` from the project root to regenerate the latest provider documentation
 
-## Testing
+## Run tests using a Dev Container
+
+Running the included Dev Container will create a full authentik development environment automatically as if following the instructions found here: https://goauthentik.io/docs/installation/docker-compose
+
+Once the Dev Container is running, simply use the VS Code Command Palette or Test UI to run any tests as needed.
+
+Note: If running all tests, this is very CPU-intensive on your local authentik environment, so depending on your hardware they can take several minutes to complete.
+
+## Run tests using a local environment
 
 Start a local authentik instance by following https://goauthentik.io/docs/installation/docker-compose
 
 Before starting the instance, add this static token to the `.env` file:
 
 ```
-AUTHENTIK_TOKEN=this-password-is-for-testing-dont-use
+AUTHENTIK_TOKEN=this-token-is-for-testing-dont-use
 ```
 
-Afterwards, tests can be run from your Editor or via CLI:
+Afterwards, tests can be run from VS Code with the Command Palette or Test UI, or via CLI like so:
 
 ```
 export TF_ACC=1
 export AUTHENTIK_URL=http://localhost:9000
-export AUTHENTIK_TOKEN=this-password-is-for-testing-dont-use
-go test -timeout 30s ./... -count=1
+export AUTHENTIK_TOKEN=this-token-is-for-testing-dont-use
+go test -timeout 30m ./... -count=1
 ```
+
+If you're trying to run tests with VS Code in your local environment, be sure to change `AUTHENTIK_URL` in `.vscode/settings.json` to: `"AUTHENTIK_URL": "http://localhost:9000"`
+
+Note: If running all tests, this is very CPU-intensive on your local authentik environment, so depending on your hardware they can take several minutes to complete.
 
 ## Versioning
 
