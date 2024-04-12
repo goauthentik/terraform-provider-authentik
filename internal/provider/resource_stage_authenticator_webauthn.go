@@ -55,8 +55,8 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 	}
 }
 
-func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) *api.AuthenticateWebAuthnStageRequest {
-	r := api.AuthenticateWebAuthnStageRequest{
+func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorWebAuthnStageRequest {
+	r := api.AuthenticatorWebAuthnStageRequest{
 		Name: d.Get("name").(string),
 	}
 
@@ -83,7 +83,7 @@ func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.Res
 
 	r := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticateWebAuthnStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticatorWebAuthnStageRequest(*r).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -117,7 +117,7 @@ func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.Res
 
 	app := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticateWebAuthnStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticatorWebAuthnStageRequest(*app).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}

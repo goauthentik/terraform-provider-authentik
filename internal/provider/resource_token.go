@@ -69,7 +69,7 @@ func resourceToken() *schema.Resource {
 	}
 }
 
-func resourceTokenSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.TokenRequest, diag.Diagnostics) {
+func resourceTokenSchemaToModel(d *schema.ResourceData) (*api.TokenRequest, diag.Diagnostics) {
 	m := api.TokenRequest{
 		Identifier: d.Get("identifier").(string),
 		User:       api.PtrInt32(int32(d.Get("user").(int))),
@@ -85,7 +85,7 @@ func resourceTokenSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Toke
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
-		m.Expires = &t
+		m.Expires.Set(&t)
 	}
 	int := api.IntentEnum(d.Get("intent").(string))
 	m.Intent = &int
@@ -95,7 +95,7 @@ func resourceTokenSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Toke
 func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceTokenSchemaToModel(d, c)
+	app, diags := resourceTokenSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
@@ -122,7 +122,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 	setWrapper(d, "user", res.User)
 	setWrapper(d, "description", res.Description)
 	setWrapper(d, "intent", res.Intent)
-	setWrapper(d, "expires_in", time.Until(*res.Expires).Seconds())
+	setWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
 		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
@@ -136,7 +136,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceTokenSchemaToModel(d, c)
+	app, di := resourceTokenSchemaToModel(d)
 	if di != nil {
 		return di
 	}

@@ -130,7 +130,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_stages_authenticator_totp.authenticatortotpstage`
   - `authentik_stages_authenticator_totp.totpdevice`
   - `authentik_stages_authenticator_validate.authenticatorvalidatestage`
-  - `authentik_stages_authenticator_webauthn.authenticatewebauthnstage`
+  - `authentik_stages_authenticator_webauthn.authenticatorwebauthnstage`
   - `authentik_stages_authenticator_webauthn.webauthndevice`
   - `authentik_stages_captcha.captchastage`
   - `authentik_stages_consent.consentstage`
