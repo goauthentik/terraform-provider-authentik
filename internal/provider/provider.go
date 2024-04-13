@@ -140,6 +140,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_stage":                  td(dataSourceStage),
 			"authentik_user":                   td(dataSourceUser),
 			"authentik_users":                  td(dataSourceUsers),
+			"authentik_webauthn_device_type":   td(dataSourceWebAuthnDeviceType),
 		},
 		ConfigureContextFunc: providerConfigure(version, testing),
 	}
