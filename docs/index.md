@@ -17,6 +17,10 @@ provider "authentik" {
   token = "foo-bar"
   # Optionally set insecure to ignore TLS Certificates
   # insecure = true
+  # Optionally add extra headers
+  # headers {
+  #   X-my-header = "foo"
+  # }
 }
 ```
 
@@ -38,4 +42,5 @@ export AUTHENTIK_INSECURE=false
 
 ### Optional
 
+- `headers` (Map of String, Sensitive) Optional HTTP headers sent with every request
 - `insecure` (Boolean) Whether to skip TLS verification, can optionally be passed as `AUTHENTIK_INSECURE` environmental variable

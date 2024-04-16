@@ -59,6 +59,15 @@ func Provider(version string, testing bool) *schema.Provider {
 				Sensitive:   true,
 				Description: "The authentik API token, can optionally be passed as `AUTHENTIK_TOKEN` environmental variable",
 			},
+			"headers": {
+				Type: schema.TypeMap,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Optional:    true,
+				Sensitive:   true,
+				Description: "Optional HTTP headers sent with every request",
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"authentik_application":                   tr(resourceApplication),
@@ -180,6 +189,12 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		}
 
 		config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
+		if _headers, ok := d.GetOk("headers"); ok {
+			headers := _headers.(map[string]any)
+			for headerName, headerValue := range headers {
+				config.AddDefaultHeader(headerName, headerValue.(string))
+			}
+		}
 		apiClient := api.NewAPIClient(config)
 
 		rootConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
