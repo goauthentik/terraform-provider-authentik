@@ -62,7 +62,7 @@ Read-Only:
 - `users_obj` (List of Object) (see [below for nested schema](#nestedobjatt--groups--users_obj))
 
 <a id="nestedobjatt--groups--users_obj"></a>
-### Nested Schema for ``
+### Nested Schema for `groups.users_obj`
 
 Read-Only:
 
