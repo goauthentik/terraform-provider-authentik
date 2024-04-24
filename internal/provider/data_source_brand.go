@@ -9,7 +9,7 @@ import (
 
 func dataSourceBrand() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceTenantRead,
+		ReadContext: dataSourceBrandRead,
 		Description: "System --- Get brands by domain",
 		Schema: map[string]*schema.Schema{
 			"domain": {
@@ -76,7 +76,7 @@ func dataSourceBrand() *schema.Resource {
 	}
 }
 
-func dataSourceTenantRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -91,7 +91,7 @@ func dataSourceTenantRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	if len(res.Results) < 1 {
-		return diag.Errorf("No matching tenants found")
+		return diag.Errorf("No matching brands found")
 	}
 	f := res.Results[0]
 	d.SetId(f.BrandUuid)

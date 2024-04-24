@@ -37,6 +37,7 @@ resource "authentik_stage_authenticator_validate" "name" {
 - `configuration_stages` (List of String)
 - `device_classes` (List of String)
 - `last_auth_threshold` (String) Defaults to `seconds=0`.
+- `webauthn_allowed_device_types` (List of String)
 - `webauthn_user_verification` (String) Allowed values:
   - `required`
   - `preferred`

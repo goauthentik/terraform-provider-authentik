@@ -51,13 +51,23 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedAuthenticatorAttachmentEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedAuthenticatorAttachmentEnumEnumValues),
 			},
+			"device_type_restrictions": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
 
-func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) *api.AuthenticateWebAuthnStageRequest {
-	r := api.AuthenticateWebAuthnStageRequest{
-		Name: d.Get("name").(string),
+func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorWebAuthnStageRequest {
+	r := api.AuthenticatorWebAuthnStageRequest{
+		Name:                   d.Get("name").(string),
+		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
+		ResidentKeyRequirement: api.ResidentKeyRequirementEnum(d.Get("resident_key_requirement").(string)).Ptr(),
+		DeviceTypeRestrictions: castSlice[string](d.Get("device_type_restrictions").([]interface{})),
 	}
 
 	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
@@ -65,12 +75,6 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 	}
 	if h, hSet := d.GetOk("configure_flow"); hSet {
 		r.ConfigureFlow.Set(api.PtrString(h.(string)))
-	}
-	if x, set := d.GetOk("user_verification"); set {
-		r.UserVerification = api.UserVerificationEnum(x.(string)).Ptr()
-	}
-	if x, set := d.GetOk("resident_key_requirement"); set {
-		r.ResidentKeyRequirement = api.ResidentKeyRequirementEnum(x.(string)).Ptr()
 	}
 	if x, set := d.GetOk("authenticator_attachment"); set {
 		r.AuthenticatorAttachment.Set(api.AuthenticatorAttachmentEnum(x.(string)).Ptr())
@@ -83,7 +87,7 @@ func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.Res
 
 	r := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticateWebAuthnStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticatorWebAuthnStageRequest(*r).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -109,6 +113,8 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 	if res.ConfigureFlow.IsSet() {
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
+	localDeviceTypeRestrictions := castSlice[string](d.Get("device_type_restrictions").([]interface{}))
+	setWrapper(d, "device_type_restrictions", listConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
 	return diags
 }
 
@@ -117,7 +123,7 @@ func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.Res
 
 	app := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticateWebAuthnStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticatorWebAuthnStageRequest(*app).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}

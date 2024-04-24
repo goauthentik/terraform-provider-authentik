@@ -57,6 +57,13 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedUserVerificationEnumEnumValues),
 			},
+			"webauthn_allowed_device_types": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -82,6 +89,7 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		classes = append(classes, api.DeviceClassesEnum(classesS.(string)))
 	}
 	r.DeviceClasses = classes
+	r.WebauthnAllowedDeviceTypes = castSlice[string](d.Get("webauthn_allowed_device_types").([]interface{}))
 	return &r
 }
 
@@ -116,6 +124,8 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	setWrapper(d, "device_classes", res.DeviceClasses)
 	setWrapper(d, "last_auth_threshold", res.LastAuthThreshold)
 	setWrapper(d, "webauthn_user_verification", res.WebauthnUserVerification)
+	localDeviceTypeRestrictions := castSlice[string](d.Get("webauthn_allowed_device_types").([]interface{}))
+	setWrapper(d, "webauthn_allowed_device_types", listConsistentMerge(localDeviceTypeRestrictions, res.WebauthnAllowedDeviceTypes))
 	return diags
 }
 

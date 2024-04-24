@@ -12,10 +12,23 @@ description: |-
 ## Example Usage
 
 ```terraform
-# Create WebAuthn setup stage
+# Create a WebAuthn setup stage
 
 resource "authentik_stage_authenticator_webauthn" "name" {
   name = "webauthn-setup"
+}
+
+# Create a WebAuthn setup which allows limited WebAuthn device types
+
+data "authentik_webauthn_device_type" "yubikey" {
+  description = "YubiKey 5C"
+}
+
+resource "authentik_stage_authenticator_webauthn" "name" {
+  name = "webauthn-setup"
+  device_type_restrictions = [
+    data.authentik_webauthn_device_type.yubikey.aaguid,
+  ]
 }
 ```
 
@@ -32,6 +45,7 @@ resource "authentik_stage_authenticator_webauthn" "name" {
   - `platform`
   - `cross-platform`
 - `configure_flow` (String)
+- `device_type_restrictions` (List of String)
 - `friendly_name` (String)
 - `resident_key_requirement` (String) Allowed values:
   - `discouraged`

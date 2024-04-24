@@ -91,7 +91,8 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "group", res.Group.Get())
-	setWrapper(d, "transports", res.Transports)
+	localTransports := castSlice[string](d.Get("transports").([]interface{}))
+	setWrapper(d, "transports", listConsistentMerge(localTransports, res.Transports))
 	setWrapper(d, "severity", res.Severity)
 	return diags
 }
