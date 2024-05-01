@@ -58,6 +58,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.sources.oauth`
   - `authentik.sources.plex`
   - `authentik.sources.saml`
+  - `authentik.sources.scim`
   - `authentik.stages.authenticator`
   - `authentik.stages.authenticator_duo`
   - `authentik.stages.authenticator_sms`
@@ -121,6 +122,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_sources_plex.plexsourceconnection`
   - `authentik_sources_saml.samlsource`
   - `authentik_sources_saml.usersamlsourceconnection`
+  - `authentik_sources_scim.scimsource`
   - `authentik_stages_authenticator_duo.authenticatorduostage`
   - `authentik_stages_authenticator_duo.duodevice`
   - `authentik_stages_authenticator_sms.authenticatorsmsstage`

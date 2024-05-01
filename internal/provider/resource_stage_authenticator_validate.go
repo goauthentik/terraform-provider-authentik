@@ -119,7 +119,8 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "not_configured_action", res.NotConfiguredAction)
 	if res.ConfigurationStages != nil {
-		setWrapper(d, "configuration_stages", res.ConfigurationStages)
+		localConfigurationStages := castSlice[string](d.Get("configuration_stages").([]interface{}))
+		setWrapper(d, "configuration_stages", listConsistentMerge(localConfigurationStages, res.ConfigurationStages))
 	}
 	setWrapper(d, "device_classes", res.DeviceClasses)
 	setWrapper(d, "last_auth_threshold", res.LastAuthThreshold)
