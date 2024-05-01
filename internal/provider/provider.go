@@ -129,6 +129,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_stage_user_login":              tr(resourceStageUserLogin),
 			"authentik_stage_user_logout":             tr(resourceStageUserLogout),
 			"authentik_stage_user_write":              tr(resourceStageUserWrite),
+			"authentik_system_settings":               tr(resourceSystemSettings),
 			"authentik_token":                         tr(resourceToken),
 			"authentik_user":                          tr(resourceUser),
 		},
