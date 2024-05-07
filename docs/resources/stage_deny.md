@@ -26,6 +26,10 @@ resource "authentik_stage_deny" "name" {
 
 - `name` (String)
 
+### Optional
+
+- `deny_message` (String)
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.

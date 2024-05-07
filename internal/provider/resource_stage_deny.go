@@ -23,6 +23,10 @@ func resourceStageDeny() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"deny_message": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -30,6 +34,9 @@ func resourceStageDeny() *schema.Resource {
 func resourceStageDenySchemaToProvider(d *schema.ResourceData) *api.DenyStageRequest {
 	r := api.DenyStageRequest{
 		Name: d.Get("name").(string),
+	}
+	if m, mok := d.GetOk("deny_message"); mok {
+		r.DenyMessage = api.PtrString(m.(string))
 	}
 	return &r
 }
@@ -58,6 +65,7 @@ func resourceStageDenyRead(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	setWrapper(d, "name", res.Name)
+	setWrapper(d, "deny_message", res.GetDenyMessage())
 	return diags
 }
 

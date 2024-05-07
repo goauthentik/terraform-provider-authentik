@@ -2,7 +2,7 @@
 page_title: "authentik_system_settings Resource - terraform-provider-authentik"
 subcategory: "System"
 description: |-
-
+  
 ---
 
 # authentik_system_settings (Resource)

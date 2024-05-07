@@ -80,6 +80,10 @@ resource "authentik_source_saml" "name" {
   - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`
   - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384`
   - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512`
+  - `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1`
+  - `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256`
+  - `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384`
+  - `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512`
   - `http://www.w3.org/2000/09/xmldsig#dsa-sha1`
  Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
