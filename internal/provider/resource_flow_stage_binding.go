@@ -59,7 +59,7 @@ func resourceFlowStageBinding() *schema.Resource {
 	}
 }
 
-func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowStageBindingRequest {
+func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData) *api.FlowStageBindingRequest {
 	m := api.FlowStageBindingRequest{
 		Target:                d.Get("target").(string),
 		Stage:                 d.Get("stage").(string),
@@ -75,7 +75,7 @@ func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData, c *APIClient)
 func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceFlowStageBindingSchemaToModel(d, c)
+	app := resourceFlowStageBindingSchemaToModel(d)
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsCreate(ctx).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
@@ -108,7 +108,7 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceFlowStageBindingSchemaToModel(d, c)
+	app := resourceFlowStageBindingSchemaToModel(d)
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsUpdate(ctx, d.Id()).FlowStageBindingRequest(*app).Execute()
 	if err != nil {

@@ -81,7 +81,7 @@ func resourceFlow() *schema.Resource {
 	}
 }
 
-func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRequest {
+func resourceFlowSchemaToModel(d *schema.ResourceData) *api.FlowRequest {
 	m := api.FlowRequest{
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
@@ -99,7 +99,7 @@ func resourceFlowSchemaToModel(d *schema.ResourceData, c *APIClient) *api.FlowRe
 func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceFlowSchemaToModel(d, c)
+	app := resourceFlowSchemaToModel(d)
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesCreate(ctx).FlowRequest(*app).Execute()
 	if err != nil {
@@ -147,7 +147,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceFlowSchemaToModel(d, c)
+	app := resourceFlowSchemaToModel(d)
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesUpdate(ctx, d.Id()).FlowRequest(*app).Execute()
 	if err != nil {

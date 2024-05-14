@@ -46,7 +46,7 @@ func resourceEventTransport() *schema.Resource {
 	}
 }
 
-func resourceEventTransportSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.NotificationTransportRequest, diag.Diagnostics) {
+func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.NotificationTransportRequest, diag.Diagnostics) {
 	m := api.NotificationTransportRequest{
 		Name:     d.Get("name").(string),
 		SendOnce: api.PtrBool(d.Get("send_once").(bool)),
@@ -66,7 +66,7 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData, c *APIClient) (
 func resourceEventTransportCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceEventTransportSchemaToModel(d, c)
+	app, diags := resourceEventTransportSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
@@ -100,7 +100,7 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 func resourceEventTransportUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceEventTransportSchemaToModel(d, c)
+	app, di := resourceEventTransportSchemaToModel(d)
 	if di != nil {
 		return di
 	}

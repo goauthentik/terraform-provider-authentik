@@ -49,7 +49,7 @@ func resourceEventRule() *schema.Resource {
 	}
 }
 
-func resourceEventRuleSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.NotificationRuleRequest, diag.Diagnostics) {
+func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRuleRequest, diag.Diagnostics) {
 	m := api.NotificationRuleRequest{
 		Name:     d.Get("name").(string),
 		Severity: api.SeverityEnum(d.Get("severity").(string)).Ptr(),
@@ -66,7 +66,7 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.
 func resourceEventRuleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceEventRuleSchemaToModel(d, c)
+	app, diags := resourceEventRuleSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
@@ -100,7 +100,7 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 func resourceEventRuleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceEventRuleSchemaToModel(d, c)
+	app, di := resourceEventRuleSchemaToModel(d)
 	if di != nil {
 		return di
 	}

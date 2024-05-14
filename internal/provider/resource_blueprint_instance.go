@@ -49,7 +49,7 @@ func resourceBlueprintInstance() *schema.Resource {
 	}
 }
 
-func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.BlueprintInstanceRequest, diag.Diagnostics) {
+func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData) (*api.BlueprintInstanceRequest, diag.Diagnostics) {
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
 		Enabled: api.PtrBool(d.Get("enabled").(bool)),
@@ -76,7 +76,7 @@ func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData, c *APIClient
 func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceBlueprintInstanceSchemaToModel(d, c)
+	app, diags := resourceBlueprintInstanceSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
@@ -115,7 +115,7 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 func resourceBlueprintInstanceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceBlueprintInstanceSchemaToModel(d, c)
+	app, diags := resourceBlueprintInstanceSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}

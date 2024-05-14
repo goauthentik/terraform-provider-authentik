@@ -53,7 +53,7 @@ func resourceGroup() *schema.Resource {
 	}
 }
 
-func resourceGroupSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.GroupRequest, diag.Diagnostics) {
+func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag.Diagnostics) {
 	m := api.GroupRequest{
 		Name:        d.Get("name").(string),
 		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
@@ -83,7 +83,7 @@ func resourceGroupSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Grou
 func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceGroupSchemaToModel(d, c)
+	app, diags := resourceGroupSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
@@ -121,7 +121,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceGroupSchemaToModel(d, c)
+	app, di := resourceGroupSchemaToModel(d)
 	if di != nil {
 		return di
 	}

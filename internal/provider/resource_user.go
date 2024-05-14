@@ -77,7 +77,7 @@ func resourceUser() *schema.Resource {
 	}
 }
 
-func resourceUserSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.UserRequest, diag.Diagnostics) {
+func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.Diagnostics) {
 	m := api.UserRequest{
 		Name:     d.Get("name").(string),
 		Username: d.Get("username").(string),
@@ -128,7 +128,7 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceUserSchemaToModel(d, c)
+	app, diags := resourceUserSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
@@ -180,7 +180,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, di := resourceUserSchemaToModel(d, c)
+	app, di := resourceUserSchemaToModel(d)
 	if di != nil {
 		return di
 	}
