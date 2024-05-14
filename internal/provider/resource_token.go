@@ -122,7 +122,9 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 	setWrapper(d, "user", res.User)
 	setWrapper(d, "description", res.Description)
 	setWrapper(d, "intent", res.Intent)
-	setWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
+	if res.Expires.IsSet() {
+		setWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
+	}
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
 		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
