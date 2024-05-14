@@ -29,6 +29,12 @@ func dataSourceGroups() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"include_users": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Whether to include group members. Note that depending on group size, this can make the Terraform state a lot larger.",
+			},
 			"members_by_pk": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -92,6 +98,8 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 				req = req.Ordering(v.(string))
 			case "search":
 				req = req.Search(v.(string))
+			case "include_users":
+				req = req.IncludeUsers(v.(bool))
 			}
 		}
 	}
