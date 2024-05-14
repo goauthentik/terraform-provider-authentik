@@ -31,7 +31,7 @@ resource "authentik_system_settings" "settings" {
 - `default_user_change_name` (Boolean) Defaults to `true`.
 - `default_user_change_username` (Boolean) Defaults to `false`.
 - `event_retention` (String) Defaults to `days=365`.
-- `footer_links` (List of Set of String)
+- `footer_links` (List of Map of String)
 - `gdpr_compliance` (Boolean) Defaults to `true`.
 - `impersonation` (Boolean) Defaults to `true`.
 

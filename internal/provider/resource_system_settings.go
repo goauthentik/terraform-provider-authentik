@@ -50,7 +50,7 @@ func resourceSystemSettings() *schema.Resource {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeSet,
+					Type: schema.TypeMap,
 				},
 			},
 			"gdpr_compliance": {
