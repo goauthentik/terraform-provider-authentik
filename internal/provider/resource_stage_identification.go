@@ -45,6 +45,11 @@ func resourceStageIdentification() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"pretend_user_exists": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 			"show_source_labels": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -76,6 +81,7 @@ func resourceStageIdentification() *schema.Resource {
 func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.IdentificationStageRequest {
 	r := api.IdentificationStageRequest{
 		Name:                    d.Get("name").(string),
+		PretendUserExists:       api.PtrBool(d.Get("pretend_user_exists").(bool)),
 		ShowMatchedUser:         api.PtrBool(d.Get("show_matched_user").(bool)),
 		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
@@ -134,6 +140,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	setWrapper(d, "case_insensitive_matching", res.CaseInsensitiveMatching)
 	setWrapper(d, "show_matched_user", res.ShowMatchedUser)
 	setWrapper(d, "show_source_labels", res.ShowSourceLabels)
+	setWrapper(d, "pretend_user_exists", res.PretendUserExists)
 	if res.EnrollmentFlow.IsSet() {
 		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
