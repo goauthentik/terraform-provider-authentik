@@ -55,6 +55,7 @@ resource "authentik_stage_identification" "name" {
 - `enrollment_flow` (String)
 - `password_stage` (String)
 - `passwordless_flow` (String)
+- `pretend_user_exists` (Boolean) Defaults to `true`.
 - `recovery_flow` (String)
 - `show_matched_user` (Boolean) Defaults to `true`.
 - `show_source_labels` (Boolean) Defaults to `false`.
