@@ -10,6 +10,9 @@ import (
 func dataSourceGroups() *schema.Resource {
 	groupSchema := map[string]*schema.Schema{}
 	for k, v := range dataSourceGroup().Schema {
+		if v.Default != nil {
+			continue
+		}
 		groupSchema[k] = &schema.Schema{}
 		*groupSchema[k] = *v
 		groupSchema[k].Computed = true

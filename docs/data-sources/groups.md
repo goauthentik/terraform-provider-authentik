@@ -53,7 +53,6 @@ data "authentik_groups" "admins" {
 Read-Only:
 
 - `attributes` (String)
-- `include_users` (Boolean)
 - `is_superuser` (Boolean)
 - `name` (String)
 - `num_pk` (Number)
