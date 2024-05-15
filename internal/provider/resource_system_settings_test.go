@@ -31,6 +31,12 @@ func TestAccResourceSystemSettings(t *testing.T) {
 func testAccResourceSystemSettings(value string) string {
 	return fmt.Sprintf(`
 resource "authentik_system_settings" "name" {
+  footer_links = [
+	{
+		name = "test"
+		href = "https://google.com"
+	}
+  ]
   default_user_change_username = %[1]s
 }
 `, value)
