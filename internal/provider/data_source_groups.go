@@ -10,6 +10,9 @@ import (
 func dataSourceGroups() *schema.Resource {
 	groupSchema := map[string]*schema.Schema{}
 	for k, v := range dataSourceGroup().Schema {
+		if v.Default != nil {
+			continue
+		}
 		groupSchema[k] = &schema.Schema{}
 		*groupSchema[k] = *v
 		groupSchema[k].Computed = true
@@ -28,6 +31,12 @@ func dataSourceGroups() *schema.Resource {
 			"is_superuser": {
 				Type:     schema.TypeBool,
 				Optional: true,
+			},
+			"include_users": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Whether to include group members. Note that depending on group size, this can make the Terraform state a lot larger.",
 			},
 			"members_by_pk": {
 				Type:     schema.TypeList,
@@ -92,6 +101,8 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 				req = req.Ordering(v.(string))
 			case "search":
 				req = req.Search(v.(string))
+			case "include_users":
+				req = req.IncludeUsers(v.(bool))
 			}
 		}
 	}

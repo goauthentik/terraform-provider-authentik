@@ -34,6 +34,7 @@ data "authentik_groups" "admins" {
 ### Optional
 
 - `attributes` (String)
+- `include_users` (Boolean) Whether to include group members. Note that depending on group size, this can make the Terraform state a lot larger. Defaults to `true`.
 - `is_superuser` (Boolean)
 - `members_by_pk` (List of Number)
 - `members_by_username` (List of String)

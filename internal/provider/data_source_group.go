@@ -68,6 +68,12 @@ func dataSourceGroup() *schema.Resource {
 				Optional:     true,
 				ExactlyOneOf: []string{"pk", "name"},
 			},
+			"include_users": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Whether to include group members. Note that depending on group size, this can make the Terraform state a lot larger.",
+			},
 			"is_superuser": {
 				Type:     schema.TypeBool,
 				Computed: true,
@@ -201,8 +207,9 @@ func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *API
 	return setGroup(d, *res)
 }
 
-func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *APIClient, name string) diag.Diagnostics {
+func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *APIClient, name string, includeUsers bool) diag.Diagnostics {
 	req := c.client.CoreApi.CoreGroupsList(ctx)
+	req = req.IncludeUsers(includeUsers)
 	req = req.Name(name)
 
 	res, hr, err := req.Execute()
@@ -223,13 +230,17 @@ func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *A
 
 func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
+	includeUsers := true
+	if i, iok := d.GetOk("include_users"); iok {
+		includeUsers = i.(bool)
+	}
 
 	if n, ok := d.GetOk("pk"); ok {
 		return dataSourceGroupReadByPk(ctx, d, c, n.(string))
 	}
 
 	if n, ok := d.GetOk("name"); ok {
-		return dataSourceGroupReadByName(ctx, d, c, n.(string))
+		return dataSourceGroupReadByName(ctx, d, c, n.(string), includeUsers)
 	}
 
 	return diag.Errorf("Neither pk nor name were provided")
