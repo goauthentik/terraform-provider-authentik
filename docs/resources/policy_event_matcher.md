@@ -84,6 +84,8 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.core`
   - `authentik.enterprise`
   - `authentik.enterprise.audit`
+  - `authentik.enterprise.providers.google_workspace`
+  - `authentik.enterprise.providers.microsoft_entra`
   - `authentik.enterprise.providers.rac`
   - `authentik.enterprise.stages.source`
   - `authentik.events`
@@ -157,6 +159,10 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_core.application`
   - `authentik_core.token`
   - `authentik_enterprise.license`
+  - `authentik_providers_google_workspace.googleworkspaceprovider`
+  - `authentik_providers_google_workspace.googleworkspaceprovidermapping`
+  - `authentik_providers_microsoft_entra.microsoftentraprovider`
+  - `authentik_providers_microsoft_entra.microsoftentraprovidermapping`
   - `authentik_providers_rac.racprovider`
   - `authentik_providers_rac.endpoint`
   - `authentik_providers_rac.racpropertymapping`
