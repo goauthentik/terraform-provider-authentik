@@ -67,14 +67,14 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 			},
 			"user_delete_action": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Default:          api.OUTGOINGSYNCDELETEACTION_DELETE,
 				Description:      EnumToDescription(api.AllowedOutgoingSyncDeleteActionEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedOutgoingSyncDeleteActionEnumValues),
 			},
 			"group_delete_action": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 				Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
 				Description: EnumToDescription([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
