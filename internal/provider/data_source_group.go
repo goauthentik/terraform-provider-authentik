@@ -196,8 +196,9 @@ func setGroup(data *schema.ResourceData, group api.Group) diag.Diagnostics {
 	return diag.Diagnostics{}
 }
 
-func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *APIClient, pk string) diag.Diagnostics {
+func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *APIClient, pk string, includeUsers bool) diag.Diagnostics {
 	req := c.client.CoreApi.CoreGroupsRetrieve(ctx, pk)
+	req = req.IncludeUsers(includeUsers)
 
 	res, hr, err := req.Execute()
 	if err != nil {
@@ -236,7 +237,7 @@ func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	if n, ok := d.GetOk("pk"); ok {
-		return dataSourceGroupReadByPk(ctx, d, c, n.(string))
+		return dataSourceGroupReadByPk(ctx, d, c, n.(string), includeUsers)
 	}
 
 	if n, ok := d.GetOk("name"); ok {

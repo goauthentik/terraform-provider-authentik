@@ -101,7 +101,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.CoreApi.CoreGroupsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.CoreApi.CoreGroupsRetrieve(ctx, d.Id()).IncludeUsers(false).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
