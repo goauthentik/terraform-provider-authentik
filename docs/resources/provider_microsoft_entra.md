@@ -1,11 +1,11 @@
 ---
-page_title: "authentik_provider_google_workspace Resource - terraform-provider-authentik"
+page_title: "authentik_provider_microsoft_entra Resource - terraform-provider-authentik"
 subcategory: "Applications"
 description: |-
   
 ---
 
-# authentik_provider_google_workspace (Resource)
+# authentik_provider_microsoft_entra (Resource)
 
 
 
@@ -16,13 +16,13 @@ description: |-
 
 ### Required
 
-- `default_group_email_domain` (String)
+- `client_id` (String)
+- `client_secret` (String, Sensitive)
 - `name` (String)
+- `tenant_id` (String)
 
 ### Optional
 
-- `credentials` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
-- `delegated_subject` (String) Defaults to `seconds=0`.
 - `exclude_users_service_account` (Boolean)
 - `filter_group` (String)
 - `group_delete_action` (String) Allowed values:
@@ -32,9 +32,8 @@ description: |-
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
 - `user_delete_action` (String) Allowed values:
-  - `do_nothing`
   - `delete`
-  - `suspend`
+  - `do_nothing`
  Defaults to `delete`.
 
 ### Read-Only
