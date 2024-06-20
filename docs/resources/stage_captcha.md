@@ -33,7 +33,10 @@ resource "authentik_stage_captcha" "name" {
 ### Optional
 
 - `api_url` (String) Defaults to `https://www.recaptcha.net/recaptcha/api/siteverify`.
+- `error_on_invalid_score` (Boolean) Defaults to `true`.
 - `js_url` (String) Defaults to `https://www.recaptcha.net/recaptcha/api.js`.
+- `score_max_threshold` (Number)
+- `score_min_threshold` (Number)
 
 ### Read-Only
 
