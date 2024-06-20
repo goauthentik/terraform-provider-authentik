@@ -25,7 +25,16 @@
 			"extensions": [
 				"mhutchie.git-graph",
 				"ms-azuretools.vscode-docker"
-			]
+			],
+			"settings": {
+				"go.testEnvVars": {
+					"TF_LOG": "trace",
+					"TF_ACC": "1",
+					"AUTHENTIK_URL": "http://server:9000",
+					"AUTHENTIK_TOKEN": "this-token-is-for-testing-dont-use"
+				},
+				"go.testFlags": ["-count=1"]
+			}
 		}
 	}
 
