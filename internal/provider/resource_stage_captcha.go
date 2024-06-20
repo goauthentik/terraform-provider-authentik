@@ -45,10 +45,12 @@ func resourceStageCaptcha() *schema.Resource {
 			"score_min_threshold": {
 				Type:     schema.TypeFloat,
 				Optional: true,
+				Default:  1,
 			},
 			"score_max_threshold": {
 				Type:     schema.TypeFloat,
 				Optional: true,
+				Default:  0.5,
 			},
 			"error_on_invalid_score": {
 				Type:     schema.TypeBool,
@@ -65,18 +67,14 @@ func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaSt
 		PublicKey:           d.Get("public_key").(string),
 		PrivateKey:          d.Get("private_key").(string),
 		ErrorOnInvalidScore: api.PtrBool(d.Get("error_on_invalid_score").(bool)),
+		ScoreMinThreshold:   api.PtrFloat64(d.Get("score_min_threshold").(float64)),
+		ScoreMaxThreshold:   api.PtrFloat64(d.Get("score_max_threshold").(float64)),
 	}
 	if v, ok := d.GetOk("js_url"); ok {
 		r.JsUrl = api.PtrString(v.(string))
 	}
 	if v, ok := d.GetOk("api_url"); ok {
 		r.ApiUrl = api.PtrString(v.(string))
-	}
-	if v, ok := d.GetOk("score_min_threshold"); ok {
-		r.ScoreMinThreshold = api.PtrFloat64(v.(float64))
-	}
-	if v, ok := d.GetOk("score_max_threshold"); ok {
-		r.ScoreMaxThreshold = api.PtrFloat64(v.(float64))
 	}
 	return &r
 }
