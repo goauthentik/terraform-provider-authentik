@@ -42,15 +42,33 @@ func resourceStageCaptcha() *schema.Resource {
 				Required:  true,
 				Sensitive: true,
 			},
+			"score_min_threshold": {
+				Type:     schema.TypeFloat,
+				Optional: true,
+				Default:  1,
+			},
+			"score_max_threshold": {
+				Type:     schema.TypeFloat,
+				Optional: true,
+				Default:  0.5,
+			},
+			"error_on_invalid_score": {
+				Type:     schema.TypeBool,
+				Default:  true,
+				Optional: true,
+			},
 		},
 	}
 }
 
 func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaStageRequest {
 	r := api.CaptchaStageRequest{
-		Name:       d.Get("name").(string),
-		PublicKey:  d.Get("public_key").(string),
-		PrivateKey: d.Get("private_key").(string),
+		Name:                d.Get("name").(string),
+		PublicKey:           d.Get("public_key").(string),
+		PrivateKey:          d.Get("private_key").(string),
+		ErrorOnInvalidScore: api.PtrBool(d.Get("error_on_invalid_score").(bool)),
+		ScoreMinThreshold:   api.PtrFloat64(d.Get("score_min_threshold").(float64)),
+		ScoreMaxThreshold:   api.PtrFloat64(d.Get("score_max_threshold").(float64)),
 	}
 	if v, ok := d.GetOk("js_url"); ok {
 		r.JsUrl = api.PtrString(v.(string))
@@ -88,6 +106,9 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "public_key", res.PublicKey)
 	setWrapper(d, "api_url", res.GetApiUrl())
 	setWrapper(d, "js_url", res.GetJsUrl())
+	setWrapper(d, "error_on_invalid_score", res.GetErrorOnInvalidScore())
+	setWrapper(d, "score_min_threshold", res.GetScoreMinThreshold())
+	setWrapper(d, "score_max_threshold", res.GetScoreMaxThreshold())
 	return diags
 }
 
