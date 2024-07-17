@@ -41,13 +41,19 @@ func resourceStagePassword() *schema.Resource {
 				Optional: true,
 				Default:  5,
 			},
+			"allow_show_password": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
 		},
 	}
 }
 
 func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordStageRequest {
 	r := api.PasswordStageRequest{
-		Name: d.Get("name").(string),
+		Name:              d.Get("name").(string),
+		AllowShowPassword: api.PtrBool(d.Get("allow_show_password").(bool)),
 	}
 
 	if s, sok := d.GetOk("configure_flow"); sok && s.(string) != "" {
@@ -95,6 +101,7 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	setWrapper(d, "failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
+	setWrapper(d, "allow_show_password", res.AllowShowPassword)
 	return diags
 }
 
