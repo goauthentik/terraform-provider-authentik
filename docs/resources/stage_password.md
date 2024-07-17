@@ -30,6 +30,7 @@ resource "authentik_stage_password" "test" {
 
 ### Optional
 
+- `allow_show_password` (Boolean) Defaults to `false`.
 - `configure_flow` (String)
 - `failed_attempts_before_cancel` (Number) Defaults to `5`.
 
