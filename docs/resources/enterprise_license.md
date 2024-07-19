@@ -20,7 +20,7 @@ description: |-
 
 ### Read-Only
 
-- `expiry` (String) Generated.
+- `expiry` (Number) Generated.
 - `external_users` (Number) Generated.
 - `id` (String) The ID of this resource.
 - `internal_users` (Number) Generated.

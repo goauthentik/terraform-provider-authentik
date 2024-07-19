@@ -29,7 +29,7 @@ func resourceEnterpriseLicense() *schema.Resource {
 				Computed: true,
 			},
 			"expiry": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"internal_users": {
@@ -75,7 +75,7 @@ func resourceEnterpriseLicenseRead(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expiry", res.Expiry)
+	setWrapper(d, "expiry", res.Expiry.Unix())
 	setWrapper(d, "key", res.Key)
 	setWrapper(d, "internal_users", res.InternalUsers)
 	setWrapper(d, "external_users", res.ExternalUsers)
