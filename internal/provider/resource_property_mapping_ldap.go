@@ -23,10 +23,6 @@ func resourceLDAPPropertyMapping() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"object_field": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
@@ -38,9 +34,8 @@ func resourceLDAPPropertyMapping() *schema.Resource {
 
 func resourceLDAPPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.LDAPPropertyMappingRequest {
 	r := api.LDAPPropertyMappingRequest{
-		Name:        d.Get("name").(string),
-		ObjectField: d.Get("object_field").(string),
-		Expression:  d.Get("expression").(string),
+		Name:       d.Get("name").(string),
+		Expression: d.Get("expression").(string),
 	}
 	return &r
 }
@@ -70,7 +65,6 @@ func resourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "expression", res.Expression)
-	setWrapper(d, "object_field", res.ObjectField)
 	return diags
 }
 
