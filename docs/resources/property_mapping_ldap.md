@@ -28,7 +28,6 @@ resource "authentik_property_mapping_ldap" "name" {
 
 - `expression` (String)
 - `name` (String)
-- `object_field` (String)
 
 ### Read-Only
 
