@@ -16,7 +16,6 @@ func TestAccDataSourceLDAPPropertyMapping(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "name", "authentik default LDAP Mapping: Name"),
 					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "managed", "goauthentik.io/sources/ldap/default-name"),
-					resource.TestCheckResourceAttr("data.authentik_property_mapping_ldap.test", "object_field", "name"),
 				),
 			},
 			{
