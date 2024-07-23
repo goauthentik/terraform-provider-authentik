@@ -41,7 +41,6 @@ data "authentik_property_mapping_ldap" "test" {
 - `managed` (String)
 - `managed_list` (List of String) Retrieve multiple property mappings
 - `name` (String)
-- `object_field` (String) Generated.
 
 ### Read-Only
 

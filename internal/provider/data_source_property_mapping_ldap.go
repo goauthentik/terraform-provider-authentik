@@ -41,11 +41,6 @@ func dataSourceLDAPPropertyMapping() *schema.Resource {
 				Description: "List of ids when `managed_list` is set.",
 			},
 
-			"object_field": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
 			"expression": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -69,9 +64,6 @@ func dataSourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 	if n, ok := d.GetOk("name"); ok {
 		req = req.Name(n.(string))
 	}
-	if m, ok := d.GetOk("object_field"); ok {
-		req = req.ObjectField(m.(string))
-	}
 
 	res, hr, err := req.Execute()
 	if err != nil {
@@ -94,7 +86,6 @@ func dataSourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 		setWrapper(d, "name", f.Name)
 		setWrapper(d, "name", f.Name)
 		setWrapper(d, "expression", f.Expression)
-		setWrapper(d, "object_field", f.ObjectField)
 	}
 	return diags
 }

@@ -34,7 +34,6 @@ func testAccResourceLDAPPropertyMapping(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_property_mapping_ldap" "name" {
   name         = "%[1]s"
-  object_field = "%[1]s"
   expression   = "return True"
 }
 `, name)
