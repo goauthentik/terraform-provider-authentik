@@ -71,6 +71,10 @@ func resourceBrand() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"default_application": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"attributes": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -140,6 +144,12 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 		m.WebCertificate.Set(nil)
 	}
 
+	if l, ok := d.Get("default_application").(string); ok {
+		m.DefaultApplication.Set(&l)
+	} else {
+		m.DefaultApplication.Set(nil)
+	}
+
 	attr := make(map[string]interface{})
 	if l, ok := d.Get("attributes").(string); ok && l != "" {
 		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
@@ -201,6 +211,9 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 	if res.WebCertificate.IsSet() {
 		setWrapper(d, "web_certificate", res.WebCertificate.Get())
+	}
+	if res.DefaultApplication.IsSet() {
+		setWrapper(d, "default_application", res.DefaultApplication.Get())
 	}
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {

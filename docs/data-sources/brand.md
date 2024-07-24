@@ -31,6 +31,7 @@ data "authentik_brand" "authentik-default" {
 - `branding_logo` (String) Generated.
 - `branding_title` (String) Generated.
 - `default` (Boolean) Generated.
+- `default_application` (String) Generated.
 - `domain` (String) Generated.
 - `flow_authentication` (String) Generated.
 - `flow_device_code` (String) Generated.
