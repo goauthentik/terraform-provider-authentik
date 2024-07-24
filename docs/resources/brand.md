@@ -35,6 +35,7 @@ resource "authentik_brand" "default" {
 - `branding_logo` (String)
 - `branding_title` (String) Defaults to `authentik`.
 - `default` (Boolean) Defaults to `false`.
+- `default_application` (String)
 - `flow_authentication` (String)
 - `flow_device_code` (String)
 - `flow_invalidation` (String)
