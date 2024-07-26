@@ -32,8 +32,8 @@ func resourceLDAPPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceLDAPPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.LDAPPropertyMappingRequest {
-	r := api.LDAPPropertyMappingRequest{
+func resourceLDAPPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.LDAPSourcePropertyMappingRequest {
+	r := api.LDAPSourcePropertyMappingRequest{
 		Name:       d.Get("name").(string),
 		Expression: d.Get("expression").(string),
 	}
@@ -45,7 +45,7 @@ func resourceLDAPPropertyMappingCreate(ctx context.Context, d *schema.ResourceDa
 
 	r := resourceLDAPPropertyMappingSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapCreate(ctx).LDAPPropertyMappingRequest(*r).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapCreate(ctx).LDAPSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -58,7 +58,7 @@ func resourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -73,7 +73,7 @@ func resourceLDAPPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDa
 
 	app := resourceLDAPPropertyMappingSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsLdapUpdate(ctx, d.Id()).LDAPPropertyMappingRequest(*app).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapUpdate(ctx, d.Id()).LDAPSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -84,7 +84,7 @@ func resourceLDAPPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDa
 
 func resourceLDAPPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsLdapDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}

@@ -111,13 +111,14 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_oauth2.oauth2provider`
   - `authentik_providers_proxy.proxyprovider`
   - `authentik_providers_radius.radiusprovider`
+  - `authentik_providers_radius.radiusproviderpropertymapping`
   - `authentik_providers_saml.samlprovider`
   - `authentik_providers_saml.samlpropertymapping`
   - `authentik_providers_scim.scimprovider`
   - `authentik_providers_scim.scimmapping`
   - `authentik_rbac.role`
   - `authentik_sources_ldap.ldapsource`
-  - `authentik_sources_ldap.ldappropertymapping`
+  - `authentik_sources_ldap.ldapsourcepropertymapping`
   - `authentik_sources_oauth.oauthsource`
   - `authentik_sources_oauth.useroauthsourceconnection`
   - `authentik_sources_plex.plexsource`

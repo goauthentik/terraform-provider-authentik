@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceLDAPPropertyMapping() *schema.Resource {
+func dataSourceRadiusProviderPropertyMapping() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceLDAPPropertyMappingRead,
-		Description: "Customization --- Get LDAP Property mappings",
+		ReadContext: dataSourceRadiusProviderPropertyMappingRead,
+		Description: "Customization --- Get Radius Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
@@ -49,11 +49,11 @@ func dataSourceLDAPPropertyMapping() *schema.Resource {
 	}
 }
 
-func dataSourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceRadiusProviderPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsSourceLdapList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsRadiusList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))

@@ -88,13 +88,14 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_policy_expression":                 tr(resourcePolicyExpression),
 			"authentik_policy_password":                   tr(resourcePolicyPassword),
 			"authentik_policy_reputation":                 tr(resourcePolicyReputation),
+			"authentik_property_mapping_google_workspace": tr(resourceGoogleWorkspacePropertyMapping),
 			"authentik_property_mapping_ldap":             tr(resourceLDAPPropertyMapping),
+			"authentik_property_mapping_microsoft_entra":  tr(resourceMicrosoftEntraPropertyMapping),
 			"authentik_property_mapping_notification":     tr(resourceNotificationPropertyMapping),
 			"authentik_property_mapping_rac":              tr(resourceRACPropertyMapping),
+			"authentik_property_mapping_radius":           tr(resourceRadiusProviderPropertyMapping),
 			"authentik_property_mapping_saml":             tr(resourceSAMLPropertyMapping),
 			"authentik_property_mapping_scim":             tr(resourceSCIMPropertyMapping),
-			"authentik_property_mapping_google_workspace": tr(resourceGoogleWorkspacePropertyMapping),
-			"authentik_property_mapping_microsoft_entra":  tr(resourceMicrosoftEntraPropertyMapping),
 			"authentik_provider_google_workspace":         tr(resourceProviderGoogleWorkspace),
 			"authentik_provider_ldap":                     tr(resourceProviderLDAP),
 			"authentik_provider_microsoft_entra":          tr(resourceProviderMicrosoftEntra),
@@ -138,23 +139,24 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_user":                              tr(resourceUser),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"authentik_brand":                  td(dataSourceBrand),
-			"authentik_certificate_key_pair":   td(dataSourceCertificateKeyPair),
-			"authentik_flow":                   td(dataSourceFlow),
-			"authentik_group":                  td(dataSourceGroup),
-			"authentik_groups":                 td(dataSourceGroups),
-			"authentik_property_mapping_ldap":  td(dataSourceLDAPPropertyMapping),
-			"authentik_property_mapping_rac":   td(dataSourceRACPropertyMapping),
-			"authentik_property_mapping_saml":  td(dataSourceSAMLPropertyMapping),
-			"authentik_property_mapping_scim":  td(dataSourceSCIMropertyMapping),
-			"authentik_provider_oauth2_config": td(dataSourceProviderOAuth2Config),
-			"authentik_provider_saml_metadata": td(dataSourceProviderSAMLMetadata),
-			"authentik_scope_mapping":          td(dataSourceScopeMapping),
-			"authentik_source":                 td(dataSourceSource),
-			"authentik_stage":                  td(dataSourceStage),
-			"authentik_user":                   td(dataSourceUser),
-			"authentik_users":                  td(dataSourceUsers),
-			"authentik_webauthn_device_type":   td(dataSourceWebAuthnDeviceType),
+			"authentik_brand":                   td(dataSourceBrand),
+			"authentik_certificate_key_pair":    td(dataSourceCertificateKeyPair),
+			"authentik_flow":                    td(dataSourceFlow),
+			"authentik_group":                   td(dataSourceGroup),
+			"authentik_groups":                  td(dataSourceGroups),
+			"authentik_property_mapping_ldap":   td(dataSourceLDAPPropertyMapping),
+			"authentik_property_mapping_rac":    td(dataSourceRACPropertyMapping),
+			"authentik_property_mapping_radius": td(dataSourceRadiusProviderPropertyMapping),
+			"authentik_property_mapping_saml":   td(dataSourceSAMLPropertyMapping),
+			"authentik_property_mapping_scim":   td(dataSourceSCIMropertyMapping),
+			"authentik_provider_oauth2_config":  td(dataSourceProviderOAuth2Config),
+			"authentik_provider_saml_metadata":  td(dataSourceProviderSAMLMetadata),
+			"authentik_scope_mapping":           td(dataSourceScopeMapping),
+			"authentik_source":                  td(dataSourceSource),
+			"authentik_stage":                   td(dataSourceStage),
+			"authentik_user":                    td(dataSourceUser),
+			"authentik_users":                   td(dataSourceUsers),
+			"authentik_webauthn_device_type":    td(dataSourceWebAuthnDeviceType),
 		},
 		ConfigureContextFunc: providerConfigure(version, testing),
 	}
@@ -205,7 +207,7 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 
 		rootConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
 		if err == nil && rootConfig.ErrorReporting.Enabled {
-			dsn := "https://7b485fd979bf48c1acbe38ffe382a541@sentry.beryju.org/14"
+			dsn := ""
 			// Customisable Sentry DSN was added in 2022.11, so only use that DSN when its set
 			if rootConfig.ErrorReporting.SentryDsn != "" {
 				dsn = rootConfig.ErrorReporting.SentryDsn
@@ -222,9 +224,10 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			})
 			if err != nil {
 				fmt.Printf("Error during sentry init: %v\n", err)
+			} else {
+				config.HTTPClient.Transport = NewTracingTransport(context.Background(), config.HTTPClient.Transport)
+				apiClient = api.NewAPIClient(config)
 			}
-			config.HTTPClient.Transport = NewTracingTransport(context.Background(), config.HTTPClient.Transport)
-			apiClient = api.NewAPIClient(config)
 		}
 
 		return &APIClient{
