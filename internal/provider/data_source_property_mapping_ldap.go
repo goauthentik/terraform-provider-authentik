@@ -53,7 +53,7 @@ func dataSourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsLdapList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsSourceLdapList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))

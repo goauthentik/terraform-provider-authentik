@@ -205,7 +205,7 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 
 		rootConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
 		if err == nil && rootConfig.ErrorReporting.Enabled {
-			dsn := "https://7b485fd979bf48c1acbe38ffe382a541@sentry.beryju.org/14"
+			dsn := ""
 			// Customisable Sentry DSN was added in 2022.11, so only use that DSN when its set
 			if rootConfig.ErrorReporting.SentryDsn != "" {
 				dsn = rootConfig.ErrorReporting.SentryDsn
@@ -222,9 +222,10 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			})
 			if err != nil {
 				fmt.Printf("Error during sentry init: %v\n", err)
+			} else {
+				config.HTTPClient.Transport = NewTracingTransport(context.Background(), config.HTTPClient.Transport)
+				apiClient = api.NewAPIClient(config)
 			}
-			config.HTTPClient.Transport = NewTracingTransport(context.Background(), config.HTTPClient.Transport)
-			apiClient = api.NewAPIClient(config)
 		}
 
 		return &APIClient{
