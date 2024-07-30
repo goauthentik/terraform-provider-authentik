@@ -106,6 +106,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_provider_saml":                     tr(resourceProviderSAML),
 			"authentik_provider_scim":                     tr(resourceProviderSCIM),
 			"authentik_rac_endpoint":                      tr(resourceRACEndpoint),
+			"authentik_rbac_role":                     tr(resourceRBACRole),
 			"authentik_scope_mapping":                     tr(resourceScopeMapping),
 			"authentik_service_connection_docker":         tr(resourceServiceConnectionDocker),
 			"authentik_service_connection_kubernetes":     tr(resourceServiceConnectionKubernetes),

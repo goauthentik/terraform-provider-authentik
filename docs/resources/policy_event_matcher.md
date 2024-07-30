@@ -126,6 +126,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_sources_saml.samlsource`
   - `authentik_sources_saml.usersamlsourceconnection`
   - `authentik_sources_scim.scimsource`
+  - `authentik_sources_scim.scimsourcepropertymapping`
   - `authentik_stages_authenticator_duo.authenticatorduostage`
   - `authentik_stages_authenticator_duo.duodevice`
   - `authentik_stages_authenticator_sms.authenticatorsmsstage`
