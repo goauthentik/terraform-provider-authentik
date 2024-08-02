@@ -1,24 +1,47 @@
 ---
-page_title: "authentik_policy_event_matcher Resource - terraform-provider-authentik"
-subcategory: "Customization"
+page_title: "authentik_rbac_permission_role Resource - terraform-provider-authentik"
+subcategory: "RBAC"
 description: |-
   
 ---
 
-# authentik_policy_event_matcher (Resource)
+# authentik_rbac_permission_role (Resource)
 
 
 
 ## Example Usage
 
 ```terraform
-# Create policy to match events
+# Assign a global permission to a role
 
-resource "authentik_policy_event_matcher" "name" {
-  name      = "login-from-1.2.3.4"
-  action    = "login"
-  app       = "authentik.events"
-  client_ip = "1.2.3.4"
+resource "authentik_rbac_role" "my-role" {
+  name = "my-role"
+}
+
+resource "authentik_rbac_permission_role" "global-permission" {
+  role       = authentik_rbac_role.my-role.id
+  model      = "authentik_flows.flow"
+  permission = "inspect_flow"
+}
+
+# Assign an object permission to a role
+
+resource "authentik_flow" "flow" {
+  name        = "test-flow"
+  title       = "Test flow"
+  slug        = "test-flow"
+  designation = "authorization"
+}
+
+resource "authentik_rbac_role" "my-role" {
+  name = "my-role"
+}
+
+resource "authentik_rbac_permission_role" "global-permission" {
+  role       = authentik_rbac_role.my-role.id
+  model      = "authentik_flows.flow"
+  permission = "inspect_flow"
+  object_id  = authentik_flow.flow.uuid
 }
 ```
 
@@ -27,70 +50,6 @@ resource "authentik_policy_event_matcher" "name" {
 
 ### Required
 
-- `name` (String)
-
-### Optional
-
-- `action` (String)
-- `app` (String) Allowed values:
-  - `authentik.tenants`
-  - `authentik.admin`
-  - `authentik.api`
-  - `authentik.crypto`
-  - `authentik.flows`
-  - `authentik.outposts`
-  - `authentik.policies.dummy`
-  - `authentik.policies.event_matcher`
-  - `authentik.policies.expiry`
-  - `authentik.policies.expression`
-  - `authentik.policies.password`
-  - `authentik.policies.reputation`
-  - `authentik.policies`
-  - `authentik.providers.ldap`
-  - `authentik.providers.oauth2`
-  - `authentik.providers.proxy`
-  - `authentik.providers.radius`
-  - `authentik.providers.saml`
-  - `authentik.providers.scim`
-  - `authentik.rbac`
-  - `authentik.recovery`
-  - `authentik.sources.ldap`
-  - `authentik.sources.oauth`
-  - `authentik.sources.plex`
-  - `authentik.sources.saml`
-  - `authentik.sources.scim`
-  - `authentik.stages.authenticator`
-  - `authentik.stages.authenticator_duo`
-  - `authentik.stages.authenticator_sms`
-  - `authentik.stages.authenticator_static`
-  - `authentik.stages.authenticator_totp`
-  - `authentik.stages.authenticator_validate`
-  - `authentik.stages.authenticator_webauthn`
-  - `authentik.stages.captcha`
-  - `authentik.stages.consent`
-  - `authentik.stages.deny`
-  - `authentik.stages.dummy`
-  - `authentik.stages.email`
-  - `authentik.stages.identification`
-  - `authentik.stages.invitation`
-  - `authentik.stages.password`
-  - `authentik.stages.prompt`
-  - `authentik.stages.user_delete`
-  - `authentik.stages.user_login`
-  - `authentik.stages.user_logout`
-  - `authentik.stages.user_write`
-  - `authentik.brands`
-  - `authentik.blueprints`
-  - `authentik.core`
-  - `authentik.enterprise`
-  - `authentik.enterprise.audit`
-  - `authentik.enterprise.providers.google_workspace`
-  - `authentik.enterprise.providers.microsoft_entra`
-  - `authentik.enterprise.providers.rac`
-  - `authentik.enterprise.stages.source`
-  - `authentik.events`
-- `client_ip` (String)
-- `execution_logging` (Boolean) Defaults to `false`.
 - `model` (String) Allowed values:
   - `authentik_tenants.domain`
   - `authentik_crypto.certificatekeypair`
@@ -174,6 +133,12 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_events.notification`
   - `authentik_events.notificationrule`
   - `authentik_events.notificationwebhookmapping`
+- `permission` (String)
+- `role` (String)
+
+### Optional
+
+- `object_id` (String)
 
 ### Read-Only
 

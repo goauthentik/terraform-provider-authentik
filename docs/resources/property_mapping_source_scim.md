@@ -1,11 +1,11 @@
 ---
-page_title: "authentik_property_mapping_scim Resource - terraform-provider-authentik"
+page_title: "authentik_property_mapping_source_scim Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
   
 ---
 
-# authentik_property_mapping_scim (Resource)
+# authentik_property_mapping_source_scim (Resource)
 
 
 
