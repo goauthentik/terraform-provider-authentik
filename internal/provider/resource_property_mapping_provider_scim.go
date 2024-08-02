@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceSCIMPropertyMapping() *schema.Resource {
+func resourceSCIMProviderPropertyMapping() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Customization --- ",
-		CreateContext: resourceSCIMPropertyMappingCreate,
-		ReadContext:   resourceSCIMPropertyMappingRead,
-		UpdateContext: resourceSCIMPropertyMappingUpdate,
-		DeleteContext: resourceSCIMPropertyMappingDelete,
+		CreateContext: resourceSCIMProviderPropertyMappingCreate,
+		ReadContext:   resourceSCIMProviderPropertyMappingRead,
+		UpdateContext: resourceSCIMProviderPropertyMappingUpdate,
+		DeleteContext: resourceSCIMProviderPropertyMappingDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -32,7 +32,7 @@ func resourceSCIMPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceSCIMPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.SCIMMappingRequest {
+func resourceSCIMProviderPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.SCIMMappingRequest {
 	r := api.SCIMMappingRequest{
 		Name:       d.Get("name").(string),
 		Expression: d.Get("expression").(string),
@@ -40,10 +40,10 @@ func resourceSCIMPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.SC
 	return &r
 }
 
-func resourceSCIMPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSCIMProviderPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceSCIMPropertyMappingSchemaToProvider(d)
+	r := resourceSCIMProviderPropertyMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScimCreate(ctx).SCIMMappingRequest(*r).Execute()
 	if err != nil {
@@ -51,10 +51,10 @@ func resourceSCIMPropertyMappingCreate(ctx context.Context, d *schema.ResourceDa
 	}
 
 	d.SetId(res.Pk)
-	return resourceSCIMPropertyMappingRead(ctx, d, m)
+	return resourceSCIMProviderPropertyMappingRead(ctx, d, m)
 }
 
-func resourceSCIMPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSCIMProviderPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -68,10 +68,10 @@ func resourceSCIMPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 	return diags
 }
 
-func resourceSCIMPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSCIMProviderPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceSCIMPropertyMappingSchemaToProvider(d)
+	app := resourceSCIMProviderPropertyMappingSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScimUpdate(ctx, d.Id()).SCIMMappingRequest(*app).Execute()
 	if err != nil {
@@ -79,10 +79,10 @@ func resourceSCIMPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDa
 	}
 
 	d.SetId(res.Pk)
-	return resourceSCIMPropertyMappingRead(ctx, d, m)
+	return resourceSCIMProviderPropertyMappingRead(ctx, d, m)
 }
 
-func resourceSCIMPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSCIMProviderPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsScimDestroy(ctx, d.Id()).Execute()
 	if err != nil {
