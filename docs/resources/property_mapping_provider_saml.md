@@ -1,20 +1,20 @@
 ---
-page_title: "authentik_property_mapping_saml Resource - terraform-provider-authentik"
+page_title: "authentik_property_mapping_provider_saml Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  
+  Manage SAML Provider Property mappings
 ---
 
-# authentik_property_mapping_saml (Resource)
+# authentik_property_mapping_provider_saml (Resource)
 
-
+Manage SAML Provider Property mappings
 
 ## Example Usage
 
 ```terraform
-# Create a custom SAML property mapping
+# Create a custom SAML provider property mapping
 
-resource "authentik_property_mapping_saml" "saml-aws-rolessessionname" {
+resource "authentik_property_mapping_provider_saml" "saml-aws-rolessessionname" {
   name       = "SAML AWS RoleSessionName"
   saml_name  = "https://aws.amazon.com/SAML/Attributes/RoleSessionName"
   expression = "return user.email"

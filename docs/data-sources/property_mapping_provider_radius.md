@@ -1,13 +1,13 @@
 ---
-page_title: "authentik_property_mapping_rac Data Source - terraform-provider-authentik"
+page_title: "authentik_property_mapping_provider_radius Data Source - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  Get RAC Property mappings
+  Get Radius Provider Property mappings
 ---
 
-# authentik_property_mapping_rac (Data Source)
+# authentik_property_mapping_provider_radius (Data Source)
 
-Get RAC Property mappings
+Get Radius Provider Property mappings
 
 
 
@@ -20,7 +20,6 @@ Get RAC Property mappings
 - `managed` (String)
 - `managed_list` (List of String) Retrieve multiple property mappings
 - `name` (String)
-- `settings` (String) Generated.
 
 ### Read-Only
 

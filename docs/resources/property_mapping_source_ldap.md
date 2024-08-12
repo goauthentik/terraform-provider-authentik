@@ -1,20 +1,20 @@
 ---
-page_title: "authentik_property_mapping_ldap Resource - terraform-provider-authentik"
+page_title: "authentik_property_mapping_source_ldap Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  
+  Manage LDAP Source Property mappings
 ---
 
-# authentik_property_mapping_ldap (Resource)
+# authentik_property_mapping_source_ldap (Resource)
 
-
+Manage LDAP Source Property mappings
 
 ## Example Usage
 
 ```terraform
-# Create a custom LDAP property mapping
+# Create a custom LDAP source property mapping
 
-resource "authentik_property_mapping_ldap" "name" {
+resource "authentik_property_mapping_source_ldap" "name" {
   name       = "custom-field"
   expression = "return ldap.get('sAMAccountName')"
 }

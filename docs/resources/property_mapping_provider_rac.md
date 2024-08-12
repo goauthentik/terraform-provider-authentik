@@ -1,13 +1,13 @@
 ---
-page_title: "authentik_property_mapping_rac Resource - terraform-provider-authentik"
+page_title: "authentik_property_mapping_provider_rac Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  
+  Manage RAC Provider Property mappings
 ---
 
-# authentik_property_mapping_rac (Resource)
+# authentik_property_mapping_provider_rac (Resource)
 
-
+Manage RAC Provider Property mappings
 
 
 

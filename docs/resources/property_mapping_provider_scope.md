@@ -1,20 +1,20 @@
 ---
-page_title: "authentik_scope_mapping Resource - terraform-provider-authentik"
+page_title: "authentik_property_mapping_provider_scope Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  
+  Manage Scope Provider Property mappings
 ---
 
-# authentik_scope_mapping (Resource)
+# authentik_property_mapping_provider_scope (Resource)
 
-
+Manage Scope Provider Property mappings
 
 ## Example Usage
 
 ```terraform
 # Create a scope mapping
 
-resource "authentik_scope_mapping" "name" {
+resource "authentik_property_mapping_provider_scope" "name" {
   name       = "minio"
   scope_name = "minio"
   expression = <<EOF
