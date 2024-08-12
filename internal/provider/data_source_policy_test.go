@@ -14,7 +14,7 @@ func TestAccDataSourcePolicy(t *testing.T) {
 			{
 				Config: testAccDataSourcePolicySimple,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.authentik_stage.default-authentication-flow-password-stage", "name", "default-authentication-flow-password-stage"),
+					resource.TestCheckResourceAttr("data.authentik_policy.default-authentication-flow-password-stage", "name", "default-authentication-flow-password-stage"),
 				),
 			},
 		},
