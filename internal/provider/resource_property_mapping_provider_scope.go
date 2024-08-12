@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceScopeMapping() *schema.Resource {
+func resourcePropertyMappingProviderScope() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceScopeMappingCreate,
-		ReadContext:   resourceScopeMappingRead,
-		UpdateContext: resourceScopeMappingUpdate,
-		DeleteContext: resourceScopeMappingDelete,
+		Description:   "Customization --- Manage Scope Provider Property mappings",
+		CreateContext: resourcePropertyMappingProviderScopeCreate,
+		ReadContext:   resourcePropertyMappingProviderScopeRead,
+		UpdateContext: resourcePropertyMappingProviderScopeUpdate,
+		DeleteContext: resourcePropertyMappingProviderScopeDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -40,7 +40,7 @@ func resourceScopeMapping() *schema.Resource {
 	}
 }
 
-func resourceScopeMappingSchemaToProvider(d *schema.ResourceData) *api.ScopeMappingRequest {
+func resourcePropertyMappingProviderScopeSchemaToProvider(d *schema.ResourceData) *api.ScopeMappingRequest {
 	r := api.ScopeMappingRequest{
 		Name:       d.Get("name").(string),
 		ScopeName:  d.Get("scope_name").(string),
@@ -52,10 +52,10 @@ func resourceScopeMappingSchemaToProvider(d *schema.ResourceData) *api.ScopeMapp
 	return &r
 }
 
-func resourceScopeMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceScopeMappingSchemaToProvider(d)
+	r := resourcePropertyMappingProviderScopeSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeCreate(ctx).ScopeMappingRequest(*r).Execute()
 	if err != nil {
@@ -63,10 +63,10 @@ func resourceScopeMappingCreate(ctx context.Context, d *schema.ResourceData, m i
 	}
 
 	d.SetId(res.Pk)
-	return resourceScopeMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderScopeRead(ctx, d, m)
 }
 
-func resourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -82,10 +82,10 @@ func resourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func resourceScopeMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceScopeMappingSchemaToProvider(d)
+	app := resourcePropertyMappingProviderScopeSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeUpdate(ctx, d.Id()).ScopeMappingRequest(*app).Execute()
 	if err != nil {
@@ -93,10 +93,10 @@ func resourceScopeMappingUpdate(ctx context.Context, d *schema.ResourceData, m i
 	}
 
 	d.SetId(res.Pk)
-	return resourceScopeMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderScopeRead(ctx, d, m)
 }
 
-func resourceScopeMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsScopeDestroy(ctx, d.Id()).Execute()
 	if err != nil {

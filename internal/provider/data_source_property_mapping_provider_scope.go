@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceScopeMapping() *schema.Resource {
+func dataSourcePropertyMappingProviderScope() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceScopeMappingRead,
-		Description: "Customization --- Get OAuth Scope mappings",
+		ReadContext: dataSourcePropertyMappingProviderScopeRead,
+		Description: "Customization --- Get OAuth Provider Scope Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
@@ -58,7 +58,7 @@ func dataSourceScopeMapping() *schema.Resource {
 	}
 }
 
-func dataSourceScopeMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
