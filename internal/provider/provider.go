@@ -97,6 +97,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_property_mapping_provider_scim":             tr(resourcePropertyMappingProviderSCIM),
 			"authentik_property_mapping_provider_scope":            tr(resourcePropertyMappingProviderScope),
 			"authentik_property_mapping_source_ldap":               tr(resourcePropertyMappingSourceLDAP),
+			"authentik_property_mapping_source_oauth":              tr(resourcePropertyMappingSourceOAuth),
 			"authentik_property_mapping_source_scim":               tr(resourcePropertyMappingSourceSCIM),
 			"authentik_provider_google_workspace":                  tr(resourceProviderGoogleWorkspace),
 			"authentik_provider_ldap":                              tr(resourceProviderLDAP),
