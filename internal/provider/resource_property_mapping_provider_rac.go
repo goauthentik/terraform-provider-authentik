@@ -68,7 +68,7 @@ func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.Res
 		return diags
 	}
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRacCreate(ctx).RACPropertyMappingRequest(*r).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacCreate(ctx).RACPropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -81,7 +81,7 @@ func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Resou
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRacRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -104,7 +104,7 @@ func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.Res
 		return diags
 	}
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRacUpdate(ctx, d.Id()).RACPropertyMappingRequest(*app).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacUpdate(ctx, d.Id()).RACPropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -115,7 +115,7 @@ func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.Res
 
 func resourcePropertyMappingProviderRACDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsRacDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}

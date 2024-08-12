@@ -53,7 +53,7 @@ func dataSourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.Re
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsScimList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsProviderScimList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))

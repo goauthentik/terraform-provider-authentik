@@ -45,7 +45,7 @@ func resourcePropertyMappingProviderRadiusCreate(ctx context.Context, d *schema.
 
 	r := resourcePropertyMappingProviderRadiusSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRadiusCreate(ctx).RadiusProviderPropertyMappingRequest(*r).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRadiusCreate(ctx).RadiusProviderPropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -58,7 +58,7 @@ func resourcePropertyMappingProviderRadiusRead(ctx context.Context, d *schema.Re
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRadiusRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRadiusRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -73,7 +73,7 @@ func resourcePropertyMappingProviderRadiusUpdate(ctx context.Context, d *schema.
 
 	app := resourcePropertyMappingProviderRadiusSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRadiusUpdate(ctx, d.Id()).RadiusProviderPropertyMappingRequest(*app).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRadiusUpdate(ctx, d.Id()).RadiusProviderPropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -84,7 +84,7 @@ func resourcePropertyMappingProviderRadiusUpdate(ctx context.Context, d *schema.
 
 func resourcePropertyMappingProviderRadiusDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsRadiusDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRadiusDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}

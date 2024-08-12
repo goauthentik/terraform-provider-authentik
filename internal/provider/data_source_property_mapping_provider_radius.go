@@ -53,7 +53,7 @@ func dataSourcePropertyMappingProviderRadiusRead(ctx context.Context, d *schema.
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsRadiusList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsProviderRadiusList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))

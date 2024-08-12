@@ -57,7 +57,7 @@ func resourcePropertyMappingProviderScopeCreate(ctx context.Context, d *schema.R
 
 	r := resourcePropertyMappingProviderScopeSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeCreate(ctx).ScopeMappingRequest(*r).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeCreate(ctx).ScopeMappingRequest(*r).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -70,7 +70,7 @@ func resourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.Res
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -87,7 +87,7 @@ func resourcePropertyMappingProviderScopeUpdate(ctx context.Context, d *schema.R
 
 	app := resourcePropertyMappingProviderScopeSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsScopeUpdate(ctx, d.Id()).ScopeMappingRequest(*app).Execute()
+	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeUpdate(ctx, d.Id()).ScopeMappingRequest(*app).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
@@ -98,7 +98,7 @@ func resourcePropertyMappingProviderScopeUpdate(ctx context.Context, d *schema.R
 
 func resourcePropertyMappingProviderScopeDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsScopeDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}

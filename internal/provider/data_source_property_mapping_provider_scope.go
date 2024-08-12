@@ -62,7 +62,7 @@ func dataSourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.R
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsScopeList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsProviderScopeList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))
