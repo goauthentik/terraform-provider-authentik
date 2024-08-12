@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceSAMLPropertyMapping() *schema.Resource {
+func dataSourcePropertyMappingProviderRadius() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceSAMLPropertyMappingRead,
-		Description: "Customization --- Get SAML Property mappings",
+		ReadContext: dataSourcePropertyMappingProviderRadiusRead,
+		Description: "Customization --- Get Radius Provider Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
@@ -41,30 +41,19 @@ func dataSourceSAMLPropertyMapping() *schema.Resource {
 				Description: "List of ids when `managed_list` is set.",
 			},
 
-			"saml_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"friendly_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
 			"expression": {
 				Type:     schema.TypeString,
-				Optional: true,
 				Computed: true,
 			},
 		},
 	}
 }
 
-func dataSourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourcePropertyMappingProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsSamlList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsRadiusList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))
@@ -74,12 +63,6 @@ func dataSourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 
 	if n, ok := d.GetOk("name"); ok {
 		req = req.Name(n.(string))
-	}
-	if m, ok := d.GetOk("saml_name"); ok {
-		req = req.SamlName(m.(string))
-	}
-	if m, ok := d.GetOk("friendly_name"); ok {
-		req = req.FriendlyName(m.(string))
 	}
 
 	res, hr, err := req.Execute()
@@ -101,11 +84,8 @@ func dataSourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceDa
 		f := res.Results[0]
 		d.SetId(f.Pk)
 		setWrapper(d, "name", f.Name)
+		setWrapper(d, "name", f.Name)
 		setWrapper(d, "expression", f.Expression)
-		setWrapper(d, "saml_name", f.SamlName)
-		if f.FriendlyName.IsSet() {
-			setWrapper(d, "friendly_name", f.FriendlyName.Get())
-		}
 	}
 	return diags
 }

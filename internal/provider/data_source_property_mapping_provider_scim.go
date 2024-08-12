@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceSCIMropertyMapping() *schema.Resource {
+func dataSourcePropertyMappingProviderSCIM() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceSCIMPropertyMappingRead,
-		Description: "Customization --- Get SCIM Property mappings",
+		ReadContext: dataSourcePropertyMappingProviderSCIMRead,
+		Description: "Customization --- Get SCIM Provider Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
@@ -49,7 +49,7 @@ func dataSourceSCIMropertyMapping() *schema.Resource {
 	}
 }
 
-func dataSourceSCIMPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 

@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceRACPropertyMapping() *schema.Resource {
+func dataSourcePropertyMappingSourceLDAP() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceRACPropertyMappingRead,
-		Description: "Customization --- Get RAC Property mappings",
+		ReadContext: dataSourcePropertyMappingSourceLDAPRead,
+		Description: "Customization --- Get LDAP Source Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
@@ -41,11 +41,6 @@ func dataSourceRACPropertyMapping() *schema.Resource {
 				Description: "List of ids when `managed_list` is set.",
 			},
 
-			"settings": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
 			"expression": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -54,11 +49,11 @@ func dataSourceRACPropertyMapping() *schema.Resource {
 	}
 }
 
-func dataSourceRACPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourcePropertyMappingSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsRacList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsSourceLdapList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))
@@ -91,7 +86,6 @@ func dataSourceRACPropertyMappingRead(ctx context.Context, d *schema.ResourceDat
 		setWrapper(d, "name", f.Name)
 		setWrapper(d, "name", f.Name)
 		setWrapper(d, "expression", f.Expression)
-		setWrapper(d, "settings", f.StaticSettings)
 	}
 	return diags
 }

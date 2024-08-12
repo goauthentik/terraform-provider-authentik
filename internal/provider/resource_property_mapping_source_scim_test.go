@@ -8,20 +8,20 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccResourceSCIMSourcePropertyMapping(t *testing.T) {
+func TestAccResourcePropertyMappingSourceSCIM(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceSCIMSourcePropertyMapping(rName),
+				Config: testAccResourcePropertyMappingSourceSCIM(rName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_property_mapping_source_scim.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourceSCIMSourcePropertyMapping(rName + "test"),
+				Config: testAccResourcePropertyMappingSourceSCIM(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_property_mapping_source_scim.name", "name", rName+"test"),
 				),
@@ -30,7 +30,7 @@ func TestAccResourceSCIMSourcePropertyMapping(t *testing.T) {
 	})
 }
 
-func testAccResourceSCIMSourcePropertyMapping(name string) string {
+func testAccResourcePropertyMappingSourceSCIM(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_property_mapping_source_scim" "name" {
   name         = "%[1]s"

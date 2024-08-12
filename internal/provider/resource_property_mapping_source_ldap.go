@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceLDAPPropertyMapping() *schema.Resource {
+func resourcePropertyMappingSourceLDAP() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceLDAPPropertyMappingCreate,
-		ReadContext:   resourceLDAPPropertyMappingRead,
-		UpdateContext: resourceLDAPPropertyMappingUpdate,
-		DeleteContext: resourceLDAPPropertyMappingDelete,
+		Description:   "Customization --- Manage LDAP Source Property mappings",
+		CreateContext: resourcePropertyMappingSourceLDAPCreate,
+		ReadContext:   resourcePropertyMappingSourceLDAPRead,
+		UpdateContext: resourcePropertyMappingSourceLDAPUpdate,
+		DeleteContext: resourcePropertyMappingSourceLDAPDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -32,7 +32,7 @@ func resourceLDAPPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceLDAPPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.LDAPSourcePropertyMappingRequest {
+func resourcePropertyMappingSourceLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPSourcePropertyMappingRequest {
 	r := api.LDAPSourcePropertyMappingRequest{
 		Name:       d.Get("name").(string),
 		Expression: d.Get("expression").(string),
@@ -40,10 +40,10 @@ func resourceLDAPPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.LD
 	return &r
 }
 
-func resourceLDAPPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceLDAPPropertyMappingSchemaToProvider(d)
+	r := resourcePropertyMappingSourceLDAPSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapCreate(ctx).LDAPSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
@@ -51,10 +51,10 @@ func resourceLDAPPropertyMappingCreate(ctx context.Context, d *schema.ResourceDa
 	}
 
 	d.SetId(res.Pk)
-	return resourceLDAPPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingSourceLDAPRead(ctx, d, m)
 }
 
-func resourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -68,10 +68,10 @@ func resourceLDAPPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 	return diags
 }
 
-func resourceLDAPPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceLDAPPropertyMappingSchemaToProvider(d)
+	app := resourcePropertyMappingSourceLDAPSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapUpdate(ctx, d.Id()).LDAPSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
@@ -79,10 +79,10 @@ func resourceLDAPPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDa
 	}
 
 	d.SetId(res.Pk)
-	return resourceLDAPPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingSourceLDAPRead(ctx, d, m)
 }
 
-func resourceLDAPPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceLDAPDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {

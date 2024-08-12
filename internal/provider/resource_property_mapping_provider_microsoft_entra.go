@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceMicrosoftEntraPropertyMapping() *schema.Resource {
+func resourcePropertyMappingProviderMicrosoftEntra() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceMicrosoftEntraPropertyMappingCreate,
-		ReadContext:   resourceMicrosoftEntraPropertyMappingRead,
-		UpdateContext: resourceMicrosoftEntraPropertyMappingUpdate,
-		DeleteContext: resourceMicrosoftEntraPropertyMappingDelete,
+		Description:   "Customization --- Manage Microsoft Entra Provider Property mappings",
+		CreateContext: resourcePropertyMappingProviderMicrosoftEntraCreate,
+		ReadContext:   resourcePropertyMappingProviderMicrosoftEntraRead,
+		UpdateContext: resourcePropertyMappingProviderMicrosoftEntraUpdate,
+		DeleteContext: resourcePropertyMappingProviderMicrosoftEntraDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -32,7 +32,7 @@ func resourceMicrosoftEntraPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceMicrosoftEntraPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.MicrosoftEntraProviderMappingRequest {
+func resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d *schema.ResourceData) *api.MicrosoftEntraProviderMappingRequest {
 	r := api.MicrosoftEntraProviderMappingRequest{
 		Name:       d.Get("name").(string),
 		Expression: d.Get("expression").(string),
@@ -40,10 +40,10 @@ func resourceMicrosoftEntraPropertyMappingSchemaToProvider(d *schema.ResourceDat
 	return &r
 }
 
-func resourceMicrosoftEntraPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceMicrosoftEntraPropertyMappingSchemaToProvider(d)
+	r := resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraCreate(ctx).MicrosoftEntraProviderMappingRequest(*r).Execute()
 	if err != nil {
@@ -51,10 +51,10 @@ func resourceMicrosoftEntraPropertyMappingCreate(ctx context.Context, d *schema.
 	}
 
 	d.SetId(res.Pk)
-	return resourceMicrosoftEntraPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderMicrosoftEntraRead(ctx, d, m)
 }
 
-func resourceMicrosoftEntraPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -68,10 +68,10 @@ func resourceMicrosoftEntraPropertyMappingRead(ctx context.Context, d *schema.Re
 	return diags
 }
 
-func resourceMicrosoftEntraPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceMicrosoftEntraPropertyMappingSchemaToProvider(d)
+	app := resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraUpdate(ctx, d.Id()).MicrosoftEntraProviderMappingRequest(*app).Execute()
 	if err != nil {
@@ -79,10 +79,10 @@ func resourceMicrosoftEntraPropertyMappingUpdate(ctx context.Context, d *schema.
 	}
 
 	d.SetId(res.Pk)
-	return resourceMicrosoftEntraPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderMicrosoftEntraRead(ctx, d, m)
 }
 
-func resourceMicrosoftEntraPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraDestroy(ctx, d.Id()).Execute()
 	if err != nil {

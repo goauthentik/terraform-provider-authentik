@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceGoogleWorkspacePropertyMapping() *schema.Resource {
+func resourcePropertyMappingProviderGoogleWorkspace() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceGoogleWorkspacePropertyMappingCreate,
-		ReadContext:   resourceGoogleWorkspacePropertyMappingRead,
-		UpdateContext: resourceGoogleWorkspacePropertyMappingUpdate,
-		DeleteContext: resourceGoogleWorkspacePropertyMappingDelete,
+		Description:   "Customization --- Manage Google Workspace Provider Property mappings",
+		CreateContext: resourcePropertyMappingProviderGoogleWorkspaceCreate,
+		ReadContext:   resourcePropertyMappingProviderGoogleWorkspaceRead,
+		UpdateContext: resourcePropertyMappingProviderGoogleWorkspaceUpdate,
+		DeleteContext: resourcePropertyMappingProviderGoogleWorkspaceDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -32,7 +32,7 @@ func resourceGoogleWorkspacePropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceGoogleWorkspacePropertyMappingSchemaToProvider(d *schema.ResourceData) *api.GoogleWorkspaceProviderMappingRequest {
+func resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d *schema.ResourceData) *api.GoogleWorkspaceProviderMappingRequest {
 	r := api.GoogleWorkspaceProviderMappingRequest{
 		Name:       d.Get("name").(string),
 		Expression: d.Get("expression").(string),
@@ -40,10 +40,10 @@ func resourceGoogleWorkspacePropertyMappingSchemaToProvider(d *schema.ResourceDa
 	return &r
 }
 
-func resourceGoogleWorkspacePropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceGoogleWorkspacePropertyMappingSchemaToProvider(d)
+	r := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderMappingRequest(*r).Execute()
 	if err != nil {
@@ -51,10 +51,10 @@ func resourceGoogleWorkspacePropertyMappingCreate(ctx context.Context, d *schema
 	}
 
 	d.SetId(res.Pk)
-	return resourceGoogleWorkspacePropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderGoogleWorkspaceRead(ctx, d, m)
 }
 
-func resourceGoogleWorkspacePropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -68,10 +68,10 @@ func resourceGoogleWorkspacePropertyMappingRead(ctx context.Context, d *schema.R
 	return diags
 }
 
-func resourceGoogleWorkspacePropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceGoogleWorkspacePropertyMappingSchemaToProvider(d)
+	app := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceUpdate(ctx, d.Id()).GoogleWorkspaceProviderMappingRequest(*app).Execute()
 	if err != nil {
@@ -79,10 +79,10 @@ func resourceGoogleWorkspacePropertyMappingUpdate(ctx context.Context, d *schema
 	}
 
 	d.SetId(res.Pk)
-	return resourceGoogleWorkspacePropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderGoogleWorkspaceRead(ctx, d, m)
 }
 
-func resourceGoogleWorkspacePropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, d.Id()).Execute()
 	if err != nil {

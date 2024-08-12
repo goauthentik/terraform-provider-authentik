@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceRadiusProviderPropertyMapping() *schema.Resource {
+func resourcePropertyMappingProviderRadius() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceRadiusProviderPropertyMappingCreate,
-		ReadContext:   resourceRadiusProviderPropertyMappingRead,
-		UpdateContext: resourceRadiusProviderPropertyMappingUpdate,
-		DeleteContext: resourceRadiusProviderPropertyMappingDelete,
+		Description:   "Customization --- Manage Radius Provider Property mappings",
+		CreateContext: resourcePropertyMappingProviderRadiusCreate,
+		ReadContext:   resourcePropertyMappingProviderRadiusRead,
+		UpdateContext: resourcePropertyMappingProviderRadiusUpdate,
+		DeleteContext: resourcePropertyMappingProviderRadiusDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -32,7 +32,7 @@ func resourceRadiusProviderPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceRadiusProviderPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.RadiusProviderPropertyMappingRequest {
+func resourcePropertyMappingProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusProviderPropertyMappingRequest {
 	r := api.RadiusProviderPropertyMappingRequest{
 		Name:       d.Get("name").(string),
 		Expression: d.Get("expression").(string),
@@ -40,10 +40,10 @@ func resourceRadiusProviderPropertyMappingSchemaToProvider(d *schema.ResourceDat
 	return &r
 }
 
-func resourceRadiusProviderPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceRadiusProviderPropertyMappingSchemaToProvider(d)
+	r := resourcePropertyMappingProviderRadiusSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRadiusCreate(ctx).RadiusProviderPropertyMappingRequest(*r).Execute()
 	if err != nil {
@@ -51,10 +51,10 @@ func resourceRadiusProviderPropertyMappingCreate(ctx context.Context, d *schema.
 	}
 
 	d.SetId(res.Pk)
-	return resourceRadiusProviderPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderRadiusRead(ctx, d, m)
 }
 
-func resourceRadiusProviderPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -68,10 +68,10 @@ func resourceRadiusProviderPropertyMappingRead(ctx context.Context, d *schema.Re
 	return diags
 }
 
-func resourceRadiusProviderPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceRadiusProviderPropertyMappingSchemaToProvider(d)
+	app := resourcePropertyMappingProviderRadiusSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsRadiusUpdate(ctx, d.Id()).RadiusProviderPropertyMappingRequest(*app).Execute()
 	if err != nil {
@@ -79,10 +79,10 @@ func resourceRadiusProviderPropertyMappingUpdate(ctx context.Context, d *schema.
 	}
 
 	d.SetId(res.Pk)
-	return resourceRadiusProviderPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderRadiusRead(ctx, d, m)
 }
 
-func resourceRadiusProviderPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRadiusDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsRadiusDestroy(ctx, d.Id()).Execute()
 	if err != nil {

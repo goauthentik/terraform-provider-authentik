@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceRadiusProviderPropertyMapping() *schema.Resource {
+func dataSourcePropertyMappingProviderSAML() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceRadiusProviderPropertyMappingRead,
-		Description: "Customization --- Get Radius Property mappings",
+		ReadContext: dataSourcePropertyMappingProviderSAMLRead,
+		Description: "Customization --- Get SAML Provider Property mappings",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:          schema.TypeString,
@@ -41,19 +41,30 @@ func dataSourceRadiusProviderPropertyMapping() *schema.Resource {
 				Description: "List of ids when `managed_list` is set.",
 			},
 
+			"saml_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
+			"friendly_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"expression": {
 				Type:     schema.TypeString,
+				Optional: true,
 				Computed: true,
 			},
 		},
 	}
 }
 
-func dataSourceRadiusProviderPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsRadiusList(ctx)
+	req := c.client.PropertymappingsApi.PropertymappingsSamlList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(castSlice[string](ml.([]interface{})))
@@ -63,6 +74,12 @@ func dataSourceRadiusProviderPropertyMappingRead(ctx context.Context, d *schema.
 
 	if n, ok := d.GetOk("name"); ok {
 		req = req.Name(n.(string))
+	}
+	if m, ok := d.GetOk("saml_name"); ok {
+		req = req.SamlName(m.(string))
+	}
+	if m, ok := d.GetOk("friendly_name"); ok {
+		req = req.FriendlyName(m.(string))
 	}
 
 	res, hr, err := req.Execute()
@@ -84,8 +101,11 @@ func dataSourceRadiusProviderPropertyMappingRead(ctx context.Context, d *schema.
 		f := res.Results[0]
 		d.SetId(f.Pk)
 		setWrapper(d, "name", f.Name)
-		setWrapper(d, "name", f.Name)
 		setWrapper(d, "expression", f.Expression)
+		setWrapper(d, "saml_name", f.SamlName)
+		if f.FriendlyName.IsSet() {
+			setWrapper(d, "friendly_name", f.FriendlyName.Get())
+		}
 	}
 	return diags
 }

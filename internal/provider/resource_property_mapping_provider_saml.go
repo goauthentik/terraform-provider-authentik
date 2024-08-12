@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceSAMLPropertyMapping() *schema.Resource {
+func resourcePropertyMappingProviderSAML() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceSAMLPropertyMappingCreate,
-		ReadContext:   resourceSAMLPropertyMappingRead,
-		UpdateContext: resourceSAMLPropertyMappingUpdate,
-		DeleteContext: resourceSAMLPropertyMappingDelete,
+		Description:   "Customization --- Manage SAML Provider Property mappings",
+		CreateContext: resourcePropertyMappingProviderSAMLCreate,
+		ReadContext:   resourcePropertyMappingProviderSAMLRead,
+		UpdateContext: resourcePropertyMappingProviderSAMLUpdate,
+		DeleteContext: resourcePropertyMappingProviderSAMLDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -40,7 +40,7 @@ func resourceSAMLPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceSAMLPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.SAMLPropertyMappingRequest {
+func resourcePropertyMappingProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLPropertyMappingRequest {
 	r := api.SAMLPropertyMappingRequest{
 		Name:       d.Get("name").(string),
 		SamlName:   d.Get("saml_name").(string),
@@ -52,10 +52,10 @@ func resourceSAMLPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.SA
 	return &r
 }
 
-func resourceSAMLPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceSAMLPropertyMappingSchemaToProvider(d)
+	r := resourcePropertyMappingProviderSAMLSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSamlCreate(ctx).SAMLPropertyMappingRequest(*r).Execute()
 	if err != nil {
@@ -63,10 +63,10 @@ func resourceSAMLPropertyMappingCreate(ctx context.Context, d *schema.ResourceDa
 	}
 
 	d.SetId(res.Pk)
-	return resourceSAMLPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderSAMLRead(ctx, d, m)
 }
 
-func resourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -84,10 +84,10 @@ func resourceSAMLPropertyMappingRead(ctx context.Context, d *schema.ResourceData
 	return diags
 }
 
-func resourceSAMLPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceSAMLPropertyMappingSchemaToProvider(d)
+	app := resourcePropertyMappingProviderSAMLSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSamlUpdate(ctx, d.Id()).SAMLPropertyMappingRequest(*app).Execute()
 	if err != nil {
@@ -95,10 +95,10 @@ func resourceSAMLPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDa
 	}
 
 	d.SetId(res.Pk)
-	return resourceSAMLPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderSAMLRead(ctx, d, m)
 }
 
-func resourceSAMLPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSAMLDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {

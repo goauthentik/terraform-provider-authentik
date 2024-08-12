@@ -10,13 +10,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceRACPropertyMapping() *schema.Resource {
+func resourcePropertyMappingProviderRAC() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceRACPropertyMappingCreate,
-		ReadContext:   resourceRACPropertyMappingRead,
-		UpdateContext: resourceRACPropertyMappingUpdate,
-		DeleteContext: resourceRACPropertyMappingDelete,
+		Description:   "Customization --- Manage RAC Provider Property mappings",
+		CreateContext: resourcePropertyMappingProviderRACCreate,
+		ReadContext:   resourcePropertyMappingProviderRACRead,
+		UpdateContext: resourcePropertyMappingProviderRACUpdate,
+		DeleteContext: resourcePropertyMappingProviderRACDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -41,7 +41,7 @@ func resourceRACPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceRACPropertyMappingSchemaToProvider(d *schema.ResourceData) (*api.RACPropertyMappingRequest, diag.Diagnostics) {
+func resourcePropertyMappingProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACPropertyMappingRequest, diag.Diagnostics) {
 	r := api.RACPropertyMappingRequest{
 		Name: d.Get("name").(string),
 	}
@@ -60,10 +60,10 @@ func resourceRACPropertyMappingSchemaToProvider(d *schema.ResourceData) (*api.RA
 	return &r, nil
 }
 
-func resourceRACPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, diags := resourceRACPropertyMappingSchemaToProvider(d)
+	r, diags := resourcePropertyMappingProviderRACSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
@@ -74,10 +74,10 @@ func resourceRACPropertyMappingCreate(ctx context.Context, d *schema.ResourceDat
 	}
 
 	d.SetId(res.Pk)
-	return resourceRACPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderRACRead(ctx, d, m)
 }
 
-func resourceRACPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -96,10 +96,10 @@ func resourceRACPropertyMappingRead(ctx context.Context, d *schema.ResourceData,
 	return diags
 }
 
-func resourceRACPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app, diags := resourceRACPropertyMappingSchemaToProvider(d)
+	app, diags := resourcePropertyMappingProviderRACSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
@@ -110,10 +110,10 @@ func resourceRACPropertyMappingUpdate(ctx context.Context, d *schema.ResourceDat
 	}
 
 	d.SetId(res.Pk)
-	return resourceRACPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingProviderRACRead(ctx, d, m)
 }
 
-func resourceRACPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsRacDestroy(ctx, d.Id()).Execute()
 	if err != nil {
