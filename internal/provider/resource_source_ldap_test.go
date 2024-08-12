@@ -33,7 +33,7 @@ func TestAccResourceSourceLDAP(t *testing.T) {
 
 func testAccResourceSourceLDAP(name string, appName string) string {
 	return fmt.Sprintf(`
-data "authentik_property_mapping_ldap" "test" {
+data "authentik_property_mapping_source_ldap" "test" {
   managed_list = [
     "goauthentik.io/sources/ldap/default-name",
     "goauthentik.io/sources/ldap/default-mail"
@@ -49,8 +49,8 @@ resource "authentik_source_ldap" "name" {
   bind_password = "bar"
   base_dn = "dn=foo"
   sync_users_password = false
-  property_mappings = data.authentik_property_mapping_ldap.test.ids
-  property_mappings_group = data.authentik_property_mapping_ldap.test.ids
+  property_mappings = data.authentik_property_mapping_source_ldap.test.ids
+  property_mappings_group = data.authentik_property_mapping_source_ldap.test.ids
 }
 `, name, appName)
 }
