@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -17,6 +18,10 @@ func TestAccDataSourcePolicy(t *testing.T) {
 					resource.TestCheckResourceAttr("data.authentik_policy.default-authentication-flow-password-stage", "name", "default-authentication-flow-password-stage"),
 				),
 			},
+			{
+				Config:      testAccDataSourcePolicyNotExisting,
+				ExpectError: regexp.MustCompile(`No matching policy found`),
+			},
 		},
 	})
 }
@@ -24,5 +29,11 @@ func TestAccDataSourcePolicy(t *testing.T) {
 const testAccDataSourcePolicySimple = `
 data "authentik_policy" "default-authentication-flow-password-stage" {
   name = "default-authentication-flow-password-stage"
+}
+`
+
+const testAccDataSourcePolicyNotExisting = `
+data "authentik_policy" "not-exiting-policy" {
+  name = "not-exiting-policy"
 }
 `
