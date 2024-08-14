@@ -45,7 +45,7 @@ func resourceSourceOAuth() *schema.Resource {
 			},
 			"enrollment_flow": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"enabled": {
 				Type:     schema.TypeBool,
@@ -150,7 +150,9 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 	}
 
 	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
-	r.EnrollmentFlow.Set(api.PtrString(d.Get("enrollment_flow").(string)))
+	if ef, ok := d.GetOk("enrollment_flow"); ok {
+		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
+	}
 
 	if s, sok := d.GetOk("request_token_url"); sok && s.(string) != "" {
 		r.RequestTokenUrl.Set(api.PtrString(s.(string)))

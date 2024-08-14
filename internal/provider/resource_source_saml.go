@@ -43,7 +43,7 @@ func resourceSourceSAML() *schema.Resource {
 			},
 			"enrollment_flow": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"enabled": {
 				Type:     schema.TypeBool,
@@ -155,7 +155,9 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	}
 
 	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
-	r.EnrollmentFlow.Set(api.PtrString(d.Get("enrollment_flow").(string)))
+	if ef, ok := d.GetOk("enrollment_flow"); ok {
+		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
+	}
 
 	if s, sok := d.GetOk("slo_url"); sok && s.(string) != "" {
 		r.SloUrl.Set(api.PtrString(s.(string)))

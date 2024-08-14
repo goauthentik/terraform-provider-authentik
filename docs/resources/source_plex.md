@@ -35,7 +35,6 @@ resource "authentik_source_plex" "name" {
 
 - `authentication_flow` (String)
 - `client_id` (String)
-- `enrollment_flow` (String)
 - `name` (String)
 - `plex_token` (String, Sensitive)
 - `slug` (String)
@@ -45,6 +44,7 @@ resource "authentik_source_plex" "name" {
 - `allow_friends` (Boolean) Defaults to `true`.
 - `allowed_servers` (List of String)
 - `enabled` (Boolean) Defaults to `true`.
+- `enrollment_flow` (String)
 - `policy_engine_mode` (String) Allowed values:
   - `all`
   - `any`
