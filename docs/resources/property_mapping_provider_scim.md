@@ -2,12 +2,12 @@
 page_title: "authentik_property_mapping_provider_scim Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  
+  Manage SCIM Provider Property mappings
 ---
 
 # authentik_property_mapping_provider_scim (Resource)
 
-
+Manage SCIM Provider Property mappings
 
 
 

@@ -8,13 +8,13 @@ import (
 	api "goauthentik.io/api/v3"
 )
 
-func resourceNotificationPropertyMapping() *schema.Resource {
+func resourcePropertyMappingNotification() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourceNotificationPropertyMappingCreate,
-		ReadContext:   resourceNotificationPropertyMappingRead,
-		UpdateContext: resourceNotificationPropertyMappingUpdate,
-		DeleteContext: resourceNotificationPropertyMappingDelete,
+		Description:   "Customization --- Manage Notification Property mappings",
+		CreateContext: resourcePropertyMappingNotificationCreate,
+		ReadContext:   resourcePropertyMappingNotificationRead,
+		UpdateContext: resourcePropertyMappingNotificationUpdate,
+		DeleteContext: resourcePropertyMappingNotificationDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -32,7 +32,7 @@ func resourceNotificationPropertyMapping() *schema.Resource {
 	}
 }
 
-func resourceNotificationPropertyMappingSchemaToProvider(d *schema.ResourceData) *api.NotificationWebhookMappingRequest {
+func resourcePropertyMappingNotificationSchemaToProvider(d *schema.ResourceData) *api.NotificationWebhookMappingRequest {
 	r := api.NotificationWebhookMappingRequest{
 		Name:       d.Get("name").(string),
 		Expression: d.Get("expression").(string),
@@ -40,10 +40,10 @@ func resourceNotificationPropertyMappingSchemaToProvider(d *schema.ResourceData)
 	return &r
 }
 
-func resourceNotificationPropertyMappingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceNotificationPropertyMappingSchemaToProvider(d)
+	r := resourcePropertyMappingNotificationSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationCreate(ctx).NotificationWebhookMappingRequest(*r).Execute()
 	if err != nil {
@@ -51,10 +51,10 @@ func resourceNotificationPropertyMappingCreate(ctx context.Context, d *schema.Re
 	}
 
 	d.SetId(res.Pk)
-	return resourceNotificationPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingNotificationRead(ctx, d, m)
 }
 
-func resourceNotificationPropertyMappingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -68,10 +68,10 @@ func resourceNotificationPropertyMappingRead(ctx context.Context, d *schema.Reso
 	return diags
 }
 
-func resourceNotificationPropertyMappingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceNotificationPropertyMappingSchemaToProvider(d)
+	app := resourcePropertyMappingNotificationSchemaToProvider(d)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationUpdate(ctx, d.Id()).NotificationWebhookMappingRequest(*app).Execute()
 	if err != nil {
@@ -79,10 +79,10 @@ func resourceNotificationPropertyMappingUpdate(ctx context.Context, d *schema.Re
 	}
 
 	d.SetId(res.Pk)
-	return resourceNotificationPropertyMappingRead(ctx, d, m)
+	return resourcePropertyMappingNotificationRead(ctx, d, m)
 }
 
-func resourceNotificationPropertyMappingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationDestroy(ctx, d.Id()).Execute()
 	if err != nil {

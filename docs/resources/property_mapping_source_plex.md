@@ -1,13 +1,13 @@
 ---
-page_title: "authentik_property_mapping_source_scim Resource - terraform-provider-authentik"
+page_title: "authentik_property_mapping_source_plex Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  Manage SCIM Source Property mappings
+  Manage Plex Source Property mappings
 ---
 
-# authentik_property_mapping_source_scim (Resource)
+# authentik_property_mapping_source_plex (Resource)
 
-Manage SCIM Source Property mappings
+Manage Plex Source Property mappings
 
 
 

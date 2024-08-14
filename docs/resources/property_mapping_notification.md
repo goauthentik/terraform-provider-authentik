@@ -2,12 +2,12 @@
 page_title: "authentik_property_mapping_notification Resource - terraform-provider-authentik"
 subcategory: "Customization"
 description: |-
-  
+  Manage Notification Property mappings
 ---
 
 # authentik_property_mapping_notification (Resource)
 
-
+Manage Notification Property mappings
 
 ## Example Usage
 

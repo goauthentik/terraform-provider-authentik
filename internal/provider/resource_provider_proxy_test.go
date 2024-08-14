@@ -43,7 +43,7 @@ data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
-data "authentik_scope_mapping" "test" {
+data "authentik_property_mapping_provider_scope" "test" {
   managed_list = [
     "goauthentik.io/providers/oauth2/scope-openid",
     "goauthentik.io/providers/oauth2/scope-email",
@@ -57,7 +57,7 @@ resource "authentik_provider_proxy" "name" {
   internal_host = "http://foo.bar.baz"
   external_host = "http://%[1]s"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
-  property_mappings = data.authentik_scope_mapping.test.ids
+  property_mappings = data.authentik_property_mapping_provider_scope.test.ids
   skip_path_regex    = <<EOF
 ^/$
 ^/status
