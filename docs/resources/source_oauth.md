@@ -38,10 +38,8 @@ resource "authentik_source_oauth" "name" {
 
 ### Required
 
-- `authentication_flow` (String)
 - `consumer_key` (String)
 - `consumer_secret` (String, Sensitive)
-- `enrollment_flow` (String)
 - `name` (String)
 - `provider_type` (String) Allowed values:
   - `apple`
@@ -64,8 +62,10 @@ resource "authentik_source_oauth" "name" {
 
 - `access_token_url` (String) Only required for OAuth1.
 - `additional_scopes` (String)
+- `authentication_flow` (String)
 - `authorization_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
 - `enabled` (Boolean) Defaults to `true`.
+- `enrollment_flow` (String)
 - `oidc_jwks` (String) Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use jsonencode() to pass objects. Generated.
 - `oidc_jwks_url` (String) Automatically configure JWKS if not specified by `oidc_well_known_url`.
 - `oidc_well_known_url` (String) Automatically configure source from OIDC well-known endpoint. URL is taken as is, and should end with `.well-known/openid-configuration`.

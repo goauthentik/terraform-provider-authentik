@@ -41,8 +41,6 @@ resource "authentik_source_saml" "name" {
 
 ### Required
 
-- `authentication_flow` (String)
-- `enrollment_flow` (String)
 - `name` (String)
 - `pre_authentication_flow` (String)
 - `slug` (String)
@@ -51,6 +49,7 @@ resource "authentik_source_saml" "name" {
 ### Optional
 
 - `allow_idp_initiated` (Boolean) Defaults to `false`.
+- `authentication_flow` (String)
 - `binding_type` (String) Allowed values:
   - `REDIRECT`
   - `POST`
@@ -63,6 +62,7 @@ resource "authentik_source_saml" "name" {
   - `http://www.w3.org/2001/04/xmlenc#sha512`
  Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
 - `enabled` (Boolean) Defaults to `true`.
+- `enrollment_flow` (String)
 - `issuer` (String)
 - `name_id_policy` (String) Allowed values:
   - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`

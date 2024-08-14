@@ -39,11 +39,11 @@ func resourceSourcePlex() *schema.Resource {
 			},
 			"authentication_flow": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"enrollment_flow": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"enabled": {
 				Type:     schema.TypeBool,
@@ -104,8 +104,12 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 		PlexToken:    d.Get("plex_token").(string),
 	}
 
-	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
-	r.EnrollmentFlow.Set(api.PtrString(d.Get("enrollment_flow").(string)))
+	if ak, ok := d.GetOk("authentication_flow"); ok {
+		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
+	}
+	if ef, ok := d.GetOk("enrollment_flow"); ok {
+		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
+	}
 
 	r.AllowedServers = castSlice[string](d.Get("allowed_servers").([]interface{}))
 	return &r

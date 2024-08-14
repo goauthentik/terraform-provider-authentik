@@ -43,6 +43,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.policies.event_matcher`
   - `authentik.policies.expiry`
   - `authentik.policies.expression`
+  - `authentik.policies.geoip`
   - `authentik.policies.password`
   - `authentik.policies.reputation`
   - `authentik.policies`
@@ -103,6 +104,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_policies_event_matcher.eventmatcherpolicy`
   - `authentik_policies_expiry.passwordexpirypolicy`
   - `authentik_policies_expression.expressionpolicy`
+  - `authentik_policies_geoip.geoippolicy`
   - `authentik_policies_password.passwordpolicy`
   - `authentik_policies_reputation.reputationpolicy`
   - `authentik_policies.policybinding`
@@ -120,11 +122,17 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_sources_ldap.ldapsource`
   - `authentik_sources_ldap.ldapsourcepropertymapping`
   - `authentik_sources_oauth.oauthsource`
+  - `authentik_sources_oauth.oauthsourcepropertymapping`
   - `authentik_sources_oauth.useroauthsourceconnection`
+  - `authentik_sources_oauth.groupoauthsourceconnection`
   - `authentik_sources_plex.plexsource`
-  - `authentik_sources_plex.plexsourceconnection`
+  - `authentik_sources_plex.plexsourcepropertymapping`
+  - `authentik_sources_plex.userplexsourceconnection`
+  - `authentik_sources_plex.groupplexsourceconnection`
   - `authentik_sources_saml.samlsource`
+  - `authentik_sources_saml.samlsourcepropertymapping`
   - `authentik_sources_saml.usersamlsourceconnection`
+  - `authentik_sources_saml.groupsamlsourceconnection`
   - `authentik_sources_scim.scimsource`
   - `authentik_sources_scim.scimsourcepropertymapping`
   - `authentik_stages_authenticator_duo.authenticatorduostage`
