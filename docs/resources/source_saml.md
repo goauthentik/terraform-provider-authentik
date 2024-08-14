@@ -41,7 +41,6 @@ resource "authentik_source_saml" "name" {
 
 ### Required
 
-- `authentication_flow` (String)
 - `name` (String)
 - `pre_authentication_flow` (String)
 - `slug` (String)
@@ -50,6 +49,7 @@ resource "authentik_source_saml" "name" {
 ### Optional
 
 - `allow_idp_initiated` (Boolean) Defaults to `false`.
+- `authentication_flow` (String)
 - `binding_type` (String) Allowed values:
   - `REDIRECT`
   - `POST`

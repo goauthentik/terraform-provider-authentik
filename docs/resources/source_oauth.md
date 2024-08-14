@@ -38,7 +38,6 @@ resource "authentik_source_oauth" "name" {
 
 ### Required
 
-- `authentication_flow` (String)
 - `consumer_key` (String)
 - `consumer_secret` (String, Sensitive)
 - `name` (String)
@@ -63,6 +62,7 @@ resource "authentik_source_oauth" "name" {
 
 - `access_token_url` (String) Only required for OAuth1.
 - `additional_scopes` (String)
+- `authentication_flow` (String)
 - `authorization_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
 - `enabled` (Boolean) Defaults to `true`.
 - `enrollment_flow` (String)

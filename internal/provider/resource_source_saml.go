@@ -39,7 +39,7 @@ func resourceSourceSAML() *schema.Resource {
 			},
 			"authentication_flow": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"enrollment_flow": {
 				Type:     schema.TypeString,
@@ -135,12 +135,12 @@ func resourceSourceSAML() *schema.Resource {
 
 func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceRequest {
 	r := api.SAMLSourceRequest{
-		Name:             d.Get("name").(string),
-		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
-		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		Name:                     d.Get("name").(string),
+		Slug:                     d.Get("slug").(string),
+		Enabled:                  api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate:         api.PtrString(d.Get("user_path_template").(string)),
+		PolicyEngineMode:         api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:         api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
 
@@ -154,7 +154,9 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		NameIdPolicy:             api.NameIdPolicyEnum(d.Get("name_id_policy").(string)).Ptr(),
 	}
 
-	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
+	if ak, ok := d.GetOk("authentication_flow"); ok {
+		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
+	}
 	if ef, ok := d.GetOk("enrollment_flow"); ok {
 		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
 	}

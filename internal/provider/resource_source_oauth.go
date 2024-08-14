@@ -41,7 +41,7 @@ func resourceSourceOAuth() *schema.Resource {
 			},
 			"authentication_flow": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"enrollment_flow": {
 				Type:     schema.TypeString,
@@ -149,7 +149,9 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 	}
 
-	r.AuthenticationFlow.Set(api.PtrString(d.Get("authentication_flow").(string)))
+	if ak, ok := d.GetOk("authentication_flow"); ok {
+		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
+	}
 	if ef, ok := d.GetOk("enrollment_flow"); ok {
 		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
 	}

@@ -33,7 +33,6 @@ resource "authentik_source_plex" "name" {
 
 ### Required
 
-- `authentication_flow` (String)
 - `client_id` (String)
 - `name` (String)
 - `plex_token` (String, Sensitive)
@@ -43,6 +42,7 @@ resource "authentik_source_plex" "name" {
 
 - `allow_friends` (Boolean) Defaults to `true`.
 - `allowed_servers` (List of String)
+- `authentication_flow` (String)
 - `enabled` (Boolean) Defaults to `true`.
 - `enrollment_flow` (String)
 - `policy_engine_mode` (String) Allowed values:
