@@ -46,7 +46,6 @@ resource "authentik_application" "name" {
 - `certificate` (String)
 - `gid_start_number` (Number) Defaults to `4000`.
 - `mfa_support` (Boolean) Defaults to `true`.
-- `search_group` (String)
 - `search_mode` (String) Defaults to `direct`.
 - `tls_server_name` (String)
 - `uid_start_number` (Number) Defaults to `2000`.
