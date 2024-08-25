@@ -49,6 +49,13 @@ func resourceGroup() *schema.Resource {
 				Description:      "JSON format expected. Use jsonencode() to pass objects.",
 				DiffSuppressFunc: diffSuppressJSON,
 			},
+			"roles": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -63,11 +70,8 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 		m.Parent.Set(&l)
 	}
 
-	users := d.Get("users").([]interface{})
-	m.Users = make([]int32, len(users))
-	for i, prov := range users {
-		m.Users[i] = int32(prov.(int))
-	}
+	m.Users = castSlice[int32](d.Get("users").([]interface{}))
+	m.Roles = castSlice[string](d.Get("roles").([]interface{}))
 
 	attr := make(map[string]interface{})
 	if l, ok := d.Get("attributes").(string); ok && l != "" {
@@ -115,6 +119,8 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	setWrapper(d, "attributes", string(b))
 	localUsers := castSlice[int](d.Get("users").([]interface{}))
 	setWrapper(d, "users", listConsistentMerge(localUsers, slice32ToInt(res.Users)))
+	localRoles := castSlice[string](d.Get("role").([]interface{}))
+	setWrapper(d, "roles", listConsistentMerge(localRoles, res.Roles))
 	return diags
 }
 

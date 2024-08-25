@@ -105,7 +105,7 @@ func listConsistentMerge[T string | int](old []T, new []T) []interface{} {
 	return res
 }
 
-func castSlice[T string | int](in []interface{}) []T {
+func castSlice[T string | int | int32](in []interface{}) []T {
 	sl := make([]T, len(in))
 	for i, m := range in {
 		sl[i] = m.(T)
