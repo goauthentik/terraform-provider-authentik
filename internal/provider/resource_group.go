@@ -70,7 +70,11 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 		m.Parent.Set(&l)
 	}
 
-	m.Users = castSlice[int32](d.Get("users").([]interface{}))
+	users := d.Get("users").([]interface{})
+	m.Users = make([]int32, len(users))
+	for i, prov := range users {
+		m.Users[i] = int32(prov.(int))
+	}
 	m.Roles = castSlice[string](d.Get("roles").([]interface{}))
 
 	attr := make(map[string]interface{})
@@ -119,8 +123,10 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	setWrapper(d, "attributes", string(b))
 	localUsers := castSlice[int](d.Get("users").([]interface{}))
 	setWrapper(d, "users", listConsistentMerge(localUsers, slice32ToInt(res.Users)))
-	localRoles := castSlice[string](d.Get("role").([]interface{}))
-	setWrapper(d, "roles", listConsistentMerge(localRoles, res.Roles))
+	if r, ok := d.GetOk("role"); ok {
+		localRoles := castSlice[string](r.([]interface{}))
+		setWrapper(d, "roles", listConsistentMerge(localRoles, res.Roles))
+	}
 	return diags
 }
 

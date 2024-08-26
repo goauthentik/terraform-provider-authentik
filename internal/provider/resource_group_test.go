@@ -38,10 +38,14 @@ resource "authentik_user" "name" {
   username = "%[1]s"
   name = "%[1]s"
 }
+resource "authentik_rbac_role" "role" {
+  name = "%[1]s"
+}
 resource "authentik_group" "group" {
   name = "%[1]s"
   users = [authentik_user.name.id]
   is_superuser = true
+  roles = [authentik_rbac_role.role.id]
 }
 `, name)
 }
