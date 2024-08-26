@@ -86,6 +86,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_policy_event_matcher":                       tr(resourcePolicyEventMatcher),
 			"authentik_policy_expiry":                              tr(resourcePolicyExpiry),
 			"authentik_policy_expression":                          tr(resourcePolicyExpression),
+			"authentik_policy_geoip":                               tr(resourcePolicyGeoIP),
 			"authentik_policy_password":                            tr(resourcePolicyPassword),
 			"authentik_policy_reputation":                          tr(resourcePolicyReputation),
 			"authentik_property_mapping_notification":              tr(resourcePropertyMappingNotification),
