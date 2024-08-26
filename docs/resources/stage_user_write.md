@@ -37,6 +37,11 @@ resource "authentik_stage_user_write" "name" {
   - `always_create`
  Defaults to `create_when_required`.
 - `user_path_template` (String) Defaults to ``.
+- `user_type` (String) Allowed values:
+  - `internal`
+  - `external`
+  - `service_account`
+ Defaults to `external`.
 
 ### Read-Only
 

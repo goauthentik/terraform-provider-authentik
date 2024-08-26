@@ -44,6 +44,21 @@ func resourceStageUserWrite() *schema.Resource {
 				Default:  "",
 				Optional: true,
 			},
+			"user_type": {
+				Type:     schema.TypeString,
+				Default:  api.USERTYPEENUM_EXTERNAL,
+				Optional: true,
+				Description: EnumToDescription([]api.UserTypeEnum{
+					api.USERTYPEENUM_INTERNAL,
+					api.USERTYPEENUM_EXTERNAL,
+					api.USERTYPEENUM_SERVICE_ACCOUNT,
+				}),
+				ValidateDiagFunc: StringInEnum([]api.UserTypeEnum{
+					api.USERTYPEENUM_INTERNAL,
+					api.USERTYPEENUM_EXTERNAL,
+					api.USERTYPEENUM_SERVICE_ACCOUNT,
+				}),
+			},
 		},
 	}
 }
@@ -54,6 +69,7 @@ func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWri
 		CreateUsersAsInactive: api.PtrBool(d.Get("create_users_as_inactive").(bool)),
 		UserPathTemplate:      api.PtrString(d.Get("user_path_template").(string)),
 		UserCreationMode:      api.UserCreationModeEnum(d.Get("user_creation_mode").(string)).Ptr(),
+		UserType:              api.UserTypeEnum(d.Get("user_type").(string)).Ptr(),
 	}
 
 	if h, hSet := d.GetOk("create_users_group"); hSet {
@@ -90,6 +106,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "create_users_group", res.CreateUsersGroup.Get())
 	setWrapper(d, "user_path_template", res.GetUserPathTemplate())
 	setWrapper(d, "user_creation_mode", res.GetUserCreationMode())
+	setWrapper(d, "user_type", res.GetUserType())
 	return diags
 }
 
