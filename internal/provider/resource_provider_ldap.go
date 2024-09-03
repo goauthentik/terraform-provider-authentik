@@ -32,10 +32,6 @@ func resourceProviderLDAP() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"search_group": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"certificate": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -85,9 +81,6 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
 	}
 
-	if s, sok := d.GetOk("search_group"); sok && s.(string) != "" {
-		r.SearchGroup.Set(api.PtrString(s.(string)))
-	}
 	if s, sok := d.GetOk("certificate"); sok && s.(string) != "" {
 		r.Certificate.Set(api.PtrString(s.(string)))
 	}
@@ -126,9 +119,6 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "bind_flow", res.AuthorizationFlow)
 	setWrapper(d, "base_dn", res.BaseDn)
-	if res.SearchGroup.IsSet() {
-		setWrapper(d, "search_group", res.SearchGroup.Get())
-	}
 	if res.Certificate.IsSet() {
 		setWrapper(d, "certificate", res.Certificate.Get())
 	}
