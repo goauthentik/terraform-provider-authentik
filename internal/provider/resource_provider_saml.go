@@ -120,12 +120,12 @@ func resourceProviderSAML() *schema.Resource {
 			"sign_assertion": {
 				Type:     schema.TypeBool,
 				Default:  true,
-				Required: true,
+				Optional: true,
 			},
 			"sign_response": {
 				Type:     schema.TypeBool,
 				Default:  false,
-				Required: true,
+				Optional: true,
 			},
 			"verification_kp": {
 				Type:     schema.TypeString,
