@@ -39,6 +39,8 @@ resource "authentik_application" "name" {
 - `acs_url` (String)
 - `authorization_flow` (String)
 - `name` (String)
+- `sign_assertion` (Boolean) Defaults to `true`.
+- `sign_response` (Boolean) Defaults to `false`.
 
 ### Optional
 
@@ -53,6 +55,7 @@ resource "authentik_application" "name" {
   - `http://www.w3.org/2001/04/xmldsig-more#sha384`
   - `http://www.w3.org/2001/04/xmlenc#sha512`
  Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
+- `encryption_kp` (String)
 - `issuer` (String) Defaults to `authentik`.
 - `name_id_mapping` (String)
 - `property_mappings` (List of String)
