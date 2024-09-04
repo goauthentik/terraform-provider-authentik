@@ -16,6 +16,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+func markDeprecated(resource func() *schema.Resource, newName string) func() *schema.Resource {
+	return func() *schema.Resource {
+		res := resource()
+		res.DeprecationMessage = fmt.Sprintf("This resource is deprecated. Migrate to `%s`.", newName)
+		res.Description += fmt.Sprintf("\n\n~> %s", res.DeprecationMessage)
+		return res
+	}
+}
+
 func StringInEnum[T ~string](items []T) schema.SchemaValidateDiagFunc {
 	nv := make([]string, len(items))
 	for i, v := range items {
