@@ -62,6 +62,7 @@ resource "authentik_source_saml" "name" {
   - `http://www.w3.org/2001/04/xmlenc#sha512`
  Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
 - `enabled` (Boolean) Defaults to `true`.
+- `encryption_kp` (String)
 - `enrollment_flow` (String)
 - `issuer` (String)
 - `name_id_policy` (String) Allowed values:

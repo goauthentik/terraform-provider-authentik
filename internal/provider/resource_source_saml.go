@@ -104,6 +104,10 @@ func resourceSourceSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"encryption_kp": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"digest_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -135,12 +139,12 @@ func resourceSourceSAML() *schema.Resource {
 
 func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceRequest {
 	r := api.SAMLSourceRequest{
-		Name:                     d.Get("name").(string),
-		Slug:                     d.Get("slug").(string),
-		Enabled:                  api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate:         api.PtrString(d.Get("user_path_template").(string)),
-		PolicyEngineMode:         api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode:         api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		Name:             d.Get("name").(string),
+		Slug:             d.Get("slug").(string),
+		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
+		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
 
@@ -166,6 +170,9 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	}
 	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
 		r.SigningKp.Set(api.PtrString(s.(string)))
+	}
+	if s, sok := d.GetOk("encryption_kp"); sok && s.(string) != "" {
+		r.EncryptionKp.Set(api.PtrString(s.(string)))
 	}
 	return &r
 }
@@ -218,6 +225,9 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "binding_type", res.BindingType)
 	if res.SigningKp.IsSet() {
 		setWrapper(d, "signing_kp", res.SigningKp.Get())
+	}
+	if res.EncryptionKp.IsSet() {
+		setWrapper(d, "encryption_kp", res.EncryptionKp.Get())
 	}
 	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)

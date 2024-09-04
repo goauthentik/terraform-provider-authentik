@@ -117,7 +117,21 @@ func resourceProviderSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"sign_assertion": {
+				Type:     schema.TypeBool,
+				Default:  true,
+				Optional: true,
+			},
+			"sign_response": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
 			"verification_kp": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"encryption_kp": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -151,6 +165,8 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SignatureAlgorithm:         api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		SpBinding:                  api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
 		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
+		SignAssertion:              api.PtrBool(d.Get("sign_assertion").(bool)),
+		SignResponse:               api.PtrBool(d.Get("sign_response").(bool)),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -158,6 +174,9 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	}
 	if s, sok := d.GetOk("name_id_mapping"); sok && s.(string) != "" {
 		r.NameIdMapping.Set(api.PtrString(s.(string)))
+	}
+	if s, sok := d.GetOk("encryption_kp"); sok && s.(string) != "" {
+		r.EncryptionKp.Set(api.PtrString(s.(string)))
 	}
 	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
 		r.SigningKp.Set(api.PtrString(s.(string)))
@@ -210,6 +229,8 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "assertion_valid_not_before", res.AssertionValidNotBefore)
 	setWrapper(d, "assertion_valid_not_on_or_after", res.AssertionValidNotOnOrAfter)
 	setWrapper(d, "session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)
+	setWrapper(d, "sign_assertion", res.SignAssertion)
+	setWrapper(d, "sign_response", res.SignResponse)
 	if res.NameIdMapping.IsSet() {
 		setWrapper(d, "name_id_mapping", res.NameIdMapping.Get())
 	}
@@ -218,6 +239,9 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	if res.VerificationKp.IsSet() {
 		setWrapper(d, "verification_kp", res.VerificationKp.Get())
+	}
+	if res.EncryptionKp.IsSet() {
+		setWrapper(d, "encryption_kp", res.EncryptionKp.Get())
 	}
 	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)

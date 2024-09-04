@@ -53,10 +53,13 @@ resource "authentik_application" "name" {
   - `http://www.w3.org/2001/04/xmldsig-more#sha384`
   - `http://www.w3.org/2001/04/xmlenc#sha512`
  Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
+- `encryption_kp` (String)
 - `issuer` (String) Defaults to `authentik`.
 - `name_id_mapping` (String)
 - `property_mappings` (List of String)
 - `session_valid_not_on_or_after` (String) Defaults to `minutes=86400`.
+- `sign_assertion` (Boolean) Defaults to `true`.
+- `sign_response` (Boolean) Defaults to `false`.
 - `signature_algorithm` (String) Allowed values:
   - `http://www.w3.org/2000/09/xmldsig#rsa-sha1`
   - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`
