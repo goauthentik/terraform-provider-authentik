@@ -21,8 +21,7 @@ resource "authentik_user" "name" {
 
 resource "authentik_rbac_permission_user" "global-permission" {
   user       = authentik_user.name.id
-  model      = "authentik_flows.flow"
-  permission = "inspect_flow"
+  permission = "authentik_flows.inspect_flow"
 }
 
 # Assign an object permission to a user
@@ -51,6 +50,11 @@ resource "authentik_rbac_permission_user" "global-permission" {
 ## Schema
 
 ### Required
+
+- `permission` (String)
+- `user` (Number)
+
+### Optional
 
 - `model` (String) Allowed values:
   - `authentik_tenants.domain`
@@ -142,11 +146,6 @@ resource "authentik_rbac_permission_user" "global-permission" {
   - `authentik_events.notification`
   - `authentik_events.notificationrule`
   - `authentik_events.notificationwebhookmapping`
-- `permission` (String)
-- `user` (Number)
-
-### Optional
-
 - `object_id` (String)
 
 ### Read-Only

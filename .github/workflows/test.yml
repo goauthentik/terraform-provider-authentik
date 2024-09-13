@@ -61,7 +61,14 @@ jobs:
           AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
           AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
         run: |
-          go test -timeout 0 -v -race -coverprofile=coverage.txt -covermode=atomic -cover ./internal/provider/
+          go test \
+            -p 1 \
+            -coverprofile=coverage.txt \
+            -covermode=atomic \
+            -cover \
+            ./internal/provider/ 2>&1 | tee test-output
+          go install github.com/jstemmer/go-junit-report/v2@latest
+          cat test-output | $(go env GOPATH)/bin/go-junit-report -set-exit-code > report.xml
       - name: authentik Server logs
         if: ${{ always() }}
         run: |
@@ -73,4 +80,9 @@ jobs:
       - if: ${{ always() }}
         uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          file: report.xml
           token: ${{ secrets.CODECOV_TOKEN }}
