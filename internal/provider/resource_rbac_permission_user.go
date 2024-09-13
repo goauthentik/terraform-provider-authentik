@@ -2,7 +2,9 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -27,7 +29,7 @@ func resourceRBACUserObjectPermission() *schema.Resource {
 			},
 			"model": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				ForceNew:         true,
 				Description:      EnumToDescription(api.AllowedModelEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedModelEnumEnumValues),
@@ -47,9 +49,13 @@ func resourceRBACUserObjectPermission() *schema.Resource {
 
 func resourceRBACUserObjectPermissionSchemaToProvider(d *schema.ResourceData) *api.PermissionAssignRequest {
 	r := api.PermissionAssignRequest{
-		Model:       api.ModelEnum(d.Get("model").(string)).Ptr(),
-		ObjectPk:    api.PtrString(d.Get("object_id").(string)),
 		Permissions: []string{d.Get("permission").(string)},
+	}
+	if d.Get("model").(string) != "" {
+		r.Model = api.ModelEnum(d.Get("model").(string)).Ptr()
+	}
+	if d.Get("object_id").(string) != "" {
+		r.ObjectPk = api.PtrString(d.Get("object_id").(string))
 	}
 	return &r
 }
@@ -80,11 +86,21 @@ func resourceRBACUserObjectPermissionRead(ctx context.Context, d *schema.Resourc
 		return diag.FromErr(err)
 	}
 
-	res, hr, err := c.client.RbacApi.RbacPermissionsUsersRetrieve(ctx, int32(id)).Execute()
-	if err != nil {
-		return httpToDiag(d, hr, err)
+	_, modelSet := d.GetOk("model")
+	if !modelSet {
+		splitCodename := strings.Split(d.Get("permission").(string), ".")
+		res, hr, err := c.client.RbacApi.RbacPermissionsList(ctx).Codename(splitCodename[1]).User(int32(d.Get("user").(int))).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
+		setWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
+	} else {
+		res, hr, err := c.client.RbacApi.RbacPermissionsUsersRetrieve(ctx, int32(id)).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
+		setWrapper(d, "object_id", res.ObjectPk)
 	}
-	setWrapper(d, "object_id", res.ObjectPk)
 	return diags
 }
 

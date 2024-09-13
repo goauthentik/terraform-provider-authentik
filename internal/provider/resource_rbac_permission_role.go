@@ -2,7 +2,9 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -25,17 +27,17 @@ func resourceRBACRoleObjectPermission() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
-			"model": {
-				Type:             schema.TypeString,
-				Required:         true,
-				ForceNew:         true,
-				Description:      EnumToDescription(api.AllowedModelEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedModelEnumEnumValues),
-			},
 			"permission": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
+			},
+			"model": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				ForceNew:         true,
+				Description:      EnumToDescription(api.AllowedModelEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedModelEnumEnumValues),
 			},
 			"object_id": {
 				Type:     schema.TypeString,
@@ -47,11 +49,13 @@ func resourceRBACRoleObjectPermission() *schema.Resource {
 
 func resourceRBACRoleObjectPermissionSchemaToProvider(d *schema.ResourceData) *api.PermissionAssignRequest {
 	r := api.PermissionAssignRequest{
-		Model:       api.ModelEnum(d.Get("model").(string)).Ptr(),
 		Permissions: []string{d.Get("permission").(string)},
 	}
-	if id, ok := d.GetOk("object_id"); ok {
-		r.ObjectPk = api.PtrString(id.(string))
+	if d.Get("model").(string) != "" {
+		r.Model = api.ModelEnum(d.Get("model").(string)).Ptr()
+	}
+	if d.Get("object_id").(string) != "" {
+		r.ObjectPk = api.PtrString(d.Get("object_id").(string))
 	}
 	return &r
 }
@@ -82,11 +86,21 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 		return diag.FromErr(err)
 	}
 
-	res, hr, err := c.client.RbacApi.RbacPermissionsRolesRetrieve(ctx, int32(id)).Execute()
-	if err != nil {
-		return httpToDiag(d, hr, err)
+	_, modelSet := d.GetOk("model")
+	if !modelSet {
+		splitCodename := strings.Split(d.Get("permission").(string), ".")
+		res, hr, err := c.client.RbacApi.RbacPermissionsList(ctx).Codename(splitCodename[1]).Role(d.Get("role").(string)).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
+		setWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
+	} else {
+		res, hr, err := c.client.RbacApi.RbacPermissionsRolesRetrieve(ctx, int32(id)).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
+		setWrapper(d, "object_id", res.ObjectPk)
 	}
-	setWrapper(d, "object_id", res.ObjectPk)
 	return diags
 }
 

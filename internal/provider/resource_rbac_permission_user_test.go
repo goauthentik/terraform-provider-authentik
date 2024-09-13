@@ -15,16 +15,22 @@ func TestAccRBACUserObjectPermission(t *testing.T) {
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccRBACUserObjectPermission(rName),
+				Config: testAccRBACUserObjectPermissionScoped(rName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_rbac_permission_user.name", "permission", "authentik_core.view_application"),
+				),
+			},
+			{
+				Config: testAccRBACUserObjectPermissionGlobal(rName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_rbac_permission_user.name", "permission", "authentik_core.add_application"),
 				),
 			},
 		},
 	})
 }
 
-func testAccRBACUserObjectPermission(name string) string {
+func testAccRBACUserObjectPermissionScoped(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_user" "user" {
   username = "%[1]s"
@@ -40,6 +46,19 @@ resource "authentik_rbac_permission_user" "name" {
   model = "authentik_core.application"
   permission = "authentik_core.view_application"
   object_id = authentik_application.name.uuid
+}
+`, name)
+}
+
+func testAccRBACUserObjectPermissionGlobal(name string) string {
+	return fmt.Sprintf(`
+resource "authentik_user" "user" {
+  username = "%[1]s"
+}
+
+resource "authentik_rbac_permission_user" "name" {
+  user = authentik_user.user.id
+  permission = "authentik_core.add_application"
 }
 `, name)
 }
