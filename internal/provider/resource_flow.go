@@ -91,7 +91,6 @@ func resourceFlowSchemaToModel(d *schema.ResourceData) *api.FlowRequest {
 		Authentication:    api.AuthenticationEnum(d.Get("authentication").(string)).Ptr(),
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		Layout:            api.FlowLayoutEnum(d.Get("layout").(string)).Ptr(),
-		Background:        d.Get("background").(string),
 		DeniedAction:      api.DeniedActionEnum(d.Get("denied_action").(string)).Ptr(),
 	}
 	return &m
@@ -156,6 +155,15 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.SetId(res.Slug)
+
+	if bg, ok := d.GetOk("background"); ok {
+		hr, err := c.client.FlowsApi.FlowsInstancesSetBackgroundUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
+			Url: bg.(string),
+		}).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
+	}
 	return resourceFlowRead(ctx, d, m)
 }
 
