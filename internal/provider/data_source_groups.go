@@ -81,7 +81,11 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 	req := c.client.CoreApi.CoreGroupsList(ctx)
 
 	for key := range dataSourceGroups().Schema {
-		if v, ok := d.GetOk(key); ok {
+		if key == "include_users" {
+			if v := d.Get(key); v != nil {
+				req = req.IncludeUsers(v.(bool))
+			}
+		} else if v, ok := d.GetOk(key); ok {
 			switch key {
 			case "attributes":
 				req = req.Attributes(v.(string))
@@ -101,8 +105,6 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 				req = req.Ordering(v.(string))
 			case "search":
 				req = req.Search(v.(string))
-			case "include_users":
-				req = req.IncludeUsers(v.(bool))
 			}
 		}
 	}

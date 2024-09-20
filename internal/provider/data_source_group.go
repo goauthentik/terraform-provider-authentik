@@ -232,7 +232,7 @@ func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *A
 func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 	includeUsers := true
-	if i, iok := d.GetOk("include_users"); iok {
+	if i := d.Get("include_users"); i != nil {
 		includeUsers = i.(bool)
 	}
 
