@@ -80,30 +80,41 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	req := c.client.CoreApi.CoreGroupsList(ctx)
 
-	for key := range dataSourceGroups().Schema {
-		if v, ok := d.GetOk(key); ok {
-			switch key {
-			case "attributes":
-				req = req.Attributes(v.(string))
-			case "is_superuser":
-				req = req.IsSuperuser(v.(bool))
-			case "members_by_pk":
-				members := make([]int32, len(v.([]int)))
-				for i, pk := range v.([]int) {
-					members[i] = int32(pk)
-				}
-				req = req.MembersByPk(members)
-			case "members_by_username":
-				req = req.MembersByUsername(v.([]string))
-			case "name":
-				req = req.Name(v.(string))
-			case "ordering":
-				req = req.Ordering(v.(string))
-			case "search":
-				req = req.Search(v.(string))
-			case "include_users":
-				req = req.IncludeUsers(v.(bool))
+	for key, _schema := range dataSourceGroups().Schema {
+		var v interface{}
+		if _schema.Type == schema.TypeBool && _schema.Default != nil {
+			v = d.Get(key)
+			if v == nil {
+				continue
 			}
+		} else {
+			vv, ok := d.GetOk(key)
+			if !ok {
+				continue
+			}
+			v = vv
+		}
+		switch key {
+		case "attributes":
+			req = req.Attributes(v.(string))
+		case "is_superuser":
+			req = req.IsSuperuser(v.(bool))
+		case "members_by_pk":
+			members := make([]int32, len(v.([]int)))
+			for i, pk := range v.([]int) {
+				members[i] = int32(pk)
+			}
+			req = req.MembersByPk(members)
+		case "members_by_username":
+			req = req.MembersByUsername(v.([]string))
+		case "name":
+			req = req.Name(v.(string))
+		case "ordering":
+			req = req.Ordering(v.(string))
+		case "search":
+			req = req.Search(v.(string))
+		case "include_users":
+			req = req.IncludeUsers(v.(bool))
 		}
 	}
 
