@@ -155,6 +155,15 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	d.SetId(res.Slug)
+
+	if bg, ok := d.GetOk("background"); ok {
+		hr, err := c.client.FlowsApi.FlowsInstancesSetBackgroundUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
+			Url: bg.(string),
+		}).Execute()
+		if err != nil {
+			return httpToDiag(d, hr, err)
+		}
+	}
 	return resourceFlowRead(ctx, d, m)
 }
 
