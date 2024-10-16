@@ -39,6 +39,7 @@ resource "authentik_application" "name" {
 - `base_dn` (String)
 - `bind_flow` (String)
 - `name` (String)
+- `unbind_flow` (String)
 
 ### Optional
 

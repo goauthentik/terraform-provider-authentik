@@ -68,7 +68,7 @@ jobs:
             -cover \
             ./internal/provider/ 2>&1 | tee test-output
           go install github.com/jstemmer/go-junit-report/v2@latest
-          cat test-output | $(go env GOPATH)/bin/go-junit-report -set-exit-code > report.xml
+          $(go env GOPATH)/bin/go-junit-report -in test-output -set-exit-code -iocopy	-out report.xml
       - name: authentik Server logs
         if: ${{ always() }}
         run: |
@@ -77,6 +77,11 @@ jobs:
         if: ${{ always() }}
         run: |
           docker logs ${{ steps.setup.outputs.worker_container_id }}
+      - if: ${{ always() }}
+        uses: test-summary/action@v2
+        with:
+          paths: report.xml
+          show: "fail"
       - if: ${{ always() }}
         uses: codecov/codecov-action@v4
         with:

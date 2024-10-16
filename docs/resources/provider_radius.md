@@ -38,6 +38,7 @@ resource "authentik_application" "name" {
 ### Required
 
 - `authorization_flow` (String)
+- `invalidation_flow` (String)
 - `name` (String)
 - `shared_secret` (String, Sensitive)
 

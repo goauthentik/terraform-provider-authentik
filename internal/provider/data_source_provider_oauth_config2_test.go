@@ -40,6 +40,9 @@ func testAccDataSourceOAuth2ProviderConfigSimple(name string, appName string) st
 data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
 data "authentik_certificate_key_pair" "generated" {
   name = "authentik Self-signed Certificate"
   fetch_key = false
@@ -51,6 +54,7 @@ resource "authentik_provider_oauth2" "name" {
   # client_secret = "test"
   signing_key = data.authentik_certificate_key_pair.generated.id
   authorization_flow = data.authentik_flow.default-authorization-flow.id
+  invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
 }
 
 resource "authentik_application" "name" {

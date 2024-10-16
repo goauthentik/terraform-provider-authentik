@@ -33,6 +33,7 @@ resource "authentik_application" "name" {
 
 - `authorization_flow` (String)
 - `client_id` (String)
+- `invalidation_flow` (String)
 - `name` (String)
 
 ### Optional

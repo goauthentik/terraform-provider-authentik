@@ -28,6 +28,10 @@ func resourceProviderRadius() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"invalidation_flow": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"client_networks": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -51,6 +55,7 @@ func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusP
 	r := api.RadiusProviderRequest{
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("authorization_flow").(string),
+		InvalidationFlow:  d.Get("invalidation_flow").(string),
 		ClientNetworks:    api.PtrString(d.Get("client_networks").(string)),
 		SharedSecret:      api.PtrString(d.Get("shared_secret").(string)),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
@@ -86,6 +91,7 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
 	setWrapper(d, "client_networks", res.ClientNetworks)
 	setWrapper(d, "shared_secret", res.SharedSecret)
 	setWrapper(d, "mfa_support", res.MfaSupport)

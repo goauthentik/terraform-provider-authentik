@@ -59,6 +59,10 @@ func resourceProviderSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"invalidation_flow": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"property_mappings": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
@@ -155,6 +159,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	r := api.SAMLProviderRequest{
 		Name:                       d.Get("name").(string),
 		AuthorizationFlow:          d.Get("authorization_flow").(string),
+		InvalidationFlow:           d.Get("invalidation_flow").(string),
 		AcsUrl:                     d.Get("acs_url").(string),
 		Audience:                   api.PtrString(d.Get("audience").(string)),
 		Issuer:                     api.PtrString(d.Get("issuer").(string)),
@@ -219,6 +224,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 

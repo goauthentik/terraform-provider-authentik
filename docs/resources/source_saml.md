@@ -68,7 +68,7 @@ resource "authentik_source_saml" "name" {
 - `name_id_policy` (String) Allowed values:
   - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
   - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`
-  - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`
+  - `urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName`
   - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`
   - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
  Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`.

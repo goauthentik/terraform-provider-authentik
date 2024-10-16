@@ -41,6 +41,10 @@ data "authentik_flow" "default-authentication-flow" {
   slug = "default-authentication-flow"
 }
 
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
+
 data "authentik_certificate_key_pair" "generated" {
   name = "authentik Self-signed Certificate"
 }
@@ -49,6 +53,7 @@ resource "authentik_provider_ldap" "name" {
   name      = "%[1]s"
   base_dn = "dc=%[1]s,dc=goauthentik,dc=io"
   bind_flow = data.authentik_flow.default-authentication-flow.id
+  unbind_flow = data.authentik_flow.default-provider-invalidation-flow.id
   tls_server_name = "foo"
   certificate = data.authentik_certificate_key_pair.generated.id
 }
