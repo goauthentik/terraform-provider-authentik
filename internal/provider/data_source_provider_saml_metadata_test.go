@@ -34,6 +34,10 @@ data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
+
 data "authentik_property_mapping_provider_saml" "test" {
   managed_list = [
     "goauthentik.io/providers/saml/upn",
@@ -49,6 +53,7 @@ resource "authentik_property_mapping_provider_saml" "name" {
 resource "authentik_provider_saml" "name" {
   name               = "%[1]s"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
+  invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
   acs_url            = "http://localhost"
   property_mappings  = concat(data.authentik_property_mapping_provider_saml.test.ids, [
     authentik_property_mapping_provider_saml.name.id

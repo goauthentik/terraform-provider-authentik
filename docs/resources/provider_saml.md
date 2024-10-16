@@ -38,6 +38,7 @@ resource "authentik_application" "name" {
 
 - `acs_url` (String)
 - `authorization_flow` (String)
+- `invalidation_flow` (String)
 - `name` (String)
 
 ### Optional

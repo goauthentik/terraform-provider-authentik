@@ -39,6 +39,7 @@ resource "authentik_application" "name" {
 
 - `authorization_flow` (String)
 - `external_host` (String)
+- `invalidation_flow` (String)
 - `name` (String)
 
 ### Optional

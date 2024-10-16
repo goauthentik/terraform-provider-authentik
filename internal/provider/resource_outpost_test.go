@@ -45,9 +45,14 @@ data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
+
 resource "authentik_provider_proxy" "proxy" {
   name               = "%[1]s-1"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
+  invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
   external_host      = "http://foo.bar.baz"
   internal_host      = "http://internal.local"
 }
@@ -55,6 +60,7 @@ resource "authentik_provider_proxy" "proxy" {
 resource "authentik_provider_proxy" "proxy-2" {
   name               = "%[1]s-2"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
+  invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
   external_host      = "http://foo.bar.baz"
   internal_host      = "http://internal.local"
 }
@@ -81,9 +87,14 @@ data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
+
 resource "authentik_provider_proxy" "proxy" {
   name               = "proxy"
   authorization_flow = data.authentik_flow.default-authorization-flow.id
+  invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
   external_host      = "http://foo.bar.baz"
   internal_host      = "http://internal.local"
 }

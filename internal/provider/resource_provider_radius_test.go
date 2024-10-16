@@ -37,9 +37,14 @@ data "authentik_flow" "default-authentication-flow" {
   slug = "default-authentication-flow"
 }
 
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
+
 resource "authentik_provider_radius" "name" {
   name      = "%[1]s"
   authorization_flow = data.authentik_flow.default-authentication-flow.id
+  invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
   shared_secret = "foo"
 }
 

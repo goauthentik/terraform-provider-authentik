@@ -33,6 +33,10 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"invalidation_flow": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"property_mappings": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
@@ -118,6 +122,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	r := api.OAuth2ProviderRequest{
 		Name:                   d.Get("name").(string),
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
+		InvalidationFlow:       d.Get("invalidation_flow").(string),
 		AccessCodeValidity:     api.PtrString(d.Get("access_code_validity").(string)),
 		AccessTokenValidity:    api.PtrString(d.Get("access_token_validity").(string)),
 		RefreshTokenValidity:   api.PtrString(d.Get("refresh_token_validity").(string)),
@@ -175,6 +180,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
 	setWrapper(d, "client_id", res.ClientId)
 	setWrapper(d, "client_secret", res.ClientSecret)
 	setWrapper(d, "client_type", res.ClientType)

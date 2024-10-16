@@ -28,6 +28,10 @@ func resourceProviderLDAP() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"unbind_flow": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 			"base_dn": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -73,6 +77,7 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 	r := api.LDAPProviderRequest{
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("bind_flow").(string),
+		InvalidationFlow:  d.Get("unbind_flow").(string),
 		BaseDn:            api.PtrString(d.Get("base_dn").(string)),
 		UidStartNumber:    api.PtrInt32(int32(d.Get("uid_start_number").(int))),
 		GidStartNumber:    api.PtrInt32(int32(d.Get("gid_start_number").(int))),
@@ -118,6 +123,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "bind_flow", res.AuthorizationFlow)
+	setWrapper(d, "unbind_flow", res.InvalidationFlow)
 	setWrapper(d, "base_dn", res.BaseDn)
 	if res.Certificate.IsSet() {
 		setWrapper(d, "certificate", res.Certificate.Get())
