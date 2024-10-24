@@ -22,6 +22,11 @@
         "AUTHENTIK_URL": "http://localhost:9000",
         "AUTHENTIK_TOKEN": "this-token-is-for-testing-dont-use",
     },
+    "gopls": {
+        "build.buildFlags": [
+            "-tags=enterprise",
+        ]
+    },
     "go.testFlags": [
         "-count=1"
     ],
