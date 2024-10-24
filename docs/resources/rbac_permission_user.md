@@ -83,6 +83,10 @@ resource "authentik_rbac_permission_user" "global-permission" {
   - `authentik_providers_scim.scimprovider`
   - `authentik_providers_scim.scimmapping`
   - `authentik_rbac.role`
+  - `authentik_sources_kerberos.kerberossource`
+  - `authentik_sources_kerberos.kerberossourcepropertymapping`
+  - `authentik_sources_kerberos.userkerberossourceconnection`
+  - `authentik_sources_kerberos.groupkerberossourceconnection`
   - `authentik_sources_ldap.ldapsource`
   - `authentik_sources_ldap.ldapsourcepropertymapping`
   - `authentik_sources_oauth.oauthsource`
@@ -140,6 +144,7 @@ resource "authentik_rbac_permission_user" "global-permission" {
   - `authentik_providers_rac.racprovider`
   - `authentik_providers_rac.endpoint`
   - `authentik_providers_rac.racpropertymapping`
+  - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_source.sourcestage`
   - `authentik_events.event`
   - `authentik_events.notificationtransport`
