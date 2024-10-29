@@ -36,6 +36,10 @@ func resourceStageIdentification() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"captcha_stage": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"case_insensitive_matching": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -91,6 +95,9 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 	if h, hSet := d.GetOk("password_stage"); hSet {
 		r.PasswordStage.Set(api.PtrString(h.(string)))
 	}
+	if h, hSet := d.GetOk("captcha_stage"); hSet {
+		r.CaptchaStage.Set(api.PtrString(h.(string)))
+	}
 	if h, hSet := d.GetOk("enrollment_flow"); hSet {
 		r.EnrollmentFlow.Set(api.PtrString(h.(string)))
 	}
@@ -136,6 +143,9 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	setWrapper(d, "user_fields", res.UserFields)
 	if res.PasswordStage.IsSet() {
 		setWrapper(d, "password_stage", res.PasswordStage.Get())
+	}
+	if res.CaptchaStage.IsSet() {
+		setWrapper(d, "captcha_stage", res.CaptchaStage.Get())
 	}
 	setWrapper(d, "case_insensitive_matching", res.CaseInsensitiveMatching)
 	setWrapper(d, "show_matched_user", res.ShowMatchedUser)
