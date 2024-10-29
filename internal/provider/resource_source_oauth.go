@@ -66,6 +66,13 @@ func resourceSourceOAuth() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
+			"group_matching_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
+				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+			},
 
 			"provider_type": {
 				Type:             schema.TypeString,
@@ -142,11 +149,12 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
 		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 
-		ProviderType:     api.ProviderTypeEnum(d.Get("provider_type").(string)),
-		ConsumerKey:      d.Get("consumer_key").(string),
-		ConsumerSecret:   d.Get("consumer_secret").(string),
-		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		ProviderType:      api.ProviderTypeEnum(d.Get("provider_type").(string)),
+		ConsumerKey:       d.Get("consumer_key").(string),
+		ConsumerSecret:    d.Get("consumer_secret").(string),
+		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 	}
 
 	if ak, ok := d.GetOk("authentication_flow"); ok {
@@ -227,6 +235,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	setWrapper(d, "enabled", res.Enabled)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 	setWrapper(d, "additional_scopes", res.AdditionalScopes)
 	setWrapper(d, "provider_type", res.ProviderType)
 	setWrapper(d, "consumer_key", res.ConsumerKey)

@@ -45,6 +45,11 @@ resource "authentik_source_plex" "name" {
 - `authentication_flow` (String)
 - `enabled` (Boolean) Defaults to `true`.
 - `enrollment_flow` (String)
+- `group_matching_mode` (String) Allowed values:
+  - `identifier`
+  - `name_link`
+  - `name_deny`
+ Defaults to `identifier`.
 - `policy_engine_mode` (String) Allowed values:
   - `all`
   - `any`

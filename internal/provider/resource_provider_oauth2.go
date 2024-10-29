@@ -85,6 +85,10 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"encryption_key": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"redirect_uris": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -145,6 +149,9 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	if s, sok := d.GetOk("signing_key"); sok && s.(string) != "" {
 		r.SigningKey.Set(api.PtrString(s.(string)))
 	}
+	if s, sok := d.GetOk("encryption_key"); sok && s.(string) != "" {
+		r.EncryptionKey.Set(api.PtrString(s.(string)))
+	}
 
 	redirectUris := castSlice[string](d.Get("redirect_uris").([]interface{}))
 	r.RedirectUris = api.PtrString(strings.Join(redirectUris, "\n"))
@@ -195,6 +202,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	}
 	if res.SigningKey.IsSet() {
 		setWrapper(d, "signing_key", res.SigningKey.Get())
+	}
+	if res.EncryptionKey.IsSet() {
+		setWrapper(d, "encryption_key", res.EncryptionKey.Get())
 	}
 	setWrapper(d, "sub_mode", res.SubMode)
 	setWrapper(d, "access_code_validity", res.AccessCodeValidity)

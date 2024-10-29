@@ -64,6 +64,11 @@ resource "authentik_source_saml" "name" {
 - `enabled` (Boolean) Defaults to `true`.
 - `encryption_kp` (String)
 - `enrollment_flow` (String)
+- `group_matching_mode` (String) Allowed values:
+  - `identifier`
+  - `name_link`
+  - `name_deny`
+ Defaults to `identifier`.
 - `issuer` (String)
 - `name_id_policy` (String) Allowed values:
   - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`

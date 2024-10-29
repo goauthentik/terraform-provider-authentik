@@ -55,6 +55,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.providers.scim`
   - `authentik.rbac`
   - `authentik.recovery`
+  - `authentik.sources.kerberos`
   - `authentik.sources.ldap`
   - `authentik.sources.oauth`
   - `authentik.sources.plex`
@@ -88,6 +89,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.enterprise.providers.google_workspace`
   - `authentik.enterprise.providers.microsoft_entra`
   - `authentik.enterprise.providers.rac`
+  - `authentik.enterprise.stages.authenticator_endpoint_gdtc`
   - `authentik.enterprise.stages.source`
   - `authentik.events`
 - `client_ip` (String)
@@ -119,6 +121,10 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_scim.scimprovider`
   - `authentik_providers_scim.scimmapping`
   - `authentik_rbac.role`
+  - `authentik_sources_kerberos.kerberossource`
+  - `authentik_sources_kerberos.kerberossourcepropertymapping`
+  - `authentik_sources_kerberos.userkerberossourceconnection`
+  - `authentik_sources_kerberos.groupkerberossourceconnection`
   - `authentik_sources_ldap.ldapsource`
   - `authentik_sources_ldap.ldapsourcepropertymapping`
   - `authentik_sources_oauth.oauthsource`
@@ -176,6 +182,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_rac.racprovider`
   - `authentik_providers_rac.endpoint`
   - `authentik_providers_rac.racpropertymapping`
+  - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_source.sourcestage`
   - `authentik_events.event`
   - `authentik_events.notificationtransport`

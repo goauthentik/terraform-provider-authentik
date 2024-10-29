@@ -46,6 +46,7 @@ resource "authentik_application" "name" {
   - `confidential`
   - `public`
  Defaults to `confidential`.
+- `encryption_key` (String)
 - `include_claims_in_id_token` (Boolean) Defaults to `true`.
 - `issuer_mode` (String) Allowed values:
   - `global`
