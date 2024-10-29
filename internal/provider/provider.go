@@ -133,6 +133,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_scope_mapping":                     tr(markDeprecated(resourcePropertyMappingProviderScope, "authentik_property_mapping_provider_scope")),
 			"authentik_service_connection_docker":         tr(resourceServiceConnectionDocker),
 			"authentik_service_connection_kubernetes":     tr(resourceServiceConnectionKubernetes),
+			"authentik_source_kerberos":                   tr(resourceSourceKerberos),
 			"authentik_source_ldap":                       tr(resourceSourceLDAP),
 			"authentik_source_oauth":                      tr(resourceSourceOAuth),
 			"authentik_source_plex":                       tr(resourceSourcePlex),
