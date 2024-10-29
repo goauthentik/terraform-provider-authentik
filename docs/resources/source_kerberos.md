@@ -31,7 +31,7 @@ description: |-
   - `name_deny`
  Defaults to `identifier`.
 - `krb5_conf` (String) Custom krb5.conf to use. Uses the system one by default
-- `password_login_update_internal_password,omitempty` (Boolean) If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend Defaults to `false`.
+- `password_login_update_internal_password` (Boolean) If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend Defaults to `false`.
 - `policy_engine_mode` (String) Allowed values:
   - `all`
   - `any`

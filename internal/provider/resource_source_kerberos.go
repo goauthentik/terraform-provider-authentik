@@ -132,7 +132,7 @@ func resourceSourceKerberos() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
-			"password_login_update_internal_password,omitempty": {
+			"password_login_update_internal_password": {
 				Description: "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend",
 				Type:        schema.TypeBool,
 				Optional:    true,
@@ -154,17 +154,17 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 
 		Realm:                               d.Get("realm").(string),
-		Krb5Conf:                            api.PtrString(d.Get("krb5_conf,omitempty").(string)),
-		SyncUsers:                           api.PtrBool(d.Get("sync_users,omitempty").(bool)),
-		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password,omitempty").(bool)),
-		SyncPrincipal:                       api.PtrString(d.Get("sync_principal,omitempty").(string)),
-		SyncPassword:                        api.PtrString(d.Get("sync_password,omitempty").(string)),
-		SyncKeytab:                          api.PtrString(d.Get("sync_keytab,omitempty").(string)),
-		SyncCcache:                          api.PtrString(d.Get("sync_ccache,omitempty").(string)),
-		SpnegoServerName:                    api.PtrString(d.Get("spnego_server_name,omitempty").(string)),
-		SpnegoKeytab:                        api.PtrString(d.Get("spnego_keytab,omitempty").(string)),
-		SpnegoCcache:                        api.PtrString(d.Get("spnego_ccache,omitempty").(string)),
-		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password,omitempty").(bool)),
+		Krb5Conf:                            api.PtrString(d.Get("krb5_conf").(string)),
+		SyncUsers:                           api.PtrBool(d.Get("sync_users").(bool)),
+		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
+		SyncPrincipal:                       api.PtrString(d.Get("sync_principal").(string)),
+		SyncPassword:                        api.PtrString(d.Get("sync_password").(string)),
+		SyncKeytab:                          api.PtrString(d.Get("sync_keytab").(string)),
+		SyncCcache:                          api.PtrString(d.Get("sync_ccache").(string)),
+		SpnegoServerName:                    api.PtrString(d.Get("spnego_server_name").(string)),
+		SpnegoKeytab:                        api.PtrString(d.Get("spnego_keytab").(string)),
+		SpnegoCcache:                        api.PtrString(d.Get("spnego_ccache").(string)),
+		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 	}
 
 	if ak, ok := d.GetOk("authentication_flow"); ok {
