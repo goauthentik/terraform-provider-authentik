@@ -135,7 +135,7 @@ func resourceSourceKerberos() *schema.Resource {
 			"password_login_update_internal_password,omitempty": {
 				Description: "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend",
 				Type:        schema.TypeBool,
-				Required:    true,
+				Optional:    true,
 				Default:     false,
 			},
 		},
