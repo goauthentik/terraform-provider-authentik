@@ -64,6 +64,13 @@ func resourceSourceSAML() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
+			"group_matching_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
+				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+			},
 
 			"pre_authentication_flow": {
 				Type:     schema.TypeString,
@@ -139,12 +146,13 @@ func resourceSourceSAML() *schema.Resource {
 
 func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceRequest {
 	r := api.SAMLSourceRequest{
-		Name:             d.Get("name").(string),
-		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
-		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		Name:              d.Get("name").(string),
+		Slug:              d.Get("slug").(string),
+		Enabled:           api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate:  api.PtrString(d.Get("user_path_template").(string)),
+		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
 
@@ -213,6 +221,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "enabled", res.Enabled)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
 	setWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
 	setWrapper(d, "issuer", res.Issuer)

@@ -64,6 +64,13 @@ func resourceSourcePlex() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
+			"group_matching_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
+				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+			},
 
 			"client_id": {
 				Type:     schema.TypeString,
@@ -92,12 +99,13 @@ func resourceSourcePlex() *schema.Resource {
 
 func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceRequest {
 	r := api.PlexSourceRequest{
-		Name:             d.Get("name").(string),
-		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
-		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		Name:              d.Get("name").(string),
+		Slug:              d.Get("slug").(string),
+		Enabled:           api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate:  api.PtrString(d.Get("user_path_template").(string)),
+		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 
 		ClientId:     api.PtrString(d.Get("client_id").(string)),
 		AllowFriends: api.PtrBool(d.Get("allow_friends").(bool)),
@@ -151,6 +159,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "enabled", res.Enabled)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
 	setWrapper(d, "client_id", res.ClientId)
 	localServers := castSlice[string](d.Get("allowed_servers").([]interface{}))
