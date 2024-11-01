@@ -51,6 +51,7 @@ resource "authentik_stage_identification" "name" {
 
 ### Optional
 
+- `captcha_stage` (String)
 - `case_insensitive_matching` (Boolean)
 - `enrollment_flow` (String)
 - `password_stage` (String)
