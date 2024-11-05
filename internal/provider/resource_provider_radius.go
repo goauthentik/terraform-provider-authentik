@@ -32,6 +32,13 @@ func resourceProviderRadius() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"property_mappings": {
+				Type: schema.TypeList,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Optional: true,
+			},
 			"client_networks": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -59,6 +66,7 @@ func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusP
 		ClientNetworks:    api.PtrString(d.Get("client_networks").(string)),
 		SharedSecret:      api.PtrString(d.Get("shared_secret").(string)),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
+		PropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
 	}
 	return &r
 }
@@ -92,6 +100,8 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
+	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	setWrapper(d, "client_networks", res.ClientNetworks)
 	setWrapper(d, "shared_secret", res.SharedSecret)
 	setWrapper(d, "mfa_support", res.MfaSupport)
