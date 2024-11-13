@@ -61,6 +61,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"sni": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"base_dn": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -149,6 +154,7 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		BindCn:       api.PtrString(d.Get("bind_cn").(string)),
 		BindPassword: api.PtrString(d.Get("bind_password").(string)),
 		StartTls:     api.PtrBool(d.Get("start_tls").(bool)),
+		Sni:          api.PtrBool(d.Get("sni").(bool)),
 
 		AdditionalUserDn:      api.PtrString(d.Get("additional_user_dn").(string)),
 		AdditionalGroupDn:     api.PtrString(d.Get("additional_group_dn").(string)),
@@ -204,6 +210,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "server_uri", res.ServerUri)
 	setWrapper(d, "bind_cn", res.BindCn)
 	setWrapper(d, "start_tls", res.StartTls)
+	setWrapper(d, "sni", res.Sni)
 	setWrapper(d, "base_dn", res.BaseDn)
 	setWrapper(d, "additional_user_dn", res.AdditionalUserDn)
 	setWrapper(d, "additional_group_dn", res.AdditionalGroupDn)
