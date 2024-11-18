@@ -57,6 +57,11 @@ func resourceStageCaptcha() *schema.Resource {
 				Default:  true,
 				Optional: true,
 			},
+			"interactive": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -69,6 +74,7 @@ func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaSt
 		ErrorOnInvalidScore: api.PtrBool(d.Get("error_on_invalid_score").(bool)),
 		ScoreMinThreshold:   api.PtrFloat64(d.Get("score_min_threshold").(float64)),
 		ScoreMaxThreshold:   api.PtrFloat64(d.Get("score_max_threshold").(float64)),
+		Interactive:         api.PtrBool(d.Get("interactive").(bool)),
 	}
 	if v, ok := d.GetOk("js_url"); ok {
 		r.JsUrl = api.PtrString(v.(string))
@@ -109,6 +115,7 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "error_on_invalid_score", res.GetErrorOnInvalidScore())
 	setWrapper(d, "score_min_threshold", res.GetScoreMinThreshold())
 	setWrapper(d, "score_max_threshold", res.GetScoreMaxThreshold())
+	setWrapper(d, "interactive", res.Interactive)
 	return diags
 }
 
