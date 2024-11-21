@@ -87,6 +87,12 @@ resource "authentik_provider_oauth2" "name" {
   signing_key = data.authentik_certificate_key_pair.generated.id
   authorization_flow = data.authentik_flow.default-authorization-flow.id
   invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
+  allowed_redirect_uris = [
+    {
+      matching_mode = "strict",
+	  url = "http://localhost",
+    }
+  ]
 }
 
 resource "authentik_application" "name" {

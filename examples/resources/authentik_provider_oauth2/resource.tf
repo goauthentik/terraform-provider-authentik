@@ -3,6 +3,12 @@
 resource "authentik_provider_oauth2" "name" {
   name      = "grafana"
   client_id = "grafana"
+  allowed_redirect_uris = [
+    {
+      matching_mode = "strict",
+      url           = "http://localhost",
+    }
+  ]
 }
 
 resource "authentik_application" "name" {

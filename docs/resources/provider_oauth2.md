@@ -17,6 +17,12 @@ description: |-
 resource "authentik_provider_oauth2" "name" {
   name      = "grafana"
   client_id = "grafana"
+  allowed_redirect_uris = [
+    {
+      matching_mode = "strict",
+      url           = "http://localhost",
+    }
+  ]
 }
 
 resource "authentik_application" "name" {
@@ -40,6 +46,7 @@ resource "authentik_application" "name" {
 
 - `access_code_validity` (String) Defaults to `minutes=1`.
 - `access_token_validity` (String) Defaults to `minutes=10`.
+- `allowed_redirect_uris` (List of Map of String)
 - `authentication_flow` (String)
 - `client_secret` (String, Sensitive) Generated.
 - `client_type` (String) Allowed values:
@@ -54,7 +61,6 @@ resource "authentik_application" "name" {
  Defaults to `per_provider`.
 - `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
 - `property_mappings` (List of String)
-- `redirect_uris` (List of String)
 - `refresh_token_validity` (String) Defaults to `days=30`.
 - `signing_key` (String)
 - `sub_mode` (String) Allowed values:

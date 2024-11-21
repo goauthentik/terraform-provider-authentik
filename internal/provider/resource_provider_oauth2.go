@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -89,11 +88,11 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"redirect_uris": {
+			"allowed_redirect_uris": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
+					Type: schema.TypeMap,
 				},
 			},
 			"sub_mode": {
@@ -153,9 +152,43 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		r.EncryptionKey.Set(api.PtrString(s.(string)))
 	}
 
-	redirectUris := castSlice[string](d.Get("redirect_uris").([]interface{}))
-	r.RedirectUris = api.PtrString(strings.Join(redirectUris, "\n"))
+	r.RedirectUris = listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]interface{}))
 	return &r
+}
+
+func listToRedirectURIsRequest(raw []interface{}) []api.RedirectURIRequest {
+	rus := []api.RedirectURIRequest{}
+	for _, rr := range raw {
+		rd := rr.(map[string]interface{})
+		rus = append(rus, api.RedirectURIRequest{
+			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
+			Url:          rd["url"].(string),
+		})
+	}
+	return rus
+}
+
+func listToRedirectURIs(raw []interface{}) []api.RedirectURI {
+	rus := []api.RedirectURI{}
+	for _, rr := range raw {
+		rd := rr.(map[string]interface{})
+		rus = append(rus, api.RedirectURI{
+			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
+			Url:          rd["url"].(string),
+		})
+	}
+	return rus
+}
+
+func redirectURIsToList(raw []api.RedirectURI) []map[string]interface{} {
+	rus := []map[string]interface{}{}
+	for _, rr := range raw {
+		rus = append(rus, map[string]interface{}{
+			"matching_mode": string(rr.MatchingMode),
+			"url":           rr.Url,
+		})
+	}
+	return rus
 }
 
 func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -195,11 +228,8 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "issuer_mode", res.IssuerMode)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
-	if *res.RedirectUris != "" {
-		setWrapper(d, "redirect_uris", strings.Split(*res.RedirectUris, "\n"))
-	} else {
-		setWrapper(d, "redirect_uris", []string{})
-	}
+	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
+	setWrapper(d, "allowed_redirect_uris", redirectURIsToList(castSlice[api.RedirectURI](listConsistentMerge(localRedirectURIs, res.RedirectUris))))
 	if res.SigningKey.IsSet() {
 		setWrapper(d, "signing_key", res.SigningKey.Get())
 	}
