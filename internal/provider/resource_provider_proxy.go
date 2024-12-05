@@ -111,7 +111,23 @@ func resourceProviderProxy() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+				Description: "Deprecated. Use `jwt_federation_sources` instead.",
+			},
+			"jwt_federation_sources": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 				Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
+			},
+			"jwt_federation_providers": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+				Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
 			},
 		},
 	}
@@ -119,13 +135,13 @@ func resourceProviderProxy() *schema.Resource {
 
 func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyProviderRequest {
 	r := api.ProxyProviderRequest{
-		Name:              d.Get("name").(string),
-		AuthorizationFlow: d.Get("authorization_flow").(string),
-		InvalidationFlow:  d.Get("invalidation_flow").(string),
-		ExternalHost:      d.Get("external_host").(string),
-		Mode:              api.ProxyMode(d.Get("mode").(string)).Ptr(),
-		PropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
-		JwksSources:       castSlice[string](d.Get("jwks_sources").([]interface{})),
+		Name:                 d.Get("name").(string),
+		AuthorizationFlow:    d.Get("authorization_flow").(string),
+		InvalidationFlow:     d.Get("invalidation_flow").(string),
+		ExternalHost:         d.Get("external_host").(string),
+		Mode:                 api.ProxyMode(d.Get("mode").(string)).Ptr(),
+		PropertyMappings:     castSlice[string](d.Get("property_mappings").([]interface{})),
+		JwtFederationSources: castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -165,6 +181,13 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	if l, ok := d.Get("refresh_token_validity").(string); ok {
 		r.RefreshTokenValidity = &l
 	}
+
+	providers := d.Get("jwt_federation_providers").([]interface{})
+	r.JwtFederationProviders = make([]int32, len(providers))
+	for i, prov := range providers {
+		r.JwtFederationProviders[i] = int32(prov.(int))
+	}
+
 	return &r
 }
 
@@ -215,8 +238,10 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	if len(localMappings) > 0 {
 		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localJWKSSources := castSlice[string](d.Get("jwks_sources").([]interface{}))
-	setWrapper(d, "jwks_sources", listConsistentMerge(localJWKSSources, res.JwksSources))
+	localJWKSProviders := castSlice[int](d.Get("jwt_federation_providers").([]interface{}))
+	setWrapper(d, "jwt_federation_providers", listConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
+	localJWKSSources := castSlice[string](d.Get("jwt_federation_sources").([]interface{}))
+	setWrapper(d, "jwt_federation_sources", listConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }
 
