@@ -53,7 +53,9 @@ resource "authentik_application" "name" {
 - `intercept_header_auth` (Boolean) Defaults to `true`.
 - `internal_host` (String)
 - `internal_host_ssl_validation` (Boolean) Defaults to `true`.
-- `jwks_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
+- `jwks_sources` (List of String) Deprecated. Use `jwt_federation_sources` instead.
+- `jwt_federation_providers` (List of Number) JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.
+- `jwt_federation_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
 - `mode` (String) Allowed values:
   - `proxy`
   - `forward_single`

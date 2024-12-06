@@ -63,12 +63,15 @@ jobs:
         run: |
           go test \
             -p 1 \
+            -v \
             -coverprofile=coverage.txt \
             -covermode=atomic \
             -cover \
             ./internal/provider/ 2>&1 | tee test-output
+      - if: ${{ always() }}
+        run: |
           go install github.com/jstemmer/go-junit-report/v2@latest
-          $(go env GOPATH)/bin/go-junit-report -in test-output -set-exit-code -iocopy	-out report.xml
+          $(go env GOPATH)/bin/go-junit-report -in test-output -set-exit-code -iocopy -out junit.xml
       - name: authentik Server logs
         if: ${{ always() }}
         run: |
@@ -80,14 +83,13 @@ jobs:
       - if: ${{ always() }}
         uses: test-summary/action@v2
         with:
-          paths: report.xml
+          paths: junit.xml
           show: "fail"
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-      - if: ${{ !cancelled() }}
+      - if: ${{ always() }}
         uses: codecov/test-results-action@v1
         with:
-          file: report.xml
           token: ${{ secrets.CODECOV_TOKEN }}

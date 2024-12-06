@@ -115,7 +115,23 @@ func resourceProviderOAuth2() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+				Description: "Deprecated. Use `jwt_federation_sources` instead.",
+			},
+			"jwt_federation_sources": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 				Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
+			},
+			"jwt_federation_providers": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+				Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
 			},
 		},
 	}
@@ -135,7 +151,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
 		PropertyMappings:       castSlice[string](d.Get("property_mappings").([]interface{})),
-		JwksSources:            castSlice[string](d.Get("jwks_sources").([]interface{})),
+		JwtFederationSources:   castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
 	}
 
 	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
@@ -153,6 +169,12 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	}
 
 	r.RedirectUris = listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]interface{}))
+
+	providers := d.Get("jwt_federation_providers").([]interface{})
+	r.JwtFederationProviders = make([]int32, len(providers))
+	for i, prov := range providers {
+		r.JwtFederationProviders[i] = int32(prov.(int))
+	}
 	return &r
 }
 
@@ -240,8 +262,10 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localJWKSSources := castSlice[string](d.Get("jwks_sources").([]interface{}))
-	setWrapper(d, "jwks_sources", listConsistentMerge(localJWKSSources, res.JwksSources))
+	localJWKSProviders := castSlice[int](d.Get("jwt_federation_providers").([]interface{}))
+	setWrapper(d, "jwt_federation_providers", listConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
+	localJWKSSources := castSlice[string](d.Get("jwt_federation_sources").([]interface{}))
+	setWrapper(d, "jwt_federation_sources", listConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }
 
