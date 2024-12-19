@@ -43,7 +43,7 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 
 ### Optional
 
-- `evaluate_on_plan` (Boolean) Defaults to `true`.
+- `evaluate_on_plan` (Boolean) Evaluate policies during the Flow planning process. Defaults to `true`.
 - `invalid_response_action` (String) Allowed values:
   - `retry`
   - `restart`
@@ -53,7 +53,7 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
   - `all`
   - `any`
  Defaults to `any`.
-- `re_evaluate_policies` (Boolean) Defaults to `false`.
+- `re_evaluate_policies` (Boolean) Evaluate policies when the Stage is present to the user. Defaults to `false`.
 
 ### Read-Only
 
