@@ -56,7 +56,7 @@ resource "authentik_application" "name" {
 
 resource "authentik_application_entitlement" "ent" {
   name = "%[1]s"
-  application = authentik_application.name.id
+  application = authentik_application.name.uuid
 }
 `, name)
 }
