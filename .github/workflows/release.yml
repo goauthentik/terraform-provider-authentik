@@ -8,10 +8,10 @@ jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@v4.2.2
       - name: Unshallow
         run: git fetch --prune --unshallow
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
+      - uses: actions/setup-go@v5.2.0
         with:
           go-version-file: go.mod
           cache: true

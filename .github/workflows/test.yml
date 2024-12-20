@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-go@v5.2.0
         with:
           go-version-file: go.mod
           cache: true
@@ -40,8 +40,8 @@ jobs:
             terraform: latest
             allow_failure: true
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-go@v5.2.0
         with:
           go-version-file: go.mod
           cache: true
