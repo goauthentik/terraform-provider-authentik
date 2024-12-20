@@ -28,14 +28,16 @@ func resourceFlowStageBinding() *schema.Resource {
 				Required: true,
 			},
 			"evaluate_on_plan": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				Description: "Evaluate policies during the Flow planning process.",
 			},
 			"re_evaluate_policies": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Evaluate policies when the Stage is present to the user.",
 			},
 			"order": {
 				Type:     schema.TypeInt,

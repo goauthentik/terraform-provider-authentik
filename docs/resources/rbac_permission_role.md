@@ -124,6 +124,7 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_stages_password.passwordstage`
   - `authentik_stages_prompt.prompt`
   - `authentik_stages_prompt.promptstage`
+  - `authentik_stages_redirect.redirectstage`
   - `authentik_stages_user_delete.userdeletestage`
   - `authentik_stages_user_login.userloginstage`
   - `authentik_stages_user_logout.userlogoutstage`
@@ -133,6 +134,7 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_core.group`
   - `authentik_core.user`
   - `authentik_core.application`
+  - `authentik_core.applicationentitlement`
   - `authentik_core.token`
   - `authentik_enterprise.license`
   - `authentik_providers_google_workspace.googleworkspaceprovider`
