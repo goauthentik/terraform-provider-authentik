@@ -112,7 +112,7 @@ func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m i
 func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -139,7 +139,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -156,7 +156,7 @@ func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 func resourceProviderLDAPDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
