@@ -104,6 +104,7 @@ resource "authentik_source_saml" "name" {
  Defaults to `identifier`.
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String) Generated.
+- `verification_kp` (String)
 
 ### Read-Only
 
