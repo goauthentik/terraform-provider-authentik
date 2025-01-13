@@ -90,14 +90,10 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
 		Sources:                 castSlice[string](d.Get("sources").([]interface{})),
+		PasswordStage:           *api.NewNullableString(api.PtrString(d.Get("password_stage").(string))),
+		CaptchaStage:            *api.NewNullableString(api.PtrString(d.Get("captcha_stage").(string))),
 	}
 
-	if h, hSet := d.GetOk("password_stage"); hSet {
-		r.PasswordStage.Set(api.PtrString(h.(string)))
-	}
-	if h, hSet := d.GetOk("captcha_stage"); hSet {
-		r.CaptchaStage.Set(api.PtrString(h.(string)))
-	}
 	if h, hSet := d.GetOk("enrollment_flow"); hSet {
 		r.EnrollmentFlow.Set(api.PtrString(h.(string)))
 	}
