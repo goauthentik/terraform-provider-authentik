@@ -56,6 +56,7 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
   - `require_authenticated`
   - `require_unauthenticated`
   - `require_superuser`
+  - `require_redirect`
   - `require_outpost`
  Defaults to `none`.
 - `background` (String) Optional URL to an image which will be used as the background during the flow.

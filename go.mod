@@ -5,13 +5,13 @@ go 1.22.7
 toolchain go1.23.3
 
 require (
-	github.com/getsentry/sentry-go v0.30.0
+	github.com/getsentry/sentry-go v0.31.1
 	github.com/go-openapi/runtime v0.28.0
 	github.com/hashicorp/terraform-plugin-docs v0.20.1
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.35.0
 	github.com/stretchr/testify v1.10.0
-	goauthentik.io/api/v3 v3.2024105.1
+	goauthentik.io/api/v3 v3.2024122.2
 )
 
 require (

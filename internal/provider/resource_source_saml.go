@@ -115,6 +115,10 @@ func resourceSourceSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"verification_kp": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"digest_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -182,6 +186,10 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	if s, sok := d.GetOk("encryption_kp"); sok && s.(string) != "" {
 		r.EncryptionKp.Set(api.PtrString(s.(string)))
 	}
+	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
+		r.VerificationKp.Set(api.PtrString(s.(string)))
+	}
+
 	return &r
 }
 
@@ -237,6 +245,9 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	if res.EncryptionKp.IsSet() {
 		setWrapper(d, "encryption_kp", res.EncryptionKp.Get())
+	}
+	if res.VerificationKp.IsSet() {
+		setWrapper(d, "verification_kp", res.VerificationKp.Get())
 	}
 	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
