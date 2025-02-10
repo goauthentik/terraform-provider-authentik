@@ -41,7 +41,7 @@ jobs:
           VERSION=$(./$(ls) -version)
           echo "##[set-output name=version]$VERSION"
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@eee172e87c159b3418d45fa2f2283f5a9fc7bd6a
+        uses: getsentry/action-release@50f4a1a3799e059c182a73c30bbebc89739af2db
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: authentik-security-inc
