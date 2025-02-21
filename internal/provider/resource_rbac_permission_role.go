@@ -93,6 +93,9 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 		if err != nil {
 			return httpToDiag(d, hr, err)
 		}
+		if len(res.Results) < 1 {
+			return diag.Errorf("Permission not found")
+		}
 		setWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
 	} else {
 		res, hr, err := c.client.RbacApi.RbacPermissionsRolesRetrieve(ctx, int32(id)).Execute()
