@@ -38,7 +38,7 @@ func resourceProviderSSF() *schema.Resource {
 			},
 			"event_retention": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 				Default:  "days=30",
 			},
 		},

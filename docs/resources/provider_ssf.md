@@ -16,11 +16,11 @@ description: |-
 
 ### Required
 
-- `event_retention` (String) Defaults to `days=30`.
 - `name` (String)
 
 ### Optional
 
+- `event_retention` (String) Defaults to `days=30`.
 - `jwt_federation_providers` (List of Number) JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.
 - `signing_key` (String)
 
