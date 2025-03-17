@@ -42,14 +42,17 @@ func resourcePolicyGeoIP() *schema.Resource {
 			"history_max_distance_km": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  100,
 			},
 			"distance_tolerance_km": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  50,
 			},
 			"history_login_count": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  5,
 			},
 			"check_impossible_travel": {
 				Type:     schema.TypeBool,
@@ -58,6 +61,7 @@ func resourcePolicyGeoIP() *schema.Resource {
 			"impossible_tolerance_km": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  100,
 			},
 			"countries": {
 				Type:        schema.TypeList,

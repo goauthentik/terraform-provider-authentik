@@ -273,11 +273,11 @@ description: |-
   - `YE`
   - `ZM`
   - `ZW`
-- `distance_tolerance_km` (Number)
+- `distance_tolerance_km` (Number) Defaults to `50`.
 - `execution_logging` (Boolean) Defaults to `false`.
-- `history_login_count` (Number)
-- `history_max_distance_km` (Number)
-- `impossible_tolerance_km` (Number)
+- `history_login_count` (Number) Defaults to `5`.
+- `history_max_distance_km` (Number) Defaults to `100`.
+- `impossible_tolerance_km` (Number) Defaults to `100`.
 
 ### Read-Only
 
