@@ -4,6 +4,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -47,4 +50,4 @@ jobs:
           SENTRY_ORG: authentik-security-inc
           SENTRY_PROJECT: terraform-provider-authentik
         with:
-          version: terraform-provider-authentik@${{ steps.version.outputs.version }}
+          release: terraform-provider-authentik@${{ steps.version.outputs.version }}
