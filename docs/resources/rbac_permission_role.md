@@ -74,6 +74,9 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_providers_oauth2.scopemapping`
   - `authentik_providers_oauth2.oauth2provider`
   - `authentik_providers_proxy.proxyprovider`
+  - `authentik_providers_rac.racprovider`
+  - `authentik_providers_rac.endpoint`
+  - `authentik_providers_rac.racpropertymapping`
   - `authentik_providers_radius.radiusprovider`
   - `authentik_providers_radius.radiusproviderpropertymapping`
   - `authentik_providers_saml.samlprovider`
@@ -103,6 +106,8 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_sources_scim.scimsourcepropertymapping`
   - `authentik_stages_authenticator_duo.authenticatorduostage`
   - `authentik_stages_authenticator_duo.duodevice`
+  - `authentik_stages_authenticator_email.authenticatoremailstage`
+  - `authentik_stages_authenticator_email.emaildevice`
   - `authentik_stages_authenticator_sms.authenticatorsmsstage`
   - `authentik_stages_authenticator_sms.smsdevice`
   - `authentik_stages_authenticator_static.authenticatorstaticstage`
@@ -141,9 +146,7 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_providers_google_workspace.googleworkspaceprovidermapping`
   - `authentik_providers_microsoft_entra.microsoftentraprovider`
   - `authentik_providers_microsoft_entra.microsoftentraprovidermapping`
-  - `authentik_providers_rac.racprovider`
-  - `authentik_providers_rac.endpoint`
-  - `authentik_providers_rac.racpropertymapping`
+  - `authentik_providers_ssf.ssfprovider`
   - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_source.sourcestage`
   - `authentik_events.event`

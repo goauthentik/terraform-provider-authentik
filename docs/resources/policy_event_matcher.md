@@ -50,6 +50,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.providers.ldap`
   - `authentik.providers.oauth2`
   - `authentik.providers.proxy`
+  - `authentik.providers.rac`
   - `authentik.providers.radius`
   - `authentik.providers.saml`
   - `authentik.providers.scim`
@@ -63,6 +64,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.sources.scim`
   - `authentik.stages.authenticator`
   - `authentik.stages.authenticator_duo`
+  - `authentik.stages.authenticator_email`
   - `authentik.stages.authenticator_sms`
   - `authentik.stages.authenticator_static`
   - `authentik.stages.authenticator_totp`
@@ -89,7 +91,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.enterprise.audit`
   - `authentik.enterprise.providers.google_workspace`
   - `authentik.enterprise.providers.microsoft_entra`
-  - `authentik.enterprise.providers.rac`
+  - `authentik.enterprise.providers.ssf`
   - `authentik.enterprise.stages.authenticator_endpoint_gdtc`
   - `authentik.enterprise.stages.source`
   - `authentik.events`
@@ -115,6 +117,9 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_oauth2.scopemapping`
   - `authentik_providers_oauth2.oauth2provider`
   - `authentik_providers_proxy.proxyprovider`
+  - `authentik_providers_rac.racprovider`
+  - `authentik_providers_rac.endpoint`
+  - `authentik_providers_rac.racpropertymapping`
   - `authentik_providers_radius.radiusprovider`
   - `authentik_providers_radius.radiusproviderpropertymapping`
   - `authentik_providers_saml.samlprovider`
@@ -144,6 +149,8 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_sources_scim.scimsourcepropertymapping`
   - `authentik_stages_authenticator_duo.authenticatorduostage`
   - `authentik_stages_authenticator_duo.duodevice`
+  - `authentik_stages_authenticator_email.authenticatoremailstage`
+  - `authentik_stages_authenticator_email.emaildevice`
   - `authentik_stages_authenticator_sms.authenticatorsmsstage`
   - `authentik_stages_authenticator_sms.smsdevice`
   - `authentik_stages_authenticator_static.authenticatorstaticstage`
@@ -182,9 +189,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_google_workspace.googleworkspaceprovidermapping`
   - `authentik_providers_microsoft_entra.microsoftentraprovider`
   - `authentik_providers_microsoft_entra.microsoftentraprovidermapping`
-  - `authentik_providers_rac.racprovider`
-  - `authentik_providers_rac.endpoint`
-  - `authentik_providers_rac.racpropertymapping`
+  - `authentik_providers_ssf.ssfprovider`
   - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_source.sourcestage`
   - `authentik_events.event`

@@ -28,20 +28,40 @@ func resourcePolicyGeoIP() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
-			"action": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"client_ip": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"asns": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
 				},
+			},
+			"check_history_distance": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"history_max_distance_km": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  100,
+			},
+			"distance_tolerance_km": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  50,
+			},
+			"history_login_count": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  5,
+			},
+			"check_impossible_travel": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"impossible_tolerance_km": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  100,
 			},
 			"countries": {
 				Type:        schema.TypeList,
@@ -73,6 +93,24 @@ func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolic
 			r.Countries = append(r.Countries, api.CountryCodeEnum(c))
 		}
 	}
+	if x, xok := d.GetOk("check_history_distance"); xok {
+		r.CheckHistoryDistance = api.PtrBool(x.(bool))
+	}
+	if x, xok := d.GetOk("history_max_distance_km"); xok {
+		r.HistoryMaxDistanceKm = api.PtrInt64(int64(x.(int)))
+	}
+	if x, xok := d.GetOk("distance_tolerance_km"); xok {
+		r.DistanceToleranceKm = api.PtrInt32(int32(x.(int)))
+	}
+	if x, xok := d.GetOk("history_login_count"); xok {
+		r.HistoryLoginCount = api.PtrInt32(int32(x.(int)))
+	}
+	if x, xok := d.GetOk("check_impossible_travel"); xok {
+		r.CheckImpossibleTravel = api.PtrBool(x.(bool))
+	}
+	if x, xok := d.GetOk("impossible_tolerance_km"); xok {
+		r.ImpossibleToleranceKm = api.PtrInt32(int32(x.(int)))
+	}
 	return &r
 }
 
@@ -101,6 +139,12 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "execution_logging", res.ExecutionLogging)
+	setWrapper(d, "check_history_distance", res.CheckHistoryDistance)
+	setWrapper(d, "history_max_distance_km", res.HistoryMaxDistanceKm)
+	setWrapper(d, "distance_tolerance_km", res.DistanceToleranceKm)
+	setWrapper(d, "history_login_count", res.HistoryLoginCount)
+	setWrapper(d, "check_impossible_travel", res.CheckImpossibleTravel)
+	setWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
 	if res.HasAsns() {
 		localAsns := castSlice[int](d.Get("asns").([]interface{}))
 		setWrapper(d, "asns", listConsistentMerge(localAsns, slice32ToInt(res.Asns)))
