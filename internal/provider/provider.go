@@ -142,6 +142,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_source_plex":                       tr(resourceSourcePlex),
 			"authentik_source_saml":                       tr(resourceSourceSAML),
 			"authentik_stage_authenticator_duo":           tr(resourceStageAuthenticatorDuo),
+			"authentik_stage_authenticator_email":         tr(resourceStageAuthenticatorEmail),
 			"authentik_stage_authenticator_endpoint_gdtc": tr(resourceStageAuthenticatorEndpointGDTC),
 			"authentik_stage_authenticator_sms":           tr(resourceStageAuthenticatorSms),
 			"authentik_stage_authenticator_static":        tr(resourceStageAuthenticatorStatic),
