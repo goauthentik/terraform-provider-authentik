@@ -42,6 +42,7 @@ resource "authentik_provider_scim" "name" {
 
 ### Optional
 
+- `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)
 - `filter_group` (String)
 - `property_mappings` (List of String)

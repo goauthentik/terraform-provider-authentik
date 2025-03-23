@@ -24,6 +24,11 @@ func resourceProviderSCIM() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"dry_run": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
 			"url": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -71,6 +76,9 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 	if l, ok := d.Get("filter_group").(string); ok {
 		r.FilterGroup = *api.NewNullableString(&l)
 	}
+	if d, dok := d.GetOk("dry_run"); dok {
+		r.DryRun = api.PtrBool(d.(bool))
+	}
 	return &r
 }
 
@@ -109,6 +117,7 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	setWrapper(d, "filter_group", res.FilterGroup.Get())
+	setWrapper(d, "dry_run", res.DryRun)
 	return diags
 }
 

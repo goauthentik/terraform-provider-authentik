@@ -24,6 +24,11 @@ func resourceProviderMicrosoftEntra() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"dry_run": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
 			"client_id": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -105,6 +110,9 @@ func resourceProviderMicrosoftEntraSchemaToProvider(d *schema.ResourceData) (*ap
 	if l, ok := d.Get("filter_group").(string); ok {
 		r.FilterGroup = *api.NewNullableString(&l)
 	}
+	if d, dok := d.GetOk("dry_run"); dok {
+		r.DryRun = api.PtrBool(d.(bool))
+	}
 	return &r, nil
 }
 
@@ -145,6 +153,7 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 	setWrapper(d, "user_delete_action", res.UserDeleteAction)
 	setWrapper(d, "group_delete_action", res.GroupDeleteAction)
 	setWrapper(d, "filter_group", res.FilterGroup)
+	setWrapper(d, "dry_run", res.DryRun)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
 		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))

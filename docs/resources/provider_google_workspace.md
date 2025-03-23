@@ -23,6 +23,7 @@ description: |-
 
 - `credentials` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
 - `delegated_subject` (String) Defaults to `seconds=0`.
+- `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)
 - `filter_group` (String)
 - `group_delete_action` (String) Allowed values:
