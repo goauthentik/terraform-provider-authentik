@@ -39,6 +39,14 @@ func resourceBrand() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"branding_default_flow_background": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"branding_custom_css": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"branding_favicon": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -100,6 +108,12 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 	}
 	if l, ok := d.Get("branding_favicon").(string); ok {
 		m.BrandingFavicon = &l
+	}
+	if l, ok := d.Get("branding_default_flow_background").(string); ok {
+		m.BrandingDefaultFlowBackground = &l
+	}
+	if l, ok := d.Get("branding_custom_css").(string); ok {
+		m.BrandingCustomCss = &l
 	}
 
 	if l, ok := d.Get("flow_authentication").(string); ok {
@@ -191,6 +205,8 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 	setWrapper(d, "branding_title", res.BrandingTitle)
 	setWrapper(d, "branding_logo", res.BrandingLogo)
 	setWrapper(d, "branding_favicon", res.BrandingFavicon)
+	setWrapper(d, "branding_default_flow_background", res.BrandingDefaultFlowBackground)
+	setWrapper(d, "branding_custom_css", res.BrandingCustomCss)
 	if res.FlowAuthentication.IsSet() {
 		setWrapper(d, "flow_authentication", res.FlowAuthentication.Get())
 	}
