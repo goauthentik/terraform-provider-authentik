@@ -42,6 +42,7 @@ func resourceBrand() *schema.Resource {
 			"branding_default_flow_background": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "/static/dist/assets/images/flow_background.jpg",
 			},
 			"branding_custom_css": {
 				Type:     schema.TypeString,
