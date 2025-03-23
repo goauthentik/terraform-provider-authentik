@@ -33,7 +33,11 @@ func resourceEventTransport() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"webhook_mapping": {
+			"webhook_mapping_body": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"webhook_mapping_headers": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -57,8 +61,11 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.Notificat
 		m.WebhookUrl = &w
 	}
 
-	if w, ok := d.Get("webhook_mapping").(string); ok {
-		m.WebhookMapping.Set(&w)
+	if w, ok := d.Get("webhook_mapping_body").(string); ok {
+		m.WebhookMappingBody.Set(&w)
+	}
+	if w, ok := d.Get("webhook_mapping_headers").(string); ok {
+		m.WebhookMappingHeaders.Set(&w)
 	}
 	return &m, nil
 }
@@ -93,7 +100,8 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "mode", res.Mode)
 	setWrapper(d, "send_once", res.SendOnce)
 	setWrapper(d, "webhook_url", res.WebhookUrl)
-	setWrapper(d, "webhook_mapping", res.WebhookMapping.Get())
+	setWrapper(d, "webhook_mapping_body", res.WebhookMappingBody.Get())
+	setWrapper(d, "webhook_mapping_headers", res.WebhookMappingHeaders.Get())
 	return diags
 }
 

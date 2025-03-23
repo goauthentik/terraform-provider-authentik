@@ -44,7 +44,8 @@ resource "authentik_event_transport" "transport" {
 ### Optional
 
 - `send_once` (Boolean) Defaults to `true`.
-- `webhook_mapping` (String)
+- `webhook_mapping_body` (String)
+- `webhook_mapping_headers` (String)
 - `webhook_url` (String)
 
 ### Read-Only
