@@ -66,9 +66,9 @@ func resourceStageEmail() *schema.Resource {
 				Default:  "system@authentik.local",
 			},
 			"token_expiry": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
-				Default:  30,
+				Default:  "minutes=30",
 			},
 			"subject": {
 				Type:     schema.TypeString,
@@ -119,7 +119,7 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageR
 		r.FromAddress = api.PtrString(h.(string))
 	}
 	if p, pSet := d.GetOk("token_expiry"); pSet {
-		r.TokenExpiry = api.PtrInt32(int32(p.(int)))
+		r.TokenExpiry = api.PtrString(p.(string))
 	}
 	if h, hSet := d.GetOk("subject"); hSet {
 		r.Subject = api.PtrString(h.(string))
