@@ -47,6 +47,7 @@ resource "authentik_application" "name" {
 - `assertion_valid_not_on_or_after` (String) Defaults to `minutes=5`.
 - `audience` (String) Defaults to ``.
 - `authentication_flow` (String)
+- `authn_context_class_ref_mapping` (String)
 - `default_relay_state` (String) Defaults to ``.
 - `digest_algorithm` (String) Allowed values:
   - `http://www.w3.org/2000/09/xmldsig#sha1`
