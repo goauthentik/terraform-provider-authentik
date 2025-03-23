@@ -24,6 +24,11 @@ func resourceProviderSCIM() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"dry_run": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
 			"url": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -32,6 +37,13 @@ func resourceProviderSCIM() *schema.Resource {
 				Type:      schema.TypeString,
 				Sensitive: true,
 				Required:  true,
+			},
+			"compatibility_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.COMPATIBILITYMODEENUM_DEFAULT,
+				Description:      EnumToDescription(api.AllowedCompatibilityModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedCompatibilityModeEnumEnumValues),
 			},
 			"property_mappings": {
 				Type:     schema.TypeList,
@@ -67,9 +79,13 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
 		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
+		CompatibilityMode:          api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
 	}
 	if l, ok := d.Get("filter_group").(string); ok {
 		r.FilterGroup = *api.NewNullableString(&l)
+	}
+	if d, dok := d.GetOk("dry_run"); dok {
+		r.DryRun = api.PtrBool(d.(bool))
 	}
 	return &r
 }
@@ -109,6 +125,8 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	setWrapper(d, "filter_group", res.FilterGroup.Get())
+	setWrapper(d, "dry_run", res.DryRun)
+	setWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	return diags
 }
 

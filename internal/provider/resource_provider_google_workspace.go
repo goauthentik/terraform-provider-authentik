@@ -26,6 +26,11 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"dry_run": {
+				Type:     schema.TypeBool,
+				Default:  false,
+				Optional: true,
+			},
 
 			"credentials": {
 				Type:             schema.TypeString,
@@ -104,6 +109,9 @@ func resourceProviderGoogleWorkspaceSchemaToProvider(d *schema.ResourceData) (*a
 	if l, ok := d.Get("filter_group").(string); ok {
 		r.FilterGroup = *api.NewNullableString(&l)
 	}
+	if d, dok := d.GetOk("dry_run"); dok {
+		r.DryRun = api.PtrBool(d.(bool))
+	}
 	credentials := make(map[string]interface{})
 	if l, ok := d.Get("credentials").(string); ok && l != "" {
 		err := json.NewDecoder(strings.NewReader(l)).Decode(&credentials)
@@ -151,6 +159,7 @@ func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.Resource
 	setWrapper(d, "user_delete_action", res.UserDeleteAction)
 	setWrapper(d, "group_delete_action", res.GroupDeleteAction)
 	setWrapper(d, "filter_group", res.FilterGroup)
+	setWrapper(d, "dry_run", res.DryRun)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
 		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))

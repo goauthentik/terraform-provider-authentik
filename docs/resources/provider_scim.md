@@ -42,6 +42,12 @@ resource "authentik_provider_scim" "name" {
 
 ### Optional
 
+- `compatibility_mode` (String) Allowed values:
+  - `default`
+  - `aws`
+  - `slack`
+ Defaults to `default`.
+- `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)
 - `filter_group` (String)
 - `property_mappings` (List of String)

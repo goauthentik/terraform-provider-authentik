@@ -36,7 +36,7 @@ resource "authentik_stage_email" "name" {
 - `subject` (String) Defaults to `authentik`.
 - `template` (String) Defaults to `email/password_reset.html`.
 - `timeout` (Number) Defaults to `30`.
-- `token_expiry` (Number) Defaults to `30`.
+- `token_expiry` (String) Defaults to `minutes=30`.
 - `use_global_settings` (Boolean) Defaults to `true`.
 - `use_ssl` (Boolean)
 - `use_tls` (Boolean)

@@ -103,6 +103,10 @@ func resourceProviderSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"authn_context_class_ref_mapping": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"digest_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -180,6 +184,9 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	if s, sok := d.GetOk("name_id_mapping"); sok && s.(string) != "" {
 		r.NameIdMapping.Set(api.PtrString(s.(string)))
 	}
+	if s, sok := d.GetOk("authn_context_class_ref_mapping"); sok && s.(string) != "" {
+		r.AuthnContextClassRefMapping.Set(api.PtrString(s.(string)))
+	}
 	if s, sok := d.GetOk("encryption_kp"); sok && s.(string) != "" {
 		r.EncryptionKp.Set(api.PtrString(s.(string)))
 	}
@@ -239,6 +246,9 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "sign_response", res.SignResponse)
 	if res.NameIdMapping.IsSet() {
 		setWrapper(d, "name_id_mapping", res.NameIdMapping.Get())
+	}
+	if res.AuthnContextClassRefMapping.IsSet() {
+		setWrapper(d, "authn_context_class_ref_mapping", res.AuthnContextClassRefMapping.Get())
 	}
 	if res.SigningKp.IsSet() {
 		setWrapper(d, "signing_kp", res.SigningKp.Get())

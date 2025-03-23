@@ -37,6 +37,16 @@ func dataSourceBrand() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"branding_default_flow_background": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
+			"branding_custom_css": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"flow_authentication": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -105,6 +115,8 @@ func dataSourceBrandRead(ctx context.Context, d *schema.ResourceData, m interfac
 	setWrapper(d, "branding_title", f.BrandingTitle)
 	setWrapper(d, "branding_logo", f.BrandingLogo)
 	setWrapper(d, "branding_favicon", f.BrandingFavicon)
+	setWrapper(d, "branding_default_flow_background", f.BrandingDefaultFlowBackground)
+	setWrapper(d, "branding_custom_css", f.BrandingCustomCss)
 	setWrapper(d, "flow_authentication", f.FlowAuthentication.Get())
 	setWrapper(d, "flow_invalidation", f.FlowInvalidation.Get())
 	setWrapper(d, "flow_recovery", f.FlowRecovery.Get())
