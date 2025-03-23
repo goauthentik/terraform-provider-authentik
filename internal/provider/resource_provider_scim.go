@@ -38,6 +38,13 @@ func resourceProviderSCIM() *schema.Resource {
 				Sensitive: true,
 				Required:  true,
 			},
+			"compatibility_mode": {
+				Type:             schema.TypeString,
+				Required:         true,
+				Default:          api.COMPATIBILITYMODEENUM_DEFAULT,
+				Description:      EnumToDescription(api.AllowedCompatibilityModeEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedCompatibilityModeEnumEnumValues),
+			},
 			"property_mappings": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -72,6 +79,7 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
 		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
+		CompatibilityMode:          api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
 	}
 	if l, ok := d.Get("filter_group").(string); ok {
 		r.FilterGroup = *api.NewNullableString(&l)
@@ -118,6 +126,7 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	setWrapper(d, "filter_group", res.FilterGroup.Get())
 	setWrapper(d, "dry_run", res.DryRun)
+	setWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	return diags
 }
 

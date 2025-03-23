@@ -36,6 +36,11 @@ resource "authentik_provider_scim" "name" {
 
 ### Required
 
+- `compatibility_mode` (String) Allowed values:
+  - `default`
+  - `aws`
+  - `slack`
+ Defaults to `default`.
 - `name` (String)
 - `token` (String, Sensitive)
 - `url` (String)
