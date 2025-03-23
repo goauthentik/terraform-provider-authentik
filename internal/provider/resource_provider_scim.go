@@ -40,7 +40,7 @@ func resourceProviderSCIM() *schema.Resource {
 			},
 			"compatibility_mode": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Default:          api.COMPATIBILITYMODEENUM_DEFAULT,
 				Description:      EnumToDescription(api.AllowedCompatibilityModeEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedCompatibilityModeEnumEnumValues),
