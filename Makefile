@@ -17,7 +17,7 @@ build:
 
 gen:
 	golangci-lint run -v
-	AUTHENTIK_URL="" go generate
+	AUTHENTIK_URL="" go tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 
 # see https://github.com/goauthentik/authentik/blob/main/Makefile#LL99-L113
 gen-client-go:
