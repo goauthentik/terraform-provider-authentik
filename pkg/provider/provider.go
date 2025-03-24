@@ -3,6 +3,7 @@ package provider
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/getsentry/sentry-go"
-	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
@@ -217,13 +217,12 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		config.UserAgent = fmt.Sprintf("authentik-terraform@%s", version)
 		config.Host = akURL.Host
 		config.Scheme = akURL.Scheme
+		config.HTTPClient = &http.Client{
+			Transport: GetTLSTransport(insecure),
+		}
 		if testing {
 			config.HTTPClient = &http.Client{
-				Transport: NewTestingTransport(GetTLSTransport(insecure)),
-			}
-		} else {
-			config.HTTPClient = &http.Client{
-				Transport: GetTLSTransport(insecure),
+				Transport: NewTestingTransport(config.HTTPClient.Transport),
 			}
 		}
 
@@ -295,13 +294,13 @@ func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 
 // GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.
 func GetTLSTransport(insecure bool) http.RoundTripper {
-	tlsTransport, err := httptransport.TLSTransport(httptransport.TLSClientOptions{
-		InsecureSkipVerify: insecure,
-	})
-	if err != nil {
-		panic(err)
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: insecure,
+		},
+		Proxy: http.ProxyFromEnvironment,
 	}
-	return tlsTransport
+	return transport
 }
 
 type tracingTransport struct {
