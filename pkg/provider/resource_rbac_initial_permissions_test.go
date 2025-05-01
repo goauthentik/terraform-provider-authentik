@@ -35,13 +35,15 @@ func testAccRBACInitialPermissions(name string) string {
 resource "authentik_rbac_role" "group" {
   name = "%[1]s"
 }
-
+data "authentik_rbac_permission" "admin" {
+  codename = "access_admin_interface"
+}
 resource "authentik_rbac_initial_permissions" "ip" {
   name = "%[1]s"
   role = authentik_rbac_role.group.id
   mode = "role"
   permissions = [
-    123,
+    data.authentik_rbac_permission.admin.id,
   ]
 }
 `, name)
