@@ -73,6 +73,16 @@ func resourceSystemSettings() *schema.Resource {
 				Optional: true,
 				Default:  60,
 			},
+			"reputation_lower_limit": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  -5,
+			},
+			"reputation_upper_limit": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  5,
+			},
 		},
 	}
 }
@@ -89,6 +99,8 @@ func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) *api.Setting
 		Impersonation:             api.PtrBool(d.Get("impersonation").(bool)),
 		DefaultTokenDuration:      api.PtrString(d.Get("default_token_duration").(string)),
 		DefaultTokenLength:        api.PtrInt32(int32(d.Get("default_token_length").(int))),
+		ReputationLowerLimit:      api.PtrInt32(int32(d.Get("reputation_lower_limit").(int))),
+		ReputationUpperLimit:      api.PtrInt32(int32(d.Get("reputation_upper_limit").(int))),
 	}
 	return &r
 }
@@ -126,6 +138,8 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "impersonation", res.Impersonation)
 	setWrapper(d, "default_token_duration", res.DefaultTokenDuration)
 	setWrapper(d, "default_token_length", res.DefaultTokenLength)
+	setWrapper(d, "reputation_lower_limit", res.ReputationLowerLimit)
+	setWrapper(d, "reputation_upper_limit", res.ReputationUpperLimit)
 	return diags
 }
 

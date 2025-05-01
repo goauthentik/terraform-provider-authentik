@@ -84,12 +84,15 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_providers_scim.scimprovider`
   - `authentik_providers_scim.scimmapping`
   - `authentik_rbac.role`
+  - `authentik_rbac.initialpermissions`
   - `authentik_sources_kerberos.kerberossource`
   - `authentik_sources_kerberos.kerberossourcepropertymapping`
   - `authentik_sources_kerberos.userkerberossourceconnection`
   - `authentik_sources_kerberos.groupkerberossourceconnection`
   - `authentik_sources_ldap.ldapsource`
   - `authentik_sources_ldap.ldapsourcepropertymapping`
+  - `authentik_sources_ldap.userldapsourceconnection`
+  - `authentik_sources_ldap.groupldapsourceconnection`
   - `authentik_sources_oauth.oauthsource`
   - `authentik_sources_oauth.oauthsourcepropertymapping`
   - `authentik_sources_oauth.useroauthsourceconnection`
@@ -142,6 +145,7 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_core.applicationentitlement`
   - `authentik_core.token`
   - `authentik_enterprise.license`
+  - `authentik_policies_unique_password.uniquepasswordpolicy`
   - `authentik_providers_google_workspace.googleworkspaceprovider`
   - `authentik_providers_google_workspace.googleworkspaceprovidermapping`
   - `authentik_providers_microsoft_entra.microsoftentraprovider`

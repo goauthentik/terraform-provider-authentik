@@ -100,6 +100,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Optional: true,
 				Default:  "objectSid",
 			},
+			"lookup_groups_from_user": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 			"sync_users": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -167,6 +172,7 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
 		SyncGroups:                          api.PtrBool(d.Get("sync_groups").(bool)),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
+		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
 	}
 
 	if s, sok := d.GetOk("sync_parent_group"); sok && s.(string) != "" {
@@ -218,6 +224,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "group_object_filter", res.GroupObjectFilter)
 	setWrapper(d, "group_membership_field", res.GroupMembershipField)
 	setWrapper(d, "object_uniqueness_field", res.ObjectUniquenessField)
+	setWrapper(d, "lookup_groups_from_user", res.LookupGroupsFromUser)
 	setWrapper(d, "sync_users", res.SyncUsers)
 	setWrapper(d, "sync_users_password", res.SyncUsersPassword)
 	setWrapper(d, "sync_groups", res.SyncGroups)

@@ -53,6 +53,7 @@ resource "authentik_stage_identification" "name" {
 
 - `captcha_stage` (String)
 - `case_insensitive_matching` (Boolean)
+- `enable_remember_me` (Boolean) Defaults to `false`.
 - `enrollment_flow` (String)
 - `password_stage` (String)
 - `passwordless_flow` (String)

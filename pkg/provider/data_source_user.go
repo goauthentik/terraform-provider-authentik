@@ -44,6 +44,10 @@ func dataSourceUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"date_joined": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"is_superuser": {
 				Type:     schema.TypeBool,
 				Computed: true,
@@ -104,6 +108,11 @@ func mapFromUser(user api.User) (map[string]interface{}, error) {
 	if t, ok := user.GetLastLoginOk(); ok && t != nil {
 		if last_login, err := t.MarshalText(); err == nil && last_login != nil {
 			m["last_login"] = string(last_login)
+		}
+	}
+	if t, ok := user.GetDateJoinedOk(); ok && t != nil {
+		if date_joined, err := t.MarshalText(); err == nil && date_joined != nil {
+			m["date_joined"] = string(date_joined)
 		}
 	}
 

@@ -90,6 +90,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_policy_geoip":                               tr(resourcePolicyGeoIP),
 			"authentik_policy_password":                            tr(resourcePolicyPassword),
 			"authentik_policy_reputation":                          tr(resourcePolicyReputation),
+			"authentik_policy_unique_password":                     tr(resourcePolicyUniquePassword),
 			"authentik_property_mapping_notification":              tr(resourcePropertyMappingNotification),
 			"authentik_property_mapping_provider_google_workspace": tr(resourcePropertyMappingProviderGoogleWorkspace),
 			// TODO: Remove after 2024.10
@@ -129,6 +130,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_provider_scim":                    tr(resourceProviderSCIM),
 			"authentik_provider_ssf":                     tr(resourceProviderSSF),
 			"authentik_rac_endpoint":                     tr(resourceRACEndpoint),
+			"authentik_rbac_initial_permissions":         tr(resourceRBACInitialPermissions),
 			"authentik_rbac_permission_role":             tr(resourceRBACRoleObjectPermission),
 			"authentik_rbac_permission_user":             tr(resourceRBACUserObjectPermission),
 			"authentik_rbac_role":                        tr(resourceRBACRole),
@@ -183,6 +185,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_property_mapping_source_ldap":     td(dataSourcePropertyMappingSourceLDAP),
 			"authentik_provider_oauth2_config":           td(dataSourceProviderOAuth2Config),
 			"authentik_provider_saml_metadata":           td(dataSourceProviderSAMLMetadata),
+			"authentik_rbac_permission":                  td(dataSourceRBACPermission),
 			"authentik_source":                           td(dataSourceSource),
 			"authentik_stage":                            td(dataSourceStage),
 			"authentik_user":                             td(dataSourceUser),
