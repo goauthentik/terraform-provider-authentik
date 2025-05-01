@@ -33,6 +33,7 @@ data "authentik_user" "akadmin" {
 
 - `attributes` (String) Generated.
 - `avatar` (String) Generated.
+- `date_joined` (String) Generated.
 - `email` (String) Generated.
 - `groups` (List of String) Generated.
 - `id` (String) The ID of this resource.

@@ -59,6 +59,7 @@ Read-Only:
 
 - `attributes` (String)
 - `avatar` (String)
+- `date_joined` (String)
 - `email` (String)
 - `groups` (List of String)
 - `is_active` (Boolean)
