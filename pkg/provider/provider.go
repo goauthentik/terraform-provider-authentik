@@ -90,6 +90,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_policy_geoip":                               tr(resourcePolicyGeoIP),
 			"authentik_policy_password":                            tr(resourcePolicyPassword),
 			"authentik_policy_reputation":                          tr(resourcePolicyReputation),
+			"authentik_policy_unique_password":                     tr(resourcePolicyUniquePassword),
 			"authentik_property_mapping_notification":              tr(resourcePropertyMappingNotification),
 			"authentik_property_mapping_provider_google_workspace": tr(resourcePropertyMappingProviderGoogleWorkspace),
 			// TODO: Remove after 2024.10
