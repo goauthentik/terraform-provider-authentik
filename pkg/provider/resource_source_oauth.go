@@ -52,6 +52,13 @@ func resourceSourceOAuth() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"authorization_code_auth_method": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.AUTHORIZATIONCODEAUTHMETHODENUM_BASIC_AUTH,
+				Description:      EnumToDescription(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
+			},
 			"policy_engine_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -163,12 +170,13 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
 		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 
-		ProviderType:      api.ProviderTypeEnum(d.Get("provider_type").(string)),
-		ConsumerKey:       d.Get("consumer_key").(string),
-		ConsumerSecret:    d.Get("consumer_secret").(string),
-		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
-		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		ProviderType:                api.ProviderTypeEnum(d.Get("provider_type").(string)),
+		ConsumerKey:                 d.Get("consumer_key").(string),
+		ConsumerSecret:              d.Get("consumer_secret").(string),
+		AuthorizationCodeAuthMethod: api.AuthorizationCodeAuthMethodEnum(d.Get("authorization_code_auth_method").(string)).Ptr(),
+		PolicyEngineMode:            api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:            api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode:           api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 	}
 
 	if ak, ok := d.GetOk("authentication_flow"); ok {
@@ -249,6 +257,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
 	setWrapper(d, "enabled", res.Enabled)
+	setWrapper(d, "authorization_code_auth_method", res.AuthorizationCodeAuthMethod)
 	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
 	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
