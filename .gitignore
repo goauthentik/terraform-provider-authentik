@@ -67,3 +67,4 @@ api/
 examples_local
 coverage.*
 gen-go-api
+authentik_main
