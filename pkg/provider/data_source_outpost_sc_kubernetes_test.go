@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -16,8 +17,8 @@ func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.authentik_service_connection_kubernetes.local-cluster", "name", "Local Kubernetes Cluster"),
 					resource.TestCheckResourceAttr("data.authentik_service_connection_kubernetes.local-cluster", "local", "true"),
-                                       resource.TestCheckResourceAttrSet("data.authentik_service_connection_kubernetes.local-cluster", "verify_ssl"),
-                                       resource.TestCheckResourceAttrSet("data.authentik_service_connection_kubernetes.local-cluster", "kubeconfig"),
+					resource.TestCheckResourceAttrSet("data.authentik_service_connection_kubernetes.local-cluster", "verify_ssl"),
+					resource.TestCheckResourceAttrSet("data.authentik_service_connection_kubernetes.local-cluster", "kubeconfig"),
 				),
 			},
 			{
@@ -62,4 +63,3 @@ data "authentik_service_connection_kubernetes" "missing" {
   name = "definitely-does-not-exist"
 }
 `
-
