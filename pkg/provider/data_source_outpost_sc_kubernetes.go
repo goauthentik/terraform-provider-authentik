@@ -11,7 +11,7 @@ import (
 func dataOutpostServiceConnectionsKubernetes() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataOutpostServiceConnectionsKubernetesRead,
-		Description: "Applications --- Get Service Connections for Kubernetes",
+		Description: "Applications --- Get a Kubernetes Service Connection by name",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

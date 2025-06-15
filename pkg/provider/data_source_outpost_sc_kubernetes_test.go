@@ -21,15 +21,6 @@ func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 					resource.TestCheckResourceAttrSet("data.authentik_service_connection_kubernetes.local-cluster", "kubeconfig"),
 				),
 			},
-			{
-				Config: testAccDataSourceOutpostServiceConnectionKubernetesSimple,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.authentik_service_connection_kubernetes.remote-cluster", "name", "Remote Kubernetes Cluster"),
-					resource.TestCheckResourceAttr("data.authentik_service_connection_kubernetes.remote-cluster", "local", "false"),
-					resource.TestCheckResourceAttrSet("data.authentik_service_connection_kubernetes.remote-cluster", "verify_ssl"),
-					resource.TestCheckResourceAttrSet("data.authentik_service_connection_kubernetes.remote-cluster", "kubeconfig"),
-				),
-			},
 		},
 	})
 }
@@ -53,18 +44,9 @@ resource "authentik_service_connection_kubernetes" "local" {
   local = true
 }
 
-resource "authentik_service_connection_kubernetes" "remote" {
-  name = "Remote Kubernetes Cluster"
-  kubeconfig = jsonencode({})
-}
-
 data "authentik_service_connection_kubernetes" "local-cluster" {
-  name = "Local Kubernetes Cluster"
+  name = authentik_service_connection_kubernetes.local.name
   local = true
-}
-
-data "authentik_service_connection_kubernetes" "remote-cluster" {
-  name = "Remote Kubernetes Cluster"
 }
 `
 

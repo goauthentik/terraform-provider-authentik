@@ -2,7 +2,7 @@
 page_title: "authentik_service_connection_kubernetes Data Source - terraform-provider-authentik"
 subcategory: "Applications"
 description: |-
-
+  Get a Kubernetes Service Connection by name
 ---
 
 # authentik_service_connection_kubernetes (Data Source)
@@ -13,9 +13,11 @@ Get a Kubernetes Service Connection by name
 
 ```terraform
 # To get the ID of a Kubernetes Service Connection by name
+
 data "authentik_service_connection_kubernetes" "local" {
   name = "Local Kubernetes Cluster"
 }
+
 # Then use `data.authentik_service_connection_kubernetes.local.id`
 ```
 
@@ -28,9 +30,9 @@ data "authentik_service_connection_kubernetes" "local" {
 
 ### Optional
 
-- `kubeconfig` (String, Sensitive).
-- `local` (Boolean) Defaults to `false`.
-- `verify_ssl` (Boolean) Defaults to `true`.
+- `kubeconfig` (String, Sensitive) Generated.
+- `local` (Boolean) Generated.
+- `verify_ssl` (Boolean) Generated.
 
 ### Read-Only
 
