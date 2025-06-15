@@ -186,6 +186,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_provider_oauth2_config":           td(dataSourceProviderOAuth2Config),
 			"authentik_provider_saml_metadata":           td(dataSourceProviderSAMLMetadata),
 			"authentik_rbac_permission":                  td(dataSourceRBACPermission),
+			"authentik_service_connection_kubernetes":    td(dataOutpostServiceConnectionsKubernetes),
 			"authentik_source":                           td(dataSourceSource),
 			"authentik_stage":                            td(dataSourceStage),
 			"authentik_user":                             td(dataSourceUser),
