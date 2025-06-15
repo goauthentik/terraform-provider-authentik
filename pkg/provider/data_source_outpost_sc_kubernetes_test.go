@@ -48,6 +48,16 @@ func TestAccDataSourceOutpostServiceConnectionsKubernetes_NotFound(t *testing.T)
 }
 
 const testAccDataSourceOutpostServiceConnectionKubernetesSimple = `
+resource "authentik_service_connection_kubernetes" "local" {
+  name = "Local Kubernetes Cluster"
+  local = true
+}
+
+resource "authentik_service_connection_kubernetes" "remote" {
+  name = "Remote Kubernetes Cluster"
+  kubeconfig = jsonencode({})
+}
+
 data "authentik_service_connection_kubernetes" "local-cluster" {
   name = "Local Kubernetes Cluster"
   local = true
