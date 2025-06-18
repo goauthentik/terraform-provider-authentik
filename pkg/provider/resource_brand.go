@@ -105,8 +105,8 @@ func resourceBrand() *schema.Resource {
 func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag.Diagnostics) {
 	m := api.BrandRequest{
 		ClientCertificates: castSlice[string](d.Get("client_certificates").([]interface{})),
-		Domain:  d.Get("domain").(string),
-		Default: api.PtrBool(d.Get("default").(bool)),
+		Domain:             d.Get("domain").(string),
+		Default:            api.PtrBool(d.Get("default").(bool)),
 	}
 
 	if l, ok := d.Get("branding_title").(string); ok {
