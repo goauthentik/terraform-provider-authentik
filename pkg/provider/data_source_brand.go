@@ -82,6 +82,13 @@ func dataSourceBrand() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"client_certificates": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"default_application": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -124,6 +131,7 @@ func dataSourceBrandRead(ctx context.Context, d *schema.ResourceData, m interfac
 	setWrapper(d, "flow_user_settings", f.FlowUserSettings.Get())
 	setWrapper(d, "flow_device_code", f.FlowDeviceCode.Get())
 	setWrapper(d, "web_certificate", f.WebCertificate.Get())
+	setWrapper(d, "client_certificates", f.ClientCertificates)
 	setWrapper(d, "default_application", f.DefaultApplication.Get())
 	return diags
 }
