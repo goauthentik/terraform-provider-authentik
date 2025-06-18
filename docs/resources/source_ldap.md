@@ -55,6 +55,7 @@ resource "authentik_source_ldap" "name" {
 - `sync_parent_group` (String)
 - `sync_users` (Boolean) Defaults to `true`.
 - `sync_users_password` (Boolean) Defaults to `true`.
+- `user_membership_attribute` (String) Defaults to `distinguishedName`.
 - `user_object_filter` (String) Defaults to `(objectClass=person)`.
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String) Generated.

@@ -85,6 +85,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Optional: true,
 				Default:  "(objectClass=person)",
 			},
+			"user_membership_attribute": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "distinguishedName",
+			},
 			"group_object_filter": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -164,6 +169,7 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		AdditionalUserDn:      api.PtrString(d.Get("additional_user_dn").(string)),
 		AdditionalGroupDn:     api.PtrString(d.Get("additional_group_dn").(string)),
 		UserObjectFilter:      api.PtrString(d.Get("user_object_filter").(string)),
+		UserMembershipAttribute: api.PtrString(d.Get("user_membership_attribute").(string)),
 		GroupObjectFilter:     api.PtrString(d.Get("group_object_filter").(string)),
 		GroupMembershipField:  api.PtrString(d.Get("group_membership_field").(string)),
 		ObjectUniquenessField: api.PtrString(d.Get("object_uniqueness_field").(string)),
@@ -221,6 +227,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "additional_user_dn", res.AdditionalUserDn)
 	setWrapper(d, "additional_group_dn", res.AdditionalGroupDn)
 	setWrapper(d, "user_object_filter", res.UserObjectFilter)
+	setWrapper(d, "user_membership_attribute", res.UserMembershipAttribute)
 	setWrapper(d, "group_object_filter", res.GroupObjectFilter)
 	setWrapper(d, "group_membership_field", res.GroupMembershipField)
 	setWrapper(d, "object_uniqueness_field", res.ObjectUniquenessField)
