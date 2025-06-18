@@ -152,6 +152,7 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_providers_microsoft_entra.microsoftentraprovidermapping`
   - `authentik_providers_ssf.ssfprovider`
   - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
+  - `authentik_stages_mtls.mutualtlsstage`
   - `authentik_stages_source.sourcestage`
   - `authentik_events.event`
   - `authentik_events.notificationtransport`
