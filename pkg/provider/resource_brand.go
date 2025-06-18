@@ -80,6 +80,13 @@ func resourceBrand() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"client_certificates": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"default_application": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -97,8 +104,9 @@ func resourceBrand() *schema.Resource {
 
 func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag.Diagnostics) {
 	m := api.BrandRequest{
-		Domain:  d.Get("domain").(string),
-		Default: api.PtrBool(d.Get("default").(bool)),
+		ClientCertificates: castSlice[string](d.Get("client_certificates").([]interface{})),
+		Domain:             d.Get("domain").(string),
+		Default:            api.PtrBool(d.Get("default").(bool)),
 	}
 
 	if l, ok := d.Get("branding_title").(string); ok {
@@ -228,6 +236,10 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 	if res.WebCertificate.IsSet() {
 		setWrapper(d, "web_certificate", res.WebCertificate.Get())
+	}
+	if res.HasClientCertificates() {
+		localClientCertificates := castSlice[string](d.Get("client_certificates").([]interface{}))
+		setWrapper(d, "client_certificates", listConsistentMerge(localClientCertificates, res.ClientCertificates))
 	}
 	if res.DefaultApplication.IsSet() {
 		setWrapper(d, "default_application", res.DefaultApplication.Get())

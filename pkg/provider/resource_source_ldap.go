@@ -85,6 +85,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Optional: true,
 				Default:  "(objectClass=person)",
 			},
+			"user_membership_attribute": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "distinguishedName",
+			},
 			"group_object_filter": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -129,6 +134,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"delete_not_found_objects": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"property_mappings": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -161,17 +171,19 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		StartTls:     api.PtrBool(d.Get("start_tls").(bool)),
 		Sni:          api.PtrBool(d.Get("sni").(bool)),
 
-		AdditionalUserDn:      api.PtrString(d.Get("additional_user_dn").(string)),
-		AdditionalGroupDn:     api.PtrString(d.Get("additional_group_dn").(string)),
-		UserObjectFilter:      api.PtrString(d.Get("user_object_filter").(string)),
-		GroupObjectFilter:     api.PtrString(d.Get("group_object_filter").(string)),
-		GroupMembershipField:  api.PtrString(d.Get("group_membership_field").(string)),
-		ObjectUniquenessField: api.PtrString(d.Get("object_uniqueness_field").(string)),
+		AdditionalUserDn:        api.PtrString(d.Get("additional_user_dn").(string)),
+		AdditionalGroupDn:       api.PtrString(d.Get("additional_group_dn").(string)),
+		UserObjectFilter:        api.PtrString(d.Get("user_object_filter").(string)),
+		UserMembershipAttribute: api.PtrString(d.Get("user_membership_attribute").(string)),
+		GroupObjectFilter:       api.PtrString(d.Get("group_object_filter").(string)),
+		GroupMembershipField:    api.PtrString(d.Get("group_membership_field").(string)),
+		ObjectUniquenessField:   api.PtrString(d.Get("object_uniqueness_field").(string)),
 
 		SyncUsers:                           api.PtrBool(d.Get("sync_users").(bool)),
 		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
 		SyncGroups:                          api.PtrBool(d.Get("sync_groups").(bool)),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
+		DeleteNotFoundObjects:               api.PtrBool(d.Get("delete_not_found_objects").(bool)),
 		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
 	}
 
@@ -221,6 +233,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "additional_user_dn", res.AdditionalUserDn)
 	setWrapper(d, "additional_group_dn", res.AdditionalGroupDn)
 	setWrapper(d, "user_object_filter", res.UserObjectFilter)
+	setWrapper(d, "user_membership_attribute", res.UserMembershipAttribute)
 	setWrapper(d, "group_object_filter", res.GroupObjectFilter)
 	setWrapper(d, "group_membership_field", res.GroupMembershipField)
 	setWrapper(d, "object_uniqueness_field", res.ObjectUniquenessField)
@@ -229,6 +242,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "sync_users_password", res.SyncUsersPassword)
 	setWrapper(d, "sync_groups", res.SyncGroups)
 	setWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
+	setWrapper(d, "delete_not_found_objects", res.DeleteNotFoundObjects)
 	if res.SyncParentGroup.IsSet() {
 		setWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
 	}
