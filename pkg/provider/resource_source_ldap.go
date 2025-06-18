@@ -134,6 +134,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"delete_not_found_objects": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"property_mappings": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -178,6 +183,7 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
 		SyncGroups:                          api.PtrBool(d.Get("sync_groups").(bool)),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
+		DeleteNotFoundObjects:               api.PtrBool(d.Get("delete_not_found_objects").(bool)),
 		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
 	}
 
@@ -236,6 +242,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "sync_users_password", res.SyncUsersPassword)
 	setWrapper(d, "sync_groups", res.SyncGroups)
 	setWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
+	setWrapper(d, "delete_not_found_objects", res.DeleteNotFoundObjects)
 	if res.SyncParentGroup.IsSet() {
 		setWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
 	}

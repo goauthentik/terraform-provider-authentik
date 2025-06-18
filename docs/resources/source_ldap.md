@@ -41,6 +41,7 @@ resource "authentik_source_ldap" "name" {
 
 - `additional_group_dn` (String) Defaults to ``.
 - `additional_user_dn` (String) Defaults to ``.
+- `delete_not_found_objects` (Boolean) Defaults to `false`.
 - `enabled` (Boolean) Defaults to `true`.
 - `group_membership_field` (String) Defaults to `member`.
 - `group_object_filter` (String) Defaults to `(objectClass=group)`.
