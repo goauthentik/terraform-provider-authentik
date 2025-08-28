@@ -95,6 +95,7 @@ func resourceSystemSettings() *schema.Resource {
 				Default:          "{}",
 				Description:      JSONDescription,
 				DiffSuppressFunc: diffSuppressJSON,
+				ValidateDiagFunc: ValidateJSON,
 			},
 		},
 	}

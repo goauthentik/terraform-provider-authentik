@@ -47,8 +47,9 @@ func resourceOutpost() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Computed:         true,
-				Description:      "JSON format expected. Use jsonencode() to pass objects.",
+				Description:      JSONDescription,
 				DiffSuppressFunc: diffSuppressJSON,
+				ValidateDiagFunc: ValidateJSON,
 			},
 		},
 	}

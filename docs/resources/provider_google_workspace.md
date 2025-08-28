@@ -21,7 +21,7 @@ description: |-
 
 ### Optional
 
-- `credentials` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `credentials` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 - `delegated_subject` (String)
 - `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)

@@ -17,7 +17,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-const RelativeDurationDescription = "Format: hours=1;minutes=2;seconds=3."
+const (
+	RelativeDurationDescription = "Format: hours=1;minutes=2;seconds=3."
+	JSONDescription             = "JSON format expected. Use `jsonencode()` to pass objects."
+)
 
 func markDeprecated(resource func() *schema.Resource, newName string) func() *schema.Resource {
 	return func() *schema.Resource {
@@ -76,6 +79,23 @@ func ValidateRelativeDuration(i interface{}, p cty.Path) diag.Diagnostics {
 			if !isValid {
 				errors = append(errors, fmt.Errorf("%s has incorrect key %s", el, p[0]))
 			}
+		}
+		return warnings, errors
+	})(i, p)
+}
+
+func ValidateJSON(i interface{}, p cty.Path) diag.Diagnostics {
+	return validation.ToDiagFunc(func(i interface{}, s string) (warnings []string, errors []error) {
+		v, ok := i.(string)
+		if !ok {
+			errors = append(errors, fmt.Errorf("expected type of %s to be string", s))
+			return warnings, errors
+		}
+		var j interface{}
+		err := json.Unmarshal([]byte(v), &j)
+		if err != nil {
+			errors = append(errors, err)
+			return warnings, errors
 		}
 		return warnings, errors
 	})(i, p)

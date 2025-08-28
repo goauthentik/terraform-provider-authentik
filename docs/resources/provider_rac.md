@@ -24,7 +24,7 @@ description: |-
 - `authentication_flow` (String)
 - `connection_expiry` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `seconds=0`.
 - `property_mappings` (List of String)
-- `settings` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `settings` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 
 ### Read-Only
 

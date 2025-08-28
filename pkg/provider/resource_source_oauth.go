@@ -125,6 +125,7 @@ func resourceSourceOAuth() *schema.Resource {
 				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use jsonencode() to pass objects.",
 				Computed:         true,
 				DiffSuppressFunc: diffSuppressJSON,
+				ValidateDiagFunc: ValidateJSON,
 			},
 
 			"additional_scopes": {
