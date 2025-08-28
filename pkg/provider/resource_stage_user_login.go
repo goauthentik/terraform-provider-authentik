@@ -52,6 +52,11 @@ func resourceStageUserLogin() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedGeoipBindingEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedGeoipBindingEnumEnumValues),
 			},
+			"remember_device": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  "days=30",
+			},
 		},
 	}
 }
@@ -64,6 +69,7 @@ func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) *api.UserLog
 		RememberMeOffset:       api.PtrString(d.Get("remember_me_offset").(string)),
 		NetworkBinding:         api.NetworkBindingEnum(d.Get("network_binding").(string)).Ptr(),
 		GeoipBinding:           api.GeoipBindingEnum(d.Get("geoip_binding").(string)).Ptr(),
+		RememberDevice:         api.PtrString(d.Get("remember_device").(string)),
 	}
 	return &r
 }
@@ -95,6 +101,7 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "session_duration", res.SessionDuration)
 	setWrapper(d, "terminate_other_sessions", res.TerminateOtherSessions)
 	setWrapper(d, "remember_me_offset", res.RememberMeOffset)
+	setWrapper(d, "remember_device", res.RememberDevice)
 	return diags
 }
 
