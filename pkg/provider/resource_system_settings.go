@@ -92,7 +92,7 @@ func resourceSystemSettings() *schema.Resource {
 			"flags": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          "{}",
+				Default:          `{"policies_buffered_access_view": false}`,
 				Description:      JSONDescription,
 				DiffSuppressFunc: diffSuppressJSON,
 				ValidateDiagFunc: ValidateJSON,

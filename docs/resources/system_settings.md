@@ -31,7 +31,7 @@ resource "authentik_system_settings" "settings" {
 - `default_user_change_name` (Boolean) Defaults to `true`.
 - `default_user_change_username` (Boolean) Defaults to `false`.
 - `event_retention` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=365`.
-- `flags` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
+- `flags` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{"policies_buffered_access_view": false}`.
 - `footer_links` (List of Map of String)
 - `gdpr_compliance` (Boolean) Defaults to `true`.
 - `impersonation` (Boolean) Defaults to `true`.
