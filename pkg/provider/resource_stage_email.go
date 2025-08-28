@@ -87,6 +87,18 @@ func resourceStageEmail() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"recovery_max_attempts": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  5,
+			},
+			"recovery_cache_timeout": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "minutes=5",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
+			},
 		},
 	}
 }
@@ -132,6 +144,12 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageR
 	if h, hSet := d.GetOk("activate_user_on_success"); hSet {
 		r.ActivateUserOnSuccess = api.PtrBool(h.(bool))
 	}
+	if k, set := d.GetOk("recovery_max_attempts"); set {
+		r.RecoveryMaxAttempts = api.PtrInt32(int32(k.(int)))
+	}
+	if k, set := d.GetOk("recovery_cache_timeout"); set {
+		r.RecoveryCacheTimeout = api.PtrString(k.(string))
+	}
 	return &r
 }
 
@@ -171,6 +189,8 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m inter
 	setWrapper(d, "subject", res.Subject)
 	setWrapper(d, "template", res.Template)
 	setWrapper(d, "activate_user_on_success", res.ActivateUserOnSuccess)
+	setWrapper(d, "recovery_max_attempts", res.RecoveryMaxAttempts)
+	setWrapper(d, "recovery_cache_timeout", res.RecoveryCacheTimeout)
 	return diags
 }
 
