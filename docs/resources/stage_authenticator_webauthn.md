@@ -47,6 +47,7 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 - `configure_flow` (String)
 - `device_type_restrictions` (List of String)
 - `friendly_name` (String)
+- `max_attempts` (Number)
 - `resident_key_requirement` (String) Allowed values:
   - `discouraged`
   - `preferred`
