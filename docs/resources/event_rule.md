@@ -21,7 +21,8 @@ description: |-
 
 ### Optional
 
-- `group` (String)
+- `destination_event_user` (Boolean) Send notification to event user Defaults to `false`.
+- `destination_group` (String) Group to send notification to
 - `severity` (String) Allowed values:
   - `notice`
   - `warning`
