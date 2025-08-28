@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -87,11 +89,18 @@ func resourceSystemSettings() *schema.Resource {
 				Optional: true,
 				Default:  5,
 			},
+			"flags": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "{}",
+				Description:      JSONDescription,
+				DiffSuppressFunc: diffSuppressJSON,
+			},
 		},
 	}
 }
 
-func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) *api.SettingsRequest {
+func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) (*api.SettingsRequest, diag.Diagnostics) {
 	r := api.SettingsRequest{
 		Avatars:                   api.PtrString(d.Get("avatars").(string)),
 		DefaultUserChangeName:     api.PtrBool(d.Get("default_user_change_name").(bool)),
@@ -106,13 +115,24 @@ func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) *api.Setting
 		ReputationLowerLimit:      api.PtrInt32(int32(d.Get("reputation_lower_limit").(int))),
 		ReputationUpperLimit:      api.PtrInt32(int32(d.Get("reputation_upper_limit").(int))),
 	}
-	return &r
+	attr := api.PatchedSettingsRequestFlags{}
+	if l, ok := d.Get("flags").(string); ok && l != "" {
+		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
+	}
+	r.Flags = attr
+	return &r, nil
 }
 
 func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceSystemSettingsSchemaToProvider(d)
+	r, diag := resourceSystemSettingsSchemaToProvider(d)
+	if diag != nil {
+		return diag
+	}
 
 	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
@@ -144,15 +164,23 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "default_token_length", res.DefaultTokenLength)
 	setWrapper(d, "reputation_lower_limit", res.ReputationLowerLimit)
 	setWrapper(d, "reputation_upper_limit", res.ReputationUpperLimit)
+	b, err := json.Marshal(res.Flags)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	setWrapper(d, "flags", string(b))
 	return diags
 }
 
 func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	app := resourceSystemSettingsSchemaToProvider(d)
+	r, diag := resourceSystemSettingsSchemaToProvider(d)
+	if diag != nil {
+		return diag
+	}
 
-	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*app).Execute()
+	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
 		return httpToDiag(d, hr, err)
 	}
