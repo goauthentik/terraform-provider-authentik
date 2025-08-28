@@ -57,7 +57,7 @@ func resourceStageUserLogin() *schema.Resource {
 				ValidateDiagFunc: StringInEnum(api.AllowedGeoipBindingEnumEnumValues),
 			},
 			"remember_device": {
-				Type:             schema.TypeBool,
+				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=30",
 				Description:      RelativeDurationDescription,

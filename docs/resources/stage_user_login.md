@@ -40,7 +40,7 @@ resource "authentik_stage_user_login" "name" {
   - `bind_asn_network`
   - `bind_asn_network_ip`
  Defaults to `no_binding`.
-- `remember_device` (Boolean) Format: hours=1;minutes=2;seconds=3. Defaults to `days=30`.
+- `remember_device` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=30`.
 - `remember_me_offset` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `seconds=0`.
 - `session_duration` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `seconds=0`.
 - `terminate_other_sessions` (Boolean) Defaults to `false`.
