@@ -134,9 +134,11 @@ func resourceSourceSAML() *schema.Resource {
 				ValidateDiagFunc: StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
 			},
 			"temporary_user_delete_after": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "days=1",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "days=1",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 
 			"metadata": {

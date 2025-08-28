@@ -42,7 +42,6 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 			"delegated_subject": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "seconds=0",
 			},
 			"default_group_email_domain": {
 				Type:     schema.TypeString,

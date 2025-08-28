@@ -46,9 +46,11 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 				},
 			},
 			"last_auth_threshold": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "seconds=0",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "seconds=0",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 			"webauthn_user_verification": {
 				Type:             schema.TypeString,

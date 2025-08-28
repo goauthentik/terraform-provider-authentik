@@ -42,9 +42,11 @@ func resourceSystemSettings() *schema.Resource {
 				Default:  false,
 			},
 			"event_retention": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "days=365",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "days=365",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 			"footer_links": {
 				Type:     schema.TypeList,
@@ -64,9 +66,11 @@ func resourceSystemSettings() *schema.Resource {
 				Default:  true,
 			},
 			"default_token_duration": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "minutes=30",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "minutes=30",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 			"default_token_length": {
 				Type:     schema.TypeInt,

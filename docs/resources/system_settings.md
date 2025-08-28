@@ -25,12 +25,12 @@ resource "authentik_system_settings" "settings" {
 ### Optional
 
 - `avatars` (String) Defaults to `gravatar,initials`.
-- `default_token_duration` (String) Defaults to `minutes=30`.
+- `default_token_duration` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=30`.
 - `default_token_length` (Number) Defaults to `60`.
 - `default_user_change_email` (Boolean) Defaults to `false`.
 - `default_user_change_name` (Boolean) Defaults to `true`.
 - `default_user_change_username` (Boolean) Defaults to `false`.
-- `event_retention` (String) Defaults to `days=365`.
+- `event_retention` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=365`.
 - `footer_links` (List of Map of String)
 - `gdpr_compliance` (Boolean) Defaults to `true`.
 - `impersonation` (Boolean) Defaults to `true`.

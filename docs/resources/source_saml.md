@@ -95,7 +95,7 @@ resource "authentik_source_saml" "name" {
  Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
 - `slo_url` (String)
-- `temporary_user_delete_after` (String) Defaults to `days=1`.
+- `temporary_user_delete_after` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=1`.
 - `user_matching_mode` (String) Allowed values:
   - `identifier`
   - `email_link`

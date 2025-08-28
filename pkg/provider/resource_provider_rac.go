@@ -50,9 +50,11 @@ func resourceProviderRAC() *schema.Resource {
 				DiffSuppressFunc: diffSuppressJSON,
 			},
 			"connection_expiry": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "seconds=0",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "seconds=0",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 		},
 	}

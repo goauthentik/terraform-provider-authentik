@@ -66,9 +66,11 @@ func resourceStageEmail() *schema.Resource {
 				Default:  "system@authentik.local",
 			},
 			"token_expiry": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "minutes=30",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "minutes=30",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 			"subject": {
 				Type:     schema.TypeString,

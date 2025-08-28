@@ -37,9 +37,11 @@ func resourceProviderSSF() *schema.Resource {
 				Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
 			},
 			"event_retention": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "days=30",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "days=30",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 		},
 	}
