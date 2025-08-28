@@ -37,10 +37,6 @@ func resourceEventRule() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedSeverityEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedSeverityEnumEnumValues),
 			},
-			"webhook_mapping": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"destination_group": {
 				Type:        schema.TypeString,
 				Optional:    true,

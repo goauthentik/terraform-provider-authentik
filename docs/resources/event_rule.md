@@ -28,7 +28,6 @@ description: |-
   - `warning`
   - `alert`
  Defaults to `warning`.
-- `webhook_mapping` (String)
 
 ### Read-Only
 
