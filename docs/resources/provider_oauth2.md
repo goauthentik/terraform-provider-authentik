@@ -48,6 +48,7 @@ resource "authentik_application" "name" {
 - `access_token_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=10`.
 - `allowed_redirect_uris` (List of Map of String)
 - `authentication_flow` (String)
+- `backchannel_logout_uri` (String)
 - `client_secret` (String, Sensitive) Generated.
 - `client_type` (String) Allowed values:
   - `confidential`

@@ -101,6 +101,10 @@ func resourceProviderOAuth2() *schema.Resource {
 					Type: schema.TypeMap,
 				},
 			},
+			"backchannel_logout_uri": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"sub_mode": {
 				Type:             schema.TypeString,
 				Default:          api.SUBMODEENUM_HASHED_USER_ID,
@@ -165,6 +169,9 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	}
 	if s, sok := d.GetOk("client_secret"); sok && s.(string) != "" {
 		r.ClientSecret = api.PtrString(s.(string))
+	}
+	if s, sok := d.GetOk("backchannel_logout_uri"); sok && s.(string) != "" {
+		r.BackchannelLogoutUri = api.PtrString(s.(string))
 	}
 
 	if s, sok := d.GetOk("signing_key"); sok && s.(string) != "" {
@@ -254,6 +261,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "client_type", res.ClientType)
 	setWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	setWrapper(d, "issuer_mode", res.IssuerMode)
+	setWrapper(d, "backchannel_logout_uri", res.BackchannelLogoutUri)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
 	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
