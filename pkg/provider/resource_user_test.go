@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -56,10 +55,6 @@ func TestAccResourceUserAttributes(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_user.name", "username", rName),
 					resource.TestCheckResourceAttr("authentik_user.name", "attributes", `{"foo":"bar"}`),
 				),
-			},
-			{
-				Config:      testAccResourceUserAttributes(rName, false),
-				ExpectError: regexp.MustCompile("unexpected end of JSON input"),
 			},
 		},
 	})

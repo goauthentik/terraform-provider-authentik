@@ -49,7 +49,7 @@ func resourceEventTransport() *schema.Resource {
 			"email_subject_prefix": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "authentik Notification: ",
+				Default:  "authentik Notification:",
 			},
 			"send_once": {
 				Type:     schema.TypeBool,

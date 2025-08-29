@@ -48,7 +48,7 @@ func testAccResourceServiceConnectionKubernetesKubeconfig(name string) string {
 	return fmt.Sprintf(`
 resource "authentik_service_connection_kubernetes" "name" {
   name = "%[1]s"
-  kubeconfig = "foo"
+  kubeconfig = jsonencode({})
 }
 `, name)
 }
