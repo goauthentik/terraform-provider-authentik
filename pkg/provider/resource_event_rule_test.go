@@ -49,7 +49,7 @@ resource "authentik_event_transport" "transport" {
 }
 resource "authentik_event_rule" "transport" {
   name = "%[1]s"
-  group = authentik_group.group.id
+  destination_group = authentik_group.group.id
   transports = [authentik_event_transport.transport.id]
 }
 `, name)
