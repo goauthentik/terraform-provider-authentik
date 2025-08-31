@@ -28,9 +28,11 @@ func resourceStageSource() *schema.Resource {
 				Optional: true,
 			},
 			"resume_timeout": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "minutes=10",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "minutes=10",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 		},
 	}

@@ -44,7 +44,7 @@ resource "authentik_application" "name" {
 
 ### Optional
 
-- `access_token_validity` (String) Defaults to `minutes=10`.
+- `access_token_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=10`.
 - `authentication_flow` (String)
 - `basic_auth_enabled` (Boolean) Defaults to `false`.
 - `basic_auth_password_attribute` (String)
@@ -62,7 +62,7 @@ resource "authentik_application" "name" {
   - `forward_domain`
  Defaults to `proxy`.
 - `property_mappings` (List of String)
-- `refresh_token_validity` (String) Defaults to `days=30`.
+- `refresh_token_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=30`.
 - `skip_path_regex` (String)
 
 ### Read-Only

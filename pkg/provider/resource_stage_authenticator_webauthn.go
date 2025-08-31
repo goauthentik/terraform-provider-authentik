@@ -58,6 +58,10 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"max_attempts": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -78,6 +82,9 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 	}
 	if x, set := d.GetOk("authenticator_attachment"); set {
 		r.AuthenticatorAttachment.Set(api.AuthenticatorAttachmentEnum(x.(string)).Ptr())
+	}
+	if m, set := d.GetOk("max_attempts"); set {
+		r.MaxAttempts = api.PtrInt32(int32(m.(int)))
 	}
 	return &r
 }
@@ -115,6 +122,7 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 	}
 	localDeviceTypeRestrictions := castSlice[string](d.Get("device_type_restrictions").([]interface{}))
 	setWrapper(d, "device_type_restrictions", listConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
+	setWrapper(d, "max_attempts", res.MaxAttempts)
 	return diags
 }
 

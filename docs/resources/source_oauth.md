@@ -44,6 +44,7 @@ resource "authentik_source_oauth" "name" {
 - `provider_type` (String) Allowed values:
   - `apple`
   - `openidconnect`
+  - `entraid`
   - `azuread`
   - `discord`
   - `facebook`

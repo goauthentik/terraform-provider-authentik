@@ -36,13 +36,13 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      "JSON format expected. Use jsonencode() to pass objects.",
+				Description:      JSONDescription,
 				DiffSuppressFunc: diffSuppressJSON,
+				ValidateDiagFunc: ValidateJSON,
 			},
 			"delegated_subject": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "seconds=0",
 			},
 			"default_group_email_domain": {
 				Type:     schema.TypeString,

@@ -46,7 +46,7 @@ func resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d *schema.ResourceDa
 	r := api.AuthenticatorEndpointGDTCStageRequest{
 		Name: d.Get("name").(string),
 	}
-	var creds interface{}
+	var creds map[string]interface{}
 	err := json.NewDecoder(strings.NewReader(d.Get("credentials").(string))).Decode(&creds)
 	if err != nil {
 		return nil, err

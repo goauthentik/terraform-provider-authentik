@@ -41,6 +41,16 @@ func resourceEventTransport() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"email_template": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "email/event_notification.html",
+			},
+			"email_subject_prefix": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "authentik Notification:",
+			},
 			"send_once": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -66,6 +76,12 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.Notificat
 	}
 	if w, ok := d.Get("webhook_mapping_headers").(string); ok {
 		m.WebhookMappingHeaders.Set(&w)
+	}
+	if e, ok := d.GetOk("email_template"); ok {
+		m.EmailTemplate = api.PtrString(e.(string))
+	}
+	if e, ok := d.GetOk("email_subject_prefix"); ok {
+		m.EmailSubjectPrefix = api.PtrString(e.(string))
 	}
 	return &m, nil
 }
@@ -102,6 +118,8 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "webhook_url", res.WebhookUrl)
 	setWrapper(d, "webhook_mapping_body", res.WebhookMappingBody.Get())
 	setWrapper(d, "webhook_mapping_headers", res.WebhookMappingHeaders.Get())
+	setWrapper(d, "email_template", res.EmailTemplate)
+	setWrapper(d, "email_subject_prefix", res.EmailSubjectPrefix)
 	return diags
 }
 

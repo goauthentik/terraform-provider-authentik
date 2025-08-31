@@ -37,13 +37,16 @@ func resourceEventRule() *schema.Resource {
 				Description:      EnumToDescription(api.AllowedSeverityEnumEnumValues),
 				ValidateDiagFunc: StringInEnum(api.AllowedSeverityEnumEnumValues),
 			},
-			"webhook_mapping": {
-				Type:     schema.TypeString,
-				Optional: true,
+			"destination_group": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Group to send notification to",
 			},
-			"group": {
-				Type:     schema.TypeString,
-				Optional: true,
+			"destination_event_user": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Send notification to event user",
 			},
 		},
 	}
@@ -51,12 +54,13 @@ func resourceEventRule() *schema.Resource {
 
 func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRuleRequest, diag.Diagnostics) {
 	m := api.NotificationRuleRequest{
-		Name:     d.Get("name").(string),
-		Severity: api.SeverityEnum(d.Get("severity").(string)).Ptr(),
+		Name:                 d.Get("name").(string),
+		Severity:             api.SeverityEnum(d.Get("severity").(string)).Ptr(),
+		DestinationEventUser: api.PtrBool(d.Get("destination_event_user").(bool)),
 	}
 
-	if w, ok := d.Get("group").(string); ok {
-		m.Group.Set(&w)
+	if w, ok := d.Get("destination_group").(string); ok {
+		m.DestinationGroup.Set(&w)
 	}
 
 	m.Transports = castSlice[string](d.Get("transports").([]interface{}))
@@ -90,7 +94,8 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	setWrapper(d, "name", res.Name)
-	setWrapper(d, "group", res.Group.Get())
+	setWrapper(d, "destination_group", res.DestinationGroup.Get())
+	setWrapper(d, "destination_event_user", res.DestinationEventUser)
 	localTransports := castSlice[string](d.Get("transports").([]interface{}))
 	setWrapper(d, "transports", listConsistentMerge(localTransports, res.Transports))
 	setWrapper(d, "severity", res.Severity)

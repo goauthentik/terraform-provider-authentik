@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -54,12 +53,8 @@ func TestAccResourceUserAttributes(t *testing.T) {
 				Config: testAccResourceUserAttributes(rName, true),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_user.name", "username", rName),
-					resource.TestCheckResourceAttr("authentik_user.name", "attributes", "{\"foo\":\"bar\"}"),
+					resource.TestCheckResourceAttr("authentik_user.name", "attributes", `{"foo":"bar"}`),
 				),
-			},
-			{
-				Config:      testAccResourceUserAttributes(rName, false),
-				ExpectError: regexp.MustCompile("unexpected EOF"),
 			},
 		},
 	})

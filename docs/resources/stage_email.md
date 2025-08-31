@@ -33,10 +33,12 @@ resource "authentik_stage_email" "name" {
 - `host` (String) Defaults to `localhost`.
 - `password` (String, Sensitive)
 - `port` (Number) Defaults to `25`.
+- `recovery_cache_timeout` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=5`.
+- `recovery_max_attempts` (Number) Defaults to `5`.
 - `subject` (String) Defaults to `authentik`.
 - `template` (String) Defaults to `email/password_reset.html`.
 - `timeout` (Number) Defaults to `30`.
-- `token_expiry` (String) Defaults to `minutes=30`.
+- `token_expiry` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=30`.
 - `use_global_settings` (Boolean) Defaults to `true`.
 - `use_ssl` (Boolean)
 - `use_tls` (Boolean)

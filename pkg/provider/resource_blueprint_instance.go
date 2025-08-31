@@ -42,8 +42,9 @@ func resourceBlueprintInstance() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      "JSON format expected. Use jsonencode() to pass objects.",
+				Description:      JSONDescription,
 				DiffSuppressFunc: diffSuppressJSON,
+				ValidateDiagFunc: ValidateJSON,
 			},
 		},
 	}

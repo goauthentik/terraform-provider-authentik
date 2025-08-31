@@ -35,8 +35,9 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 				Optional:         true,
 				Sensitive:        true,
 				Default:          "{}",
-				Description:      "JSON format expected. Use jsonencode() to pass objects.",
+				Description:      JSONDescription,
 				DiffSuppressFunc: diffSuppressJSON,
+				ValidateDiagFunc: ValidateJSON,
 			},
 			"verify_ssl": {
 				Type:     schema.TypeBool,

@@ -56,7 +56,18 @@ resource "authentik_rbac_permission_role" "global-permission" {
 
 - `model` (String) Allowed values:
   - `authentik_tenants.domain`
+  - `authentik_core.group`
+  - `authentik_core.user`
+  - `authentik_core.application`
+  - `authentik_core.applicationentitlement`
+  - `authentik_core.token`
   - `authentik_crypto.certificatekeypair`
+  - `authentik_enterprise.license`
+  - `authentik_events.event`
+  - `authentik_events.notificationtransport`
+  - `authentik_events.notification`
+  - `authentik_events.notificationrule`
+  - `authentik_events.notificationwebhookmapping`
   - `authentik_flows.flow`
   - `authentik_flows.flowstagebinding`
   - `authentik_outposts.dockerserviceconnection`
@@ -137,14 +148,9 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_stages_user_login.userloginstage`
   - `authentik_stages_user_logout.userlogoutstage`
   - `authentik_stages_user_write.userwritestage`
+  - `authentik_tasks_schedules.schedule`
   - `authentik_brands.brand`
   - `authentik_blueprints.blueprintinstance`
-  - `authentik_core.group`
-  - `authentik_core.user`
-  - `authentik_core.application`
-  - `authentik_core.applicationentitlement`
-  - `authentik_core.token`
-  - `authentik_enterprise.license`
   - `authentik_policies_unique_password.uniquepasswordpolicy`
   - `authentik_providers_google_workspace.googleworkspaceprovider`
   - `authentik_providers_google_workspace.googleworkspaceprovidermapping`
@@ -154,11 +160,6 @@ resource "authentik_rbac_permission_role" "global-permission" {
   - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_mtls.mutualtlsstage`
   - `authentik_stages_source.sourcestage`
-  - `authentik_events.event`
-  - `authentik_events.notificationtransport`
-  - `authentik_events.notification`
-  - `authentik_events.notificationrule`
-  - `authentik_events.notificationwebhookmapping`
 - `object_id` (String)
 
 ### Read-Only

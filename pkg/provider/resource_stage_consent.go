@@ -31,9 +31,11 @@ func resourceStageConsent() *schema.Resource {
 				ValidateDiagFunc: StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
 			},
 			"consent_expire_in": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "weeks=4",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "weeks=4",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 		},
 	}

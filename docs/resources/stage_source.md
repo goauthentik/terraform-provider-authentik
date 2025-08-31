@@ -45,7 +45,7 @@ resource "authentik_stage_source" "name" {
 
 ### Optional
 
-- `resume_timeout` (String) Defaults to `minutes=10`.
+- `resume_timeout` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=10`.
 - `source` (String)
 
 ### Read-Only

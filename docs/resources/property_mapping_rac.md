@@ -24,7 +24,7 @@ Manage RAC Provider Property mappings
 ### Optional
 
 - `expression` (String)
-- `settings` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `settings` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 
 ### Read-Only
 

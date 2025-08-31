@@ -34,9 +34,13 @@ resource "authentik_policy_event_matcher" "name" {
 - `action` (String)
 - `app` (String) Allowed values:
   - `authentik.tenants`
+  - `authentik.tasks`
   - `authentik.admin`
   - `authentik.api`
+  - `authentik.core`
   - `authentik.crypto`
+  - `authentik.enterprise`
+  - `authentik.events`
   - `authentik.flows`
   - `authentik.outposts`
   - `authentik.policies.dummy`
@@ -84,24 +88,34 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.stages.user_login`
   - `authentik.stages.user_logout`
   - `authentik.stages.user_write`
+  - `authentik.tasks.schedules`
   - `authentik.brands`
   - `authentik.blueprints`
-  - `authentik.core`
-  - `authentik.enterprise`
   - `authentik.enterprise.audit`
   - `authentik.enterprise.policies.unique_password`
   - `authentik.enterprise.providers.google_workspace`
   - `authentik.enterprise.providers.microsoft_entra`
   - `authentik.enterprise.providers.ssf`
+  - `authentik.enterprise.search`
   - `authentik.enterprise.stages.authenticator_endpoint_gdtc`
   - `authentik.enterprise.stages.mtls`
   - `authentik.enterprise.stages.source`
-  - `authentik.events`
 - `client_ip` (String)
 - `execution_logging` (Boolean) Defaults to `false`.
 - `model` (String) Allowed values:
   - `authentik_tenants.domain`
+  - `authentik_core.group`
+  - `authentik_core.user`
+  - `authentik_core.application`
+  - `authentik_core.applicationentitlement`
+  - `authentik_core.token`
   - `authentik_crypto.certificatekeypair`
+  - `authentik_enterprise.license`
+  - `authentik_events.event`
+  - `authentik_events.notificationtransport`
+  - `authentik_events.notification`
+  - `authentik_events.notificationrule`
+  - `authentik_events.notificationwebhookmapping`
   - `authentik_flows.flow`
   - `authentik_flows.flowstagebinding`
   - `authentik_outposts.dockerserviceconnection`
@@ -182,14 +196,9 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_stages_user_login.userloginstage`
   - `authentik_stages_user_logout.userlogoutstage`
   - `authentik_stages_user_write.userwritestage`
+  - `authentik_tasks_schedules.schedule`
   - `authentik_brands.brand`
   - `authentik_blueprints.blueprintinstance`
-  - `authentik_core.group`
-  - `authentik_core.user`
-  - `authentik_core.application`
-  - `authentik_core.applicationentitlement`
-  - `authentik_core.token`
-  - `authentik_enterprise.license`
   - `authentik_policies_unique_password.uniquepasswordpolicy`
   - `authentik_providers_google_workspace.googleworkspaceprovider`
   - `authentik_providers_google_workspace.googleworkspaceprovidermapping`
@@ -199,11 +208,6 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_mtls.mutualtlsstage`
   - `authentik_stages_source.sourcestage`
-  - `authentik_events.event`
-  - `authentik_events.notificationtransport`
-  - `authentik_events.notification`
-  - `authentik_events.notificationrule`
-  - `authentik_events.notificationwebhookmapping`
 
 ### Read-Only
 

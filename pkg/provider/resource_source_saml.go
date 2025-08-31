@@ -96,9 +96,9 @@ func resourceSourceSAML() *schema.Resource {
 			"name_id_policy": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.NAMEIDPOLICYENUM__2_0NAMEID_FORMATPERSISTENT,
-				Description:      EnumToDescription(api.AllowedNameIdPolicyEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedNameIdPolicyEnumEnumValues),
+				Default:          api.SAMLNAMEIDPOLICYENUM__2_0NAMEID_FORMATPERSISTENT,
+				Description:      EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+				ValidateDiagFunc: StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
 			},
 			"binding_type": {
 				Type:             schema.TypeString,
@@ -134,9 +134,11 @@ func resourceSourceSAML() *schema.Resource {
 				ValidateDiagFunc: StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
 			},
 			"temporary_user_delete_after": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "days=1",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "days=1",
+				Description:      RelativeDurationDescription,
+				ValidateDiagFunc: ValidateRelativeDuration,
 			},
 
 			"metadata": {
@@ -167,7 +169,7 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		BindingType:              api.BindingTypeEnum(d.Get("binding_type").(string)).Ptr(),
 		DigestAlgorithm:          api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:       api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
-		NameIdPolicy:             api.NameIdPolicyEnum(d.Get("name_id_policy").(string)).Ptr(),
+		NameIdPolicy:             api.SAMLNameIDPolicyEnum(d.Get("name_id_policy").(string)).Ptr(),
 	}
 
 	if ak, ok := d.GetOk("authentication_flow"); ok {

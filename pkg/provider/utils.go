@@ -11,9 +11,15 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+)
+
+const (
+	RelativeDurationDescription = "Format: hours=1;minutes=2;seconds=3."
+	JSONDescription             = "JSON format expected. Use `jsonencode()` to pass objects."
 )
 
 func markDeprecated(resource func() *schema.Resource, newName string) func() *schema.Resource {
@@ -40,6 +46,59 @@ func EnumToDescription[T ~string](allowed []T) string {
 		_, _ = sb.WriteString(fmt.Sprintf("  - `%s`\n", v))
 	}
 	return sb.String()
+}
+
+func ValidateRelativeDuration(i interface{}, p cty.Path) diag.Diagnostics {
+	validKV := []string{
+		"microseconds",
+		"milliseconds",
+		"seconds",
+		"minutes",
+		"hours",
+		"days",
+		"weeks",
+	}
+	return validation.ToDiagFunc(func(i interface{}, s string) (warnings []string, errors []error) {
+		v, ok := i.(string)
+		if !ok {
+			errors = append(errors, fmt.Errorf("expected type of %s to be string", s))
+			return warnings, errors
+		}
+		for _, el := range strings.Split(v, ";") {
+			p := strings.Split(el, "=")
+			if len(p) < 2 {
+				errors = append(errors, fmt.Errorf("%s has incorrect amount of elements", el))
+				return warnings, errors
+			}
+			isValid := false
+			for _, valid := range validKV {
+				if strings.EqualFold(p[0], valid) {
+					isValid = true
+				}
+			}
+			if !isValid {
+				errors = append(errors, fmt.Errorf("%s has incorrect key %s", el, p[0]))
+			}
+		}
+		return warnings, errors
+	})(i, p)
+}
+
+func ValidateJSON(i interface{}, p cty.Path) diag.Diagnostics {
+	return validation.ToDiagFunc(func(i interface{}, s string) (warnings []string, errors []error) {
+		v, ok := i.(string)
+		if !ok {
+			errors = append(errors, fmt.Errorf("expected type of %s to be string", s))
+			return warnings, errors
+		}
+		var j interface{}
+		err := json.Unmarshal([]byte(v), &j)
+		if err != nil {
+			errors = append(errors, err)
+			return warnings, errors
+		}
+		return warnings, errors
+	})(i, p)
 }
 
 func setWrapper(d *schema.ResourceData, key string, data interface{}) {
