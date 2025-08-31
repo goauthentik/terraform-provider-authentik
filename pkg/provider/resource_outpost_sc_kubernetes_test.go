@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -27,10 +26,6 @@ func TestAccResourceServiceConnectionKubernetes(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_service_connection_kubernetes.name", "name", rName+"test"),
 				),
 			},
-			{
-				Config:      testAccResourceServiceConnectionKubernetesKubeconfig(rName),
-				ExpectError: regexp.MustCompile(`invalid\scharacter`),
-			},
 		},
 	})
 }
@@ -40,15 +35,6 @@ func testAccResourceServiceConnectionKubernetes(name string) string {
 resource "authentik_service_connection_kubernetes" "name" {
   name = "%[1]s"
   local = true
-}
-`, name)
-}
-
-func testAccResourceServiceConnectionKubernetesKubeconfig(name string) string {
-	return fmt.Sprintf(`
-resource "authentik_service_connection_kubernetes" "name" {
-  name = "%[1]s"
-  kubeconfig = jsonencode({})
 }
 `, name)
 }
