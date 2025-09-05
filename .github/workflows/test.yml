@@ -27,6 +27,11 @@ jobs:
     name: Acceptance tests - Terraform ${{ matrix.terraform }} - authentik ${{ matrix.authentik_version }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      # Needed for checkout
+      contents: read
+      # Needed for codecov OIDC token
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -90,10 +95,10 @@ jobs:
       - if: ${{ always() }}
         uses: codecov/codecov-action@fdcc8476540edceab3de004e990f80d881c6cc00
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           flags: authentik-${{ matrix.authentik_version }}
+          use_oidc: true
       - if: ${{ always() }}
         uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           flags: authentik-${{ matrix.authentik_version }}
+          use_oidc: true
