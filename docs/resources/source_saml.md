@@ -82,6 +82,8 @@ resource "authentik_source_saml" "name" {
   - `all`
   - `any`
  Defaults to `any`.
+- `property_mappings` (List of String)
+- `property_mappings_group` (List of String)
 - `signature_algorithm` (String) Allowed values:
   - `http://www.w3.org/2000/09/xmldsig#rsa-sha1`
   - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`
