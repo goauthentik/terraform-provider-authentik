@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -91,7 +92,11 @@ func dataSourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Res
 		setWrapper(d, "name", f.Name)
 		setWrapper(d, "name", f.Name)
 		setWrapper(d, "expression", f.Expression)
-		setWrapper(d, "settings", f.StaticSettings)
+		b, err := json.Marshal(f.StaticSettings)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+		setWrapper(d, "settings", string(b))
 	}
 	return diags
 }
