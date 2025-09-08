@@ -146,6 +146,21 @@ func resourceSourceSAML() *schema.Resource {
 				Computed:    true,
 				Description: "SAML Metadata",
 			},
+
+			"property_mappings": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"property_mappings_group": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -191,6 +206,8 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
 		r.VerificationKp.Set(api.PtrString(s.(string)))
 	}
+	r.UserPropertyMappings = castSlice[string](d.Get("property_mappings").([]interface{}))
+	r.GroupPropertyMappings = castSlice[string](d.Get("property_mappings_group").([]interface{}))
 
 	return &r
 }
@@ -260,6 +277,10 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 		return httpToDiag(d, hr, err)
 	}
 	setWrapper(d, "metadata", meta.Metadata)
+	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.UserPropertyMappings))
+	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
+	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }
 
