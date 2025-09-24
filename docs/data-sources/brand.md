@@ -27,9 +27,12 @@ data "authentik_brand" "authentik-default" {
 
 ### Optional
 
+- `branding_custom_css` (String) Generated.
+- `branding_default_flow_background` (String) Generated.
 - `branding_favicon` (String) Generated.
 - `branding_logo` (String) Generated.
 - `branding_title` (String) Generated.
+- `client_certificates` (List of String)
 - `default` (Boolean) Generated.
 - `default_application` (String) Generated.
 - `domain` (String) Generated.

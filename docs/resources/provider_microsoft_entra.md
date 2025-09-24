@@ -23,6 +23,7 @@ description: |-
 
 ### Optional
 
+- `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)
 - `filter_group` (String)
 - `group_delete_action` (String) Allowed values:

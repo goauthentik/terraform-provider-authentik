@@ -44,10 +44,11 @@ resource "authentik_application" "name" {
 
 ### Optional
 
-- `access_code_validity` (String) Defaults to `minutes=1`.
-- `access_token_validity` (String) Defaults to `minutes=10`.
+- `access_code_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=1`.
+- `access_token_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=10`.
 - `allowed_redirect_uris` (List of Map of String)
 - `authentication_flow` (String)
+- `backchannel_logout_uri` (String)
 - `client_secret` (String, Sensitive) Generated.
 - `client_type` (String) Allowed values:
   - `confidential`
@@ -63,7 +64,7 @@ resource "authentik_application" "name" {
 - `jwt_federation_providers` (List of Number) JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.
 - `jwt_federation_sources` (List of String) JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.
 - `property_mappings` (List of String)
-- `refresh_token_validity` (String) Defaults to `days=30`.
+- `refresh_token_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=30`.
 - `signing_key` (String)
 - `sub_mode` (String) Allowed values:
   - `hashed_user_id`

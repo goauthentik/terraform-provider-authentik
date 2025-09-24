@@ -4,20 +4,23 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5
       - name: Unshallow
         run: git fetch --prune --unshallow
-      - uses: actions/setup-go@v5.3.0
+      - uses: actions/setup-go@v6.0.0
         with:
           go-version-file: go.mod
           cache: true
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@cb9bde2e2525e640591a934b1fd28eef1dcaf5e5
+        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
@@ -27,7 +30,7 @@ jobs:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a
         with:
           version: latest
           args: release --clean
@@ -41,10 +44,10 @@ jobs:
           VERSION=$(./$(ls) -version)
           echo "##[set-output name=version]$VERSION"
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@b5b5a8ce7540bd7f67594177d52464a9bb543fb8
+        uses: getsentry/action-release@526942b68292201ac6bbb99b9a0747d4abee354c
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: authentik-security-inc
           SENTRY_PROJECT: terraform-provider-authentik
         with:
-          version: terraform-provider-authentik@${{ steps.version.outputs.version }}
+          release: terraform-provider-authentik@${{ steps.version.outputs.version }}

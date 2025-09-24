@@ -39,7 +39,7 @@ EOF
 
 ### Optional
 
-- `kubeconfig` (String, Sensitive) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `kubeconfig` (String, Sensitive) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 - `local` (Boolean) Defaults to `false`.
 - `verify_ssl` (Boolean) Defaults to `true`.
 

@@ -1,8 +1,11 @@
-.SHELLFLAGS += -x -e
+.SHELLFLAGS += -x -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 TESTARGS=-v -p 1 -race -coverprofile=coverage.txt -covermode=atomic
+
+GEN_API_GO = gen-go-api
+AUTHENTIK_MAIN = authentik_main
 
 default: gen
 
@@ -17,22 +20,15 @@ build:
 
 gen:
 	golangci-lint run -v
-	AUTHENTIK_URL="" go generate
+	AUTHENTIK_URL="" go tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 
-# see https://github.com/goauthentik/authentik/blob/main/Makefile#LL99-L113
 gen-client-go:
-	mkdir -p ./gen-go-api ./gen-go-api/templates
-	wget https://raw.githubusercontent.com/goauthentik/authentik/master/schema.yml -O gen-go-api/schema.yml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./gen-go-api/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./gen-go-api/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./gen-go-api/templates/go.mod.mustache
-	docker run \
-		--rm -v ${PWD}/gen-go-api:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.2.0 generate \
-		-i /local/schema.yml \
-		-g go \
-		-o /local/ \
-		-c /local/config.yaml
-	go mod edit -replace goauthentik.io/api/v3=./gen-go-api
-	rm -rf ./gen-go-api/config.yaml ./gen-go-api/templates/ ./gen-go-api/schema.yml
+	mkdir -p ${PWD}/${AUTHENTIK_MAIN}
+ifeq ($(wildcard ${PWD}/${AUTHENTIK_MAIN}/.*),)
+	git clone --depth 1 https://github.com/goauthentik/authentik.git ${PWD}/${AUTHENTIK_MAIN}
+else
+	cd ${PWD}/${AUTHENTIK_MAIN}
+	git pull
+endif
+	make -C ${PWD}/${AUTHENTIK_MAIN} gen-client-go
+	go mod edit -replace goauthentik.io/api/v3=./${AUTHENTIK_MAIN}/${GEN_API_GO}

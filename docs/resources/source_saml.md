@@ -76,11 +76,14 @@ resource "authentik_source_saml" "name" {
   - `urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName`
   - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`
   - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
+  - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
  Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`.
 - `policy_engine_mode` (String) Allowed values:
   - `all`
   - `any`
  Defaults to `any`.
+- `property_mappings` (List of String)
+- `property_mappings_group` (List of String)
 - `signature_algorithm` (String) Allowed values:
   - `http://www.w3.org/2000/09/xmldsig#rsa-sha1`
   - `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`
@@ -94,7 +97,7 @@ resource "authentik_source_saml" "name" {
  Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
 - `slo_url` (String)
-- `temporary_user_delete_after` (String) Defaults to `days=1`.
+- `temporary_user_delete_after` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=1`.
 - `user_matching_mode` (String) Allowed values:
   - `identifier`
   - `email_link`

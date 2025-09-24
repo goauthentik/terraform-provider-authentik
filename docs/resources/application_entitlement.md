@@ -44,7 +44,7 @@ resource "authentik_policy_binding" "test-ent-access" {
 
 ### Optional
 
-- `attributes` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `attributes` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 
 ### Read-Only
 

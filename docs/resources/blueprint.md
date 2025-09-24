@@ -33,7 +33,7 @@ resource "authentik_blueprint" "instance" {
 ### Optional
 
 - `content` (String)
-- `context` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `context` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 - `enabled` (Boolean) Defaults to `true`.
 - `path` (String)
 

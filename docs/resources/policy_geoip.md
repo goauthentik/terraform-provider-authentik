@@ -20,9 +20,9 @@ description: |-
 
 ### Optional
 
-- `action` (String)
 - `asns` (List of Number)
-- `client_ip` (String)
+- `check_history_distance` (Boolean)
+- `check_impossible_travel` (Boolean)
 - `countries` (List of String) Allowed values:
   - `AF`
   - `AX`
@@ -273,7 +273,11 @@ description: |-
   - `YE`
   - `ZM`
   - `ZW`
+- `distance_tolerance_km` (Number) Defaults to `50`.
 - `execution_logging` (Boolean) Defaults to `false`.
+- `history_login_count` (Number) Defaults to `5`.
+- `history_max_distance_km` (Number) Defaults to `100`.
+- `impossible_tolerance_km` (Number) Defaults to `100`.
 
 ### Read-Only
 

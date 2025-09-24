@@ -28,7 +28,7 @@ description: |-
 
 - `maximum_connections` (Number) Defaults to `0`.
 - `property_mappings` (List of String)
-- `settings` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `settings` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 
 ### Read-Only
 

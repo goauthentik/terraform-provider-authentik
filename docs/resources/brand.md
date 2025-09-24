@@ -30,10 +30,13 @@ resource "authentik_brand" "default" {
 
 ### Optional
 
-- `attributes` (String) JSON format expected. Use jsonencode() to pass objects. Defaults to `{}`.
+- `attributes` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
+- `branding_custom_css` (String)
+- `branding_default_flow_background` (String) Defaults to `/static/dist/assets/images/flow_background.jpg`.
 - `branding_favicon` (String)
 - `branding_logo` (String)
 - `branding_title` (String) Defaults to `authentik`.
+- `client_certificates` (List of String)
 - `default` (Boolean) Defaults to `false`.
 - `default_application` (String)
 - `flow_authentication` (String)

@@ -44,6 +44,7 @@ resource "authentik_source_oauth" "name" {
 - `provider_type` (String) Allowed values:
   - `apple`
   - `openidconnect`
+  - `entraid`
   - `azuread`
   - `discord`
   - `facebook`
@@ -63,6 +64,10 @@ resource "authentik_source_oauth" "name" {
 - `access_token_url` (String) Only required for OAuth1.
 - `additional_scopes` (String)
 - `authentication_flow` (String)
+- `authorization_code_auth_method` (String) Allowed values:
+  - `basic_auth`
+  - `post_body`
+ Defaults to `basic_auth`.
 - `authorization_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
 - `enabled` (Boolean) Defaults to `true`.
 - `enrollment_flow` (String)
