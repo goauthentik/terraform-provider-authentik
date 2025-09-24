@@ -73,9 +73,13 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.Notificat
 
 	if w, ok := d.Get("webhook_mapping_body").(string); ok {
 		m.WebhookMappingBody.Set(&w)
+	} else {
+		m.WebhookMappingBody.Set(nil)
 	}
 	if w, ok := d.Get("webhook_mapping_headers").(string); ok {
 		m.WebhookMappingHeaders.Set(&w)
+	} else {
+		m.WebhookMappingHeaders.Set(nil)
 	}
 	if e, ok := d.GetOk("email_template"); ok {
 		m.EmailTemplate = api.PtrString(e.(string))

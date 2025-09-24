@@ -61,6 +61,8 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRu
 
 	if w, ok := d.Get("destination_group").(string); ok {
 		m.DestinationGroup.Set(&w)
+	} else {
+		m.DestinationGroup.Set(nil)
 	}
 
 	m.Transports = castSlice[string](d.Get("transports").([]interface{}))
