@@ -43,15 +43,12 @@ func resourceStageConsent() *schema.Resource {
 
 func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentStageRequest {
 	r := api.ConsentStageRequest{
-		Name: d.Get("name").(string),
+		Name:            d.Get("name").(string),
+		ConsentExpireIn: getP[string](d, "consent_expire_in"),
 	}
 
 	if m, mSet := d.GetOk("mode"); mSet {
 		r.Mode = api.ConsentStageModeEnum(m.(string)).Ptr()
-	}
-
-	if ex, exSet := d.GetOk("consent_expire_in"); exSet {
-		r.ConsentExpireIn = api.PtrString(ex.(string))
 	}
 	return &r
 }

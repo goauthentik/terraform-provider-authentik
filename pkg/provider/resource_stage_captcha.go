@@ -75,12 +75,8 @@ func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaSt
 		ScoreMinThreshold:   api.PtrFloat64(d.Get("score_min_threshold").(float64)),
 		ScoreMaxThreshold:   api.PtrFloat64(d.Get("score_max_threshold").(float64)),
 		Interactive:         api.PtrBool(d.Get("interactive").(bool)),
-	}
-	if v, ok := d.GetOk("js_url"); ok {
-		r.JsUrl = api.PtrString(v.(string))
-	}
-	if v, ok := d.GetOk("api_url"); ok {
-		r.ApiUrl = api.PtrString(v.(string))
+		JsUrl:               getP[string](d, "js_url"),
+		ApiUrl:              getP[string](d, "api_url"),
 	}
 	return &r
 }

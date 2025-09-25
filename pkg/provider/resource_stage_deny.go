@@ -33,10 +33,8 @@ func resourceStageDeny() *schema.Resource {
 
 func resourceStageDenySchemaToProvider(d *schema.ResourceData) *api.DenyStageRequest {
 	r := api.DenyStageRequest{
-		Name: d.Get("name").(string),
-	}
-	if m, mok := d.GetOk("deny_message"); mok {
-		r.DenyMessage = api.PtrString(m.(string))
+		Name:        d.Get("name").(string),
+		DenyMessage: getP[string](d, "deny_message"),
 	}
 	return &r
 }

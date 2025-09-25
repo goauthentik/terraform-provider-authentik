@@ -52,13 +52,8 @@ func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolic
 		Name:             d.Get("name").(string),
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		Result:           api.PtrBool(d.Get("result").(bool)),
-	}
-
-	if p, pSet := d.GetOk("wait_max"); pSet {
-		r.WaitMax = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("wait_min"); pSet {
-		r.WaitMin = api.PtrInt32(int32(p.(int)))
+		WaitMin:          getIntP(d, "wait_min"),
+		WaitMax:          getIntP(d, "wait_max"),
 	}
 	return &r
 }

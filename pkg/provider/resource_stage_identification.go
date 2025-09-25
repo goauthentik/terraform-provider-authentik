@@ -98,16 +98,9 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		Sources:                 castSlice[string](d.Get("sources").([]interface{})),
 		PasswordStage:           *api.NewNullableString(api.PtrString(d.Get("password_stage").(string))),
 		CaptchaStage:            *api.NewNullableString(api.PtrString(d.Get("captcha_stage").(string))),
-	}
-
-	if h, hSet := d.GetOk("enrollment_flow"); hSet {
-		r.EnrollmentFlow.Set(api.PtrString(h.(string)))
-	}
-	if h, hSet := d.GetOk("recovery_flow"); hSet {
-		r.RecoveryFlow.Set(api.PtrString(h.(string)))
-	}
-	if h, hSet := d.GetOk("passwordless_flow"); hSet {
-		r.PasswordlessFlow.Set(api.PtrString(h.(string)))
+		EnrollmentFlow:          *api.NewNullableString(getP[string](d, "enrollment_flow")),
+		RecoveryFlow:            *api.NewNullableString(getP[string](d, "recovery_flow")),
+		PasswordlessFlow:        *api.NewNullableString(getP[string](d, "passwordless_flow")),
 	}
 
 	userFields := make([]api.UserFieldsEnum, 0)

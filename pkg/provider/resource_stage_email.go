@@ -105,50 +105,22 @@ func resourceStageEmail() *schema.Resource {
 
 func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageRequest {
 	r := api.EmailStageRequest{
-		Name:              d.Get("name").(string),
-		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
-		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
-		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
-	}
-
-	if h, hSet := d.GetOk("host"); hSet {
-		r.Host = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("port"); pSet {
-		r.Port = api.PtrInt32(int32(p.(int)))
-	}
-
-	if h, hSet := d.GetOk("username"); hSet {
-		r.Username = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("password"); hSet {
-		r.Password = api.PtrString(h.(string))
-	}
-
-	if p, pSet := d.GetOk("timeout"); pSet {
-		r.Timeout = api.PtrInt32(int32(p.(int)))
-	}
-
-	if h, hSet := d.GetOk("from_address"); hSet {
-		r.FromAddress = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("token_expiry"); pSet {
-		r.TokenExpiry = api.PtrString(p.(string))
-	}
-	if h, hSet := d.GetOk("subject"); hSet {
-		r.Subject = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("template"); hSet {
-		r.Template = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("activate_user_on_success"); hSet {
-		r.ActivateUserOnSuccess = api.PtrBool(h.(bool))
-	}
-	if k, set := d.GetOk("recovery_max_attempts"); set {
-		r.RecoveryMaxAttempts = api.PtrInt32(int32(k.(int)))
-	}
-	if k, set := d.GetOk("recovery_cache_timeout"); set {
-		r.RecoveryCacheTimeout = api.PtrString(k.(string))
+		Name:                  d.Get("name").(string),
+		UseGlobalSettings:     api.PtrBool(d.Get("use_global_settings").(bool)),
+		UseSsl:                api.PtrBool(d.Get("use_ssl").(bool)),
+		UseTls:                api.PtrBool(d.Get("use_tls").(bool)),
+		Host:                  getP[string](d, "host"),
+		Username:              getP[string](d, "username"),
+		Password:              getP[string](d, "password"),
+		FromAddress:           getP[string](d, "from_address"),
+		TokenExpiry:           getP[string](d, "token_expiry"),
+		Subject:               getP[string](d, "subject"),
+		Template:              getP[string](d, "template"),
+		RecoveryCacheTimeout:  getP[string](d, "recovery_cache_timeout"),
+		Port:                  getIntP(d, "port"),
+		Timeout:               getIntP(d, "timeout"),
+		RecoveryMaxAttempts:   getIntP(d, "recovery_max_attempts"),
+		ActivateUserOnSuccess: getP[bool](d, "activate_user_on_success"),
 	}
 	return &r
 }
