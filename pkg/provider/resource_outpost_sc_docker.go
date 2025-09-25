@@ -47,23 +47,11 @@ func resourceServiceConnectionDocker() *schema.Resource {
 
 func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) *api.DockerServiceConnectionRequest {
 	m := api.DockerServiceConnectionRequest{
-		Name: d.Get("name").(string),
-		Url:  d.Get("url").(string),
-	}
-
-	local := d.Get("local").(bool)
-	m.Local = &local
-
-	if l, ok := d.Get("tls_verification").(string); ok {
-		m.TlsVerification.Set(&l)
-	} else {
-		m.TlsVerification.Set(nil)
-	}
-
-	if l, ok := d.Get("tls_authentication").(string); ok {
-		m.TlsAuthentication.Set(&l)
-	} else {
-		m.TlsAuthentication.Set(nil)
+		Name:              d.Get("name").(string),
+		Url:               d.Get("url").(string),
+		Local:             api.PtrBool(d.Get("local").(bool)),
+		TlsVerification:   *api.NewNullableString(getP[string](d.Get("tls_verification"))),
+		TlsAuthentication: *api.NewNullableString(getP[string](d.Get("tls_authentication"))),
 	}
 	return &m
 }

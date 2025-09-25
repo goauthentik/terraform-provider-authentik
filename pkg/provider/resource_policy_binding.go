@@ -77,26 +77,10 @@ func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) *api.PolicyBindi
 		Enabled:       api.PtrBool(d.Get("enabled").(bool)),
 		Timeout:       api.PtrInt32(int32(d.Get("timeout").(int))),
 		FailureResult: api.PtrBool(d.Get("failure_result").(bool)),
+		Policy:        *api.NewNullableString(getP[string](d.Get("policy"))),
+		User:          *api.NewNullableInt32(getIntP(d.Get("user"))),
+		Group:         *api.NewNullableString(getP[string](d.Get("policy"))),
 	}
-
-	if u, uSet := d.GetOk("policy"); uSet {
-		m.Policy.Set(api.PtrString(u.(string)))
-	} else {
-		m.Policy.Set(nil)
-	}
-
-	if u, uSet := d.GetOk("user"); uSet {
-		m.User.Set(api.PtrInt32(int32(u.(int))))
-	} else {
-		m.User.Set(nil)
-	}
-
-	if u, uSet := d.GetOk("group"); uSet {
-		m.Group.Set(api.PtrString(u.(string)))
-	} else {
-		m.Group.Set(nil)
-	}
-
 	return &m
 }
 

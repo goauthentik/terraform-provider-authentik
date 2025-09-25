@@ -57,19 +57,15 @@ func resourceOutpost() *schema.Resource {
 
 func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.OutpostRequest, diag.Diagnostics) {
 	m := api.OutpostRequest{
-		Name: d.Get("name").(string),
+		Name:              d.Get("name").(string),
+		Type:              api.OutpostTypeEnum(d.Get("type").(string)),
+		ServiceConnection: *api.NewNullableString(getP[string](d.Get("service_connection"))),
 	}
 
 	protocolProviders := d.Get("protocol_providers").([]interface{})
 	m.Providers = make([]int32, len(protocolProviders))
 	for i, prov := range protocolProviders {
 		m.Providers[i] = int32(prov.(int))
-	}
-
-	if l, ok := d.Get("service_connection").(string); ok {
-		m.ServiceConnection.Set(&l)
-	} else {
-		m.ServiceConnection.Set(nil)
 	}
 
 	defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
@@ -86,8 +82,6 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 	} else {
 		m.Config = defaultConfig.Config
 	}
-
-	m.Type = api.OutpostTypeEnum(d.Get("type").(string))
 	return &m, nil
 }
 

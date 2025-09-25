@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -55,16 +54,9 @@ func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*
 		Local:     api.PtrBool(d.Get("local").(bool)),
 	}
 
-	if l, ok := d.Get("kubeconfig").(string); ok {
-		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-		m.Kubeconfig = c
-	}
-
-	return &m, nil
+	attr, err := getJSON[map[string]interface{}](d.Get("kubeconfig"))
+	m.Kubeconfig = attr
+	return &m, err
 }
 
 func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
