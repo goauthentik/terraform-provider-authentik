@@ -75,7 +75,7 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 		MaximumConnections: api.PtrInt32(int32(d.Get("maximum_connections").(int))),
 	}
 
-	attr, err := getJSON[map[string]interface{}](d.Get("settings"))
+	attr, err := getJSON[map[string]interface{}](d, ("settings"))
 	r.Settings = attr
 	return &r, err
 }

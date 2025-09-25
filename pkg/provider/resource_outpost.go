@@ -59,7 +59,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 	m := api.OutpostRequest{
 		Name:              d.Get("name").(string),
 		Type:              api.OutpostTypeEnum(d.Get("type").(string)),
-		ServiceConnection: *api.NewNullableString(getP[string](d.Get("service_connection"))),
+		ServiceConnection: *api.NewNullableString(getP[string](d, "service_connection")),
 	}
 
 	protocolProviders := d.Get("protocol_providers").([]interface{})

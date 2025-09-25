@@ -46,7 +46,7 @@ func resourceApplicationEntitlementSchemaToModel(d *schema.ResourceData) (*api.A
 		App:  d.Get("application").(string),
 	}
 
-	attr, err := getJSON[map[string]interface{}](d.Get("attributes"))
+	attr, err := getJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }

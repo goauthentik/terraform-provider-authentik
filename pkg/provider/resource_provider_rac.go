@@ -72,7 +72,7 @@ func resourceProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACProvid
 		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
 	}
 
-	attr, err := getJSON[map[string]interface{}](d.Get("settings"))
+	attr, err := getJSON[map[string]interface{}](d, ("settings"))
 	r.Settings = attr
 	return &r, err
 }

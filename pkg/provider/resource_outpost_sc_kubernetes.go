@@ -54,7 +54,7 @@ func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*
 		Local:     api.PtrBool(d.Get("local").(bool)),
 	}
 
-	attr, err := getJSON[map[string]interface{}](d.Get("kubeconfig"))
+	attr, err := getJSON[map[string]interface{}](d, ("kubeconfig"))
 	m.Kubeconfig = attr
 	return &m, err
 }

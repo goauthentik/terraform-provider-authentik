@@ -50,8 +50,8 @@ func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) *api.D
 		Name:              d.Get("name").(string),
 		Url:               d.Get("url").(string),
 		Local:             api.PtrBool(d.Get("local").(bool)),
-		TlsVerification:   *api.NewNullableString(getP[string](d.Get("tls_verification"))),
-		TlsAuthentication: *api.NewNullableString(getP[string](d.Get("tls_authentication"))),
+		TlsVerification:   *api.NewNullableString(getP[string](d, "tls_verification")),
+		TlsAuthentication: *api.NewNullableString(getP[string](d, "tls_authentication")),
 	}
 	return &m
 }

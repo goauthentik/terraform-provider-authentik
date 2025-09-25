@@ -92,7 +92,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 
 	m.Groups = castSlice[string](d.Get("groups").([]interface{}))
 
-	attr, err := getJSON[map[string]interface{}](d.Get("attributes"))
+	attr, err := getJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }

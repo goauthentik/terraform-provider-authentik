@@ -107,22 +107,22 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 		ClientCertificates:            castSlice[string](d.Get("client_certificates").([]interface{})),
 		Domain:                        d.Get("domain").(string),
 		Default:                       api.PtrBool(d.Get("default").(bool)),
-		BrandingTitle:                 getP[string](d.Get("branding_title")),
-		BrandingLogo:                  getP[string](d.Get("branding_logo")),
-		BrandingFavicon:               getP[string](d.Get("branding_favicon")),
-		BrandingDefaultFlowBackground: getP[string](d.Get("branding_default_flow_background")),
-		BrandingCustomCss:             getP[string](d.Get("branding_custom_css")),
-		FlowAuthentication:            *api.NewNullableString(getP[string](d.Get("flow_authentication"))),
-		FlowInvalidation:              *api.NewNullableString(getP[string](d.Get("flow_invalidation"))),
-		FlowRecovery:                  *api.NewNullableString(getP[string](d.Get("flow_recovery"))),
-		FlowUnenrollment:              *api.NewNullableString(getP[string](d.Get("flow_unenrollment"))),
-		FlowUserSettings:              *api.NewNullableString(getP[string](d.Get("flow_user_settings"))),
-		FlowDeviceCode:                *api.NewNullableString(getP[string](d.Get("flow_device_code"))),
-		WebCertificate:                *api.NewNullableString(getP[string](d.Get("web_certificate"))),
-		DefaultApplication:            *api.NewNullableString(getP[string](d.Get("default_application"))),
+		BrandingTitle:                 getP[string](d, "branding_title"),
+		BrandingLogo:                  getP[string](d, "branding_logo"),
+		BrandingFavicon:               getP[string](d, "branding_favicon"),
+		BrandingDefaultFlowBackground: getP[string](d, "branding_default_flow_background"),
+		BrandingCustomCss:             getP[string](d, "branding_custom_css"),
+		FlowAuthentication:            *api.NewNullableString(getP[string](d, "flow_authentication")),
+		FlowInvalidation:              *api.NewNullableString(getP[string](d, "flow_invalidation")),
+		FlowRecovery:                  *api.NewNullableString(getP[string](d, "flow_recovery")),
+		FlowUnenrollment:              *api.NewNullableString(getP[string](d, "flow_unenrollment")),
+		FlowUserSettings:              *api.NewNullableString(getP[string](d, "flow_user_settings")),
+		FlowDeviceCode:                *api.NewNullableString(getP[string](d, "flow_device_code")),
+		WebCertificate:                *api.NewNullableString(getP[string](d, "web_certificate")),
+		DefaultApplication:            *api.NewNullableString(getP[string](d, "default_application")),
 	}
 
-	attr, err := getJSON[map[string]interface{}](d.Get("attributes"))
+	attr, err := getJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }

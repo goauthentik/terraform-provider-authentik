@@ -53,11 +53,11 @@ func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData) (*api.Bluepr
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
 		Enabled: api.PtrBool(d.Get("enabled").(bool)),
-		Path:    getP[string](d.Get("path")),
-		Content: getP[string](d.Get("content")),
+		Path:    getP[string](d, "path"),
+		Content: getP[string](d, "content"),
 	}
 
-	context, err := getJSON[map[string]interface{}](d.Get("context"))
+	context, err := getJSON[map[string]interface{}](d, ("context"))
 	m.Context = context
 	return &m, err
 }

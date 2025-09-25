@@ -109,23 +109,31 @@ func setWrapper(d *schema.ResourceData, key string, data interface{}) {
 	}
 }
 
-func getP[T any](raw interface{}) *T {
-	if tt, ok := raw.(T); ok {
+func getP[T any](d *schema.ResourceData, key string) *T {
+	rv, ok := d.GetOk(key)
+	if !ok {
+		return nil
+	}
+	if tt, ok := rv.(T); ok {
 		return &tt
 	}
 	return nil
 }
 
-func getIntP(raw interface{}) *int32 {
-	if tt, ok := raw.(int); ok {
+func getIntP(d *schema.ResourceData, key string) *int32 {
+	rv, ok := d.GetOk(key)
+	if !ok {
+		return nil
+	}
+	if tt, ok := rv.(int); ok {
 		return api.PtrInt32(int32(tt))
 	}
 	return nil
 }
 
-func getJSON[T any](raw interface{}) (T, diag.Diagnostics) {
+func getJSON[T any](d *schema.ResourceData, key string) (T, diag.Diagnostics) {
 	var v T
-	if sv := getP[string](raw); sv != nil {
+	if sv := getP[string](d, key); sv != nil {
 		err := json.NewDecoder(strings.NewReader(*sv)).Decode(&v)
 		if err != nil {
 			return v, diag.FromErr(err)

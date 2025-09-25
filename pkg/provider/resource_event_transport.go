@@ -65,11 +65,11 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.Notificat
 		Name:                  d.Get("name").(string),
 		SendOnce:              api.PtrBool(d.Get("send_once").(bool)),
 		Mode:                  api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
-		WebhookUrl:            getP[string](d.Get("webhook_url")),
-		WebhookMappingBody:    *api.NewNullableString(getP[string](d.Get("webhook_mapping_body"))),
-		WebhookMappingHeaders: *api.NewNullableString(getP[string](d.Get("webhook_mapping_headers"))),
-		EmailTemplate:         getP[string](d.Get("email_template")),
-		EmailSubjectPrefix:    getP[string](d.Get("email_subject_prefix")),
+		WebhookUrl:            getP[string](d, "webhook_url"),
+		WebhookMappingBody:    *api.NewNullableString(getP[string](d, "webhook_mapping_body")),
+		WebhookMappingHeaders: *api.NewNullableString(getP[string](d, "webhook_mapping_headers")),
+		EmailTemplate:         getP[string](d, "email_template"),
+		EmailSubjectPrefix:    getP[string](d, "email_subject_prefix"),
 	}
 	return &m, nil
 }

@@ -83,13 +83,13 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 	m := api.ApplicationRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Provider:         *api.NewNullableInt32(getIntP(d.Get("protocol_provider"))),
+		Provider:         *api.NewNullableInt32(getIntP(d, ("protocol_provider"))),
 		OpenInNewTab:     api.PtrBool(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		Group:            getP[string](d.Get("group")),
-		MetaLaunchUrl:    getP[string](d.Get("meta_launch_url")),
-		MetaDescription:  getP[string](d.Get("meta_description")),
-		MetaPublisher:    getP[string](d.Get("meta_publisher")),
+		Group:            getP[string](d, "group"),
+		MetaLaunchUrl:    getP[string](d, "meta_launch_url"),
+		MetaDescription:  getP[string](d, "meta_description"),
+		MetaPublisher:    getP[string](d, "meta_publisher"),
 	}
 
 	m.BackchannelProviders = []int32{}
