@@ -99,27 +99,21 @@ func resourceSourcePlex() *schema.Resource {
 
 func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceRequest {
 	r := api.PlexSourceRequest{
-		Name:              d.Get("name").(string),
-		Slug:              d.Get("slug").(string),
-		Enabled:           api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate:  api.PtrString(d.Get("user_path_template").(string)),
-		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
-		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		Name:               d.Get("name").(string),
+		Slug:               d.Get("slug").(string),
+		Enabled:            api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate:   api.PtrString(d.Get("user_path_template").(string)),
+		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		AuthenticationFlow: *api.NewNullableString(getP[string](d, "authentication_flow")),
+		EnrollmentFlow:     *api.NewNullableString(getP[string](d, "enrollment_flow")),
 
-		ClientId:     api.PtrString(d.Get("client_id").(string)),
-		AllowFriends: api.PtrBool(d.Get("allow_friends").(bool)),
-		PlexToken:    d.Get("plex_token").(string),
+		ClientId:       api.PtrString(d.Get("client_id").(string)),
+		AllowFriends:   api.PtrBool(d.Get("allow_friends").(bool)),
+		PlexToken:      d.Get("plex_token").(string),
+		AllowedServers: castSlice[string](d.Get("allowed_servers").([]interface{})),
 	}
-
-	if ak, ok := d.GetOk("authentication_flow"); ok {
-		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
-	}
-	if ef, ok := d.GetOk("enrollment_flow"); ok {
-		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
-	}
-
-	r.AllowedServers = castSlice[string](d.Get("allowed_servers").([]interface{}))
 	return &r
 }
 

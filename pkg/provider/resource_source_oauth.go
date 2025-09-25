@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -178,46 +177,26 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		PolicyEngineMode:            api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:            api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode:           api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		AuthenticationFlow:          *api.NewNullableString(getP[string](d, "authentication_flow")),
+		EnrollmentFlow:              *api.NewNullableString(getP[string](d, "enrollment_flow")),
+
+		RequestTokenUrl:  *api.NewNullableString(getP[string](d, "request_token_url")),
+		AuthorizationUrl: *api.NewNullableString(getP[string](d, "authorization_url")),
+		AccessTokenUrl:   *api.NewNullableString(getP[string](d, "access_token_url")),
+		ProfileUrl:       *api.NewNullableString(getP[string](d, "profile_url")),
+		AdditionalScopes: getP[string](d, "additional_scopes"),
+		OidcWellKnownUrl: getP[string](d, "oidc_well_known_url"),
+		OidcJwksUrl:      getP[string](d, "oidc_jwks_url"),
+
+		UserPropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
+		GroupPropertyMappings: castSlice[string](d.Get("property_mappings_group").([]interface{})),
 	}
 
-	if ak, ok := d.GetOk("authentication_flow"); ok {
-		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
+	jwks, err := getJSON[map[string]interface{}](d, ("oidc_jwks"))
+	r.OidcJwks = jwks
+	if err != nil {
+		return nil, err
 	}
-	if ef, ok := d.GetOk("enrollment_flow"); ok {
-		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
-	}
-
-	if s, sok := d.GetOk("request_token_url"); sok && s.(string) != "" {
-		r.RequestTokenUrl.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("authorization_url"); sok && s.(string) != "" {
-		r.AuthorizationUrl.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("access_token_url"); sok && s.(string) != "" {
-		r.AccessTokenUrl.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("profile_url"); sok && s.(string) != "" {
-		r.ProfileUrl.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("additional_scopes"); sok && s.(string) != "" {
-		r.AdditionalScopes = api.PtrString(s.(string))
-	}
-	if s, sok := d.GetOk("oidc_well_known_url"); sok && s.(string) != "" {
-		r.OidcWellKnownUrl = api.PtrString(s.(string))
-	}
-	if s, sok := d.GetOk("oidc_jwks_url"); sok && s.(string) != "" {
-		r.OidcJwksUrl = api.PtrString(s.(string))
-	}
-	if l, ok := d.Get("oidc_jwks").(string); ok && l != "" {
-		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-		r.OidcJwks = c
-	}
-	r.UserPropertyMappings = castSlice[string](d.Get("property_mappings").([]interface{}))
-	r.GroupPropertyMappings = castSlice[string](d.Get("property_mappings_group").([]interface{}))
 	return &r, nil
 }
 

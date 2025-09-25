@@ -175,9 +175,17 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 
+		AuthenticationFlow:    *api.NewNullableString(getP[string](d, "authentication_flow")),
+		EnrollmentFlow:        *api.NewNullableString(getP[string](d, "enrollment_flow")),
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
+		UserPropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
+		GroupPropertyMappings: castSlice[string](d.Get("property_mappings_group").([]interface{})),
 
 		SsoUrl:                   d.Get("sso_url").(string),
+		SloUrl:                   *api.NewNullableString(getP[string](d, "slo_url")),
+		SigningKp:                *api.NewNullableString(getP[string](d, "signing_kp")),
+		EncryptionKp:             *api.NewNullableString(getP[string](d, "encryption_kp")),
+		VerificationKp:           *api.NewNullableString(getP[string](d, "verification_kp")),
 		Issuer:                   api.PtrString(d.Get("issuer").(string)),
 		AllowIdpInitiated:        api.PtrBool(d.Get("allow_idp_initiated").(bool)),
 		TemporaryUserDeleteAfter: api.PtrString(d.Get("temporary_user_delete_after").(string)),
@@ -186,29 +194,6 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		SignatureAlgorithm:       api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		NameIdPolicy:             api.SAMLNameIDPolicyEnum(d.Get("name_id_policy").(string)).Ptr(),
 	}
-
-	if ak, ok := d.GetOk("authentication_flow"); ok {
-		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
-	}
-	if ef, ok := d.GetOk("enrollment_flow"); ok {
-		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
-	}
-
-	if s, sok := d.GetOk("slo_url"); sok && s.(string) != "" {
-		r.SloUrl.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
-		r.SigningKp.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("encryption_kp"); sok && s.(string) != "" {
-		r.EncryptionKp.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
-		r.VerificationKp.Set(api.PtrString(s.(string)))
-	}
-	r.UserPropertyMappings = castSlice[string](d.Get("property_mappings").([]interface{}))
-	r.GroupPropertyMappings = castSlice[string](d.Get("property_mappings_group").([]interface{}))
-
 	return &r
 }
 

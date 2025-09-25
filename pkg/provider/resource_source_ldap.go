@@ -182,17 +182,13 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		SyncUsers:                           api.PtrBool(d.Get("sync_users").(bool)),
 		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
 		SyncGroups:                          api.PtrBool(d.Get("sync_groups").(bool)),
+		SyncParentGroup:                     *api.NewNullableString(getP[string](d, "sync_parent_group")),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 		DeleteNotFoundObjects:               api.PtrBool(d.Get("delete_not_found_objects").(bool)),
 		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
+		UserPropertyMappings:                castSlice[string](d.Get("property_mappings").([]interface{})),
+		GroupPropertyMappings:               castSlice[string](d.Get("property_mappings_group").([]interface{})),
 	}
-
-	if s, sok := d.GetOk("sync_parent_group"); sok && s.(string) != "" {
-		r.SyncParentGroup.Set(api.PtrString(s.(string)))
-	}
-
-	r.UserPropertyMappings = castSlice[string](d.Get("property_mappings").([]interface{}))
-	r.GroupPropertyMappings = castSlice[string](d.Get("property_mappings_group").([]interface{}))
 	return &r
 }
 

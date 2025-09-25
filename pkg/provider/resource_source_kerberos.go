@@ -149,9 +149,11 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
 		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 
-		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
-		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		AuthenticationFlow: *api.NewNullableString(getP[string](d, "authentication_flow")),
+		EnrollmentFlow:     *api.NewNullableString(getP[string](d, "enrollment_flow")),
 
 		Realm:                               d.Get("realm").(string),
 		Krb5Conf:                            api.PtrString(d.Get("krb5_conf").(string)),
@@ -166,14 +168,6 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		SpnegoCcache:                        api.PtrString(d.Get("spnego_ccache").(string)),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 	}
-
-	if ak, ok := d.GetOk("authentication_flow"); ok {
-		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
-	}
-	if ef, ok := d.GetOk("enrollment_flow"); ok {
-		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
-	}
-
 	return &r, nil
 }
 
