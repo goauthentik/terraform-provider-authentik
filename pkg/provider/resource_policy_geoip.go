@@ -78,38 +78,22 @@ func resourcePolicyGeoIP() *schema.Resource {
 
 func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolicyRequest {
 	r := api.GeoIPPolicyRequest{
-		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		Name:                  d.Get("name").(string),
+		ExecutionLogging:      api.PtrBool(d.Get("execution_logging").(bool)),
+		CheckHistoryDistance:  getP[bool](d, "check_history_distance"),
+		HistoryMaxDistanceKm:  getInt64P(d, "history_max_distance_km"),
+		DistanceToleranceKm:   getIntP(d, "distance_tolerance_km"),
+		HistoryLoginCount:     getIntP(d, "history_login_count"),
+		CheckImpossibleTravel: getP[bool](d, "check_impossible_travel"),
+		ImpossibleToleranceKm: getIntP(d, "impossible_tolerance_km"),
+		Asns:                  castSlice[int32](d.Get("asns").([]interface{})),
 	}
 
-	asns := d.Get("asns").([]interface{})
-	r.Asns = make([]int32, len(asns))
-	for i, prov := range asns {
-		r.Asns[i] = int32(prov.(int))
-	}
 	if a, ok := d.Get("countries").([]interface{}); ok {
 		r.Countries = make([]api.CountryCodeEnum, 0)
 		for _, c := range castSlice[string](a) {
 			r.Countries = append(r.Countries, api.CountryCodeEnum(c))
 		}
-	}
-	if x, xok := d.GetOk("check_history_distance"); xok {
-		r.CheckHistoryDistance = api.PtrBool(x.(bool))
-	}
-	if x, xok := d.GetOk("history_max_distance_km"); xok {
-		r.HistoryMaxDistanceKm = api.PtrInt64(int64(x.(int)))
-	}
-	if x, xok := d.GetOk("distance_tolerance_km"); xok {
-		r.DistanceToleranceKm = api.PtrInt32(int32(x.(int)))
-	}
-	if x, xok := d.GetOk("history_login_count"); xok {
-		r.HistoryLoginCount = api.PtrInt32(int32(x.(int)))
-	}
-	if x, xok := d.GetOk("check_impossible_travel"); xok {
-		r.CheckImpossibleTravel = api.PtrBool(x.(bool))
-	}
-	if x, xok := d.GetOk("impossible_tolerance_km"); xok {
-		r.ImpossibleToleranceKm = api.PtrInt32(int32(x.(int)))
 	}
 	return &r
 }

@@ -53,10 +53,7 @@ func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.Reput
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		CheckIp:          api.PtrBool(d.Get("check_ip").(bool)),
 		CheckUsername:    api.PtrBool(d.Get("check_username").(bool)),
-	}
-
-	if p, pSet := d.GetOk("threshold"); pSet {
-		r.Threshold = api.PtrInt32(int32(p.(int)))
+		Threshold:        getIntP(d, "threshold"),
 	}
 	return &r
 }

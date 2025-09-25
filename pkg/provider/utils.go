@@ -133,6 +133,18 @@ func getIntP(d *schema.ResourceData, key string) *int32 {
 	return nil
 }
 
+// Similar to `getP` however also casts to an int64 as that is what the API prefers
+func getInt64P(d *schema.ResourceData, key string) *int64 {
+	rv, ok := d.GetOk(key)
+	if !ok {
+		return nil
+	}
+	if tt, ok := rv.(int); ok {
+		return api.PtrInt64(int64(tt))
+	}
+	return nil
+}
+
 func getJSON[T any](d *schema.ResourceData, key string) (T, diag.Diagnostics) {
 	var v T
 	if sv := getP[string](d, key); sv != nil {

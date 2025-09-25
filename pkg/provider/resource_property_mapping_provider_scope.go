@@ -42,12 +42,10 @@ func resourcePropertyMappingProviderScope() *schema.Resource {
 
 func resourcePropertyMappingProviderScopeSchemaToProvider(d *schema.ResourceData) *api.ScopeMappingRequest {
 	r := api.ScopeMappingRequest{
-		Name:       d.Get("name").(string),
-		ScopeName:  d.Get("scope_name").(string),
-		Expression: d.Get("expression").(string),
-	}
-	if de, dSet := d.GetOk("description"); dSet {
-		r.Description = api.PtrString(de.(string))
+		Name:        d.Get("name").(string),
+		ScopeName:   d.Get("scope_name").(string),
+		Expression:  d.Get("expression").(string),
+		Description: getP[string](d, "description"),
 	}
 	return &r
 }

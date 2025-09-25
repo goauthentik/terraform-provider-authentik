@@ -42,12 +42,10 @@ func resourcePropertyMappingProviderSAML() *schema.Resource {
 
 func resourcePropertyMappingProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLPropertyMappingRequest {
 	r := api.SAMLPropertyMappingRequest{
-		Name:       d.Get("name").(string),
-		SamlName:   d.Get("saml_name").(string),
-		Expression: d.Get("expression").(string),
-	}
-	if de, dSet := d.GetOk("friendly_name"); dSet {
-		r.FriendlyName.Set(api.PtrString(de.(string)))
+		Name:         d.Get("name").(string),
+		SamlName:     d.Get("saml_name").(string),
+		Expression:   d.Get("expression").(string),
+		FriendlyName: *api.NewNullableString(getP[string](d, "friendly_name")),
 	}
 	return &r
 }
