@@ -84,10 +84,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 		Type:     api.UserTypeEnum(d.Get("type").(string)).Ptr(),
 		IsActive: api.PtrBool(d.Get("is_active").(bool)),
 		Path:     api.PtrString(d.Get("path").(string)),
-	}
-
-	if l, ok := d.Get("email").(string); ok {
-		m.Email = &l
+		Email:    getP[string](d, "email"),
 	}
 
 	m.Groups = castSlice[string](d.Get("groups").([]interface{}))

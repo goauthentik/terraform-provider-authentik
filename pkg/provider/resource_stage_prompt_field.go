@@ -85,18 +85,9 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 		PlaceholderExpression:  api.PtrBool(d.Get("placeholder_expression").(bool)),
 		InitialValueExpression: api.PtrBool(d.Get("initial_value_expression").(bool)),
 		SubText:                api.PtrString(d.Get("sub_text").(string)),
-	}
-
-	if p, pSet := d.GetOk("placeholder"); pSet {
-		r.Placeholder = api.PtrString(p.(string))
-	}
-
-	if p, pSet := d.GetOk("initial_value"); pSet {
-		r.InitialValue = api.PtrString(p.(string))
-	}
-
-	if o, oSet := d.GetOk("order"); oSet {
-		r.Order = api.PtrInt32(int32(o.(int)))
+		Placeholder:            getP[string](d, "placeholder"),
+		InitialValue:           getP[string](d, "initial_value"),
+		Order:                  getIntP(d, "order"),
 	}
 	return &r
 }

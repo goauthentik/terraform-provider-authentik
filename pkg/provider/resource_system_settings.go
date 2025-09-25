@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -116,15 +115,10 @@ func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) (*api.Settin
 		ReputationLowerLimit:      api.PtrInt32(int32(d.Get("reputation_lower_limit").(int))),
 		ReputationUpperLimit:      api.PtrInt32(int32(d.Get("reputation_upper_limit").(int))),
 	}
-	attr := api.PatchedSettingsRequestFlags{}
-	if l, ok := d.Get("flags").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
-	r.Flags = attr
-	return &r, nil
+
+	flags, err := getJSON[api.PatchedSettingsRequestFlags](d, ("flags"))
+	r.Flags = flags
+	return &r, err
 }
 
 func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

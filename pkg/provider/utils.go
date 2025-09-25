@@ -109,6 +109,7 @@ func setWrapper(d *schema.ResourceData, key string, data interface{}) {
 	}
 }
 
+// Get Pointer value from resource data, if castable to generic type
 func getP[T any](d *schema.ResourceData, key string) *T {
 	rv, ok := d.GetOk(key)
 	if !ok {
@@ -120,6 +121,7 @@ func getP[T any](d *schema.ResourceData, key string) *T {
 	return nil
 }
 
+// Similar to `getP` however also casts to an int32 as that is what the API prefers
 func getIntP(d *schema.ResourceData, key string) *int32 {
 	rv, ok := d.GetOk(key)
 	if !ok {

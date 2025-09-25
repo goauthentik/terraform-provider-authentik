@@ -71,13 +71,10 @@ func resourceToken() *schema.Resource {
 
 func resourceTokenSchemaToModel(d *schema.ResourceData) (*api.TokenRequest, diag.Diagnostics) {
 	m := api.TokenRequest{
-		Identifier: d.Get("identifier").(string),
-		User:       api.PtrInt32(int32(d.Get("user").(int))),
-		Expiring:   api.PtrBool(d.Get("expiring").(bool)),
-	}
-
-	if l, ok := d.Get("description").(string); ok {
-		m.Description = &l
+		Identifier:  d.Get("identifier").(string),
+		User:        api.PtrInt32(int32(d.Get("user").(int))),
+		Expiring:    api.PtrBool(d.Get("expiring").(bool)),
+		Description: getP[string](d, "description"),
 	}
 
 	if l, ok := d.Get("expires").(string); ok && l != "" {

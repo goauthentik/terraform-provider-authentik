@@ -49,16 +49,11 @@ func resourceStageRedirect() *schema.Resource {
 
 func resourceStageRedirectSchemaToProvider(d *schema.ResourceData) *api.RedirectStageRequest {
 	r := api.RedirectStageRequest{
-		Name:        d.Get("name").(string),
-		Mode:        api.RedirectStageModeEnum(d.Get("mode").(string)),
-		KeepContext: api.PtrBool(d.Get("keep_context").(bool)),
-	}
-
-	if target, targetSet := d.GetOk("target_static"); targetSet {
-		r.TargetStatic = api.PtrString(target.(string))
-	}
-	if target, targetSet := d.GetOk("target_flow"); targetSet {
-		r.TargetFlow.Set(api.PtrString(target.(string)))
+		Name:         d.Get("name").(string),
+		Mode:         api.RedirectStageModeEnum(d.Get("mode").(string)),
+		KeepContext:  api.PtrBool(d.Get("keep_context").(bool)),
+		TargetStatic: getP[string](d, "target_static"),
+		TargetFlow:   *api.NewNullableString(getP[string](d, "target_flow")),
 	}
 	return &r
 }

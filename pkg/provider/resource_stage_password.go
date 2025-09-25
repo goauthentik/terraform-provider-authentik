@@ -52,16 +52,10 @@ func resourceStagePassword() *schema.Resource {
 
 func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordStageRequest {
 	r := api.PasswordStageRequest{
-		Name:              d.Get("name").(string),
-		AllowShowPassword: api.PtrBool(d.Get("allow_show_password").(bool)),
-	}
-
-	if s, sok := d.GetOk("configure_flow"); sok && s.(string) != "" {
-		r.ConfigureFlow.Set(api.PtrString(s.(string)))
-	}
-
-	if fa, sok := d.GetOk("failed_attempts_before_cancel"); sok {
-		r.FailedAttemptsBeforeCancel = api.PtrInt32(int32(fa.(int)))
+		Name:                       d.Get("name").(string),
+		AllowShowPassword:          api.PtrBool(d.Get("allow_show_password").(bool)),
+		ConfigureFlow:              *api.NewNullableString(getP[string](d, "configure_flow")),
+		FailedAttemptsBeforeCancel: getIntP(d, "failed_attempts_before_cancel"),
 	}
 
 	backend := make([]api.BackendsEnum, 0)

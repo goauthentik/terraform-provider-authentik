@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -44,21 +43,13 @@ func resourcePropertyMappingProviderRAC() *schema.Resource {
 
 func resourcePropertyMappingProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACPropertyMappingRequest, diag.Diagnostics) {
 	r := api.RACPropertyMappingRequest{
-		Name: d.Get("name").(string),
-	}
-	if s, sok := d.GetOk("expression"); sok && s.(string) != "" {
-		r.Expression = api.PtrString(s.(string))
+		Name:       d.Get("name").(string),
+		Expression: getP[string](d, "expression"),
 	}
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("settings").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
-	r.StaticSettings = attr
-	return &r, nil
+	settings, err := getJSON[map[string]interface{}](d, ("settings"))
+	r.StaticSettings = settings
+	return &r, err
 }
 
 func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -104,23 +103,13 @@ func resourceProviderGoogleWorkspaceSchemaToProvider(d *schema.ResourceData) (*a
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		UserDeleteAction:           api.OutgoingSyncDeleteAction(d.Get("user_delete_action").(string)).Ptr(),
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
+		FilterGroup:                *api.NewNullableString(getP[string](d, "filter_group")),
+		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
 
-	if l, ok := d.Get("filter_group").(string); ok {
-		r.FilterGroup = *api.NewNullableString(&l)
-	}
-	if d, dok := d.GetOk("dry_run"); dok {
-		r.DryRun = api.PtrBool(d.(bool))
-	}
-	credentials := make(map[string]interface{})
-	if l, ok := d.Get("credentials").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&credentials)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	credentials, err := getJSON[map[string]interface{}](d, ("credentials"))
 	r.Credentials = credentials
-	return &r, nil
+	return &r, err
 }
 
 func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

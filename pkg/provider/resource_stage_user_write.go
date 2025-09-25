@@ -70,10 +70,7 @@ func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWri
 		UserPathTemplate:      api.PtrString(d.Get("user_path_template").(string)),
 		UserCreationMode:      api.UserCreationModeEnum(d.Get("user_creation_mode").(string)).Ptr(),
 		UserType:              api.UserTypeEnum(d.Get("user_type").(string)).Ptr(),
-	}
-
-	if h, hSet := d.GetOk("create_users_group"); hSet {
-		r.CreateUsersGroup.Set(api.PtrString(h.(string)))
+		CreateUsersGroup:      *api.NewNullableString(getP[string](d, "create_users_group")),
 	}
 	return &r
 }
