@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -65,10 +64,7 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 	m := api.GroupRequest{
 		Name:        d.Get("name").(string),
 		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
-	}
-
-	if l, ok := d.Get("parent").(string); ok {
-		m.Parent.Set(&l)
+		Parent:      *api.NewNullableString(getP[string](d.Get("parent"))),
 	}
 
 	users := d.Get("users").([]interface{})
@@ -78,15 +74,9 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 	}
 	m.Roles = castSlice[string](d.Get("roles").([]interface{}))
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := getJSON[map[string]interface{}](d.Get("attributes"))
 	m.Attributes = attr
-	return &m, nil
+	return &m, err
 }
 
 func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

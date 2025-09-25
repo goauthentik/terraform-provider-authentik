@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -105,84 +104,27 @@ func resourceBrand() *schema.Resource {
 
 func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag.Diagnostics) {
 	m := api.BrandRequest{
-		ClientCertificates: castSlice[string](d.Get("client_certificates").([]interface{})),
-		Domain:             d.Get("domain").(string),
-		Default:            api.PtrBool(d.Get("default").(bool)),
+		ClientCertificates:            castSlice[string](d.Get("client_certificates").([]interface{})),
+		Domain:                        d.Get("domain").(string),
+		Default:                       api.PtrBool(d.Get("default").(bool)),
+		BrandingTitle:                 getP[string](d.Get("branding_title")),
+		BrandingLogo:                  getP[string](d.Get("branding_logo")),
+		BrandingFavicon:               getP[string](d.Get("branding_favicon")),
+		BrandingDefaultFlowBackground: getP[string](d.Get("branding_default_flow_background")),
+		BrandingCustomCss:             getP[string](d.Get("branding_custom_css")),
+		FlowAuthentication:            *api.NewNullableString(getP[string](d.Get("flow_authentication"))),
+		FlowInvalidation:              *api.NewNullableString(getP[string](d.Get("flow_invalidation"))),
+		FlowRecovery:                  *api.NewNullableString(getP[string](d.Get("flow_recovery"))),
+		FlowUnenrollment:              *api.NewNullableString(getP[string](d.Get("flow_unenrollment"))),
+		FlowUserSettings:              *api.NewNullableString(getP[string](d.Get("flow_user_settings"))),
+		FlowDeviceCode:                *api.NewNullableString(getP[string](d.Get("flow_device_code"))),
+		WebCertificate:                *api.NewNullableString(getP[string](d.Get("web_certificate"))),
+		DefaultApplication:            *api.NewNullableString(getP[string](d.Get("default_application"))),
 	}
 
-	if l, ok := d.Get("branding_title").(string); ok {
-		m.BrandingTitle = &l
-	}
-	if l, ok := d.Get("branding_logo").(string); ok {
-		m.BrandingLogo = &l
-	}
-	if l, ok := d.Get("branding_favicon").(string); ok {
-		m.BrandingFavicon = &l
-	}
-	if l, ok := d.Get("branding_default_flow_background").(string); ok {
-		m.BrandingDefaultFlowBackground = &l
-	}
-	if l, ok := d.Get("branding_custom_css").(string); ok {
-		m.BrandingCustomCss = &l
-	}
-
-	if l, ok := d.Get("flow_authentication").(string); ok {
-		m.FlowAuthentication.Set(&l)
-	} else {
-		m.FlowAuthentication.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_invalidation").(string); ok {
-		m.FlowInvalidation.Set(&l)
-	} else {
-		m.FlowInvalidation.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_recovery").(string); ok {
-		m.FlowRecovery.Set(&l)
-	} else {
-		m.FlowRecovery.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_unenrollment").(string); ok {
-		m.FlowUnenrollment.Set(&l)
-	} else {
-		m.FlowUnenrollment.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_user_settings").(string); ok {
-		m.FlowUserSettings.Set(&l)
-	} else {
-		m.FlowUserSettings.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_device_code").(string); ok {
-		m.FlowDeviceCode.Set(&l)
-	} else {
-		m.FlowDeviceCode.Set(nil)
-	}
-
-	if l, ok := d.Get("web_certificate").(string); ok {
-		m.WebCertificate.Set(&l)
-	} else {
-		m.WebCertificate.Set(nil)
-	}
-
-	if l, ok := d.Get("default_application").(string); ok {
-		m.DefaultApplication.Set(&l)
-	} else {
-		m.DefaultApplication.Set(nil)
-	}
-
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := getJSON[map[string]interface{}](d.Get("attributes"))
 	m.Attributes = attr
-	return &m, nil
+	return &m, err
 }
 
 func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

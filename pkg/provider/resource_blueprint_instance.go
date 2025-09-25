@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -54,24 +53,13 @@ func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData) (*api.Bluepr
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
 		Enabled: api.PtrBool(d.Get("enabled").(bool)),
+		Path:    getP[string](d.Get("path")),
+		Content: getP[string](d.Get("content")),
 	}
 
-	if p, ok := d.Get("path").(string); ok {
-		m.Path = api.PtrString(p)
-	}
-	if p, ok := d.Get("content").(string); ok {
-		m.Content = api.PtrString(p)
-	}
-
-	ctx := make(map[string]interface{})
-	if l, ok := d.Get("context").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&ctx)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
-	m.Context = ctx
-	return &m, nil
+	context, err := getJSON[map[string]interface{}](d.Get("context"))
+	m.Context = context
+	return &m, err
 }
 
 func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

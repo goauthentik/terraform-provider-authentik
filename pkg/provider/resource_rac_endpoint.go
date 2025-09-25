@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -76,15 +75,9 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 		MaximumConnections: api.PtrInt32(int32(d.Get("maximum_connections").(int))),
 	}
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := getJSON[map[string]interface{}](d.Get("settings"))
 	r.Settings = attr
-	return &r, nil
+	return &r, err
 }
 
 func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

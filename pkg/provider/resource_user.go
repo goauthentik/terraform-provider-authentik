@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -93,15 +92,9 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 
 	m.Groups = castSlice[string](d.Get("groups").([]interface{}))
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := getJSON[map[string]interface{}](d.Get("attributes"))
 	m.Attributes = attr
-	return &m, nil
+	return &m, err
 }
 
 func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.Context) diag.Diagnostics {

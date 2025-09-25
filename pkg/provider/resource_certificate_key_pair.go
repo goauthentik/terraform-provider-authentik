@@ -40,10 +40,7 @@ func resourceCertificateKeyPairSchemaToModel(d *schema.ResourceData) *api.Certif
 	app := api.CertificateKeyPairRequest{
 		Name:            d.Get("name").(string),
 		CertificateData: d.Get("certificate_data").(string),
-	}
-
-	if l, ok := d.Get("key_data").(string); ok {
-		app.KeyData = &l
+		KeyData:         getP[string](d.Get("key_data")),
 	}
 	return &app
 }

@@ -83,32 +83,18 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 	m := api.ApplicationRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Provider:         api.NullableInt32{},
+		Provider:         *api.NewNullableInt32(getIntP(d.Get("protocol_provider"))),
 		OpenInNewTab:     api.PtrBool(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		Group:            getP[string](d.Get("group")),
+		MetaLaunchUrl:    getP[string](d.Get("meta_launch_url")),
+		MetaDescription:  getP[string](d.Get("meta_description")),
+		MetaPublisher:    getP[string](d.Get("meta_publisher")),
 	}
 
-	if p, pSet := d.GetOk("protocol_provider"); pSet {
-		m.Provider.Set(api.PtrInt32(int32(p.(int))))
-	} else {
-		m.Provider.Set(nil)
-	}
 	m.BackchannelProviders = []int32{}
 	for _, bp := range d.Get("backchannel_providers").([]interface{}) {
 		m.BackchannelProviders = append(m.BackchannelProviders, int32(bp.(int)))
-	}
-
-	if l, ok := d.Get("group").(string); ok {
-		m.Group = &l
-	}
-	if l, ok := d.Get("meta_launch_url").(string); ok {
-		m.MetaLaunchUrl = &l
-	}
-	if l, ok := d.Get("meta_description").(string); ok {
-		m.MetaDescription = &l
-	}
-	if l, ok := d.Get("meta_publisher").(string); ok {
-		m.MetaPublisher = &l
 	}
 	return &m
 }

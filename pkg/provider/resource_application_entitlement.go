@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -47,15 +46,9 @@ func resourceApplicationEntitlementSchemaToModel(d *schema.ResourceData) (*api.A
 		App:  d.Get("application").(string),
 	}
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := getJSON[map[string]interface{}](d.Get("attributes"))
 	m.Attributes = attr
-	return &m, nil
+	return &m, err
 }
 
 func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"goauthentik.io/api/v3"
 )
 
 const (
@@ -106,6 +107,31 @@ func setWrapper(d *schema.ResourceData, key string, data interface{}) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getP[T any](raw interface{}) *T {
+	if tt, ok := raw.(T); ok {
+		return &tt
+	}
+	return nil
+}
+
+func getIntP(raw interface{}) *int32 {
+	if tt, ok := raw.(int); ok {
+		return api.PtrInt32(int32(tt))
+	}
+	return nil
+}
+
+func getJSON[T any](raw interface{}) (T, diag.Diagnostics) {
+	var v T
+	if sv := getP[string](raw); sv != nil {
+		err := json.NewDecoder(strings.NewReader(*sv)).Decode(&v)
+		if err != nil {
+			return v, diag.FromErr(err)
+		}
+	}
+	return v, nil
 }
 
 // diffSuppressExpression Diff suppression for python expressions

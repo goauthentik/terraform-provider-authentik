@@ -62,26 +62,14 @@ func resourceEventTransport() *schema.Resource {
 
 func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.NotificationTransportRequest, diag.Diagnostics) {
 	m := api.NotificationTransportRequest{
-		Name:     d.Get("name").(string),
-		SendOnce: api.PtrBool(d.Get("send_once").(bool)),
-		Mode:     api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
-	}
-
-	if w, ok := d.Get("webhook_url").(string); ok {
-		m.WebhookUrl = &w
-	}
-
-	if w, ok := d.Get("webhook_mapping_body").(string); ok {
-		m.WebhookMappingBody.Set(&w)
-	}
-	if w, ok := d.Get("webhook_mapping_headers").(string); ok {
-		m.WebhookMappingHeaders.Set(&w)
-	}
-	if e, ok := d.GetOk("email_template"); ok {
-		m.EmailTemplate = api.PtrString(e.(string))
-	}
-	if e, ok := d.GetOk("email_subject_prefix"); ok {
-		m.EmailSubjectPrefix = api.PtrString(e.(string))
+		Name:                  d.Get("name").(string),
+		SendOnce:              api.PtrBool(d.Get("send_once").(bool)),
+		Mode:                  api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
+		WebhookUrl:            getP[string](d.Get("webhook_url")),
+		WebhookMappingBody:    *api.NewNullableString(getP[string](d.Get("webhook_mapping_body"))),
+		WebhookMappingHeaders: *api.NewNullableString(getP[string](d.Get("webhook_mapping_headers"))),
+		EmailTemplate:         getP[string](d.Get("email_template")),
+		EmailSubjectPrefix:    getP[string](d.Get("email_subject_prefix")),
 	}
 	return &m, nil
 }
