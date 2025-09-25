@@ -99,50 +99,23 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.Passwor
 	r := api.PasswordPolicyRequest{
 		Name:             d.Get("name").(string),
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
-	}
+		PasswordField:    getP[string](d, "password_field"),
 
-	if s, sSet := d.GetOk("password_field"); sSet {
-		r.PasswordField = api.PtrString(s.(string))
-	}
+		CheckStaticRules:    getP[bool](d, "check_static_rules"),
+		CheckHaveIBeenPwned: getP[bool](d, "check_have_i_been_pwned"),
+		CheckZxcvbn:         getP[bool](d, "check_zxcvbn"),
 
-	if e, eSet := d.GetOk("check_static_rules"); eSet {
-		r.CheckStaticRules = api.PtrBool(e.(bool))
-	}
-	if e, eSet := d.GetOk("check_have_i_been_pwned"); eSet {
-		r.CheckHaveIBeenPwned = api.PtrBool(e.(bool))
-	}
-	if e, eSet := d.GetOk("check_zxcvbn"); eSet {
-		r.CheckZxcvbn = api.PtrBool(e.(bool))
-	}
+		SymbolCharset:   getP[string](d, "symbol_charset"),
+		ErrorMessage:    getP[string](d, "error_message"),
+		AmountUppercase: getIntP(d, "amount_uppercase"),
+		AmountDigits:    getIntP(d, "amount_digits"),
+		AmountLowercase: getIntP(d, "amount_lowercase"),
+		AmountSymbols:   getIntP(d, "amount_symbols"),
+		LengthMin:       getIntP(d, "length_min"),
 
-	if s, sSet := d.GetOk("symbol_charset"); sSet {
-		r.SymbolCharset = api.PtrString(s.(string))
-	}
-	if s, sSet := d.GetOk("error_message"); sSet {
-		r.ErrorMessage = api.PtrString(s.(string))
-	}
-	if p, pSet := d.GetOk("amount_uppercase"); pSet {
-		r.AmountUppercase = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("amount_digits"); pSet {
-		r.AmountDigits = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("amount_lowercase"); pSet {
-		r.AmountLowercase = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("amount_symbols"); pSet {
-		r.AmountSymbols = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("length_min"); pSet {
-		r.LengthMin = api.PtrInt32(int32(p.(int)))
-	}
+		HibpAllowedCount: getIntP(d, "hibp_allowed_count"),
 
-	if p, pSet := d.GetOk("hibp_allowed_count"); pSet {
-		r.HibpAllowedCount = api.PtrInt32(int32(p.(int)))
-	}
-
-	if p, pSet := d.GetOk("zxcvbn_score_threshold"); pSet {
-		r.ZxcvbnScoreThreshold = api.PtrInt32(int32(p.(int)))
+		ZxcvbnScoreThreshold: getIntP(d, "zxcvbn_score_threshold"),
 	}
 	return &r
 }

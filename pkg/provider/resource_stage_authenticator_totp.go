@@ -44,15 +44,10 @@ func resourceStageAuthenticatorTOTP() *schema.Resource {
 
 func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorTOTPStageRequest {
 	r := api.AuthenticatorTOTPStageRequest{
-		Name:   d.Get("name").(string),
-		Digits: api.DigitsEnum(d.Get("digits").(string)),
-	}
-
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
+		Name:          d.Get("name").(string),
+		Digits:        api.DigitsEnum(d.Get("digits").(string)),
+		FriendlyName:  *api.NewNullableString(getP[string](d, "friendly_name")),
+		ConfigureFlow: *api.NewNullableString(getP[string](d, "configure_flow")),
 	}
 	return &r
 }

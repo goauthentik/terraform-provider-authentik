@@ -100,44 +100,21 @@ func resourceStageAuthenticatorEmailSchemaToProvider(d *schema.ResourceData) *ap
 		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
 		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
 		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
-	}
+		FriendlyName:      *api.NewNullableString(getP[string](d, "friendly_name")),
+		ConfigureFlow:     *api.NewNullableString(getP[string](d, "configure_flow")),
 
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
-	}
+		Host: getP[string](d, "host"),
+		Port: getIntP(d, "port"),
 
-	if h, hSet := d.GetOk("host"); hSet {
-		r.Host = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("port"); pSet {
-		r.Port = api.PtrInt32(int32(p.(int)))
-	}
+		Username: getP[string](d, "username"),
+		Password: getP[string](d, "password"),
 
-	if h, hSet := d.GetOk("username"); hSet {
-		r.Username = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("password"); hSet {
-		r.Password = api.PtrString(h.(string))
-	}
+		Timeout: getIntP(d, "timeout"),
 
-	if p, pSet := d.GetOk("timeout"); pSet {
-		r.Timeout = api.PtrInt32(int32(p.(int)))
-	}
-
-	if h, hSet := d.GetOk("from_address"); hSet {
-		r.FromAddress = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("token_expiry"); pSet {
-		r.TokenExpiry = api.PtrString(p.(string))
-	}
-	if h, hSet := d.GetOk("subject"); hSet {
-		r.Subject = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("template"); hSet {
-		r.Template = api.PtrString(h.(string))
+		FromAddress: getP[string](d, "from_address"),
+		TokenExpiry: getP[string](d, "token_expiry"),
+		Subject:     getP[string](d, "subject"),
+		Template:    getP[string](d, "template"),
 	}
 	return &r
 }

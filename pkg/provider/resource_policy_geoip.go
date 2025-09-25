@@ -86,7 +86,7 @@ func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolic
 		HistoryLoginCount:     getIntP(d, "history_login_count"),
 		CheckImpossibleTravel: getP[bool](d, "check_impossible_travel"),
 		ImpossibleToleranceKm: getIntP(d, "impossible_tolerance_km"),
-		Asns:                  castSlice[int32](d.Get("asns").([]interface{})),
+		Asns:                  castSliceInt32(d.Get("asns").([]interface{})),
 	}
 
 	if a, ok := d.Get("countries").([]interface{}); ok {

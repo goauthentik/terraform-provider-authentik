@@ -151,42 +151,25 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	r := api.OAuth2ProviderRequest{
 		Name:                   d.Get("name").(string),
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
+		AuthenticationFlow:     *api.NewNullableString(getP[string](d, "authentication_flow")),
 		InvalidationFlow:       d.Get("invalidation_flow").(string),
 		AccessCodeValidity:     api.PtrString(d.Get("access_code_validity").(string)),
 		AccessTokenValidity:    api.PtrString(d.Get("access_token_validity").(string)),
 		RefreshTokenValidity:   api.PtrString(d.Get("refresh_token_validity").(string)),
 		IncludeClaimsInIdToken: api.PtrBool(d.Get("include_claims_in_id_token").(bool)),
 		ClientId:               api.PtrString(d.Get("client_id").(string)),
+		ClientSecret:           getP[string](d, "client_secret"),
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
 		PropertyMappings:       castSlice[string](d.Get("property_mappings").([]interface{})),
 		JwtFederationSources:   castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
-	}
+		BackchannelLogoutUri:   getP[string](d, "backchannel_logout_uri"),
 
-	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("client_secret"); sok && s.(string) != "" {
-		r.ClientSecret = api.PtrString(s.(string))
-	}
-	if s, sok := d.GetOk("backchannel_logout_uri"); sok && s.(string) != "" {
-		r.BackchannelLogoutUri = api.PtrString(s.(string))
-	}
-
-	if s, sok := d.GetOk("signing_key"); sok && s.(string) != "" {
-		r.SigningKey.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("encryption_key"); sok && s.(string) != "" {
-		r.EncryptionKey.Set(api.PtrString(s.(string)))
-	}
-
-	r.RedirectUris = listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]interface{}))
-
-	providers := d.Get("jwt_federation_providers").([]interface{})
-	r.JwtFederationProviders = make([]int32, len(providers))
-	for i, prov := range providers {
-		r.JwtFederationProviders[i] = int32(prov.(int))
+		SigningKey:             *api.NewNullableString(getP[string](d, "signing_key")),
+		EncryptionKey:          *api.NewNullableString(getP[string](d, "encryption_key")),
+		RedirectUris:           listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]interface{})),
+		JwtFederationProviders: castSliceInt32(d.Get("jwt_federation_providers").([]interface{})),
 	}
 	return &r
 }

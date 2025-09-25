@@ -167,43 +167,28 @@ func resourceProviderSAML() *schema.Resource {
 
 func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProviderRequest {
 	r := api.SAMLProviderRequest{
-		Name:                       d.Get("name").(string),
-		AuthorizationFlow:          d.Get("authorization_flow").(string),
-		InvalidationFlow:           d.Get("invalidation_flow").(string),
-		AcsUrl:                     d.Get("acs_url").(string),
-		Audience:                   api.PtrString(d.Get("audience").(string)),
-		Issuer:                     api.PtrString(d.Get("issuer").(string)),
-		AssertionValidNotBefore:    api.PtrString(d.Get("assertion_valid_not_before").(string)),
-		AssertionValidNotOnOrAfter: api.PtrString(d.Get("assertion_valid_not_on_or_after").(string)),
-		SessionValidNotOnOrAfter:   api.PtrString(d.Get("session_valid_not_on_or_after").(string)),
-		DigestAlgorithm:            api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
-		SignatureAlgorithm:         api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
-		SpBinding:                  api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
-		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
-		SignAssertion:              api.PtrBool(d.Get("sign_assertion").(bool)),
-		SignResponse:               api.PtrBool(d.Get("sign_response").(bool)),
-	}
-
-	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("name_id_mapping"); sok && s.(string) != "" {
-		r.NameIdMapping.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("authn_context_class_ref_mapping"); sok && s.(string) != "" {
-		r.AuthnContextClassRefMapping.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("encryption_kp"); sok && s.(string) != "" {
-		r.EncryptionKp.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
-		r.SigningKp.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
-		r.VerificationKp.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("default_relay_state"); sok && s.(string) != "" {
-		r.DefaultRelayState = api.PtrString(s.(string))
+		Name:                        d.Get("name").(string),
+		AuthorizationFlow:           d.Get("authorization_flow").(string),
+		InvalidationFlow:            d.Get("invalidation_flow").(string),
+		AcsUrl:                      d.Get("acs_url").(string),
+		Audience:                    api.PtrString(d.Get("audience").(string)),
+		Issuer:                      api.PtrString(d.Get("issuer").(string)),
+		AssertionValidNotBefore:     api.PtrString(d.Get("assertion_valid_not_before").(string)),
+		AssertionValidNotOnOrAfter:  api.PtrString(d.Get("assertion_valid_not_on_or_after").(string)),
+		SessionValidNotOnOrAfter:    api.PtrString(d.Get("session_valid_not_on_or_after").(string)),
+		DigestAlgorithm:             api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
+		SignatureAlgorithm:          api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
+		SpBinding:                   api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
+		PropertyMappings:            castSlice[string](d.Get("property_mappings").([]interface{})),
+		SignAssertion:               api.PtrBool(d.Get("sign_assertion").(bool)),
+		SignResponse:                api.PtrBool(d.Get("sign_response").(bool)),
+		AuthenticationFlow:          *api.NewNullableString(getP[string](d, "authentication_flow")),
+		NameIdMapping:               *api.NewNullableString(getP[string](d, "name_id_mapping")),
+		AuthnContextClassRefMapping: *api.NewNullableString(getP[string](d, "authn_context_class_ref_mapping")),
+		EncryptionKp:                *api.NewNullableString(getP[string](d, "encryption_kp")),
+		SigningKp:                   *api.NewNullableString(getP[string](d, "signing_kp")),
+		VerificationKp:              *api.NewNullableString(getP[string](d, "verification_kp")),
+		DefaultRelayState:           getP[string](d, "default_relay_state"),
 	}
 	return &r
 }

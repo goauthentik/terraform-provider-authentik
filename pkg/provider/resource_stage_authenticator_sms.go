@@ -79,28 +79,17 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 
 func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorSMSStageRequest {
 	r := api.AuthenticatorSMSStageRequest{
-		Name:       d.Get("name").(string),
-		Provider:   api.ProviderEnum(d.Get("sms_provider").(string)),
-		FromNumber: d.Get("from_number").(string),
-		AccountSid: d.Get("account_sid").(string),
-		AuthType:   api.AuthTypeEnum(d.Get("auth_type").(string)).Ptr(),
-		Auth:       d.Get("auth").(string),
-	}
-
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("auth_password"); hSet {
-		r.AuthPassword = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
-	}
-	if h, hSet := d.GetOk("mapping"); hSet {
-		r.Mapping.Set(api.PtrString(h.(string)))
-	}
-	if verify, verifySet := d.GetOk("verify_only"); verifySet {
-		r.VerifyOnly = api.PtrBool(verify.(bool))
+		Name:          d.Get("name").(string),
+		Provider:      api.ProviderEnum(d.Get("sms_provider").(string)),
+		FromNumber:    d.Get("from_number").(string),
+		AccountSid:    d.Get("account_sid").(string),
+		AuthType:      api.AuthTypeEnum(d.Get("auth_type").(string)).Ptr(),
+		Auth:          d.Get("auth").(string),
+		FriendlyName:  *api.NewNullableString(getP[string](d, "friendly_name")),
+		ConfigureFlow: *api.NewNullableString(getP[string](d, "configure_flow")),
+		AuthPassword:  getP[string](d, "auth_password"),
+		Mapping:       *api.NewNullableString(getP[string](d, "mapping")),
+		VerifyOnly:    getP[bool](d, "verify_only"),
 	}
 	return &r
 }

@@ -62,16 +62,12 @@ func resourceProviderRAC() *schema.Resource {
 
 func resourceProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACProviderRequest, diag.Diagnostics) {
 	r := api.RACProviderRequest{
-		Name:              d.Get("name").(string),
-		AuthorizationFlow: d.Get("authorization_flow").(string),
-		PropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
-		ConnectionExpiry:  api.PtrString(d.Get("connection_expiry").(string)),
+		Name:               d.Get("name").(string),
+		AuthorizationFlow:  d.Get("authorization_flow").(string),
+		PropertyMappings:   castSlice[string](d.Get("property_mappings").([]interface{})),
+		ConnectionExpiry:   api.PtrString(d.Get("connection_expiry").(string)),
+		AuthenticationFlow: *api.NewNullableString(getP[string](d, "authentication_flow")),
 	}
-
-	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
-	}
-
 	attr, err := getJSON[map[string]interface{}](d, ("settings"))
 	r.Settings = attr
 	return &r, err

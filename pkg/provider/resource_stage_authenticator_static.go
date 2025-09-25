@@ -47,16 +47,11 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 
 func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorStaticStageRequest {
 	r := api.AuthenticatorStaticStageRequest{
-		Name:        d.Get("name").(string),
-		TokenCount:  api.PtrInt32(int32(d.Get("token_count").(int))),
-		TokenLength: api.PtrInt32(int32(d.Get("token_length").(int))),
-	}
-
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
+		Name:          d.Get("name").(string),
+		TokenCount:    api.PtrInt32(int32(d.Get("token_count").(int))),
+		TokenLength:   api.PtrInt32(int32(d.Get("token_length").(int))),
+		FriendlyName:  *api.NewNullableString(getP[string](d, "friendly_name")),
+		ConfigureFlow: *api.NewNullableString(getP[string](d, "configure_flow")),
 	}
 	return &r
 }

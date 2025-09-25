@@ -139,51 +139,28 @@ func resourceProviderProxy() *schema.Resource {
 
 func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyProviderRequest {
 	r := api.ProxyProviderRequest{
-		Name:                 d.Get("name").(string),
-		AuthorizationFlow:    d.Get("authorization_flow").(string),
-		InvalidationFlow:     d.Get("invalidation_flow").(string),
-		ExternalHost:         d.Get("external_host").(string),
-		Mode:                 api.ProxyMode(d.Get("mode").(string)).Ptr(),
-		PropertyMappings:     castSlice[string](d.Get("property_mappings").([]interface{})),
-		JwtFederationSources: castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
-	}
+		Name:                      d.Get("name").(string),
+		AuthorizationFlow:         d.Get("authorization_flow").(string),
+		InvalidationFlow:          d.Get("invalidation_flow").(string),
+		ExternalHost:              d.Get("external_host").(string),
+		Mode:                      api.ProxyMode(d.Get("mode").(string)).Ptr(),
+		PropertyMappings:          castSlice[string](d.Get("property_mappings").([]interface{})),
+		JwtFederationSources:      castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
+		AuthenticationFlow:        *api.NewNullableString(getP[string](d, "authentication_flow")),
+		InternalHost:              getP[string](d, "internal_host"),
+		InternalHostSslValidation: getP[bool](d, "internal_host_ssl_validation"),
 
-	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
-	}
-	if l, ok := d.Get("internal_host").(string); ok {
-		r.InternalHost = &l
-	}
-	if l, ok := d.Get("internal_host_ssl_validation").(bool); ok {
-		r.InternalHostSslValidation = &l
-	}
+		SkipPathRegex: getP[string](d, "skip_path_regex"),
 
-	if l, ok := d.Get("skip_path_regex").(string); ok {
-		r.SkipPathRegex = &l
-	}
+		BasicAuthEnabled:           getP[bool](d, "basic_auth_enabled"),
+		InterceptHeaderAuth:        getP[bool](d, "intercept_header_auth"),
+		BasicAuthUserAttribute:     getP[string](d, "basic_auth_username_attribute"),
+		BasicAuthPasswordAttribute: getP[string](d, "basic_auth_password_attribute"),
 
-	if l, ok := d.Get("basic_auth_enabled").(bool); ok {
-		r.BasicAuthEnabled = &l
-	}
-	if l, ok := d.Get("intercept_header_auth").(bool); ok {
-		r.InterceptHeaderAuth = &l
-	}
-	if l, ok := d.Get("basic_auth_username_attribute").(string); ok {
-		r.BasicAuthUserAttribute = &l
-	}
-	if l, ok := d.Get("basic_auth_password_attribute").(string); ok {
-		r.BasicAuthPasswordAttribute = &l
-	}
+		CookieDomain: getP[string](d, "cookie_domain"),
 
-	if l, ok := d.Get("cookie_domain").(string); ok {
-		r.CookieDomain = &l
-	}
-
-	if l, ok := d.Get("access_token_validity").(string); ok {
-		r.AccessTokenValidity = &l
-	}
-	if l, ok := d.Get("refresh_token_validity").(string); ok {
-		r.RefreshTokenValidity = &l
+		AccessTokenValidity:  getP[string](d, "access_token_validity"),
+		RefreshTokenValidity: getP[string](d, "refresh_token_validity"),
 	}
 
 	providers := d.Get("jwt_federation_providers").([]interface{})

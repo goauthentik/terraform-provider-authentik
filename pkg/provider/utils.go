@@ -229,6 +229,14 @@ func castSlice[T any](in []interface{}) []T {
 	return sl
 }
 
+func castSliceInt32(in []interface{}) []int32 {
+	sl := make([]int32, len(in))
+	for i, m := range in {
+		sl[i] = int32(m.(int))
+	}
+	return sl
+}
+
 func slice32ToInt(in []int32) []int {
 	sl := make([]int, len(in))
 	for i, m := range in {

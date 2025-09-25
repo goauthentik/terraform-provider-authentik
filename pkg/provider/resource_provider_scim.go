@@ -80,12 +80,8 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		CompatibilityMode:          api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
-	}
-	if l, ok := d.Get("filter_group").(string); ok {
-		r.FilterGroup = *api.NewNullableString(&l)
-	}
-	if d, dok := d.GetOk("dry_run"); dok {
-		r.DryRun = api.PtrBool(d.(bool))
+		FilterGroup:                *api.NewNullableString(getP[string](d, "filter_group")),
+		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
 	return &r
 }

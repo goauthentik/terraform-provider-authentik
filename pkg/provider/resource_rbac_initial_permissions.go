@@ -47,14 +47,10 @@ func resourceRBACInitialPermissions() *schema.Resource {
 
 func resourceRBACInitialPermissionsSchemaToModel(d *schema.ResourceData) (*api.InitialPermissionsRequest, diag.Diagnostics) {
 	m := api.InitialPermissionsRequest{
-		Name: d.Get("name").(string),
-		Role: d.Get("role").(string),
-		Mode: api.InitialPermissionsModeEnum(d.Get("mode").(string)),
-	}
-	permissions := d.Get("permissions").([]interface{})
-	m.Permissions = make([]int32, len(permissions))
-	for i, prov := range permissions {
-		m.Permissions[i] = int32(prov.(int))
+		Name:        d.Get("name").(string),
+		Role:        d.Get("role").(string),
+		Mode:        api.InitialPermissionsModeEnum(d.Get("mode").(string)),
+		Permissions: castSliceInt32(d.Get("permissions").([]interface{})),
 	}
 	return &m, nil
 }

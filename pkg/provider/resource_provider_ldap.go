@@ -84,13 +84,8 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 		SearchMode:        api.LDAPAPIAccessMode(d.Get("search_mode").(string)).Ptr(),
 		BindMode:          api.LDAPAPIAccessMode(d.Get("bind_mode").(string)).Ptr(),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
-	}
-
-	if s, sok := d.GetOk("certificate"); sok && s.(string) != "" {
-		r.Certificate.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("tls_server_name"); sok && s.(string) != "" {
-		r.TlsServerName = api.PtrString(s.(string))
+		Certificate:       *api.NewNullableString(getP[string](d, "certificate")),
+		TlsServerName:     getP[string](d, "tls_server_name"),
 	}
 	return &r
 }

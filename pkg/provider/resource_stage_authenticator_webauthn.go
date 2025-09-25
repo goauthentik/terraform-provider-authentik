@@ -72,19 +72,13 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
 		ResidentKeyRequirement: api.ResidentKeyRequirementEnum(d.Get("resident_key_requirement").(string)).Ptr(),
 		DeviceTypeRestrictions: castSlice[string](d.Get("device_type_restrictions").([]interface{})),
+		FriendlyName:           *api.NewNullableString(getP[string](d, "friendly_name")),
+		ConfigureFlow:          *api.NewNullableString(getP[string](d, "configure_flow")),
+		MaxAttempts:            getIntP(d, "max_attempts"),
 	}
 
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
-	}
 	if x, set := d.GetOk("authenticator_attachment"); set {
 		r.AuthenticatorAttachment.Set(api.AuthenticatorAttachmentEnum(x.(string)).Ptr())
-	}
-	if m, set := d.GetOk("max_attempts"); set {
-		r.MaxAttempts = api.PtrInt32(int32(m.(int)))
 	}
 	return &r
 }

@@ -59,23 +59,14 @@ func resourceStageAuthenticatorDuo() *schema.Resource {
 
 func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorDuoStageRequest {
 	r := api.AuthenticatorDuoStageRequest{
-		Name:         d.Get("name").(string),
-		ClientId:     d.Get("client_id").(string),
-		ClientSecret: d.Get("client_secret").(string),
-		ApiHostname:  d.Get("api_hostname").(string),
-	}
-
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("admin_integration_key"); hSet {
-		r.AdminIntegrationKey = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("admin_secret_key"); hSet {
-		r.AdminSecretKey = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
+		Name:                d.Get("name").(string),
+		ClientId:            d.Get("client_id").(string),
+		ClientSecret:        d.Get("client_secret").(string),
+		ApiHostname:         d.Get("api_hostname").(string),
+		FriendlyName:        *api.NewNullableString(getP[string](d, "friendly_name")),
+		AdminIntegrationKey: getP[string](d, "admin_integration_key"),
+		AdminSecretKey:      getP[string](d, "admin_secret_key"),
+		ConfigureFlow:       *api.NewNullableString(getP[string](d, "configure_flow")),
 	}
 	return &r
 }
