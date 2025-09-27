@@ -75,10 +75,10 @@ func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m int
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "days", res.Days)
-	setWrapper(d, "deny_only", res.DenyOnly)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "days", res.Days)
+	helpers.SetWrapper(d, "deny_only", res.DenyOnly)
 	return diags
 }
 

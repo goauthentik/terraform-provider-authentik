@@ -96,12 +96,12 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		EnableRememberMe:        api.PtrBool(d.Get("enable_remember_me").(bool)),
 		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
-		Sources:                 castSlice[string](d.Get("sources").([]interface{})),
+		Sources:                 helpers.CastSlice[string](d.Get("sources").([]interface{})),
 		PasswordStage:           *api.NewNullableString(api.PtrString(d.Get("password_stage").(string))),
 		CaptchaStage:            *api.NewNullableString(api.PtrString(d.Get("captcha_stage").(string))),
-		EnrollmentFlow:          *api.NewNullableString(getP[string](d, "enrollment_flow")),
-		RecoveryFlow:            *api.NewNullableString(getP[string](d, "recovery_flow")),
-		PasswordlessFlow:        *api.NewNullableString(getP[string](d, "passwordless_flow")),
+		EnrollmentFlow:          *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
+		RecoveryFlow:            *api.NewNullableString(helpers.GetP[string](d, "recovery_flow")),
+		PasswordlessFlow:        *api.NewNullableString(helpers.GetP[string](d, "passwordless_flow")),
 	}
 
 	userFields := make([]api.UserFieldsEnum, 0)
@@ -135,30 +135,30 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "user_fields", res.UserFields)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "user_fields", res.UserFields)
 	if res.PasswordStage.IsSet() {
-		setWrapper(d, "password_stage", res.PasswordStage.Get())
+		helpers.SetWrapper(d, "password_stage", res.PasswordStage.Get())
 	}
 	if res.CaptchaStage.IsSet() {
-		setWrapper(d, "captcha_stage", res.CaptchaStage.Get())
+		helpers.SetWrapper(d, "captcha_stage", res.CaptchaStage.Get())
 	}
-	setWrapper(d, "case_insensitive_matching", res.CaseInsensitiveMatching)
-	setWrapper(d, "show_matched_user", res.ShowMatchedUser)
-	setWrapper(d, "enable_remember_me", res.EnableRememberMe)
-	setWrapper(d, "show_source_labels", res.ShowSourceLabels)
-	setWrapper(d, "pretend_user_exists", res.PretendUserExists)
+	helpers.SetWrapper(d, "case_insensitive_matching", res.CaseInsensitiveMatching)
+	helpers.SetWrapper(d, "show_matched_user", res.ShowMatchedUser)
+	helpers.SetWrapper(d, "enable_remember_me", res.EnableRememberMe)
+	helpers.SetWrapper(d, "show_source_labels", res.ShowSourceLabels)
+	helpers.SetWrapper(d, "pretend_user_exists", res.PretendUserExists)
 	if res.EnrollmentFlow.IsSet() {
-		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
 	if res.RecoveryFlow.IsSet() {
-		setWrapper(d, "recovery_flow", res.RecoveryFlow.Get())
+		helpers.SetWrapper(d, "recovery_flow", res.RecoveryFlow.Get())
 	}
 	if res.PasswordlessFlow.IsSet() {
-		setWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
+		helpers.SetWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
 	}
-	localSources := castSlice[string](d.Get("sources").([]interface{}))
-	setWrapper(d, "sources", helpers.ListConsistentMerge(localSources, res.Sources))
+	localSources := helpers.CastSlice[string](d.Get("sources").([]interface{}))
+	helpers.SetWrapper(d, "sources", helpers.ListConsistentMerge(localSources, res.Sources))
 	return diags
 }
 

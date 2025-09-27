@@ -178,22 +178,22 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		PolicyEngineMode:            api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:            api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode:           api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
-		AuthenticationFlow:          *api.NewNullableString(getP[string](d, "authentication_flow")),
-		EnrollmentFlow:              *api.NewNullableString(getP[string](d, "enrollment_flow")),
+		AuthenticationFlow:          *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		EnrollmentFlow:              *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
-		RequestTokenUrl:  *api.NewNullableString(getP[string](d, "request_token_url")),
-		AuthorizationUrl: *api.NewNullableString(getP[string](d, "authorization_url")),
-		AccessTokenUrl:   *api.NewNullableString(getP[string](d, "access_token_url")),
-		ProfileUrl:       *api.NewNullableString(getP[string](d, "profile_url")),
-		AdditionalScopes: getP[string](d, "additional_scopes"),
-		OidcWellKnownUrl: getP[string](d, "oidc_well_known_url"),
-		OidcJwksUrl:      getP[string](d, "oidc_jwks_url"),
+		RequestTokenUrl:  *api.NewNullableString(helpers.GetP[string](d, "request_token_url")),
+		AuthorizationUrl: *api.NewNullableString(helpers.GetP[string](d, "authorization_url")),
+		AccessTokenUrl:   *api.NewNullableString(helpers.GetP[string](d, "access_token_url")),
+		ProfileUrl:       *api.NewNullableString(helpers.GetP[string](d, "profile_url")),
+		AdditionalScopes: helpers.GetP[string](d, "additional_scopes"),
+		OidcWellKnownUrl: helpers.GetP[string](d, "oidc_well_known_url"),
+		OidcJwksUrl:      helpers.GetP[string](d, "oidc_jwks_url"),
 
-		UserPropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
-		GroupPropertyMappings: castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		UserPropertyMappings:  helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		GroupPropertyMappings: helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
 	}
 
-	jwks, err := getJSON[map[string]interface{}](d, ("oidc_jwks"))
+	jwks, err := helpers.GetJSON[map[string]interface{}](d, ("oidc_jwks"))
 	r.OidcJwks = jwks
 	if err != nil {
 		return nil, err
@@ -226,49 +226,49 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	if res.AuthenticationFlow.IsSet() {
-		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "authorization_code_auth_method", res.AuthorizationCodeAuthMethod)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
-	setWrapper(d, "additional_scopes", res.AdditionalScopes)
-	setWrapper(d, "provider_type", res.ProviderType)
-	setWrapper(d, "consumer_key", res.ConsumerKey)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "authorization_code_auth_method", res.AuthorizationCodeAuthMethod)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
+	helpers.SetWrapper(d, "additional_scopes", res.AdditionalScopes)
+	helpers.SetWrapper(d, "provider_type", res.ProviderType)
+	helpers.SetWrapper(d, "consumer_key", res.ConsumerKey)
 	if res.RequestTokenUrl.IsSet() {
-		setWrapper(d, "request_token_url", res.RequestTokenUrl.Get())
+		helpers.SetWrapper(d, "request_token_url", res.RequestTokenUrl.Get())
 	}
 	if res.AuthorizationUrl.IsSet() {
-		setWrapper(d, "authorization_url", res.AuthorizationUrl.Get())
+		helpers.SetWrapper(d, "authorization_url", res.AuthorizationUrl.Get())
 	}
 	if res.AccessTokenUrl.IsSet() {
-		setWrapper(d, "access_token_url", res.AccessTokenUrl.Get())
+		helpers.SetWrapper(d, "access_token_url", res.AccessTokenUrl.Get())
 	}
 	if res.ProfileUrl.IsSet() {
-		setWrapper(d, "profile_url", res.ProfileUrl.Get())
+		helpers.SetWrapper(d, "profile_url", res.ProfileUrl.Get())
 	}
-	setWrapper(d, "callback_uri", res.CallbackUrl)
-	setWrapper(d, "oidc_well_known_url", res.GetOidcWellKnownUrl())
-	setWrapper(d, "oidc_jwks_url", res.GetOidcJwksUrl())
+	helpers.SetWrapper(d, "callback_uri", res.CallbackUrl)
+	helpers.SetWrapper(d, "oidc_well_known_url", res.GetOidcWellKnownUrl())
+	helpers.SetWrapper(d, "oidc_jwks_url", res.GetOidcJwksUrl())
 	b, err := json.Marshal(res.GetOidcJwks())
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "oidc_jwks", string(b))
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
+	helpers.SetWrapper(d, "oidc_jwks", string(b))
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
+	localGroupMappings := helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }
 

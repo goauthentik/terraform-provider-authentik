@@ -76,8 +76,8 @@ func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaSt
 		ScoreMinThreshold:   api.PtrFloat64(d.Get("score_min_threshold").(float64)),
 		ScoreMaxThreshold:   api.PtrFloat64(d.Get("score_max_threshold").(float64)),
 		Interactive:         api.PtrBool(d.Get("interactive").(bool)),
-		JsUrl:               getP[string](d, "js_url"),
-		ApiUrl:              getP[string](d, "api_url"),
+		JsUrl:               helpers.GetP[string](d, "js_url"),
+		ApiUrl:              helpers.GetP[string](d, "api_url"),
 	}
 	return &r
 }
@@ -105,14 +105,14 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "public_key", res.PublicKey)
-	setWrapper(d, "api_url", res.GetApiUrl())
-	setWrapper(d, "js_url", res.GetJsUrl())
-	setWrapper(d, "error_on_invalid_score", res.GetErrorOnInvalidScore())
-	setWrapper(d, "score_min_threshold", res.GetScoreMinThreshold())
-	setWrapper(d, "score_max_threshold", res.GetScoreMaxThreshold())
-	setWrapper(d, "interactive", res.Interactive)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "public_key", res.PublicKey)
+	helpers.SetWrapper(d, "api_url", res.GetApiUrl())
+	helpers.SetWrapper(d, "js_url", res.GetJsUrl())
+	helpers.SetWrapper(d, "error_on_invalid_score", res.GetErrorOnInvalidScore())
+	helpers.SetWrapper(d, "score_min_threshold", res.GetScoreMinThreshold())
+	helpers.SetWrapper(d, "score_max_threshold", res.GetScoreMaxThreshold())
+	helpers.SetWrapper(d, "interactive", res.Interactive)
 	return diags
 }
 

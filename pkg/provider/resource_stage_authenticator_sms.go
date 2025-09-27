@@ -86,11 +86,11 @@ func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.
 		AccountSid:    d.Get("account_sid").(string),
 		AuthType:      api.AuthTypeEnum(d.Get("auth_type").(string)).Ptr(),
 		Auth:          d.Get("auth").(string),
-		FriendlyName:  *api.NewNullableString(getP[string](d, "friendly_name")),
-		ConfigureFlow: *api.NewNullableString(getP[string](d, "configure_flow")),
-		AuthPassword:  getP[string](d, "auth_password"),
-		Mapping:       *api.NewNullableString(getP[string](d, "mapping")),
-		VerifyOnly:    getP[bool](d, "verify_only"),
+		FriendlyName:  *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		ConfigureFlow: *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		AuthPassword:  helpers.GetP[string](d, "auth_password"),
+		Mapping:       *api.NewNullableString(helpers.GetP[string](d, "mapping")),
+		VerifyOnly:    helpers.GetP[bool](d, "verify_only"),
 	}
 	return &r
 }
@@ -118,18 +118,18 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "sms_provider", res.Provider)
-	setWrapper(d, "from_number", res.FromNumber)
-	setWrapper(d, "account_sid", res.AccountSid)
-	setWrapper(d, "auth", res.Auth)
-	setWrapper(d, "auth_password", res.AuthPassword)
-	setWrapper(d, "auth_type", res.AuthType)
-	setWrapper(d, "verify_only", res.VerifyOnly)
-	setWrapper(d, "mapping", res.Mapping.Get())
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "sms_provider", res.Provider)
+	helpers.SetWrapper(d, "from_number", res.FromNumber)
+	helpers.SetWrapper(d, "account_sid", res.AccountSid)
+	helpers.SetWrapper(d, "auth", res.Auth)
+	helpers.SetWrapper(d, "auth_password", res.AuthPassword)
+	helpers.SetWrapper(d, "auth_type", res.AuthType)
+	helpers.SetWrapper(d, "verify_only", res.VerifyOnly)
+	helpers.SetWrapper(d, "mapping", res.Mapping.Get())
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

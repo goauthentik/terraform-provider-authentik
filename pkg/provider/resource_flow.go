@@ -129,18 +129,18 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "title", res.Title)
-	setWrapper(d, "designation", res.Designation)
-	setWrapper(d, "authentication", res.Authentication)
-	setWrapper(d, "denied_action", res.DeniedAction)
-	setWrapper(d, "layout", res.Layout)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "compatibility_mode", res.CompatibilityMode)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "title", res.Title)
+	helpers.SetWrapper(d, "designation", res.Designation)
+	helpers.SetWrapper(d, "authentication", res.Authentication)
+	helpers.SetWrapper(d, "denied_action", res.DeniedAction)
+	helpers.SetWrapper(d, "layout", res.Layout)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	if _, bg := d.GetOk("background"); bg {
-		setWrapper(d, "background", res.Background)
+		helpers.SetWrapper(d, "background", res.Background)
 	}
 	return diags
 }

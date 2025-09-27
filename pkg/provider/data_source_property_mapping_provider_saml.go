@@ -68,7 +68,7 @@ func dataSourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Re
 	req := c.client.PropertymappingsApi.PropertymappingsProviderSamlList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(castSlice[string](ml.([]interface{})))
+		req = req.Managed(helpers.CastSlice[string](ml.([]interface{})))
 	} else if m, ok := d.GetOk("managed"); ok {
 		req = req.Managed([]string{m.(string)})
 	}
@@ -97,15 +97,15 @@ func dataSourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Re
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		setWrapper(d, "ids", ids)
+		helpers.SetWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		setWrapper(d, "name", f.Name)
-		setWrapper(d, "expression", f.Expression)
-		setWrapper(d, "saml_name", f.SamlName)
+		helpers.SetWrapper(d, "name", f.Name)
+		helpers.SetWrapper(d, "expression", f.Expression)
+		helpers.SetWrapper(d, "saml_name", f.SamlName)
 		if f.FriendlyName.IsSet() {
-			setWrapper(d, "friendly_name", f.FriendlyName.Get())
+			helpers.SetWrapper(d, "friendly_name", f.FriendlyName.Get())
 		}
 	}
 	return diags

@@ -97,13 +97,13 @@ func resourceRBACUserObjectPermissionRead(ctx context.Context, d *schema.Resourc
 		if len(res.Results) < 1 {
 			return diag.Errorf("Permission not found")
 		}
-		setWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
+		helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
 	} else {
 		res, hr, err := c.client.RbacApi.RbacPermissionsUsersRetrieve(ctx, int32(id)).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		setWrapper(d, "object_id", res.ObjectPk)
+		helpers.SetWrapper(d, "object_id", res.ObjectPk)
 	}
 	return diags
 }

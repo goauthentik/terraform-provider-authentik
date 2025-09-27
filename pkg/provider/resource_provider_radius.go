@@ -67,7 +67,7 @@ func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusP
 		ClientNetworks:    api.PtrString(d.Get("client_networks").(string)),
 		SharedSecret:      api.PtrString(d.Get("shared_secret").(string)),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
-		PropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappings:  helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
 	}
 	return &r
 }
@@ -98,14 +98,14 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	setWrapper(d, "client_networks", res.ClientNetworks)
-	setWrapper(d, "shared_secret", res.SharedSecret)
-	setWrapper(d, "mfa_support", res.MfaSupport)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+	helpers.SetWrapper(d, "client_networks", res.ClientNetworks)
+	helpers.SetWrapper(d, "shared_secret", res.SharedSecret)
+	helpers.SetWrapper(d, "mfa_support", res.MfaSupport)
 	return diags
 }
 

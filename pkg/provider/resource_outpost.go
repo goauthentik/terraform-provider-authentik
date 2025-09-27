@@ -60,8 +60,8 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 	m := api.OutpostRequest{
 		Name:              d.Get("name").(string),
 		Type:              api.OutpostTypeEnum(d.Get("type").(string)),
-		ServiceConnection: *api.NewNullableString(getP[string](d, "service_connection")),
-		Providers:         castSliceInt32(d.Get("protocol_providers").([]interface{})),
+		ServiceConnection: *api.NewNullableString(helpers.GetP[string](d, "service_connection")),
+		Providers:         helpers.CastSliceInt32(d.Get("protocol_providers").([]interface{})),
 	}
 
 	defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
@@ -107,18 +107,18 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "type", res.Type)
-	localProviders := castSlice[int](d.Get("protocol_providers").([]interface{}))
-	setWrapper(d, "protocol_providers", helpers.ListConsistentMerge(localProviders, slice32ToInt(res.Providers)))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "type", res.Type)
+	localProviders := helpers.CastSlice[int](d.Get("protocol_providers").([]interface{}))
+	helpers.SetWrapper(d, "protocol_providers", helpers.ListConsistentMerge(localProviders, helpers.Slice32ToInt(res.Providers)))
 	if res.ServiceConnection.IsSet() {
-		setWrapper(d, "service_connection", res.ServiceConnection.Get())
+		helpers.SetWrapper(d, "service_connection", res.ServiceConnection.Get())
 	}
 	b, err := json.Marshal(res.Config)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "config", string(b))
+	helpers.SetWrapper(d, "config", string(b))
 	return diags
 }
 

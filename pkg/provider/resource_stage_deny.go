@@ -35,7 +35,7 @@ func resourceStageDeny() *schema.Resource {
 func resourceStageDenySchemaToProvider(d *schema.ResourceData) *api.DenyStageRequest {
 	r := api.DenyStageRequest{
 		Name:        d.Get("name").(string),
-		DenyMessage: getP[string](d, "deny_message"),
+		DenyMessage: helpers.GetP[string](d, "deny_message"),
 	}
 	return &r
 }
@@ -63,8 +63,8 @@ func resourceStageDenyRead(ctx context.Context, d *schema.ResourceData, m interf
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "deny_message", res.GetDenyMessage())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "deny_message", res.GetDenyMessage())
 	return diags
 }
 

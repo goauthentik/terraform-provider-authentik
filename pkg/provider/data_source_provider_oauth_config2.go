@@ -85,12 +85,12 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
-	setWrapper(d, "issuer_url", meta.Issuer)
-	setWrapper(d, "authorize_url", meta.Authorize)
-	setWrapper(d, "token_url", meta.Token)
-	setWrapper(d, "user_info_url", meta.UserInfo)
-	setWrapper(d, "provider_info_url", meta.ProviderInfo)
-	setWrapper(d, "logout_url", meta.Logout)
-	setWrapper(d, "jwks_url", meta.Jwks)
+	helpers.SetWrapper(d, "issuer_url", meta.Issuer)
+	helpers.SetWrapper(d, "authorize_url", meta.Authorize)
+	helpers.SetWrapper(d, "token_url", meta.Token)
+	helpers.SetWrapper(d, "user_info_url", meta.UserInfo)
+	helpers.SetWrapper(d, "provider_info_url", meta.ProviderInfo)
+	helpers.SetWrapper(d, "logout_url", meta.Logout)
+	helpers.SetWrapper(d, "jwks_url", meta.Jwks)
 	return diags
 }

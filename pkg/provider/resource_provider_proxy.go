@@ -145,23 +145,23 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		InvalidationFlow:          d.Get("invalidation_flow").(string),
 		ExternalHost:              d.Get("external_host").(string),
 		Mode:                      api.ProxyMode(d.Get("mode").(string)).Ptr(),
-		PropertyMappings:          castSlice[string](d.Get("property_mappings").([]interface{})),
-		JwtFederationSources:      castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
-		AuthenticationFlow:        *api.NewNullableString(getP[string](d, "authentication_flow")),
-		InternalHost:              getP[string](d, "internal_host"),
-		InternalHostSslValidation: getP[bool](d, "internal_host_ssl_validation"),
+		PropertyMappings:          helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		JwtFederationSources:      helpers.CastSlice[string](d.Get("jwt_federation_sources").([]interface{})),
+		AuthenticationFlow:        *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		InternalHost:              helpers.GetP[string](d, "internal_host"),
+		InternalHostSslValidation: helpers.GetP[bool](d, "internal_host_ssl_validation"),
 
-		SkipPathRegex: getP[string](d, "skip_path_regex"),
+		SkipPathRegex: helpers.GetP[string](d, "skip_path_regex"),
 
-		BasicAuthEnabled:           getP[bool](d, "basic_auth_enabled"),
-		InterceptHeaderAuth:        getP[bool](d, "intercept_header_auth"),
-		BasicAuthUserAttribute:     getP[string](d, "basic_auth_username_attribute"),
-		BasicAuthPasswordAttribute: getP[string](d, "basic_auth_password_attribute"),
+		BasicAuthEnabled:           helpers.GetP[bool](d, "basic_auth_enabled"),
+		InterceptHeaderAuth:        helpers.GetP[bool](d, "intercept_header_auth"),
+		BasicAuthUserAttribute:     helpers.GetP[string](d, "basic_auth_username_attribute"),
+		BasicAuthPasswordAttribute: helpers.GetP[string](d, "basic_auth_password_attribute"),
 
-		CookieDomain: getP[string](d, "cookie_domain"),
+		CookieDomain: helpers.GetP[string](d, "cookie_domain"),
 
-		AccessTokenValidity:  getP[string](d, "access_token_validity"),
-		RefreshTokenValidity: getP[string](d, "refresh_token_validity"),
+		AccessTokenValidity:  helpers.GetP[string](d, "access_token_validity"),
+		RefreshTokenValidity: helpers.GetP[string](d, "refresh_token_validity"),
 	}
 
 	providers := d.Get("jwt_federation_providers").([]interface{})
@@ -199,31 +199,31 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "client_id", res.ClientId)
-	setWrapper(d, "intercept_header_auth", res.InterceptHeaderAuth)
-	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	setWrapper(d, "internal_host", res.InternalHost)
-	setWrapper(d, "external_host", res.ExternalHost)
-	setWrapper(d, "internal_host_ssl_validation", res.InternalHostSslValidation)
-	setWrapper(d, "skip_path_regex", res.SkipPathRegex)
-	setWrapper(d, "basic_auth_enabled", res.BasicAuthEnabled)
-	setWrapper(d, "basic_auth_username_attribute", res.BasicAuthUserAttribute)
-	setWrapper(d, "basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "cookie_domain", res.CookieDomain)
-	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
-	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	helpers.SetWrapper(d, "intercept_header_auth", res.InterceptHeaderAuth)
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
+	helpers.SetWrapper(d, "internal_host", res.InternalHost)
+	helpers.SetWrapper(d, "external_host", res.ExternalHost)
+	helpers.SetWrapper(d, "internal_host_ssl_validation", res.InternalHostSslValidation)
+	helpers.SetWrapper(d, "skip_path_regex", res.SkipPathRegex)
+	helpers.SetWrapper(d, "basic_auth_enabled", res.BasicAuthEnabled)
+	helpers.SetWrapper(d, "basic_auth_username_attribute", res.BasicAuthUserAttribute)
+	helpers.SetWrapper(d, "basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "cookie_domain", res.CookieDomain)
+	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
+	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localJWKSProviders := castSlice[int](d.Get("jwt_federation_providers").([]interface{}))
-	setWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := castSlice[string](d.Get("jwt_federation_sources").([]interface{}))
-	setWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
+	localJWKSProviders := helpers.CastSlice[int](d.Get("jwt_federation_providers").([]interface{}))
+	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
+	localJWKSSources := helpers.CastSlice[string](d.Get("jwt_federation_sources").([]interface{}))
+	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }
 

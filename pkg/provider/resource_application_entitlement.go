@@ -47,7 +47,7 @@ func resourceApplicationEntitlementSchemaToModel(d *schema.ResourceData) (*api.A
 		App:  d.Get("application").(string),
 	}
 
-	attr, err := getJSON[map[string]interface{}](d, ("attributes"))
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }
@@ -79,13 +79,13 @@ func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceD
 	}
 
 	d.SetId(res.PbmUuid)
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "application", res.App)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "application", res.App)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "attributes", string(b))
+	helpers.SetWrapper(d, "attributes", string(b))
 	return diags
 }
 

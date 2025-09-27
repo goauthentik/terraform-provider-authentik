@@ -104,11 +104,11 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "session_duration", res.SessionDuration)
-	setWrapper(d, "terminate_other_sessions", res.TerminateOtherSessions)
-	setWrapper(d, "remember_me_offset", res.RememberMeOffset)
-	setWrapper(d, "remember_device", res.RememberDevice)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "session_duration", res.SessionDuration)
+	helpers.SetWrapper(d, "terminate_other_sessions", res.TerminateOtherSessions)
+	helpers.SetWrapper(d, "remember_me_offset", res.RememberMeOffset)
+	helpers.SetWrapper(d, "remember_device", res.RememberDevice)
 	return diags
 }
 

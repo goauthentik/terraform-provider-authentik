@@ -76,10 +76,10 @@ func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceDat
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "password_field", res.PasswordField)
-	setWrapper(d, "num_historical_passwords", res.NumHistoricalPasswords)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "password_field", res.PasswordField)
+	helpers.SetWrapper(d, "num_historical_passwords", res.NumHistoricalPasswords)
 	return diags
 }
 

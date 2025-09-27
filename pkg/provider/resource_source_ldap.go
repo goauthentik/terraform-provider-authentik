@@ -183,12 +183,12 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		SyncUsers:                           api.PtrBool(d.Get("sync_users").(bool)),
 		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
 		SyncGroups:                          api.PtrBool(d.Get("sync_groups").(bool)),
-		SyncParentGroup:                     *api.NewNullableString(getP[string](d, "sync_parent_group")),
+		SyncParentGroup:                     *api.NewNullableString(helpers.GetP[string](d, "sync_parent_group")),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 		DeleteNotFoundObjects:               api.PtrBool(d.Get("delete_not_found_objects").(bool)),
 		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
-		UserPropertyMappings:                castSlice[string](d.Get("property_mappings").([]interface{})),
-		GroupPropertyMappings:               castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		UserPropertyMappings:                helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		GroupPropertyMappings:               helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
 	}
 	return &r
 }
@@ -215,38 +215,38 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
-	setWrapper(d, "base_dn", res.BaseDn)
-	setWrapper(d, "server_uri", res.ServerUri)
-	setWrapper(d, "bind_cn", res.BindCn)
-	setWrapper(d, "start_tls", res.StartTls)
-	setWrapper(d, "sni", res.Sni)
-	setWrapper(d, "base_dn", res.BaseDn)
-	setWrapper(d, "additional_user_dn", res.AdditionalUserDn)
-	setWrapper(d, "additional_group_dn", res.AdditionalGroupDn)
-	setWrapper(d, "user_object_filter", res.UserObjectFilter)
-	setWrapper(d, "user_membership_attribute", res.UserMembershipAttribute)
-	setWrapper(d, "group_object_filter", res.GroupObjectFilter)
-	setWrapper(d, "group_membership_field", res.GroupMembershipField)
-	setWrapper(d, "object_uniqueness_field", res.ObjectUniquenessField)
-	setWrapper(d, "lookup_groups_from_user", res.LookupGroupsFromUser)
-	setWrapper(d, "sync_users", res.SyncUsers)
-	setWrapper(d, "sync_users_password", res.SyncUsersPassword)
-	setWrapper(d, "sync_groups", res.SyncGroups)
-	setWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
-	setWrapper(d, "delete_not_found_objects", res.DeleteNotFoundObjects)
+	helpers.SetWrapper(d, "base_dn", res.BaseDn)
+	helpers.SetWrapper(d, "server_uri", res.ServerUri)
+	helpers.SetWrapper(d, "bind_cn", res.BindCn)
+	helpers.SetWrapper(d, "start_tls", res.StartTls)
+	helpers.SetWrapper(d, "sni", res.Sni)
+	helpers.SetWrapper(d, "base_dn", res.BaseDn)
+	helpers.SetWrapper(d, "additional_user_dn", res.AdditionalUserDn)
+	helpers.SetWrapper(d, "additional_group_dn", res.AdditionalGroupDn)
+	helpers.SetWrapper(d, "user_object_filter", res.UserObjectFilter)
+	helpers.SetWrapper(d, "user_membership_attribute", res.UserMembershipAttribute)
+	helpers.SetWrapper(d, "group_object_filter", res.GroupObjectFilter)
+	helpers.SetWrapper(d, "group_membership_field", res.GroupMembershipField)
+	helpers.SetWrapper(d, "object_uniqueness_field", res.ObjectUniquenessField)
+	helpers.SetWrapper(d, "lookup_groups_from_user", res.LookupGroupsFromUser)
+	helpers.SetWrapper(d, "sync_users", res.SyncUsers)
+	helpers.SetWrapper(d, "sync_users_password", res.SyncUsersPassword)
+	helpers.SetWrapper(d, "sync_groups", res.SyncGroups)
+	helpers.SetWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
+	helpers.SetWrapper(d, "delete_not_found_objects", res.DeleteNotFoundObjects)
 	if res.SyncParentGroup.IsSet() {
-		setWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
+		helpers.SetWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
 	}
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
+	localGroupMappings := helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }
 

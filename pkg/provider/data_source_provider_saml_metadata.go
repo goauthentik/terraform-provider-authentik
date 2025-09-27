@@ -62,6 +62,6 @@ func dataSourceProviderSAMLMetadataRead(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
-	setWrapper(d, "metadata", meta.Metadata)
+	helpers.SetWrapper(d, "metadata", meta.Metadata)
 	return diags
 }

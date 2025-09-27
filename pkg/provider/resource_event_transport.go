@@ -66,11 +66,11 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.Notificat
 		Name:                  d.Get("name").(string),
 		SendOnce:              api.PtrBool(d.Get("send_once").(bool)),
 		Mode:                  api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
-		WebhookUrl:            getP[string](d, "webhook_url"),
-		WebhookMappingBody:    *api.NewNullableString(getP[string](d, "webhook_mapping_body")),
-		WebhookMappingHeaders: *api.NewNullableString(getP[string](d, "webhook_mapping_headers")),
-		EmailTemplate:         getP[string](d, "email_template"),
-		EmailSubjectPrefix:    getP[string](d, "email_subject_prefix"),
+		WebhookUrl:            helpers.GetP[string](d, "webhook_url"),
+		WebhookMappingBody:    *api.NewNullableString(helpers.GetP[string](d, "webhook_mapping_body")),
+		WebhookMappingHeaders: *api.NewNullableString(helpers.GetP[string](d, "webhook_mapping_headers")),
+		EmailTemplate:         helpers.GetP[string](d, "email_template"),
+		EmailSubjectPrefix:    helpers.GetP[string](d, "email_subject_prefix"),
 	}
 	return &m, nil
 }
@@ -101,14 +101,14 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "send_once", res.SendOnce)
-	setWrapper(d, "webhook_url", res.WebhookUrl)
-	setWrapper(d, "webhook_mapping_body", res.WebhookMappingBody.Get())
-	setWrapper(d, "webhook_mapping_headers", res.WebhookMappingHeaders.Get())
-	setWrapper(d, "email_template", res.EmailTemplate)
-	setWrapper(d, "email_subject_prefix", res.EmailSubjectPrefix)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "send_once", res.SendOnce)
+	helpers.SetWrapper(d, "webhook_url", res.WebhookUrl)
+	helpers.SetWrapper(d, "webhook_mapping_body", res.WebhookMappingBody.Get())
+	helpers.SetWrapper(d, "webhook_mapping_headers", res.WebhookMappingHeaders.Get())
+	helpers.SetWrapper(d, "email_template", res.EmailTemplate)
+	helpers.SetWrapper(d, "email_subject_prefix", res.EmailSubjectPrefix)
 	return diags
 }
 

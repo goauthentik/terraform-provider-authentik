@@ -85,12 +85,12 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 		Type:     api.UserTypeEnum(d.Get("type").(string)).Ptr(),
 		IsActive: api.PtrBool(d.Get("is_active").(bool)),
 		Path:     api.PtrString(d.Get("path").(string)),
-		Email:    getP[string](d, "email"),
+		Email:    helpers.GetP[string](d, "email"),
 	}
 
-	m.Groups = castSlice[string](d.Get("groups").([]interface{}))
+	m.Groups = helpers.CastSlice[string](d.Get("groups").([]interface{}))
 
-	attr, err := getJSON[map[string]interface{}](d, ("attributes"))
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }
@@ -113,7 +113,7 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
-	setWrapper(d, "password", password)
+	helpers.SetWrapper(d, "password", password)
 	return nil
 }
 
@@ -153,19 +153,19 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "type", res.Type)
-	setWrapper(d, "username", res.Username)
-	setWrapper(d, "email", res.Email)
-	setWrapper(d, "is_active", res.IsActive)
-	setWrapper(d, "path", res.Path)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "type", res.Type)
+	helpers.SetWrapper(d, "username", res.Username)
+	helpers.SetWrapper(d, "email", res.Email)
+	helpers.SetWrapper(d, "is_active", res.IsActive)
+	helpers.SetWrapper(d, "path", res.Path)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "attributes", string(b))
-	localGroups := castSlice[string](d.Get("groups").([]interface{}))
-	setWrapper(d, "groups", helpers.ListConsistentMerge(localGroups, res.Groups))
+	helpers.SetWrapper(d, "attributes", string(b))
+	localGroups := helpers.CastSlice[string](d.Get("groups").([]interface{}))
+	helpers.SetWrapper(d, "groups", helpers.ListConsistentMerge(localGroups, res.Groups))
 	return diags
 }
 

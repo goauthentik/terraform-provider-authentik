@@ -63,7 +63,7 @@ func dataSourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Res
 	req := c.client.PropertymappingsApi.PropertymappingsProviderRacList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(castSlice[string](ml.([]interface{})))
+		req = req.Managed(helpers.CastSlice[string](ml.([]interface{})))
 	} else if m, ok := d.GetOk("managed"); ok {
 		req = req.Managed([]string{m.(string)})
 	}
@@ -86,18 +86,18 @@ func dataSourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Res
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		setWrapper(d, "ids", ids)
+		helpers.SetWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		setWrapper(d, "name", f.Name)
-		setWrapper(d, "name", f.Name)
-		setWrapper(d, "expression", f.Expression)
+		helpers.SetWrapper(d, "name", f.Name)
+		helpers.SetWrapper(d, "name", f.Name)
+		helpers.SetWrapper(d, "expression", f.Expression)
 		b, err := json.Marshal(f.StaticSettings)
 		if err != nil {
 			return diag.FromErr(err)
 		}
-		setWrapper(d, "settings", string(b))
+		helpers.SetWrapper(d, "settings", string(b))
 	}
 	return diags
 }

@@ -49,7 +49,7 @@ func dataSourceRBACPermissionRead(ctx context.Context, d *schema.ResourceData, m
 	}
 	f := res.Results[0]
 	d.SetId(strconv.Itoa(int(f.Id)))
-	setWrapper(d, "app", f.AppLabel)
-	setWrapper(d, "model", f.Model)
+	helpers.SetWrapper(d, "app", f.AppLabel)
+	helpers.SetWrapper(d, "model", f.Model)
 	return diags
 }

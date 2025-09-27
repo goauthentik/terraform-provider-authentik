@@ -64,10 +64,10 @@ func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.
 		ClientId:            d.Get("client_id").(string),
 		ClientSecret:        d.Get("client_secret").(string),
 		ApiHostname:         d.Get("api_hostname").(string),
-		FriendlyName:        *api.NewNullableString(getP[string](d, "friendly_name")),
-		AdminIntegrationKey: getP[string](d, "admin_integration_key"),
-		AdminSecretKey:      getP[string](d, "admin_secret_key"),
-		ConfigureFlow:       *api.NewNullableString(getP[string](d, "configure_flow")),
+		FriendlyName:        *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		AdminIntegrationKey: helpers.GetP[string](d, "admin_integration_key"),
+		AdminSecretKey:      helpers.GetP[string](d, "admin_secret_key"),
+		ConfigureFlow:       *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 	}
 	return &r
 }
@@ -95,13 +95,13 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "client_id", res.ClientId)
-	setWrapper(d, "admin_integration_key", res.AdminIntegrationKey)
-	setWrapper(d, "api_hostname", res.ApiHostname)
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	helpers.SetWrapper(d, "admin_integration_key", res.AdminIntegrationKey)
+	helpers.SetWrapper(d, "api_hostname", res.ApiHostname)
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

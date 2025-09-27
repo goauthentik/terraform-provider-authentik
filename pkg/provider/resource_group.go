@@ -65,11 +65,11 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 	m := api.GroupRequest{
 		Name:        d.Get("name").(string),
 		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
-		Parent:      *api.NewNullableString(getP[string](d, "parent")),
-		Users:       castSliceInt32(d.Get("users").([]interface{})),
-		Roles:       castSlice[string](d.Get("roles").([]interface{})),
+		Parent:      *api.NewNullableString(helpers.GetP[string](d, "parent")),
+		Users:       helpers.CastSliceInt32(d.Get("users").([]interface{})),
+		Roles:       helpers.CastSlice[string](d.Get("roles").([]interface{})),
 	}
-	attr, err := getJSON[map[string]interface{}](d, ("attributes"))
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }
@@ -100,17 +100,17 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "is_superuser", res.IsSuperuser)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "is_superuser", res.IsSuperuser)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "attributes", string(b))
-	localUsers := castSlice[int](d.Get("users").([]interface{}))
-	setWrapper(d, "users", helpers.ListConsistentMerge(localUsers, slice32ToInt(res.Users)))
-	localRoles := castSlice[string](d.Get("role").([]interface{}))
-	setWrapper(d, "roles", helpers.ListConsistentMerge(localRoles, res.Roles))
+	helpers.SetWrapper(d, "attributes", string(b))
+	localUsers := helpers.CastSlice[int](d.Get("users").([]interface{}))
+	helpers.SetWrapper(d, "users", helpers.ListConsistentMerge(localUsers, helpers.Slice32ToInt(res.Users)))
+	localRoles := helpers.CastSlice[string](d.Get("role").([]interface{}))
+	helpers.SetWrapper(d, "roles", helpers.ListConsistentMerge(localRoles, res.Roles))
 	return diags
 }
 

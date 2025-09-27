@@ -45,7 +45,7 @@ func resourceStageConsent() *schema.Resource {
 func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentStageRequest {
 	r := api.ConsentStageRequest{
 		Name:            d.Get("name").(string),
-		ConsentExpireIn: getP[string](d, "consent_expire_in"),
+		ConsentExpireIn: helpers.GetP[string](d, "consent_expire_in"),
 	}
 
 	if m, mSet := d.GetOk("mode"); mSet {
@@ -77,9 +77,9 @@ func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m int
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "consent_expire_in", res.ConsentExpireIn)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "consent_expire_in", res.ConsentExpireIn)
 	return diags
 }
 

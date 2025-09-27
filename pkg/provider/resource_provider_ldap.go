@@ -85,8 +85,8 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 		SearchMode:        api.LDAPAPIAccessMode(d.Get("search_mode").(string)).Ptr(),
 		BindMode:          api.LDAPAPIAccessMode(d.Get("bind_mode").(string)).Ptr(),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
-		Certificate:       *api.NewNullableString(getP[string](d, "certificate")),
-		TlsServerName:     getP[string](d, "tls_server_name"),
+		Certificate:       *api.NewNullableString(helpers.GetP[string](d, "certificate")),
+		TlsServerName:     helpers.GetP[string](d, "tls_server_name"),
 	}
 	return &r
 }
@@ -117,19 +117,19 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "bind_flow", res.AuthorizationFlow)
-	setWrapper(d, "unbind_flow", res.InvalidationFlow)
-	setWrapper(d, "base_dn", res.BaseDn)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "bind_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "unbind_flow", res.InvalidationFlow)
+	helpers.SetWrapper(d, "base_dn", res.BaseDn)
 	if res.Certificate.IsSet() {
-		setWrapper(d, "certificate", res.Certificate.Get())
+		helpers.SetWrapper(d, "certificate", res.Certificate.Get())
 	}
-	setWrapper(d, "tls_server_name", res.TlsServerName)
-	setWrapper(d, "uid_start_number", res.UidStartNumber)
-	setWrapper(d, "gid_start_number", res.GidStartNumber)
-	setWrapper(d, "bind_mode", res.BindMode)
-	setWrapper(d, "search_mode", res.SearchMode)
-	setWrapper(d, "mfa_support", res.MfaSupport)
+	helpers.SetWrapper(d, "tls_server_name", res.TlsServerName)
+	helpers.SetWrapper(d, "uid_start_number", res.UidStartNumber)
+	helpers.SetWrapper(d, "gid_start_number", res.GidStartNumber)
+	helpers.SetWrapper(d, "bind_mode", res.BindMode)
+	helpers.SetWrapper(d, "search_mode", res.SearchMode)
+	helpers.SetWrapper(d, "mfa_support", res.MfaSupport)
 	return diags
 }
 

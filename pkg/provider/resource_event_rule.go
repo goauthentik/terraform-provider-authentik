@@ -59,8 +59,8 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRu
 		Severity:             api.SeverityEnum(d.Get("severity").(string)).Ptr(),
 		DestinationEventUser: api.PtrBool(d.Get("destination_event_user").(bool)),
 	}
-	m.DestinationGroup.Set(getP[string](d, ("destination_group")))
-	m.Transports = castSlice[string](d.Get("transports").([]interface{}))
+	m.DestinationGroup.Set(helpers.GetP[string](d, ("destination_group")))
+	m.Transports = helpers.CastSlice[string](d.Get("transports").([]interface{}))
 	return &m, nil
 }
 
@@ -90,12 +90,12 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "destination_group", res.DestinationGroup.Get())
-	setWrapper(d, "destination_event_user", res.DestinationEventUser)
-	localTransports := castSlice[string](d.Get("transports").([]interface{}))
-	setWrapper(d, "transports", helpers.ListConsistentMerge(localTransports, res.Transports))
-	setWrapper(d, "severity", res.Severity)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "destination_group", res.DestinationGroup.Get())
+	helpers.SetWrapper(d, "destination_event_user", res.DestinationEventUser)
+	localTransports := helpers.CastSlice[string](d.Get("transports").([]interface{}))
+	helpers.SetWrapper(d, "transports", helpers.ListConsistentMerge(localTransports, res.Transports))
+	helpers.SetWrapper(d, "severity", res.Severity)
 	return diags
 }
 

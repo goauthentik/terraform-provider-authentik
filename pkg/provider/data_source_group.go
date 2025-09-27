@@ -181,17 +181,17 @@ func setGroup(data *schema.ResourceData, group api.Group) diag.Diagnostics {
 		switch key {
 		case "pk":
 			data.SetId(value.(string))
-			setWrapper(data, key, value.(string))
+			helpers.SetWrapper(data, key, value.(string))
 		case "num_pk":
-			setWrapper(data, key, value.(int))
+			helpers.SetWrapper(data, key, value.(int))
 		case "is_superuser":
-			setWrapper(data, key, value.(bool))
+			helpers.SetWrapper(data, key, value.(bool))
 		case "users":
-			setWrapper(data, key, value.([]int))
+			helpers.SetWrapper(data, key, value.([]int))
 		case "users_obj":
-			setWrapper(data, key, value.([]map[string]interface{}))
+			helpers.SetWrapper(data, key, value.([]map[string]interface{}))
 		default:
-			setWrapper(data, key, value.(string))
+			helpers.SetWrapper(data, key, value.(string))
 		}
 	}
 	return diag.Diagnostics{}

@@ -54,11 +54,11 @@ func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData) (*api.Bluepr
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
 		Enabled: api.PtrBool(d.Get("enabled").(bool)),
-		Path:    getP[string](d, "path"),
-		Content: getP[string](d, "content"),
+		Path:    helpers.GetP[string](d, "path"),
+		Content: helpers.GetP[string](d, "content"),
 	}
 
-	context, err := getJSON[map[string]interface{}](d, ("context"))
+	context, err := helpers.GetJSON[map[string]interface{}](d, ("context"))
 	m.Context = context
 	return &m, err
 }
@@ -90,15 +90,15 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "path", res.Path)
-	setWrapper(d, "content", res.Content)
-	setWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "path", res.Path)
+	helpers.SetWrapper(d, "content", res.Content)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
 	b, err := json.Marshal(res.Context)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "context", string(b))
+	helpers.SetWrapper(d, "context", string(b))
 	return diags
 }
 

@@ -71,7 +71,7 @@ func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWri
 		UserPathTemplate:      api.PtrString(d.Get("user_path_template").(string)),
 		UserCreationMode:      api.UserCreationModeEnum(d.Get("user_creation_mode").(string)).Ptr(),
 		UserType:              api.UserTypeEnum(d.Get("user_type").(string)).Ptr(),
-		CreateUsersGroup:      *api.NewNullableString(getP[string](d, "create_users_group")),
+		CreateUsersGroup:      *api.NewNullableString(helpers.GetP[string](d, "create_users_group")),
 	}
 	return &r
 }
@@ -99,12 +99,12 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "create_users_as_inactive", res.CreateUsersAsInactive)
-	setWrapper(d, "create_users_group", res.CreateUsersGroup.Get())
-	setWrapper(d, "user_path_template", res.GetUserPathTemplate())
-	setWrapper(d, "user_creation_mode", res.GetUserCreationMode())
-	setWrapper(d, "user_type", res.GetUserType())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "create_users_as_inactive", res.CreateUsersAsInactive)
+	helpers.SetWrapper(d, "create_users_group", res.CreateUsersGroup.Get())
+	helpers.SetWrapper(d, "user_path_template", res.GetUserPathTemplate())
+	helpers.SetWrapper(d, "user_creation_mode", res.GetUserCreationMode())
+	helpers.SetWrapper(d, "user_type", res.GetUserType())
 	return diags
 }
 

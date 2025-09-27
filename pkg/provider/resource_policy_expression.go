@@ -70,9 +70,9 @@ func resourcePolicyExpressionRead(ctx context.Context, d *schema.ResourceData, m
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "expression", res.Expression)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "expression", res.Expression)
 	return diags
 }
 

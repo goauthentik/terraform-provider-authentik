@@ -75,11 +75,11 @@ func resourceEnterpriseLicenseRead(ctx context.Context, d *schema.ResourceData, 
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expiry", res.Expiry.Unix())
-	setWrapper(d, "key", res.Key)
-	setWrapper(d, "internal_users", res.InternalUsers)
-	setWrapper(d, "external_users", res.ExternalUsers)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expiry", res.Expiry.Unix())
+	helpers.SetWrapper(d, "key", res.Key)
+	helpers.SetWrapper(d, "internal_users", res.InternalUsers)
+	helpers.SetWrapper(d, "external_users", res.ExternalUsers)
 	return diags
 }
 

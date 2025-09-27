@@ -71,9 +71,9 @@ func resourceStageSourceRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "source", res.Source)
-	setWrapper(d, "resume_timeout", res.ResumeTimeout)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "source", res.Source)
+	helpers.SetWrapper(d, "resume_timeout", res.ResumeTimeout)
 	return diags
 }
 

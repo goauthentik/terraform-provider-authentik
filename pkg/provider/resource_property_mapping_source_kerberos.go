@@ -64,8 +64,8 @@ func resourcePropertyMappingSourceKerberosRead(ctx context.Context, d *schema.Re
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.Expression)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.Expression)
 	return diags
 }
 

@@ -55,7 +55,7 @@ func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*
 		Local:     api.PtrBool(d.Get("local").(bool)),
 	}
 
-	attr, err := getJSON[map[string]interface{}](d, ("kubeconfig"))
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("kubeconfig"))
 	m.Kubeconfig = attr
 	return &m, err
 }
@@ -86,14 +86,14 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "local", res.Local)
-	setWrapper(d, "verify_ssl", res.VerifySsl)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "local", res.Local)
+	helpers.SetWrapper(d, "verify_ssl", res.VerifySsl)
 	b, err := json.Marshal(res.Kubeconfig)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "kubeconfig", string(b))
+	helpers.SetWrapper(d, "kubeconfig", string(b))
 	return diags
 }
 

@@ -151,6 +151,6 @@ func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	d.SetId("0")
-	setWrapper(d, "users", users)
+	helpers.SetWrapper(d, "users", users)
 	return diag.Diagnostics{}
 }

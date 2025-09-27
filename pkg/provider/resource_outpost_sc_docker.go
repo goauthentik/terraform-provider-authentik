@@ -51,8 +51,8 @@ func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) *api.D
 		Name:              d.Get("name").(string),
 		Url:               d.Get("url").(string),
 		Local:             api.PtrBool(d.Get("local").(bool)),
-		TlsVerification:   *api.NewNullableString(getP[string](d, "tls_verification")),
-		TlsAuthentication: *api.NewNullableString(getP[string](d, "tls_authentication")),
+		TlsVerification:   *api.NewNullableString(helpers.GetP[string](d, "tls_verification")),
+		TlsAuthentication: *api.NewNullableString(helpers.GetP[string](d, "tls_authentication")),
 	}
 	return &m
 }
@@ -80,14 +80,14 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "url", res.Url)
-	setWrapper(d, "local", res.Local)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "url", res.Url)
+	helpers.SetWrapper(d, "local", res.Local)
 	if res.TlsVerification.IsSet() {
-		setWrapper(d, "tls_verification", res.TlsVerification.Get())
+		helpers.SetWrapper(d, "tls_verification", res.TlsVerification.Get())
 	}
 	if res.TlsAuthentication.IsSet() {
-		setWrapper(d, "tls_authentication", res.TlsAuthentication.Get())
+		helpers.SetWrapper(d, "tls_authentication", res.TlsAuthentication.Get())
 	}
 	return diags
 }

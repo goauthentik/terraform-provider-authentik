@@ -62,7 +62,7 @@ func resourceStageMutualTLSSchemaToProvider(d *schema.ResourceData) *api.MutualT
 		Mode:                   api.MutualTLSStageModeEnum(d.Get("mode").(string)),
 		CertAttribute:          api.CertAttributeEnum(d.Get("cert_attribute").(string)),
 		UserAttribute:          api.UserAttributeEnum(d.Get("user_attribute").(string)),
-		CertificateAuthorities: castSlice[string](d.Get("certificate_authorities").([]interface{})),
+		CertificateAuthorities: helpers.CastSlice[string](d.Get("certificate_authorities").([]interface{})),
 	}
 	return &r
 }
@@ -90,12 +90,12 @@ func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "cert_attribute", res.CertAttribute)
-	setWrapper(d, "user_attribute", res.UserAttribute)
-	localCertificateAuthorities := castSlice[string](d.Get("certificate_authorities").([]interface{}))
-	setWrapper(d, "certificate_authorities", helpers.ListConsistentMerge(localCertificateAuthorities, res.CertificateAuthorities))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "cert_attribute", res.CertAttribute)
+	helpers.SetWrapper(d, "user_attribute", res.UserAttribute)
+	localCertificateAuthorities := helpers.CastSlice[string](d.Get("certificate_authorities").([]interface{}))
+	helpers.SetWrapper(d, "certificate_authorities", helpers.ListConsistentMerge(localCertificateAuthorities, res.CertificateAuthorities))
 	return diags
 }
 

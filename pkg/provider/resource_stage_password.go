@@ -55,8 +55,8 @@ func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.Password
 	r := api.PasswordStageRequest{
 		Name:                       d.Get("name").(string),
 		AllowShowPassword:          api.PtrBool(d.Get("allow_show_password").(bool)),
-		ConfigureFlow:              *api.NewNullableString(getP[string](d, "configure_flow")),
-		FailedAttemptsBeforeCancel: getIntP(d, "failed_attempts_before_cancel"),
+		ConfigureFlow:              *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		FailedAttemptsBeforeCancel: helpers.GetIntP(d, "failed_attempts_before_cancel"),
 	}
 
 	backend := make([]api.BackendsEnum, 0)
@@ -90,13 +90,13 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "backends", res.Backends)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "backends", res.Backends)
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
-	setWrapper(d, "failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
-	setWrapper(d, "allow_show_password", res.AllowShowPassword)
+	helpers.SetWrapper(d, "failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
+	helpers.SetWrapper(d, "allow_show_password", res.AllowShowPassword)
 	return diags
 }
 

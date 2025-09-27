@@ -135,13 +135,13 @@ func setUser(data *schema.ResourceData, user api.User) diag.Diagnostics {
 		switch key {
 		case "pk":
 			data.SetId(strconv.Itoa(value.(int)))
-			setWrapper(data, key, value.(int))
+			helpers.SetWrapper(data, key, value.(int))
 		case "is_active", "is_superuser":
-			setWrapper(data, key, value.(bool))
+			helpers.SetWrapper(data, key, value.(bool))
 		case "groups":
-			setWrapper(data, key, value.([]string))
+			helpers.SetWrapper(data, key, value.([]string))
 		default:
-			setWrapper(data, key, value.(string))
+			helpers.SetWrapper(data, key, value.(string))
 		}
 	}
 	return diag.Diagnostics{}

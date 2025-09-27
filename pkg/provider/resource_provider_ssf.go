@@ -91,7 +91,7 @@ func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "name", res.Name)
 	return diags
 }
 

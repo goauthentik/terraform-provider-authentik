@@ -65,11 +65,11 @@ func resourceProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACProvid
 	r := api.RACProviderRequest{
 		Name:               d.Get("name").(string),
 		AuthorizationFlow:  d.Get("authorization_flow").(string),
-		PropertyMappings:   castSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappings:   helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
 		ConnectionExpiry:   api.PtrString(d.Get("connection_expiry").(string)),
-		AuthenticationFlow: *api.NewNullableString(getP[string](d, "authentication_flow")),
+		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 	}
-	attr, err := getJSON[map[string]interface{}](d, ("settings"))
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
 	r.Settings = attr
 	return &r, err
 }
@@ -103,19 +103,19 @@ func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	setWrapper(d, "connection_expiry", res.ConnectionExpiry)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "connection_expiry", res.ConnectionExpiry)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	b, err := json.Marshal(res.Settings)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "settings", string(b))
+	helpers.SetWrapper(d, "settings", string(b))
 	return diags
 }
 

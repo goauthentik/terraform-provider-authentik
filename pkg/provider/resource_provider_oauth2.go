@@ -152,25 +152,25 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	r := api.OAuth2ProviderRequest{
 		Name:                   d.Get("name").(string),
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
-		AuthenticationFlow:     *api.NewNullableString(getP[string](d, "authentication_flow")),
+		AuthenticationFlow:     *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		InvalidationFlow:       d.Get("invalidation_flow").(string),
 		AccessCodeValidity:     api.PtrString(d.Get("access_code_validity").(string)),
 		AccessTokenValidity:    api.PtrString(d.Get("access_token_validity").(string)),
 		RefreshTokenValidity:   api.PtrString(d.Get("refresh_token_validity").(string)),
 		IncludeClaimsInIdToken: api.PtrBool(d.Get("include_claims_in_id_token").(bool)),
 		ClientId:               api.PtrString(d.Get("client_id").(string)),
-		ClientSecret:           getP[string](d, "client_secret"),
+		ClientSecret:           helpers.GetP[string](d, "client_secret"),
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
-		PropertyMappings:       castSlice[string](d.Get("property_mappings").([]interface{})),
-		JwtFederationSources:   castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
-		BackchannelLogoutUri:   getP[string](d, "backchannel_logout_uri"),
+		PropertyMappings:       helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		JwtFederationSources:   helpers.CastSlice[string](d.Get("jwt_federation_sources").([]interface{})),
+		BackchannelLogoutUri:   helpers.GetP[string](d, "backchannel_logout_uri"),
 
-		SigningKey:             *api.NewNullableString(getP[string](d, "signing_key")),
-		EncryptionKey:          *api.NewNullableString(getP[string](d, "encryption_key")),
+		SigningKey:             *api.NewNullableString(helpers.GetP[string](d, "signing_key")),
+		EncryptionKey:          *api.NewNullableString(helpers.GetP[string](d, "encryption_key")),
 		RedirectUris:           listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]interface{})),
-		JwtFederationProviders: castSliceInt32(d.Get("jwt_federation_providers").([]interface{})),
+		JwtFederationProviders: helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]interface{})),
 	}
 	return &r
 }
@@ -236,34 +236,34 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	setWrapper(d, "client_id", res.ClientId)
-	setWrapper(d, "client_secret", res.ClientSecret)
-	setWrapper(d, "client_type", res.ClientType)
-	setWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
-	setWrapper(d, "issuer_mode", res.IssuerMode)
-	setWrapper(d, "backchannel_logout_uri", res.BackchannelLogoutUri)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	helpers.SetWrapper(d, "client_secret", res.ClientSecret)
+	helpers.SetWrapper(d, "client_type", res.ClientType)
+	helpers.SetWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
+	helpers.SetWrapper(d, "issuer_mode", res.IssuerMode)
+	helpers.SetWrapper(d, "backchannel_logout_uri", res.BackchannelLogoutUri)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
-	setWrapper(d, "allowed_redirect_uris", redirectURIsToList(castSlice[api.RedirectURI](helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris))))
+	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(helpers.CastSlice[api.RedirectURI](helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris))))
 	if res.SigningKey.IsSet() {
-		setWrapper(d, "signing_key", res.SigningKey.Get())
+		helpers.SetWrapper(d, "signing_key", res.SigningKey.Get())
 	}
 	if res.EncryptionKey.IsSet() {
-		setWrapper(d, "encryption_key", res.EncryptionKey.Get())
+		helpers.SetWrapper(d, "encryption_key", res.EncryptionKey.Get())
 	}
-	setWrapper(d, "sub_mode", res.SubMode)
-	setWrapper(d, "access_code_validity", res.AccessCodeValidity)
-	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
-	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localJWKSProviders := castSlice[int](d.Get("jwt_federation_providers").([]interface{}))
-	setWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := castSlice[string](d.Get("jwt_federation_sources").([]interface{}))
-	setWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
+	helpers.SetWrapper(d, "sub_mode", res.SubMode)
+	helpers.SetWrapper(d, "access_code_validity", res.AccessCodeValidity)
+	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
+	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
+	localJWKSProviders := helpers.CastSlice[int](d.Get("jwt_federation_providers").([]interface{}))
+	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
+	localJWKSSources := helpers.CastSlice[string](d.Get("jwt_federation_sources").([]interface{}))
+	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }
 

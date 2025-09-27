@@ -84,13 +84,13 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 	m := api.ApplicationRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Provider:         *api.NewNullableInt32(getIntP(d, ("protocol_provider"))),
+		Provider:         *api.NewNullableInt32(helpers.GetIntP(d, ("protocol_provider"))),
 		OpenInNewTab:     api.PtrBool(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		Group:            getP[string](d, "group"),
-		MetaLaunchUrl:    getP[string](d, "meta_launch_url"),
-		MetaDescription:  getP[string](d, "meta_description"),
-		MetaPublisher:    getP[string](d, "meta_publisher"),
+		Group:            helpers.GetP[string](d, "group"),
+		MetaLaunchUrl:    helpers.GetP[string](d, "meta_launch_url"),
+		MetaDescription:  helpers.GetP[string](d, "meta_description"),
+		MetaPublisher:    helpers.GetP[string](d, "meta_publisher"),
 	}
 
 	m.BackchannelProviders = []int32{}
@@ -133,23 +133,23 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	d.SetId(res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "group", res.Group)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "open_in_new_tab", res.OpenInNewTab)
-	setWrapper(d, "protocol_provider", 0)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "group", res.Group)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "open_in_new_tab", res.OpenInNewTab)
+	helpers.SetWrapper(d, "protocol_provider", 0)
 	if prov := res.Provider.Get(); prov != nil {
-		setWrapper(d, "protocol_provider", int(*prov))
+		helpers.SetWrapper(d, "protocol_provider", int(*prov))
 	}
-	setWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
+	helpers.SetWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
 	if res.MetaIcon.IsSet() {
-		setWrapper(d, "meta_icon", res.MetaIcon.Get())
+		helpers.SetWrapper(d, "meta_icon", res.MetaIcon.Get())
 	}
-	setWrapper(d, "meta_description", res.MetaDescription)
-	setWrapper(d, "meta_publisher", res.MetaPublisher)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "backchannel_providers", res.BackchannelProviders)
+	helpers.SetWrapper(d, "meta_description", res.MetaDescription)
+	helpers.SetWrapper(d, "meta_publisher", res.MetaPublisher)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "backchannel_providers", res.BackchannelProviders)
 	return diags
 }
 

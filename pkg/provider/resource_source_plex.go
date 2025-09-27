@@ -107,13 +107,13 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
-		AuthenticationFlow: *api.NewNullableString(getP[string](d, "authentication_flow")),
-		EnrollmentFlow:     *api.NewNullableString(getP[string](d, "enrollment_flow")),
+		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		EnrollmentFlow:     *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
 		ClientId:       api.PtrString(d.Get("client_id").(string)),
 		AllowFriends:   api.PtrBool(d.Get("allow_friends").(bool)),
 		PlexToken:      d.Get("plex_token").(string),
-		AllowedServers: castSlice[string](d.Get("allowed_servers").([]interface{})),
+		AllowedServers: helpers.CastSlice[string](d.Get("allowed_servers").([]interface{})),
 	}
 	return &r
 }
@@ -140,27 +140,27 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	if res.AuthenticationFlow.IsSet() {
-		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
-	setWrapper(d, "client_id", res.ClientId)
-	localServers := castSlice[string](d.Get("allowed_servers").([]interface{}))
-	setWrapper(d, "allowed_servers", helpers.ListConsistentMerge(localServers, res.AllowedServers))
-	setWrapper(d, "allow_friends", res.AllowFriends)
-	setWrapper(d, "plex_token", res.PlexToken)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	localServers := helpers.CastSlice[string](d.Get("allowed_servers").([]interface{}))
+	helpers.SetWrapper(d, "allowed_servers", helpers.ListConsistentMerge(localServers, res.AllowedServers))
+	helpers.SetWrapper(d, "allow_friends", res.AllowFriends)
+	helpers.SetWrapper(d, "plex_token", res.PlexToken)
 	return diags
 }
 

@@ -101,12 +101,12 @@ func resourceProviderMicrosoftEntraSchemaToProvider(d *schema.ResourceData) (*ap
 		ClientId:                   d.Get("client_id").(string),
 		ClientSecret:               d.Get("client_secret").(string),
 		TenantId:                   d.Get("tenant_id").(string),
-		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
-		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		PropertyMappings:           helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappingsGroup:      helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		UserDeleteAction:           api.OutgoingSyncDeleteAction(d.Get("user_delete_action").(string)).Ptr(),
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
-		FilterGroup:                *api.NewNullableString(getP[string](d, "filter_group")),
+		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
 		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
 	return &r, nil
@@ -141,22 +141,22 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "client_id", res.ClientId)
-	setWrapper(d, "client_secret", res.ClientSecret)
-	setWrapper(d, "tenant_id", res.TenantId)
-	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
-	setWrapper(d, "user_delete_action", res.UserDeleteAction)
-	setWrapper(d, "group_delete_action", res.GroupDeleteAction)
-	setWrapper(d, "filter_group", res.FilterGroup)
-	setWrapper(d, "dry_run", res.DryRun)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	helpers.SetWrapper(d, "client_secret", res.ClientSecret)
+	helpers.SetWrapper(d, "tenant_id", res.TenantId)
+	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
+	helpers.SetWrapper(d, "user_delete_action", res.UserDeleteAction)
+	helpers.SetWrapper(d, "group_delete_action", res.GroupDeleteAction)
+	helpers.SetWrapper(d, "filter_group", res.FilterGroup)
+	helpers.SetWrapper(d, "dry_run", res.DryRun)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
+	localGroupMappings := helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{}))
 	if len(localGroupMappings) > 0 {
-		setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+		helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	}
 	return diags
 }

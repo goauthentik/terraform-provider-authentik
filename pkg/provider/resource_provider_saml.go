@@ -180,16 +180,16 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		DigestAlgorithm:             api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:          api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		SpBinding:                   api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
-		PropertyMappings:            castSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappings:            helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
 		SignAssertion:               api.PtrBool(d.Get("sign_assertion").(bool)),
 		SignResponse:                api.PtrBool(d.Get("sign_response").(bool)),
-		AuthenticationFlow:          *api.NewNullableString(getP[string](d, "authentication_flow")),
-		NameIdMapping:               *api.NewNullableString(getP[string](d, "name_id_mapping")),
-		AuthnContextClassRefMapping: *api.NewNullableString(getP[string](d, "authn_context_class_ref_mapping")),
-		EncryptionKp:                *api.NewNullableString(getP[string](d, "encryption_kp")),
-		SigningKp:                   *api.NewNullableString(getP[string](d, "signing_kp")),
-		VerificationKp:              *api.NewNullableString(getP[string](d, "verification_kp")),
-		DefaultRelayState:           getP[string](d, "default_relay_state"),
+		AuthenticationFlow:          *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		NameIdMapping:               *api.NewNullableString(helpers.GetP[string](d, "name_id_mapping")),
+		AuthnContextClassRefMapping: *api.NewNullableString(helpers.GetP[string](d, "authn_context_class_ref_mapping")),
+		EncryptionKp:                *api.NewNullableString(helpers.GetP[string](d, "encryption_kp")),
+		SigningKp:                   *api.NewNullableString(helpers.GetP[string](d, "signing_kp")),
+		VerificationKp:              *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
+		DefaultRelayState:           helpers.GetP[string](d, "default_relay_state"),
 	}
 	return &r
 }
@@ -220,46 +220,46 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 
-	setWrapper(d, "acs_url", res.AcsUrl)
-	setWrapper(d, "audience", res.Audience)
-	setWrapper(d, "issuer", res.Issuer)
-	setWrapper(d, "sp_binding", res.SpBinding)
-	setWrapper(d, "assertion_valid_not_before", res.AssertionValidNotBefore)
-	setWrapper(d, "assertion_valid_not_on_or_after", res.AssertionValidNotOnOrAfter)
-	setWrapper(d, "session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)
-	setWrapper(d, "sign_assertion", res.SignAssertion)
-	setWrapper(d, "sign_response", res.SignResponse)
+	helpers.SetWrapper(d, "acs_url", res.AcsUrl)
+	helpers.SetWrapper(d, "audience", res.Audience)
+	helpers.SetWrapper(d, "issuer", res.Issuer)
+	helpers.SetWrapper(d, "sp_binding", res.SpBinding)
+	helpers.SetWrapper(d, "assertion_valid_not_before", res.AssertionValidNotBefore)
+	helpers.SetWrapper(d, "assertion_valid_not_on_or_after", res.AssertionValidNotOnOrAfter)
+	helpers.SetWrapper(d, "session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)
+	helpers.SetWrapper(d, "sign_assertion", res.SignAssertion)
+	helpers.SetWrapper(d, "sign_response", res.SignResponse)
 	if res.NameIdMapping.IsSet() {
-		setWrapper(d, "name_id_mapping", res.NameIdMapping.Get())
+		helpers.SetWrapper(d, "name_id_mapping", res.NameIdMapping.Get())
 	}
 	if res.AuthnContextClassRefMapping.IsSet() {
-		setWrapper(d, "authn_context_class_ref_mapping", res.AuthnContextClassRefMapping.Get())
+		helpers.SetWrapper(d, "authn_context_class_ref_mapping", res.AuthnContextClassRefMapping.Get())
 	}
 	if res.SigningKp.IsSet() {
-		setWrapper(d, "signing_kp", res.SigningKp.Get())
+		helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
 	}
 	if res.VerificationKp.IsSet() {
-		setWrapper(d, "verification_kp", res.VerificationKp.Get())
+		helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
 	}
 	if res.EncryptionKp.IsSet() {
-		setWrapper(d, "encryption_kp", res.EncryptionKp.Get())
+		helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
 	}
-	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
-	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
-	setWrapper(d, "default_relay_state", res.DefaultRelayState)
+	helpers.SetWrapper(d, "digest_algorithm", res.DigestAlgorithm)
+	helpers.SetWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
+	helpers.SetWrapper(d, "default_relay_state", res.DefaultRelayState)
 
-	setWrapper(d, "url_sso_init", res.UrlSsoInit)
-	setWrapper(d, "url_sso_post", res.UrlSsoPost)
-	setWrapper(d, "url_sso_redirect", res.UrlSsoRedirect)
-	setWrapper(d, "url_slo_post", res.UrlSloPost)
-	setWrapper(d, "url_slo_redirect", res.UrlSloRedirect)
+	helpers.SetWrapper(d, "url_sso_init", res.UrlSsoInit)
+	helpers.SetWrapper(d, "url_sso_post", res.UrlSsoPost)
+	helpers.SetWrapper(d, "url_sso_redirect", res.UrlSsoRedirect)
+	helpers.SetWrapper(d, "url_slo_post", res.UrlSloPost)
+	helpers.SetWrapper(d, "url_slo_redirect", res.UrlSloRedirect)
 	return diags
 }
 

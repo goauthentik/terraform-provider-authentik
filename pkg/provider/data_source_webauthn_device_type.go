@@ -45,7 +45,7 @@ func dataSourceWebAuthnDeviceTypeRead(ctx context.Context, d *schema.ResourceDat
 	}
 	f := res.Results[0]
 	d.SetId(f.Aaguid)
-	setWrapper(d, "aaguid", f.Aaguid)
-	setWrapper(d, "description", f.Description)
+	helpers.SetWrapper(d, "aaguid", f.Aaguid)
+	helpers.SetWrapper(d, "description", f.Description)
 	return diags
 }

@@ -153,8 +153,8 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
-		AuthenticationFlow: *api.NewNullableString(getP[string](d, "authentication_flow")),
-		EnrollmentFlow:     *api.NewNullableString(getP[string](d, "enrollment_flow")),
+		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		EnrollmentFlow:     *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
 		Realm:                               d.Get("realm").(string),
 		Krb5Conf:                            api.PtrString(d.Get("krb5_conf").(string)),
@@ -197,30 +197,30 @@ func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 	if res.AuthenticationFlow.IsSet() {
-		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	setWrapper(d, "group_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "group_matching_mode", res.UserMatchingMode)
 
-	setWrapper(d, "realm", res.Realm)
-	setWrapper(d, "krb5_conf", res.Krb5Conf)
-	setWrapper(d, "sync_users", res.SyncUsers)
-	setWrapper(d, "sync_users_password", res.SyncUsersPassword)
-	setWrapper(d, "sync_principal", res.SyncPrincipal)
-	setWrapper(d, "sync_ccache", res.SyncCcache)
-	setWrapper(d, "spnego_server_name", res.SpnegoServerName)
-	setWrapper(d, "spnego_ccache", res.SpnegoCcache)
-	setWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
+	helpers.SetWrapper(d, "realm", res.Realm)
+	helpers.SetWrapper(d, "krb5_conf", res.Krb5Conf)
+	helpers.SetWrapper(d, "sync_users", res.SyncUsers)
+	helpers.SetWrapper(d, "sync_users_password", res.SyncUsersPassword)
+	helpers.SetWrapper(d, "sync_principal", res.SyncPrincipal)
+	helpers.SetWrapper(d, "sync_ccache", res.SyncCcache)
+	helpers.SetWrapper(d, "spnego_server_name", res.SpnegoServerName)
+	helpers.SetWrapper(d, "spnego_ccache", res.SpnegoCcache)
+	helpers.SetWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
 	return diags
 }
 

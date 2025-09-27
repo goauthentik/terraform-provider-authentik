@@ -100,23 +100,23 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.Passwor
 	r := api.PasswordPolicyRequest{
 		Name:             d.Get("name").(string),
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
-		PasswordField:    getP[string](d, "password_field"),
+		PasswordField:    helpers.GetP[string](d, "password_field"),
 
-		CheckStaticRules:    getP[bool](d, "check_static_rules"),
-		CheckHaveIBeenPwned: getP[bool](d, "check_have_i_been_pwned"),
-		CheckZxcvbn:         getP[bool](d, "check_zxcvbn"),
+		CheckStaticRules:    helpers.GetP[bool](d, "check_static_rules"),
+		CheckHaveIBeenPwned: helpers.GetP[bool](d, "check_have_i_been_pwned"),
+		CheckZxcvbn:         helpers.GetP[bool](d, "check_zxcvbn"),
 
-		SymbolCharset:   getP[string](d, "symbol_charset"),
-		ErrorMessage:    getP[string](d, "error_message"),
-		AmountUppercase: getIntP(d, "amount_uppercase"),
-		AmountDigits:    getIntP(d, "amount_digits"),
-		AmountLowercase: getIntP(d, "amount_lowercase"),
-		AmountSymbols:   getIntP(d, "amount_symbols"),
-		LengthMin:       getIntP(d, "length_min"),
+		SymbolCharset:   helpers.GetP[string](d, "symbol_charset"),
+		ErrorMessage:    helpers.GetP[string](d, "error_message"),
+		AmountUppercase: helpers.GetIntP(d, "amount_uppercase"),
+		AmountDigits:    helpers.GetIntP(d, "amount_digits"),
+		AmountLowercase: helpers.GetIntP(d, "amount_lowercase"),
+		AmountSymbols:   helpers.GetIntP(d, "amount_symbols"),
+		LengthMin:       helpers.GetIntP(d, "length_min"),
 
-		HibpAllowedCount: getIntP(d, "hibp_allowed_count"),
+		HibpAllowedCount: helpers.GetIntP(d, "hibp_allowed_count"),
 
-		ZxcvbnScoreThreshold: getIntP(d, "zxcvbn_score_threshold"),
+		ZxcvbnScoreThreshold: helpers.GetIntP(d, "zxcvbn_score_threshold"),
 	}
 	return &r
 }
@@ -144,16 +144,16 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m i
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "password_field", res.PasswordField)
-	setWrapper(d, "error_message", res.ErrorMessage)
-	setWrapper(d, "amount_uppercase", res.AmountUppercase)
-	setWrapper(d, "amount_lowercase", res.AmountLowercase)
-	setWrapper(d, "amount_symbols", res.AmountSymbols)
-	setWrapper(d, "amount_digits", res.AmountDigits)
-	setWrapper(d, "length_min", res.LengthMin)
-	setWrapper(d, "symbol_charset", res.SymbolCharset)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "password_field", res.PasswordField)
+	helpers.SetWrapper(d, "error_message", res.ErrorMessage)
+	helpers.SetWrapper(d, "amount_uppercase", res.AmountUppercase)
+	helpers.SetWrapper(d, "amount_lowercase", res.AmountLowercase)
+	helpers.SetWrapper(d, "amount_symbols", res.AmountSymbols)
+	helpers.SetWrapper(d, "amount_digits", res.AmountDigits)
+	helpers.SetWrapper(d, "length_min", res.LengthMin)
+	helpers.SetWrapper(d, "symbol_charset", res.SymbolCharset)
 	return diags
 }
 

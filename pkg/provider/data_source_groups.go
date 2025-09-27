@@ -141,6 +141,6 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	d.SetId("0")
-	setWrapper(d, "groups", groups)
+	helpers.SetWrapper(d, "groups", groups)
 	return diag.Diagnostics{}
 }

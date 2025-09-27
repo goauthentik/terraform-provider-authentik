@@ -57,7 +57,7 @@ func dataSourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.Re
 	req := c.client.PropertymappingsApi.PropertymappingsProviderScimList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(castSlice[string](ml.([]interface{})))
+		req = req.Managed(helpers.CastSlice[string](ml.([]interface{})))
 	} else if m, ok := d.GetOk("managed"); ok {
 		req = req.Managed([]string{m.(string)})
 	}
@@ -80,13 +80,13 @@ func dataSourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.Re
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		setWrapper(d, "ids", ids)
+		helpers.SetWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		setWrapper(d, "name", f.Name)
-		setWrapper(d, "name", f.Name)
-		setWrapper(d, "expression", f.Expression)
+		helpers.SetWrapper(d, "name", f.Name)
+		helpers.SetWrapper(d, "name", f.Name)
+		helpers.SetWrapper(d, "expression", f.Expression)
 	}
 	return diags
 }

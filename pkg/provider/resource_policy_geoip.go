@@ -81,18 +81,18 @@ func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolic
 	r := api.GeoIPPolicyRequest{
 		Name:                  d.Get("name").(string),
 		ExecutionLogging:      api.PtrBool(d.Get("execution_logging").(bool)),
-		CheckHistoryDistance:  getP[bool](d, "check_history_distance"),
-		HistoryMaxDistanceKm:  getInt64P(d, "history_max_distance_km"),
-		DistanceToleranceKm:   getIntP(d, "distance_tolerance_km"),
-		HistoryLoginCount:     getIntP(d, "history_login_count"),
-		CheckImpossibleTravel: getP[bool](d, "check_impossible_travel"),
-		ImpossibleToleranceKm: getIntP(d, "impossible_tolerance_km"),
-		Asns:                  castSliceInt32(d.Get("asns").([]interface{})),
+		CheckHistoryDistance:  helpers.GetP[bool](d, "check_history_distance"),
+		HistoryMaxDistanceKm:  helpers.GetInt64P(d, "history_max_distance_km"),
+		DistanceToleranceKm:   helpers.GetIntP(d, "distance_tolerance_km"),
+		HistoryLoginCount:     helpers.GetIntP(d, "history_login_count"),
+		CheckImpossibleTravel: helpers.GetP[bool](d, "check_impossible_travel"),
+		ImpossibleToleranceKm: helpers.GetIntP(d, "impossible_tolerance_km"),
+		Asns:                  helpers.CastSliceInt32(d.Get("asns").([]interface{})),
 	}
 
 	if a, ok := d.Get("countries").([]interface{}); ok {
 		r.Countries = make([]api.CountryCodeEnum, 0)
-		for _, c := range castSlice[string](a) {
+		for _, c := range helpers.CastSlice[string](a) {
 			r.Countries = append(r.Countries, api.CountryCodeEnum(c))
 		}
 	}
@@ -122,24 +122,24 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "check_history_distance", res.CheckHistoryDistance)
-	setWrapper(d, "history_max_distance_km", res.HistoryMaxDistanceKm)
-	setWrapper(d, "distance_tolerance_km", res.DistanceToleranceKm)
-	setWrapper(d, "history_login_count", res.HistoryLoginCount)
-	setWrapper(d, "check_impossible_travel", res.CheckImpossibleTravel)
-	setWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "check_history_distance", res.CheckHistoryDistance)
+	helpers.SetWrapper(d, "history_max_distance_km", res.HistoryMaxDistanceKm)
+	helpers.SetWrapper(d, "distance_tolerance_km", res.DistanceToleranceKm)
+	helpers.SetWrapper(d, "history_login_count", res.HistoryLoginCount)
+	helpers.SetWrapper(d, "check_impossible_travel", res.CheckImpossibleTravel)
+	helpers.SetWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
 	if res.HasAsns() {
-		localAsns := castSlice[int](d.Get("asns").([]interface{}))
-		setWrapper(d, "asns", helpers.ListConsistentMerge(localAsns, slice32ToInt(res.Asns)))
+		localAsns := helpers.CastSlice[int](d.Get("asns").([]interface{}))
+		helpers.SetWrapper(d, "asns", helpers.ListConsistentMerge(localAsns, helpers.Slice32ToInt(res.Asns)))
 	}
 	if res.Countries != nil {
 		localCountries := make([]api.CountryCodeEnum, 0)
-		for _, c := range castSlice[string](d.Get("countries").([]interface{})) {
+		for _, c := range helpers.CastSlice[string](d.Get("countries").([]interface{})) {
 			localCountries = append(localCountries, api.CountryCodeEnum(c))
 		}
-		setWrapper(d, "countries", helpers.ListConsistentMerge(localCountries, res.Countries))
+		helpers.SetWrapper(d, "countries", helpers.ListConsistentMerge(localCountries, res.Countries))
 	}
 	return diags
 }

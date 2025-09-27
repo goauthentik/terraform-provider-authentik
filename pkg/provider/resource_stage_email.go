@@ -110,18 +110,18 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageR
 		UseGlobalSettings:     api.PtrBool(d.Get("use_global_settings").(bool)),
 		UseSsl:                api.PtrBool(d.Get("use_ssl").(bool)),
 		UseTls:                api.PtrBool(d.Get("use_tls").(bool)),
-		Host:                  getP[string](d, "host"),
-		Username:              getP[string](d, "username"),
-		Password:              getP[string](d, "password"),
-		FromAddress:           getP[string](d, "from_address"),
-		TokenExpiry:           getP[string](d, "token_expiry"),
-		Subject:               getP[string](d, "subject"),
-		Template:              getP[string](d, "template"),
-		RecoveryCacheTimeout:  getP[string](d, "recovery_cache_timeout"),
-		Port:                  getIntP(d, "port"),
-		Timeout:               getIntP(d, "timeout"),
-		RecoveryMaxAttempts:   getIntP(d, "recovery_max_attempts"),
-		ActivateUserOnSuccess: getP[bool](d, "activate_user_on_success"),
+		Host:                  helpers.GetP[string](d, "host"),
+		Username:              helpers.GetP[string](d, "username"),
+		Password:              helpers.GetP[string](d, "password"),
+		FromAddress:           helpers.GetP[string](d, "from_address"),
+		TokenExpiry:           helpers.GetP[string](d, "token_expiry"),
+		Subject:               helpers.GetP[string](d, "subject"),
+		Template:              helpers.GetP[string](d, "template"),
+		RecoveryCacheTimeout:  helpers.GetP[string](d, "recovery_cache_timeout"),
+		Port:                  helpers.GetIntP(d, "port"),
+		Timeout:               helpers.GetIntP(d, "timeout"),
+		RecoveryMaxAttempts:   helpers.GetIntP(d, "recovery_max_attempts"),
+		ActivateUserOnSuccess: helpers.GetP[bool](d, "activate_user_on_success"),
 	}
 	return &r
 }
@@ -149,21 +149,21 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m inter
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "use_global_settings", res.UseGlobalSettings)
-	setWrapper(d, "host", res.Host)
-	setWrapper(d, "port", res.Port)
-	setWrapper(d, "username", res.Username)
-	setWrapper(d, "use_tls", res.UseTls)
-	setWrapper(d, "use_ssl", res.UseSsl)
-	setWrapper(d, "timeout", res.Timeout)
-	setWrapper(d, "from_address", res.FromAddress)
-	setWrapper(d, "token_expiry", res.TokenExpiry)
-	setWrapper(d, "subject", res.Subject)
-	setWrapper(d, "template", res.Template)
-	setWrapper(d, "activate_user_on_success", res.ActivateUserOnSuccess)
-	setWrapper(d, "recovery_max_attempts", res.RecoveryMaxAttempts)
-	setWrapper(d, "recovery_cache_timeout", res.RecoveryCacheTimeout)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "use_global_settings", res.UseGlobalSettings)
+	helpers.SetWrapper(d, "host", res.Host)
+	helpers.SetWrapper(d, "port", res.Port)
+	helpers.SetWrapper(d, "username", res.Username)
+	helpers.SetWrapper(d, "use_tls", res.UseTls)
+	helpers.SetWrapper(d, "use_ssl", res.UseSsl)
+	helpers.SetWrapper(d, "timeout", res.Timeout)
+	helpers.SetWrapper(d, "from_address", res.FromAddress)
+	helpers.SetWrapper(d, "token_expiry", res.TokenExpiry)
+	helpers.SetWrapper(d, "subject", res.Subject)
+	helpers.SetWrapper(d, "template", res.Template)
+	helpers.SetWrapper(d, "activate_user_on_success", res.ActivateUserOnSuccess)
+	helpers.SetWrapper(d, "recovery_max_attempts", res.RecoveryMaxAttempts)
+	helpers.SetWrapper(d, "recovery_cache_timeout", res.RecoveryCacheTimeout)
 	return diags
 }
 

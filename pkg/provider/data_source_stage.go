@@ -41,6 +41,6 @@ func dataSourceStageRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	f := res.Results[0]
 	d.SetId(f.Pk)
-	setWrapper(d, "name", f.Name)
+	helpers.SetWrapper(d, "name", f.Name)
 	return diags
 }

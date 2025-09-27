@@ -98,13 +98,13 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "target", res.Target)
-	setWrapper(d, "stage", res.Stage)
-	setWrapper(d, "order", res.Order)
-	setWrapper(d, "evaluate_on_plan", res.EvaluateOnPlan)
-	setWrapper(d, "re_evaluate_policies", res.ReEvaluatePolicies)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "invalid_response_action", res.InvalidResponseAction)
+	helpers.SetWrapper(d, "target", res.Target)
+	helpers.SetWrapper(d, "stage", res.Stage)
+	helpers.SetWrapper(d, "order", res.Order)
+	helpers.SetWrapper(d, "evaluate_on_plan", res.EvaluateOnPlan)
+	helpers.SetWrapper(d, "re_evaluate_policies", res.ReEvaluatePolicies)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "invalid_response_action", res.InvalidResponseAction)
 	return diags
 }
 

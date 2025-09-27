@@ -72,11 +72,11 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 		Protocol:           api.ProtocolEnum(d.Get("protocol").(string)),
 		Host:               d.Get("host").(string),
 		AuthMode:           api.AUTHMODEENUM_PROMPT,
-		PropertyMappings:   castSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappings:   helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
 		MaximumConnections: api.PtrInt32(int32(d.Get("maximum_connections").(int))),
 	}
 
-	attr, err := getJSON[map[string]interface{}](d, ("settings"))
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
 	r.Settings = attr
 	return &r, err
 }
@@ -106,20 +106,20 @@ func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "protocol_provider", res.Provider)
-	setWrapper(d, "host", res.Host)
-	setWrapper(d, "protocol", res.Protocol)
-	setWrapper(d, "maximum_connections", res.MaximumConnections)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "protocol_provider", res.Provider)
+	helpers.SetWrapper(d, "host", res.Host)
+	helpers.SetWrapper(d, "protocol", res.Protocol)
+	helpers.SetWrapper(d, "maximum_connections", res.MaximumConnections)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	b, err := json.Marshal(res.Settings)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "settings", string(b))
+	helpers.SetWrapper(d, "settings", string(b))
 	return diags
 }
 

@@ -53,8 +53,8 @@ func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolic
 		Name:             d.Get("name").(string),
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		Result:           api.PtrBool(d.Get("result").(bool)),
-		WaitMin:          getIntP(d, "wait_min"),
-		WaitMax:          getIntP(d, "wait_max"),
+		WaitMin:          helpers.GetIntP(d, "wait_min"),
+		WaitMax:          helpers.GetIntP(d, "wait_max"),
 	}
 	return &r
 }
@@ -82,11 +82,11 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "result", res.Result)
-	setWrapper(d, "wait_min", res.WaitMin)
-	setWrapper(d, "wait_max", res.WaitMax)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "result", res.Result)
+	helpers.SetWrapper(d, "wait_min", res.WaitMin)
+	helpers.SetWrapper(d, "wait_max", res.WaitMax)
 	return diags
 }
 

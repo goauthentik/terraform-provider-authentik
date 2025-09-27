@@ -101,21 +101,21 @@ func resourceStageAuthenticatorEmailSchemaToProvider(d *schema.ResourceData) *ap
 		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
 		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
 		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
-		FriendlyName:      *api.NewNullableString(getP[string](d, "friendly_name")),
-		ConfigureFlow:     *api.NewNullableString(getP[string](d, "configure_flow")),
+		FriendlyName:      *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		ConfigureFlow:     *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 
-		Host: getP[string](d, "host"),
-		Port: getIntP(d, "port"),
+		Host: helpers.GetP[string](d, "host"),
+		Port: helpers.GetIntP(d, "port"),
 
-		Username: getP[string](d, "username"),
-		Password: getP[string](d, "password"),
+		Username: helpers.GetP[string](d, "username"),
+		Password: helpers.GetP[string](d, "password"),
 
-		Timeout: getIntP(d, "timeout"),
+		Timeout: helpers.GetIntP(d, "timeout"),
 
-		FromAddress: getP[string](d, "from_address"),
-		TokenExpiry: getP[string](d, "token_expiry"),
-		Subject:     getP[string](d, "subject"),
-		Template:    getP[string](d, "template"),
+		FromAddress: helpers.GetP[string](d, "from_address"),
+		TokenExpiry: helpers.GetP[string](d, "token_expiry"),
+		Subject:     helpers.GetP[string](d, "subject"),
+		Template:    helpers.GetP[string](d, "template"),
 	}
 	return &r
 }
@@ -143,21 +143,21 @@ func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.Resource
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "use_global_settings", res.UseGlobalSettings)
-	setWrapper(d, "host", res.Host)
-	setWrapper(d, "port", res.Port)
-	setWrapper(d, "username", res.Username)
-	setWrapper(d, "use_tls", res.UseTls)
-	setWrapper(d, "use_ssl", res.UseSsl)
-	setWrapper(d, "timeout", res.Timeout)
-	setWrapper(d, "from_address", res.FromAddress)
-	setWrapper(d, "token_expiry", res.TokenExpiry)
-	setWrapper(d, "subject", res.Subject)
-	setWrapper(d, "template", res.Template)
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "use_global_settings", res.UseGlobalSettings)
+	helpers.SetWrapper(d, "host", res.Host)
+	helpers.SetWrapper(d, "port", res.Port)
+	helpers.SetWrapper(d, "username", res.Username)
+	helpers.SetWrapper(d, "use_tls", res.UseTls)
+	helpers.SetWrapper(d, "use_ssl", res.UseSsl)
+	helpers.SetWrapper(d, "timeout", res.Timeout)
+	helpers.SetWrapper(d, "from_address", res.FromAddress)
+	helpers.SetWrapper(d, "token_expiry", res.TokenExpiry)
+	helpers.SetWrapper(d, "subject", res.Subject)
+	helpers.SetWrapper(d, "template", res.Template)
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

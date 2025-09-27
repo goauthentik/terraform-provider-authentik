@@ -75,7 +75,7 @@ func resourceTokenSchemaToModel(d *schema.ResourceData) (*api.TokenRequest, diag
 		Identifier:  d.Get("identifier").(string),
 		User:        api.PtrInt32(int32(d.Get("user").(int))),
 		Expiring:    api.PtrBool(d.Get("expiring").(bool)),
-		Description: getP[string](d, "description"),
+		Description: helpers.GetP[string](d, "description"),
 	}
 
 	if l, ok := d.Get("expires").(string); ok && l != "" {
@@ -116,19 +116,19 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "identifier", res.Identifier)
-	setWrapper(d, "user", res.User)
-	setWrapper(d, "description", res.Description)
-	setWrapper(d, "intent", res.Intent)
+	helpers.SetWrapper(d, "identifier", res.Identifier)
+	helpers.SetWrapper(d, "user", res.User)
+	helpers.SetWrapper(d, "description", res.Description)
+	helpers.SetWrapper(d, "intent", res.Intent)
 	if res.Expires.IsSet() && res.Expires.Get() != nil {
-		setWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
+		helpers.SetWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
 	}
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
 		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		setWrapper(d, "key", res.Key)
+		helpers.SetWrapper(d, "key", res.Key)
 	}
 	return diags
 }

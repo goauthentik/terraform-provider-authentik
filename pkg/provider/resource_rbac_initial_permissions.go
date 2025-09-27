@@ -51,7 +51,7 @@ func resourceRBACInitialPermissionsSchemaToModel(d *schema.ResourceData) (*api.I
 		Name:        d.Get("name").(string),
 		Role:        d.Get("role").(string),
 		Mode:        api.InitialPermissionsModeEnum(d.Get("mode").(string)),
-		Permissions: castSliceInt32(d.Get("permissions").([]interface{})),
+		Permissions: helpers.CastSliceInt32(d.Get("permissions").([]interface{})),
 	}
 	return &m, nil
 }
@@ -86,11 +86,11 @@ func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceD
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "role", res.Role)
-	setWrapper(d, "mode", res.Mode)
-	localPermissions := castSlice[int](d.Get("permissions").([]interface{}))
-	setWrapper(d, "permissions", helpers.ListConsistentMerge(localPermissions, slice32ToInt(res.Permissions)))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "role", res.Role)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	localPermissions := helpers.CastSlice[int](d.Get("permissions").([]interface{}))
+	helpers.SetWrapper(d, "permissions", helpers.ListConsistentMerge(localPermissions, helpers.Slice32ToInt(res.Permissions)))
 	return diags
 }
 

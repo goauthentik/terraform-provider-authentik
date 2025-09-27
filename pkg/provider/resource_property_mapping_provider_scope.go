@@ -46,7 +46,7 @@ func resourcePropertyMappingProviderScopeSchemaToProvider(d *schema.ResourceData
 		Name:        d.Get("name").(string),
 		ScopeName:   d.Get("scope_name").(string),
 		Expression:  d.Get("expression").(string),
-		Description: getP[string](d, "description"),
+		Description: helpers.GetP[string](d, "description"),
 	}
 	return &r
 }
@@ -74,10 +74,10 @@ func resourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.Res
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.Expression)
-	setWrapper(d, "scope_name", res.ScopeName)
-	setWrapper(d, "description", res.Description)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.Expression)
+	helpers.SetWrapper(d, "scope_name", res.ScopeName)
+	helpers.SetWrapper(d, "description", res.Description)
 	return diags
 }
 

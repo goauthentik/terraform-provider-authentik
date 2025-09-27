@@ -53,8 +53,8 @@ func resourceStageRedirectSchemaToProvider(d *schema.ResourceData) *api.Redirect
 		Name:         d.Get("name").(string),
 		Mode:         api.RedirectStageModeEnum(d.Get("mode").(string)),
 		KeepContext:  api.PtrBool(d.Get("keep_context").(bool)),
-		TargetStatic: getP[string](d, "target_static"),
-		TargetFlow:   *api.NewNullableString(getP[string](d, "target_flow")),
+		TargetStatic: helpers.GetP[string](d, "target_static"),
+		TargetFlow:   *api.NewNullableString(helpers.GetP[string](d, "target_flow")),
 	}
 	return &r
 }
@@ -82,11 +82,11 @@ func resourceStageRedirectRead(ctx context.Context, d *schema.ResourceData, m in
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "keep_context", res.KeepContext)
-	setWrapper(d, "target_flow", res.TargetFlow.Get())
-	setWrapper(d, "target_static", res.TargetStatic)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "keep_context", res.KeepContext)
+	helpers.SetWrapper(d, "target_flow", res.TargetFlow.Get())
+	helpers.SetWrapper(d, "target_static", res.TargetStatic)
 	return diags
 }
 

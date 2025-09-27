@@ -47,8 +47,8 @@ func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api
 	r := api.AuthenticatorTOTPStageRequest{
 		Name:          d.Get("name").(string),
 		Digits:        api.DigitsEnum(d.Get("digits").(string)),
-		FriendlyName:  *api.NewNullableString(getP[string](d, "friendly_name")),
-		ConfigureFlow: *api.NewNullableString(getP[string](d, "configure_flow")),
+		FriendlyName:  *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		ConfigureFlow: *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 	}
 	return &r
 }
@@ -76,11 +76,11 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "digits", res.Digits)
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "digits", res.Digits)
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }

@@ -66,7 +66,7 @@ func dataSourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.R
 	req := c.client.PropertymappingsApi.PropertymappingsProviderScopeList(ctx)
 
 	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(castSlice[string](ml.([]interface{})))
+		req = req.Managed(helpers.CastSlice[string](ml.([]interface{})))
 	} else if m, ok := d.GetOk("managed"); ok {
 		req = req.Managed([]string{m.(string)})
 	}
@@ -92,14 +92,14 @@ func dataSourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.R
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		setWrapper(d, "ids", ids)
+		helpers.SetWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		setWrapper(d, "name", f.Name)
-		setWrapper(d, "expression", f.Expression)
-		setWrapper(d, "scope_name", f.ScopeName)
-		setWrapper(d, "description", f.Description)
+		helpers.SetWrapper(d, "name", f.Name)
+		helpers.SetWrapper(d, "expression", f.Expression)
+		helpers.SetWrapper(d, "scope_name", f.ScopeName)
+		helpers.SetWrapper(d, "description", f.Description)
 	}
 	return diags
 }

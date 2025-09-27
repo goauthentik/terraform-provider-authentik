@@ -72,10 +72,10 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 		Name:                   d.Get("name").(string),
 		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
 		ResidentKeyRequirement: api.ResidentKeyRequirementEnum(d.Get("resident_key_requirement").(string)).Ptr(),
-		DeviceTypeRestrictions: castSlice[string](d.Get("device_type_restrictions").([]interface{})),
-		FriendlyName:           *api.NewNullableString(getP[string](d, "friendly_name")),
-		ConfigureFlow:          *api.NewNullableString(getP[string](d, "configure_flow")),
-		MaxAttempts:            getIntP(d, "max_attempts"),
+		DeviceTypeRestrictions: helpers.CastSlice[string](d.Get("device_type_restrictions").([]interface{})),
+		FriendlyName:           *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		ConfigureFlow:          *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		MaxAttempts:            helpers.GetIntP(d, "max_attempts"),
 	}
 
 	if x, set := d.GetOk("authenticator_attachment"); set {
@@ -107,17 +107,17 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
-	setWrapper(d, "user_verification", res.UserVerification)
-	setWrapper(d, "resident_key_requirement", res.ResidentKeyRequirement)
-	setWrapper(d, "authenticator_attachment", res.GetAuthenticatorAttachment())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "user_verification", res.UserVerification)
+	helpers.SetWrapper(d, "resident_key_requirement", res.ResidentKeyRequirement)
+	helpers.SetWrapper(d, "authenticator_attachment", res.GetAuthenticatorAttachment())
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
-	localDeviceTypeRestrictions := castSlice[string](d.Get("device_type_restrictions").([]interface{}))
-	setWrapper(d, "device_type_restrictions", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
-	setWrapper(d, "max_attempts", res.MaxAttempts)
+	localDeviceTypeRestrictions := helpers.CastSlice[string](d.Get("device_type_restrictions").([]interface{}))
+	helpers.SetWrapper(d, "device_type_restrictions", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
+	helpers.SetWrapper(d, "max_attempts", res.MaxAttempts)
 	return diags
 }
 

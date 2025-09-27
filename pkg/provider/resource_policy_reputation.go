@@ -54,7 +54,7 @@ func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.Reput
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		CheckIp:          api.PtrBool(d.Get("check_ip").(bool)),
 		CheckUsername:    api.PtrBool(d.Get("check_username").(bool)),
-		Threshold:        getIntP(d, "threshold"),
+		Threshold:        helpers.GetIntP(d, "threshold"),
 	}
 	return &r
 }
@@ -82,11 +82,11 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "check_ip", res.CheckIp)
-	setWrapper(d, "check_username", res.CheckUsername)
-	setWrapper(d, "threshold", res.Threshold)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "check_ip", res.CheckIp)
+	helpers.SetWrapper(d, "check_username", res.CheckUsername)
+	helpers.SetWrapper(d, "threshold", res.Threshold)
 	return diags
 }
 

@@ -86,9 +86,9 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 		PlaceholderExpression:  api.PtrBool(d.Get("placeholder_expression").(bool)),
 		InitialValueExpression: api.PtrBool(d.Get("initial_value_expression").(bool)),
 		SubText:                api.PtrString(d.Get("sub_text").(string)),
-		Placeholder:            getP[string](d, "placeholder"),
-		InitialValue:           getP[string](d, "initial_value"),
-		Order:                  getIntP(d, "order"),
+		Placeholder:            helpers.GetP[string](d, "placeholder"),
+		InitialValue:           helpers.GetP[string](d, "initial_value"),
+		Order:                  helpers.GetIntP(d, "order"),
 	}
 	return &r
 }
@@ -116,17 +116,17 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "field_key", res.FieldKey)
-	setWrapper(d, "label", res.Label)
-	setWrapper(d, "type", res.Type)
-	setWrapper(d, "required", res.Required)
-	setWrapper(d, "placeholder", res.Placeholder)
-	setWrapper(d, "placeholder_expression", res.PlaceholderExpression)
-	setWrapper(d, "initial_value", res.InitialValue)
-	setWrapper(d, "initial_value_expression", res.InitialValueExpression)
-	setWrapper(d, "sub_text", res.SubText)
-	setWrapper(d, "order", res.Order)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "field_key", res.FieldKey)
+	helpers.SetWrapper(d, "label", res.Label)
+	helpers.SetWrapper(d, "type", res.Type)
+	helpers.SetWrapper(d, "required", res.Required)
+	helpers.SetWrapper(d, "placeholder", res.Placeholder)
+	helpers.SetWrapper(d, "placeholder_expression", res.PlaceholderExpression)
+	helpers.SetWrapper(d, "initial_value", res.InitialValue)
+	helpers.SetWrapper(d, "initial_value_expression", res.InitialValueExpression)
+	helpers.SetWrapper(d, "sub_text", res.SubText)
+	helpers.SetWrapper(d, "order", res.Order)
 	return diags
 }
 

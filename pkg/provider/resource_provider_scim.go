@@ -77,11 +77,11 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		Name:                       d.Get("name").(string),
 		Url:                        d.Get("url").(string),
 		Token:                      d.Get("token").(string),
-		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
-		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		PropertyMappings:           helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappingsGroup:      helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		CompatibilityMode:          api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
-		FilterGroup:                *api.NewNullableString(getP[string](d, "filter_group")),
+		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
 		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
 	return &r
@@ -113,17 +113,17 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "url", res.Url)
-	setWrapper(d, "token", res.Token)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
-	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
-	setWrapper(d, "filter_group", res.FilterGroup.Get())
-	setWrapper(d, "dry_run", res.DryRun)
-	setWrapper(d, "compatibility_mode", res.CompatibilityMode)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "url", res.Url)
+	helpers.SetWrapper(d, "token", res.Token)
+	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+	localGroupMappings := helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{}))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
+	helpers.SetWrapper(d, "filter_group", res.FilterGroup.Get())
+	helpers.SetWrapper(d, "dry_run", res.DryRun)
+	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	return diags
 }
 

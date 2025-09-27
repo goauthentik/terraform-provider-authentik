@@ -82,12 +82,12 @@ func resourceStageAuthenticatorEndpointGDTCRead(ctx context.Context, d *schema.R
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "name", res.Name)
 	b, err := json.Marshal(res.Credentials)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "credentials", string(b))
+	helpers.SetWrapper(d, "credentials", string(b))
 	return diags
 }
 

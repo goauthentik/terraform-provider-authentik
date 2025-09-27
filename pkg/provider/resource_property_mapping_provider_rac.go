@@ -45,10 +45,10 @@ func resourcePropertyMappingProviderRAC() *schema.Resource {
 func resourcePropertyMappingProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACPropertyMappingRequest, diag.Diagnostics) {
 	r := api.RACPropertyMappingRequest{
 		Name:       d.Get("name").(string),
-		Expression: getP[string](d, "expression"),
+		Expression: helpers.GetP[string](d, "expression"),
 	}
 
-	settings, err := getJSON[map[string]interface{}](d, ("settings"))
+	settings, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
 	r.StaticSettings = settings
 	return &r, err
 }
@@ -79,13 +79,13 @@ func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Resou
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.GetExpression())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.GetExpression())
 	b, err := json.Marshal(res.StaticSettings)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "settings", string(b))
+	helpers.SetWrapper(d, "settings", string(b))
 	return diags
 }
 

@@ -60,9 +60,9 @@ func dataSourceSourceRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	f := res.Results[0]
 	d.SetId(f.Pk)
-	setWrapper(d, "name", f.Name)
-	setWrapper(d, "slug", f.Slug)
-	setWrapper(d, "managed", f.Managed.Get())
-	setWrapper(d, "uuid", f.Pk)
+	helpers.SetWrapper(d, "name", f.Name)
+	helpers.SetWrapper(d, "slug", f.Slug)
+	helpers.SetWrapper(d, "managed", f.Managed.Get())
+	helpers.SetWrapper(d, "uuid", f.Pk)
 	return diags
 }

@@ -45,8 +45,8 @@ func resourceStagePrompt() *schema.Resource {
 func resourceStagePromptSchemaToProvider(d *schema.ResourceData) *api.PromptStageRequest {
 	r := api.PromptStageRequest{
 		Name:               d.Get("name").(string),
-		Fields:             castSlice[string](d.Get("fields").([]interface{})),
-		ValidationPolicies: castSlice[string](d.Get("validation_policies").([]interface{})),
+		Fields:             helpers.CastSlice[string](d.Get("fields").([]interface{})),
+		ValidationPolicies: helpers.CastSlice[string](d.Get("validation_policies").([]interface{})),
 	}
 	return &r
 }
@@ -74,11 +74,11 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	fields := castSlice[string](d.Get("fields").([]interface{}))
-	setWrapper(d, "fields", helpers.ListConsistentMerge(fields, res.Fields))
-	validationPolicies := castSlice[string](d.Get("validation_policies").([]interface{}))
-	setWrapper(d, "validation_policies", helpers.ListConsistentMerge(validationPolicies, res.ValidationPolicies))
+	helpers.SetWrapper(d, "name", res.Name)
+	fields := helpers.CastSlice[string](d.Get("fields").([]interface{}))
+	helpers.SetWrapper(d, "fields", helpers.ListConsistentMerge(fields, res.Fields))
+	validationPolicies := helpers.CastSlice[string](d.Get("validation_policies").([]interface{}))
+	helpers.SetWrapper(d, "validation_policies", helpers.ListConsistentMerge(validationPolicies, res.ValidationPolicies))
 	return diags
 }
 
