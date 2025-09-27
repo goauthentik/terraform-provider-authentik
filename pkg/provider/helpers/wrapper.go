@@ -63,6 +63,22 @@ func GetJSON[T any](d *schema.ResourceData, key string) (T, diag.Diagnostics) {
 	return v, nil
 }
 
+func CastSlice_New[T any](d *schema.ResourceData, key string) []T {
+	sl := make([]T, 0)
+	rv, ok := d.GetOk(key)
+	if !ok {
+		return sl
+	}
+	in, ok := rv.([]interface{})
+	if !ok {
+		return sl
+	}
+	for _, m := range in {
+		sl = append(sl, m.(T))
+	}
+	return sl
+}
+
 func CastSlice[T any](in []interface{}) []T {
 	sl := make([]T, len(in))
 	for i, m := range in {
