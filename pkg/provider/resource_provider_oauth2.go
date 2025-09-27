@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderOAuth2() *schema.Resource {
@@ -47,8 +48,8 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.CLIENTTYPEENUM_CONFIDENTIAL,
-				Description:      EnumToDescription(api.AllowedClientTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedClientTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedClientTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedClientTypeEnumEnumValues),
 			},
 			"client_id": {
 				Type:     schema.TypeString,
@@ -64,22 +65,22 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=1",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"access_token_validity": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=10",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"refresh_token_validity": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"include_claims_in_id_token": {
 				Type:     schema.TypeBool,
@@ -109,15 +110,15 @@ func resourceProviderOAuth2() *schema.Resource {
 				Type:             schema.TypeString,
 				Default:          api.SUBMODEENUM_HASHED_USER_ID,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedSubModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSubModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSubModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSubModeEnumEnumValues),
 			},
 			"issuer_mode": {
 				Type:             schema.TypeString,
 				Default:          api.ISSUERMODEENUM_PER_PROVIDER,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedIssuerModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedIssuerModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedIssuerModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedIssuerModeEnumEnumValues),
 			},
 			"jwks_sources": {
 				Type:     schema.TypeList,
@@ -216,7 +217,7 @@ func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Create(ctx).OAuth2ProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -232,7 +233,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Retrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -246,9 +247,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "issuer_mode", res.IssuerMode)
 	setWrapper(d, "backchannel_logout_uri", res.BackchannelLogoutUri)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
-	setWrapper(d, "allowed_redirect_uris", redirectURIsToList(castSlice[api.RedirectURI](listConsistentMerge(localRedirectURIs, res.RedirectUris))))
+	setWrapper(d, "allowed_redirect_uris", redirectURIsToList(castSlice[api.RedirectURI](helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris))))
 	if res.SigningKey.IsSet() {
 		setWrapper(d, "signing_key", res.SigningKey.Get())
 	}
@@ -260,9 +261,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	localJWKSProviders := castSlice[int](d.Get("jwt_federation_providers").([]interface{}))
-	setWrapper(d, "jwt_federation_providers", listConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
+	setWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
 	localJWKSSources := castSlice[string](d.Get("jwt_federation_sources").([]interface{}))
-	setWrapper(d, "jwt_federation_sources", listConsistentMerge(localJWKSSources, res.JwtFederationSources))
+	setWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }
 
@@ -276,7 +277,7 @@ func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Update(ctx, int32(id)).OAuth2ProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -291,7 +292,7 @@ func resourceProviderOAuth2Delete(ctx context.Context, d *schema.ResourceData, m
 	}
 	hr, err := c.client.ProvidersApi.ProvidersOauth2Destroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

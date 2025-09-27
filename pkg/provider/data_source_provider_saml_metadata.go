@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceProviderSAMLMetadata() *schema.Resource {
@@ -47,7 +48,7 @@ func dataSourceProviderSAMLMetadataRead(ctx context.Context, d *schema.ResourceD
 		}
 		res, hr, err := req.Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 		if len(res.Results) < 1 {
 			return diag.Errorf("no matching providers found")
@@ -59,7 +60,7 @@ func dataSourceProviderSAMLMetadataRead(ctx context.Context, d *schema.ResourceD
 
 	meta, hr, err := c.client.ProvidersApi.ProvidersSamlMetadataRetrieve(ctx, finalId).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	setWrapper(d, "metadata", meta.Metadata)
 	return diags

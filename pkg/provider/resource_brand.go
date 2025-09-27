@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceBrand() *schema.Resource {
@@ -94,9 +95,9 @@ func resourceBrand() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -137,7 +138,7 @@ func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreBrandsCreate(ctx).BrandRequest(*mo).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.BrandUuid)
@@ -150,7 +151,7 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	res, hr, err := c.client.CoreApi.CoreBrandsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "domain", res.Domain)
@@ -182,7 +183,7 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 	if res.HasClientCertificates() {
 		localClientCertificates := castSlice[string](d.Get("client_certificates").([]interface{}))
-		setWrapper(d, "client_certificates", listConsistentMerge(localClientCertificates, res.ClientCertificates))
+		setWrapper(d, "client_certificates", helpers.ListConsistentMerge(localClientCertificates, res.ClientCertificates))
 	}
 	if res.DefaultApplication.IsSet() {
 		setWrapper(d, "default_application", res.DefaultApplication.Get())
@@ -205,7 +206,7 @@ func resourceBrandUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreBrandsUpdate(ctx, d.Id()).BrandRequest(*obj).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.BrandUuid)
@@ -216,7 +217,7 @@ func resourceBrandDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreBrandsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

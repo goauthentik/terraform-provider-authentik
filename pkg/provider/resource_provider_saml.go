@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderSAML() *schema.Resource {
@@ -88,22 +89,22 @@ func resourceProviderSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=-5",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"assertion_valid_not_on_or_after": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=5",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"session_valid_not_on_or_after": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=86400",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"name_id_mapping": {
 				Type:     schema.TypeString,
@@ -117,15 +118,15 @@ func resourceProviderSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.DIGESTALGORITHMENUM__2001_04_XMLENCSHA256,
-				Description:      EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
 			},
 			"signature_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SIGNATUREALGORITHMENUM__2001_04_XMLDSIG_MORERSA_SHA256,
-				Description:      EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
 			},
 			"signing_kp": {
 				Type:     schema.TypeString,
@@ -153,8 +154,8 @@ func resourceProviderSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SPBINDINGENUM_REDIRECT,
-				Description:      EnumToDescription(api.AllowedSpBindingEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSpBindingEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSpBindingEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSpBindingEnumEnumValues),
 			},
 			"default_relay_state": {
 				Type:     schema.TypeString,
@@ -200,7 +201,7 @@ func resourceProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlCreate(ctx).SAMLProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -216,7 +217,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -224,7 +225,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 
 	setWrapper(d, "acs_url", res.AcsUrl)
 	setWrapper(d, "audience", res.Audience)
@@ -272,7 +273,7 @@ func resourceProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSamlUpdate(ctx, int32(id)).SAMLProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -287,7 +288,7 @@ func resourceProviderSAMLDelete(ctx context.Context, d *schema.ResourceData, m i
 	}
 	hr, err := c.client.ProvidersApi.ProvidersSamlDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

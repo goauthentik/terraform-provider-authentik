@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceGroup() *schema.Resource {
@@ -45,9 +46,9 @@ func resourceGroup() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 			"roles": {
 				Type:     schema.TypeList,
@@ -83,7 +84,7 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreGroupsCreate(ctx).GroupRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -96,7 +97,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	res, hr, err := c.client.CoreApi.CoreGroupsRetrieve(ctx, d.Id()).IncludeUsers(false).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -107,9 +108,9 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 	setWrapper(d, "attributes", string(b))
 	localUsers := castSlice[int](d.Get("users").([]interface{}))
-	setWrapper(d, "users", listConsistentMerge(localUsers, slice32ToInt(res.Users)))
+	setWrapper(d, "users", helpers.ListConsistentMerge(localUsers, slice32ToInt(res.Users)))
 	localRoles := castSlice[string](d.Get("role").([]interface{}))
-	setWrapper(d, "roles", listConsistentMerge(localRoles, res.Roles))
+	setWrapper(d, "roles", helpers.ListConsistentMerge(localRoles, res.Roles))
 	return diags
 }
 
@@ -122,7 +123,7 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	res, hr, err := c.client.CoreApi.CoreGroupsUpdate(ctx, d.Id()).GroupRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -133,7 +134,7 @@ func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreGroupsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

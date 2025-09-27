@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingSourceLDAP() *schema.Resource {
@@ -26,7 +27,7 @@ func resourcePropertyMappingSourceLDAP() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 		},
 	}
@@ -47,7 +48,7 @@ func resourcePropertyMappingSourceLDAPCreate(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapCreate(ctx).LDAPSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -60,7 +61,7 @@ func resourcePropertyMappingSourceLDAPRead(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -75,7 +76,7 @@ func resourcePropertyMappingSourceLDAPUpdate(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapUpdate(ctx, d.Id()).LDAPSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +87,7 @@ func resourcePropertyMappingSourceLDAPDelete(ctx context.Context, d *schema.Reso
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

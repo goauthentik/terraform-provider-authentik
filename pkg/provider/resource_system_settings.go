@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 const systemSettingsID = "system_settings"
@@ -46,8 +47,8 @@ func resourceSystemSettings() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=365",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"footer_links": {
 				Type:     schema.TypeList,
@@ -70,8 +71,8 @@ func resourceSystemSettings() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"default_token_length": {
 				Type:     schema.TypeInt,
@@ -92,9 +93,9 @@ func resourceSystemSettings() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          `{"policies_buffered_access_view": false}`,
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -131,7 +132,7 @@ func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m
 
 	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(systemSettingsID)
@@ -144,7 +145,7 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.AdminApi.AdminSettingsRetrieve(ctx).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "avatars", res.Avatars)
@@ -177,7 +178,7 @@ func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(systemSettingsID)

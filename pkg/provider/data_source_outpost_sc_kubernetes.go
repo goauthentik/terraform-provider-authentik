@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataOutpostServiceConnectionsKubernetes() *schema.Resource {
@@ -48,7 +49,7 @@ func dataOutpostServiceConnectionsKubernetesRead(ctx context.Context, d *schema.
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageUserWrite() *schema.Resource {
@@ -32,8 +33,8 @@ func resourceStageUserWrite() *schema.Resource {
 				Type:             schema.TypeString,
 				Default:          api.USERCREATIONMODEENUM_CREATE_WHEN_REQUIRED,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedUserCreationModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserCreationModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserCreationModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserCreationModeEnumEnumValues),
 			},
 			"create_users_group": {
 				Type:     schema.TypeString,
@@ -48,12 +49,12 @@ func resourceStageUserWrite() *schema.Resource {
 				Type:     schema.TypeString,
 				Default:  api.USERTYPEENUM_EXTERNAL,
 				Optional: true,
-				Description: EnumToDescription([]api.UserTypeEnum{
+				Description: helpers.EnumToDescription([]api.UserTypeEnum{
 					api.USERTYPEENUM_INTERNAL,
 					api.USERTYPEENUM_EXTERNAL,
 					api.USERTYPEENUM_SERVICE_ACCOUNT,
 				}),
-				ValidateDiagFunc: StringInEnum([]api.UserTypeEnum{
+				ValidateDiagFunc: helpers.StringInEnum([]api.UserTypeEnum{
 					api.USERTYPEENUM_INTERNAL,
 					api.USERTYPEENUM_EXTERNAL,
 					api.USERTYPEENUM_SERVICE_ACCOUNT,
@@ -82,7 +83,7 @@ func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -95,7 +96,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -114,7 +115,7 @@ func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -125,7 +126,7 @@ func resourceStageUserWriteDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserWriteDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

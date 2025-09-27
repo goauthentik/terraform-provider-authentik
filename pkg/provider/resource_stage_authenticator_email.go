@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorEmail() *schema.Resource {
@@ -77,8 +78,8 @@ func resourceStageAuthenticatorEmail() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"subject": {
 				Type:     schema.TypeString,
@@ -126,7 +127,7 @@ func resourceStageAuthenticatorEmailCreate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailCreate(ctx).AuthenticatorEmailStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -139,7 +140,7 @@ func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.Resource
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -168,7 +169,7 @@ func resourceStageAuthenticatorEmailUpdate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailUpdate(ctx, d.Id()).AuthenticatorEmailStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -179,7 +180,7 @@ func resourceStageAuthenticatorEmailDelete(ctx context.Context, d *schema.Resour
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

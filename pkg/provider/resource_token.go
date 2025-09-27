@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceToken() *schema.Resource {
@@ -49,8 +50,8 @@ func resourceToken() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.INTENTENUM_API,
-				Description:      EnumToDescription(api.AllowedIntentEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedIntentEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedIntentEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedIntentEnumEnumValues),
 			},
 			"expires": {
 				Type:     schema.TypeString,
@@ -99,7 +100,7 @@ func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreTokensCreate(ctx).TokenRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Identifier)
@@ -112,7 +113,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	res, hr, err := c.client.CoreApi.CoreTokensRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "identifier", res.Identifier)
@@ -125,7 +126,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
 		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 		setWrapper(d, "key", res.Key)
 	}
@@ -141,7 +142,7 @@ func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	res, hr, err := c.client.CoreApi.CoreTokensUpdate(ctx, d.Id()).TokenRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Identifier)
@@ -152,7 +153,7 @@ func resourceTokenDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

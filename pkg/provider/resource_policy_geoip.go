@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyGeoIP() *schema.Resource {
@@ -66,10 +67,10 @@ func resourcePolicyGeoIP() *schema.Resource {
 			"countries": {
 				Type:        schema.TypeList,
 				Optional:    true,
-				Description: EnumToDescription(api.AllowedCountryCodeEnumEnumValues),
+				Description: helpers.EnumToDescription(api.AllowedCountryCodeEnumEnumValues),
 				Elem: &schema.Schema{
 					Type:             schema.TypeString,
-					ValidateDiagFunc: StringInEnum(api.AllowedCountryCodeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedCountryCodeEnumEnumValues),
 				},
 			},
 		},
@@ -105,7 +106,7 @@ func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesGeoipCreate(ctx).GeoIPPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -118,7 +119,7 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.PoliciesApi.PoliciesGeoipRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -131,14 +132,14 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 	setWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
 	if res.HasAsns() {
 		localAsns := castSlice[int](d.Get("asns").([]interface{}))
-		setWrapper(d, "asns", listConsistentMerge(localAsns, slice32ToInt(res.Asns)))
+		setWrapper(d, "asns", helpers.ListConsistentMerge(localAsns, slice32ToInt(res.Asns)))
 	}
 	if res.Countries != nil {
 		localCountries := make([]api.CountryCodeEnum, 0)
 		for _, c := range castSlice[string](d.Get("countries").([]interface{})) {
 			localCountries = append(localCountries, api.CountryCodeEnum(c))
 		}
-		setWrapper(d, "countries", listConsistentMerge(localCountries, res.Countries))
+		setWrapper(d, "countries", helpers.ListConsistentMerge(localCountries, res.Countries))
 	}
 	return diags
 }
@@ -150,7 +151,7 @@ func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesGeoipUpdate(ctx, d.Id()).GeoIPPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -161,7 +162,7 @@ func resourcePolicyGeoIPDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesGeoipDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

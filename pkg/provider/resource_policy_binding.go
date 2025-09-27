@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyBinding() *schema.Resource {
@@ -91,7 +92,7 @@ func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsCreate(ctx).PolicyBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -104,7 +105,7 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "target", res.Target)
@@ -132,7 +133,7 @@ func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsUpdate(ctx, d.Id()).PolicyBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -143,7 +144,7 @@ func resourcePolicyBindingDelete(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceOutpost() *schema.Resource {
@@ -29,8 +30,8 @@ func resourceOutpost() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.OUTPOSTTYPEENUM_PROXY,
-				Description:      EnumToDescription(api.AllowedOutpostTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedOutpostTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedOutpostTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOutpostTypeEnumEnumValues),
 			},
 			"protocol_providers": {
 				Type:     schema.TypeList,
@@ -47,9 +48,9 @@ func resourceOutpost() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Computed:         true,
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -65,7 +66,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 
 	defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
 	if err != nil {
-		return nil, httpToDiag(d, hr, err)
+		return nil, helpers.HTTPToDiag(d, hr, err)
 	}
 	if l, ok := d.Get("config").(string); ok && l != "" {
 		var c map[string]interface{}
@@ -90,7 +91,7 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesCreate(ctx).OutpostRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -103,13 +104,13 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "type", res.Type)
 	localProviders := castSlice[int](d.Get("protocol_providers").([]interface{}))
-	setWrapper(d, "protocol_providers", listConsistentMerge(localProviders, slice32ToInt(res.Providers)))
+	setWrapper(d, "protocol_providers", helpers.ListConsistentMerge(localProviders, slice32ToInt(res.Providers)))
 	if res.ServiceConnection.IsSet() {
 		setWrapper(d, "service_connection", res.ServiceConnection.Get())
 	}
@@ -131,7 +132,7 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesUpdate(ctx, d.Id()).OutpostRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -142,7 +143,7 @@ func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

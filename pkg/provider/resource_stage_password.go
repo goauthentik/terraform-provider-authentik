@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStagePassword() *schema.Resource {
@@ -28,8 +29,8 @@ func resourceStagePassword() *schema.Resource {
 				Required: true,
 				Elem: &schema.Schema{
 					Type:             schema.TypeString,
-					Description:      EnumToDescription(api.AllowedBackendsEnumEnumValues),
-					ValidateDiagFunc: StringInEnum(api.AllowedBackendsEnumEnumValues),
+					Description:      helpers.EnumToDescription(api.AllowedBackendsEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedBackendsEnumEnumValues),
 				},
 			},
 			"configure_flow": {
@@ -73,7 +74,7 @@ func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesPasswordCreate(ctx).PasswordStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +87,7 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesPasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -106,7 +107,7 @@ func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesPasswordUpdate(ctx, d.Id()).PasswordStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -117,7 +118,7 @@ func resourceStagePasswordDelete(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

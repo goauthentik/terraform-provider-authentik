@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorWebAuthn() *schema.Resource {
@@ -35,21 +36,21 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERVERIFICATIONENUM_PREFERRED,
-				Description:      EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserVerificationEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserVerificationEnumEnumValues),
 			},
 			"resident_key_requirement": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.RESIDENTKEYREQUIREMENTENUM_PREFERRED,
-				Description:      EnumToDescription(api.AllowedResidentKeyRequirementEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedResidentKeyRequirementEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedResidentKeyRequirementEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedResidentKeyRequirementEnumEnumValues),
 			},
 			"authenticator_attachment": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedAuthenticatorAttachmentEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedAuthenticatorAttachmentEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedAuthenticatorAttachmentEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthenticatorAttachmentEnumEnumValues),
 			},
 			"device_type_restrictions": {
 				Type:     schema.TypeList,
@@ -90,7 +91,7 @@ func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticatorWebAuthnStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -103,7 +104,7 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -115,7 +116,7 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	localDeviceTypeRestrictions := castSlice[string](d.Get("device_type_restrictions").([]interface{}))
-	setWrapper(d, "device_type_restrictions", listConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
+	setWrapper(d, "device_type_restrictions", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
 	setWrapper(d, "max_attempts", res.MaxAttempts)
 	return diags
 }
@@ -127,7 +128,7 @@ func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticatorWebAuthnStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -138,7 +139,7 @@ func resourceStageAuthenticatorWebAuthnDelete(ctx context.Context, d *schema.Res
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

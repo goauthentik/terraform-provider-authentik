@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderMicrosoftEntra() *schema.Resource {
@@ -68,11 +69,11 @@ func resourceProviderMicrosoftEntra() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description: EnumToDescription([]api.OutgoingSyncDeleteAction{
+				Description: helpers.EnumToDescription([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
-				ValidateDiagFunc: StringInEnum([]api.OutgoingSyncDeleteAction{
+				ValidateDiagFunc: helpers.StringInEnum([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
@@ -81,11 +82,11 @@ func resourceProviderMicrosoftEntra() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description: EnumToDescription([]api.OutgoingSyncDeleteAction{
+				Description: helpers.EnumToDescription([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
-				ValidateDiagFunc: StringInEnum([]api.OutgoingSyncDeleteAction{
+				ValidateDiagFunc: helpers.StringInEnum([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
@@ -121,7 +122,7 @@ func resourceProviderMicrosoftEntraCreate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraCreate(ctx).MicrosoftEntraProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -137,7 +138,7 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -151,11 +152,11 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 	setWrapper(d, "dry_run", res.DryRun)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
 	if len(localGroupMappings) > 0 {
-		setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+		setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	}
 	return diags
 }
@@ -173,7 +174,7 @@ func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraUpdate(ctx, int32(id)).MicrosoftEntraProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -188,7 +189,7 @@ func resourceProviderMicrosoftEntraDelete(ctx context.Context, d *schema.Resourc
 	}
 	hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

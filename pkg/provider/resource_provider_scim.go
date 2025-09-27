@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderSCIM() *schema.Resource {
@@ -42,8 +43,8 @@ func resourceProviderSCIM() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.COMPATIBILITYMODEENUM_DEFAULT,
-				Description:      EnumToDescription(api.AllowedCompatibilityModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedCompatibilityModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedCompatibilityModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedCompatibilityModeEnumEnumValues),
 			},
 			"property_mappings": {
 				Type:     schema.TypeList,
@@ -93,7 +94,7 @@ func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersScimCreate(ctx).SCIMProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -109,16 +110,16 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersScimRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
 	setWrapper(d, "url", res.Url)
 	setWrapper(d, "token", res.Token)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+	setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	setWrapper(d, "filter_group", res.FilterGroup.Get())
 	setWrapper(d, "dry_run", res.DryRun)
@@ -136,7 +137,7 @@ func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersScimUpdate(ctx, int32(id)).SCIMProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -151,7 +152,7 @@ func resourceProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m i
 	}
 	hr, err := c.client.ProvidersApi.ProvidersScimDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

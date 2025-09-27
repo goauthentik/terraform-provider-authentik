@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceSourceSAML() *schema.Resource {
@@ -54,22 +55,22 @@ func resourceSourceSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"user_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
 			"group_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
 			},
 
 			"pre_authentication_flow": {
@@ -97,15 +98,15 @@ func resourceSourceSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SAMLNAMEIDPOLICYENUM__2_0NAMEID_FORMATPERSISTENT,
-				Description:      EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
 			},
 			"binding_type": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.BINDINGTYPEENUM_REDIRECT,
-				Description:      EnumToDescription(api.AllowedBindingTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedBindingTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedBindingTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedBindingTypeEnumEnumValues),
 			},
 			"signing_kp": {
 				Type:     schema.TypeString,
@@ -123,22 +124,22 @@ func resourceSourceSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.DIGESTALGORITHMENUM__2001_04_XMLENCSHA256,
-				Description:      EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
 			},
 			"signature_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SIGNATUREALGORITHMENUM__2001_04_XMLDSIG_MORERSA_SHA256,
-				Description:      EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
 			},
 			"temporary_user_delete_after": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=1",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 
 			"metadata": {
@@ -204,7 +205,7 @@ func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -216,7 +217,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesSamlRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -259,13 +260,13 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	meta, hr, err := c.client.SourcesApi.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	setWrapper(d, "metadata", meta.Metadata)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.UserPropertyMappings))
+	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
 	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
+	setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }
 
@@ -275,7 +276,7 @@ func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -286,7 +287,7 @@ func resourceSourceSAMLDelete(ctx context.Context, d *schema.ResourceData, m int
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

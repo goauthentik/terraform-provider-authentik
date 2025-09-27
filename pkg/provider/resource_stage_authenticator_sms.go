@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorSms() *schema.Resource {
@@ -35,8 +36,8 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.PROVIDERENUM_TWILIO,
-				Description:      EnumToDescription(api.AllowedProviderEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedProviderEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedProviderEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProviderEnumEnumValues),
 			},
 			"from_number": {
 				Type:     schema.TypeString,
@@ -56,8 +57,8 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.AUTHTYPEENUM_BASIC,
-				Description:      EnumToDescription(api.AllowedAuthTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedAuthTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedAuthTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthTypeEnumEnumValues),
 			},
 			"auth_password": {
 				Type:      schema.TypeString,
@@ -101,7 +102,7 @@ func resourceStageAuthenticatorSmsCreate(ctx context.Context, d *schema.Resource
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsCreate(ctx).AuthenticatorSMSStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -114,7 +115,7 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -140,7 +141,7 @@ func resourceStageAuthenticatorSmsUpdate(ctx context.Context, d *schema.Resource
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsUpdate(ctx, d.Id()).AuthenticatorSMSStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -151,7 +152,7 @@ func resourceStageAuthenticatorSmsDelete(ctx context.Context, d *schema.Resource
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorSmsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

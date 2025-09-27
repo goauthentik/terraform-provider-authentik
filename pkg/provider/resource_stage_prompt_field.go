@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStagePromptField() *schema.Resource {
@@ -34,8 +35,8 @@ func resourceStagePromptField() *schema.Resource {
 			"type": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      EnumToDescription(api.AllowedPromptTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPromptTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPromptTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPromptTypeEnumEnumValues),
 			},
 			"required": {
 				Type:     schema.TypeBool,
@@ -45,7 +46,7 @@ func resourceStagePromptField() *schema.Resource {
 			"placeholder": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"placeholder_expression": {
 				Type:     schema.TypeBool,
@@ -55,7 +56,7 @@ func resourceStagePromptField() *schema.Resource {
 			"initial_value": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"initial_value_expression": {
 				Type:     schema.TypeBool,
@@ -99,7 +100,7 @@ func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsCreate(ctx).PromptRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -112,7 +113,7 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -136,7 +137,7 @@ func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsUpdate(ctx, d.Id()).PromptRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -147,7 +148,7 @@ func resourceStagePromptFieldDelete(ctx context.Context, d *schema.ResourceData,
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPromptPromptsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

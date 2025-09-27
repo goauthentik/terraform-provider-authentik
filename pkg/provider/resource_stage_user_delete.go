@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageUserDelete() *schema.Resource {
@@ -41,7 +42,7 @@ func resourceStageUserDeleteCreate(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.StagesApi.StagesUserDeleteCreate(ctx).UserDeleteStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -54,7 +55,7 @@ func resourceStageUserDeleteRead(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesUserDeleteRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -68,7 +69,7 @@ func resourceStageUserDeleteUpdate(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.StagesApi.StagesUserDeleteUpdate(ctx, d.Id()).UserDeleteStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -79,7 +80,7 @@ func resourceStageUserDeleteDelete(ctx context.Context, d *schema.ResourceData, 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserDeleteDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

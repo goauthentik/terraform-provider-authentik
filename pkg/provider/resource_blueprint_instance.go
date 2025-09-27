@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceBlueprintInstance() *schema.Resource {
@@ -41,9 +42,9 @@ func resourceBlueprintInstance() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -72,7 +73,7 @@ func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsCreate(ctx).BlueprintInstanceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +87,7 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -111,7 +112,7 @@ func resourceBlueprintInstanceUpdate(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsUpdate(ctx, d.Id()).BlueprintInstanceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -122,7 +123,7 @@ func resourceBlueprintInstanceDelete(ctx context.Context, d *schema.ResourceData
 	c := m.(*APIClient)
 	hr, err := c.client.ManagedApi.ManagedBlueprintsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

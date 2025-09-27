@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageIdentification() *schema.Resource {
@@ -28,8 +29,8 @@ func resourceStageIdentification() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Schema{
 					Type:             schema.TypeString,
-					Description:      EnumToDescription(api.AllowedUserFieldsEnumEnumValues),
-					ValidateDiagFunc: StringInEnum(api.AllowedUserFieldsEnumEnumValues),
+					Description:      helpers.EnumToDescription(api.AllowedUserFieldsEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserFieldsEnumEnumValues),
 				},
 			},
 			"password_stage": {
@@ -118,7 +119,7 @@ func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationCreate(ctx).IdentificationStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -131,7 +132,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -157,7 +158,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 		setWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
 	}
 	localSources := castSlice[string](d.Get("sources").([]interface{}))
-	setWrapper(d, "sources", listConsistentMerge(localSources, res.Sources))
+	setWrapper(d, "sources", helpers.ListConsistentMerge(localSources, res.Sources))
 	return diags
 }
 
@@ -168,7 +169,7 @@ func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.StagesApi.StagesIdentificationUpdate(ctx, d.Id()).IdentificationStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -179,7 +180,7 @@ func resourceStageIdentificationDelete(ctx context.Context, d *schema.ResourceDa
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesIdentificationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStagePrompt() *schema.Resource {
@@ -57,7 +58,7 @@ func resourceStagePromptCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesCreate(ctx).PromptStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -70,14 +71,14 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
 	fields := castSlice[string](d.Get("fields").([]interface{}))
-	setWrapper(d, "fields", listConsistentMerge(fields, res.Fields))
+	setWrapper(d, "fields", helpers.ListConsistentMerge(fields, res.Fields))
 	validationPolicies := castSlice[string](d.Get("validation_policies").([]interface{}))
-	setWrapper(d, "validation_policies", listConsistentMerge(validationPolicies, res.ValidationPolicies))
+	setWrapper(d, "validation_policies", helpers.ListConsistentMerge(validationPolicies, res.ValidationPolicies))
 	return diags
 }
 
@@ -88,7 +89,7 @@ func resourceStagePromptUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesPromptStagesUpdate(ctx, d.Id()).PromptStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -99,7 +100,7 @@ func resourceStagePromptDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPromptStagesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

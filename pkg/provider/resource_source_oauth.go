@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceSourceOAuth() *schema.Resource {
@@ -55,36 +56,36 @@ func resourceSourceOAuth() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.AUTHORIZATIONCODEAUTHMETHODENUM_BASIC_AUTH,
-				Description:      EnumToDescription(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
 			},
 			"policy_engine_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"user_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
 			"group_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
 			},
 
 			"provider_type": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      EnumToDescription(api.AllowedProviderTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedProviderTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedProviderTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProviderTypeEnumEnumValues),
 			},
 
 			"request_token_url": {
@@ -123,8 +124,8 @@ func resourceSourceOAuth() *schema.Resource {
 				Optional:         true,
 				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use jsonencode() to pass objects.",
 				Computed:         true,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 
 			"additional_scopes": {
@@ -210,7 +211,7 @@ func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthCreate(ctx).OAuthSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -222,7 +223,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesOauthRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -265,9 +266,9 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	setWrapper(d, "oidc_jwks", string(b))
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.UserPropertyMappings))
+	setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
 	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
+	setWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }
 
@@ -280,7 +281,7 @@ func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.SourcesApi.SourcesOauthUpdate(ctx, d.Id()).OAuthSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -291,7 +292,7 @@ func resourceSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesOauthDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

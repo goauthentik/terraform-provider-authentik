@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceSourceKerberos() *schema.Resource {
@@ -54,22 +55,22 @@ func resourceSourceKerberos() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"user_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
 			"group_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
 			},
 
 			"realm": {
@@ -181,7 +182,7 @@ func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.SourcesApi.SourcesKerberosCreate(ctx).KerberosSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -193,7 +194,7 @@ func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesKerberosRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -232,7 +233,7 @@ func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.SourcesApi.SourcesKerberosUpdate(ctx, d.Id()).KerberosSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -243,7 +244,7 @@ func resourceSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesKerberosDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyEventMatcher() *schema.Resource {
@@ -39,14 +40,14 @@ func resourcePolicyEventMatcher() *schema.Resource {
 			"app": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedAppEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedAppEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedAppEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAppEnumEnumValues),
 			},
 			"model": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedModelEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedModelEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedModelEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedModelEnumEnumValues),
 			},
 		},
 	}
@@ -80,7 +81,7 @@ func resourcePolicyEventMatcherCreate(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherCreate(ctx).EventMatcherPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -93,7 +94,7 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -120,7 +121,7 @@ func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherUpdate(ctx, d.Id()).EventMatcherPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -131,7 +132,7 @@ func resourcePolicyEventMatcherDelete(ctx context.Context, d *schema.ResourceDat
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesEventMatcherDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

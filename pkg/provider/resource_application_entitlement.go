@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceApplicationEntitlement() *schema.Resource {
@@ -32,9 +33,9 @@ func resourceApplicationEntitlement() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -61,7 +62,7 @@ func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsCreate(ctx).ApplicationEntitlementRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.PbmUuid)
@@ -74,7 +75,7 @@ func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceD
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.PbmUuid)
@@ -98,7 +99,7 @@ func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsUpdate(ctx, d.Id()).ApplicationEntitlementRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.PbmUuid)
@@ -109,7 +110,7 @@ func resourceApplicationEntitlementDelete(ctx context.Context, d *schema.Resourc
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreApplicationEntitlementsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

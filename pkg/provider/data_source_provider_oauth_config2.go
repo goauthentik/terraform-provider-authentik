@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceProviderOAuth2Config() *schema.Resource {
@@ -70,7 +71,7 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 		}
 		res, hr, err := req.Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 		if len(res.Results) < 1 {
 			return diag.Errorf("no matching providers found")
@@ -82,7 +83,7 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 
 	meta, hr, err := c.client.ProvidersApi.ProvidersOauth2SetupUrlsRetrieve(ctx, finalId).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	setWrapper(d, "issuer_url", meta.Issuer)
 	setWrapper(d, "authorize_url", meta.Authorize)

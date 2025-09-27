@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderSSF() *schema.Resource {
@@ -40,8 +41,8 @@ func resourceProviderSSF() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 		},
 	}
@@ -71,7 +72,7 @@ func resourceProviderSSFCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSsfCreate(ctx).SSFProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -87,7 +88,7 @@ func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersSsfRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -107,7 +108,7 @@ func resourceProviderSSFUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.ProvidersApi.ProvidersSsfUpdate(ctx, int32(id)).SSFProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -122,7 +123,7 @@ func resourceProviderSSFDelete(ctx context.Context, d *schema.ResourceData, m in
 	}
 	hr, err := c.client.ProvidersApi.ProvidersSsfDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

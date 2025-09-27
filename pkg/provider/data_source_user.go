@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceUser() *schema.Resource {
@@ -151,7 +152,7 @@ func dataSourceUserReadByPk(ctx context.Context, d *schema.ResourceData, c *APIC
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	return setUser(d, *res)
@@ -163,7 +164,7 @@ func dataSourceUserReadByUsername(ctx context.Context, d *schema.ResourceData, c
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {

@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderRAC() *schema.Resource {
@@ -45,16 +46,16 @@ func resourceProviderRAC() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 			"connection_expiry": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "seconds=0",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 		},
 	}
@@ -83,7 +84,7 @@ func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.ProvidersApi.ProvidersRacCreate(ctx).RACProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -99,7 +100,7 @@ func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersRacRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -108,7 +109,7 @@ func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m inte
 	setWrapper(d, "connection_expiry", res.ConnectionExpiry)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	b, err := json.Marshal(res.Settings)
 	if err != nil {
@@ -131,7 +132,7 @@ func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.ProvidersApi.ProvidersRacUpdate(ctx, int32(id)).RACProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -146,7 +147,7 @@ func resourceProviderRACDelete(ctx context.Context, d *schema.ResourceData, m in
 	}
 	hr, err := c.client.ProvidersApi.ProvidersRacDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageRedirect() *schema.Resource {
@@ -27,8 +28,8 @@ func resourceStageRedirect() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.REDIRECTSTAGEMODEENUM_FLOW,
-				Description:      EnumToDescription(api.AllowedRedirectStageModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedRedirectStageModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedRedirectStageModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedRedirectStageModeEnumEnumValues),
 			},
 			"keep_context": {
 				Type:     schema.TypeBool,
@@ -65,7 +66,7 @@ func resourceStageRedirectCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesRedirectCreate(ctx).RedirectStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -78,7 +79,7 @@ func resourceStageRedirectRead(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesRedirectRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -96,7 +97,7 @@ func resourceStageRedirectUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesRedirectUpdate(ctx, d.Id()).RedirectStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -107,7 +108,7 @@ func resourceStageRedirectDelete(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesRedirectDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

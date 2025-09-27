@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceEventTransport() *schema.Resource {
@@ -26,8 +27,8 @@ func resourceEventTransport() *schema.Resource {
 			"mode": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
 			},
 			"webhook_url": {
 				Type:     schema.TypeString,
@@ -84,7 +85,7 @@ func resourceEventTransportCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.EventsApi.EventsTransportsCreate(ctx).NotificationTransportRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -97,7 +98,7 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.EventsApi.EventsTransportsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -120,7 +121,7 @@ func resourceEventTransportUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	res, hr, err := c.client.EventsApi.EventsTransportsUpdate(ctx, d.Id()).NotificationTransportRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -131,7 +132,7 @@ func resourceEventTransportDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.EventsApi.EventsTransportsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

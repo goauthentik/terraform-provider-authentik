@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingProviderScope() *schema.Resource {
@@ -34,7 +35,7 @@ func resourcePropertyMappingProviderScope() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 		},
 	}
@@ -57,7 +58,7 @@ func resourcePropertyMappingProviderScopeCreate(ctx context.Context, d *schema.R
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeCreate(ctx).ScopeMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -70,7 +71,7 @@ func resourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -87,7 +88,7 @@ func resourcePropertyMappingProviderScopeUpdate(ctx context.Context, d *schema.R
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeUpdate(ctx, d.Id()).ScopeMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -98,7 +99,7 @@ func resourcePropertyMappingProviderScopeDelete(ctx context.Context, d *schema.R
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceUser() *schema.Resource {
@@ -34,8 +35,8 @@ func resourceUser() *schema.Resource {
 				Type:             schema.TypeString,
 				Default:          api.USERTYPEENUM_INTERNAL,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedUserTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserTypeEnumEnumValues),
 			},
 			"password": {
 				Type:        schema.TypeString,
@@ -69,9 +70,9 @@ func resourceUser() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -110,7 +111,7 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 		Password: password,
 	}).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	setWrapper(d, "password", password)
 	return nil
@@ -126,7 +127,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.CoreApi.CoreUsersCreate(ctx).UserRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -149,7 +150,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	res, hr, err := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -164,7 +165,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	}
 	setWrapper(d, "attributes", string(b))
 	localGroups := castSlice[string](d.Get("groups").([]interface{}))
-	setWrapper(d, "groups", listConsistentMerge(localGroups, res.Groups))
+	setWrapper(d, "groups", helpers.ListConsistentMerge(localGroups, res.Groups))
 	return diags
 }
 
@@ -181,7 +182,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	res, hr, err := c.client.CoreApi.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -201,7 +202,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	hr, err := c.client.CoreApi.CoreUsersDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

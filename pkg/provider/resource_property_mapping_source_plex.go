@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingSourcePlex() *schema.Resource {
@@ -26,7 +27,7 @@ func resourcePropertyMappingSourcePlex() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 		},
 	}
@@ -47,7 +48,7 @@ func resourcePropertyMappingSourcePlexCreate(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexCreate(ctx).PlexSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -60,7 +61,7 @@ func resourcePropertyMappingSourcePlexRead(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -75,7 +76,7 @@ func resourcePropertyMappingSourcePlexUpdate(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexUpdate(ctx, d.Id()).PlexSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +87,7 @@ func resourcePropertyMappingSourcePlexDelete(ctx context.Context, d *schema.Reso
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderProxy() *schema.Resource {
@@ -64,7 +65,7 @@ func resourceProviderProxy() *schema.Resource {
 			"skip_path_regex": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"intercept_header_auth": {
 				Type:     schema.TypeBool,
@@ -88,8 +89,8 @@ func resourceProviderProxy() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.PROXYMODE_PROXY,
-				ValidateDiagFunc: StringInEnum(api.AllowedProxyModeEnumValues),
-				Description:      EnumToDescription(api.AllowedProxyModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProxyModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedProxyModeEnumValues),
 			},
 			"cookie_domain": {
 				Type:     schema.TypeString,
@@ -99,15 +100,15 @@ func resourceProviderProxy() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=10",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"refresh_token_validity": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"jwks_sources": {
 				Type:     schema.TypeList,
@@ -179,7 +180,7 @@ func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -195,7 +196,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	setWrapper(d, "name", res.Name)
@@ -217,12 +218,12 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		setWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	localJWKSProviders := castSlice[int](d.Get("jwt_federation_providers").([]interface{}))
-	setWrapper(d, "jwt_federation_providers", listConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
+	setWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
 	localJWKSSources := castSlice[string](d.Get("jwt_federation_sources").([]interface{}))
-	setWrapper(d, "jwt_federation_sources", listConsistentMerge(localJWKSSources, res.JwtFederationSources))
+	setWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }
 
@@ -236,7 +237,7 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -251,7 +252,7 @@ func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m 
 	}
 	hr, err := c.client.ProvidersApi.ProvidersProxyDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }
