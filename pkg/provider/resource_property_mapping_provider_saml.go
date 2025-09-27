@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingProviderSAML() *schema.Resource {
@@ -34,7 +35,7 @@ func resourcePropertyMappingProviderSAML() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 		},
 	}
@@ -42,12 +43,10 @@ func resourcePropertyMappingProviderSAML() *schema.Resource {
 
 func resourcePropertyMappingProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLPropertyMappingRequest {
 	r := api.SAMLPropertyMappingRequest{
-		Name:       d.Get("name").(string),
-		SamlName:   d.Get("saml_name").(string),
-		Expression: d.Get("expression").(string),
-	}
-	if de, dSet := d.GetOk("friendly_name"); dSet {
-		r.FriendlyName.Set(api.PtrString(de.(string)))
+		Name:         d.Get("name").(string),
+		SamlName:     d.Get("saml_name").(string),
+		Expression:   d.Get("expression").(string),
+		FriendlyName: *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
 	}
 	return &r
 }
@@ -59,7 +58,7 @@ func resourcePropertyMappingProviderSAMLCreate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderSamlCreate(ctx).SAMLPropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -72,14 +71,14 @@ func resourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderSamlRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.Expression)
-	setWrapper(d, "saml_name", res.SamlName)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.Expression)
+	helpers.SetWrapper(d, "saml_name", res.SamlName)
 	if res.FriendlyName.IsSet() {
-		setWrapper(d, "friendly_name", res.FriendlyName.Get())
+		helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
 	}
 	return diags
 }
@@ -91,7 +90,7 @@ func resourcePropertyMappingProviderSAMLUpdate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderSamlUpdate(ctx, d.Id()).SAMLPropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -102,7 +101,7 @@ func resourcePropertyMappingProviderSAMLDelete(ctx context.Context, d *schema.Re
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

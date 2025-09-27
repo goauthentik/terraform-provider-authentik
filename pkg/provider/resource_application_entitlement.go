@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceApplicationEntitlement() *schema.Resource {
@@ -33,9 +33,9 @@ func resourceApplicationEntitlement() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -47,15 +47,9 @@ func resourceApplicationEntitlementSchemaToModel(d *schema.ResourceData) (*api.A
 		App:  d.Get("application").(string),
 	}
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
-	return &m, nil
+	return &m, err
 }
 
 func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -68,7 +62,7 @@ func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsCreate(ctx).ApplicationEntitlementRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.PbmUuid)
@@ -81,17 +75,17 @@ func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceD
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.PbmUuid)
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "application", res.App)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "application", res.App)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "attributes", string(b))
+	helpers.SetWrapper(d, "attributes", string(b))
 	return diags
 }
 
@@ -105,7 +99,7 @@ func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsUpdate(ctx, d.Id()).ApplicationEntitlementRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.PbmUuid)
@@ -116,7 +110,7 @@ func resourceApplicationEntitlementDelete(ctx context.Context, d *schema.Resourc
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreApplicationEntitlementsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceCertificateKeyPair() *schema.Resource {
@@ -40,10 +41,7 @@ func resourceCertificateKeyPairSchemaToModel(d *schema.ResourceData) *api.Certif
 	app := api.CertificateKeyPairRequest{
 		Name:            d.Get("name").(string),
 		CertificateData: d.Get("certificate_data").(string),
-	}
-
-	if l, ok := d.Get("key_data").(string); ok {
-		app.KeyData = &l
+		KeyData:         helpers.GetP[string](d, "key_data"),
 	}
 	return &app
 }
@@ -55,7 +53,7 @@ func resourceCertificateKeyPairCreate(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsCreate(ctx).CertificateKeyPairRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -68,20 +66,20 @@ func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "name", res.Name)
 
 	rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
-	setWrapper(d, "certificate_data", rc.Data+"\n")
+	helpers.SetWrapper(d, "certificate_data", rc.Data+"\n")
 
 	rk, _, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
 	if err == nil {
-		setWrapper(d, "key_data", rk.Data+"\n")
+		helpers.SetWrapper(d, "key_data", rk.Data+"\n")
 	}
 
 	return diags
@@ -94,7 +92,7 @@ func resourceCertificateKeyPairUpdate(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsUpdate(ctx, d.Id()).CertificateKeyPairRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -105,7 +103,7 @@ func resourceCertificateKeyPairDelete(ctx context.Context, d *schema.ResourceDat
 	c := m.(*APIClient)
 	hr, err := c.client.CryptoApi.CryptoCertificatekeypairsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

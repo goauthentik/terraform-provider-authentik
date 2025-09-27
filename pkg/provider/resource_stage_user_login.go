@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageUserLogin() *schema.Resource {
@@ -27,15 +28,15 @@ func resourceStageUserLogin() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "seconds=0",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"remember_me_offset": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "seconds=0",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"terminate_other_sessions": {
 				Type:     schema.TypeBool,
@@ -46,22 +47,22 @@ func resourceStageUserLogin() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.NETWORKBINDINGENUM_NO_BINDING,
-				Description:      EnumToDescription(api.AllowedNetworkBindingEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedNetworkBindingEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedNetworkBindingEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedNetworkBindingEnumEnumValues),
 			},
 			"geoip_binding": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.GEOIPBINDINGENUM_NO_BINDING,
-				Description:      EnumToDescription(api.AllowedGeoipBindingEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedGeoipBindingEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedGeoipBindingEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGeoipBindingEnumEnumValues),
 			},
 			"remember_device": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 		},
 	}
@@ -87,7 +88,7 @@ func resourceStageUserLoginCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesUserLoginCreate(ctx).UserLoginStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -100,14 +101,14 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesUserLoginRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "session_duration", res.SessionDuration)
-	setWrapper(d, "terminate_other_sessions", res.TerminateOtherSessions)
-	setWrapper(d, "remember_me_offset", res.RememberMeOffset)
-	setWrapper(d, "remember_device", res.RememberDevice)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "session_duration", res.SessionDuration)
+	helpers.SetWrapper(d, "terminate_other_sessions", res.TerminateOtherSessions)
+	helpers.SetWrapper(d, "remember_me_offset", res.RememberMeOffset)
+	helpers.SetWrapper(d, "remember_device", res.RememberDevice)
 	return diags
 }
 
@@ -118,7 +119,7 @@ func resourceStageUserLoginUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesUserLoginUpdate(ctx, d.Id()).UserLoginStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -129,7 +130,7 @@ func resourceStageUserLoginDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserLoginDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

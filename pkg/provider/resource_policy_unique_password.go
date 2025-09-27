@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyUniquePassword() *schema.Resource {
@@ -59,7 +60,7 @@ func resourcePolicyUniquePasswordCreate(ctx context.Context, d *schema.ResourceD
 
 	res, hr, err := c.client.PoliciesApi.PoliciesUniquePasswordCreate(ctx).UniquePasswordPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -72,13 +73,13 @@ func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := c.client.PoliciesApi.PoliciesUniquePasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "password_field", res.PasswordField)
-	setWrapper(d, "num_historical_passwords", res.NumHistoricalPasswords)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "password_field", res.PasswordField)
+	helpers.SetWrapper(d, "num_historical_passwords", res.NumHistoricalPasswords)
 	return diags
 }
 
@@ -89,7 +90,7 @@ func resourcePolicyUniquePasswordUpdate(ctx context.Context, d *schema.ResourceD
 
 	res, hr, err := c.client.PoliciesApi.PoliciesUniquePasswordUpdate(ctx, d.Id()).UniquePasswordPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -100,7 +101,7 @@ func resourcePolicyUniquePasswordDelete(ctx context.Context, d *schema.ResourceD
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesUniquePasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func init() {
@@ -94,26 +95,26 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_property_mapping_notification":              tr(resourcePropertyMappingNotification),
 			"authentik_property_mapping_provider_google_workspace": tr(resourcePropertyMappingProviderGoogleWorkspace),
 			// TODO: Remove after 2024.10
-			"authentik_property_mapping_google_workspace":         tr(markDeprecated(resourcePropertyMappingProviderGoogleWorkspace, "authentik_property_mapping_provider_google_workspace")),
+			"authentik_property_mapping_google_workspace":         tr(helpers.MarkDeprecated(resourcePropertyMappingProviderGoogleWorkspace, "authentik_property_mapping_provider_google_workspace")),
 			"authentik_property_mapping_provider_microsoft_entra": tr(resourcePropertyMappingProviderMicrosoftEntra),
 			// TODO: Remove after 2024.10
-			"authentik_property_mapping_microsoft_entra": tr(markDeprecated(resourcePropertyMappingProviderMicrosoftEntra, "authentik_property_mapping_provider_microsoft_entra")),
+			"authentik_property_mapping_microsoft_entra": tr(helpers.MarkDeprecated(resourcePropertyMappingProviderMicrosoftEntra, "authentik_property_mapping_provider_microsoft_entra")),
 			"authentik_property_mapping_provider_rac":    tr(resourcePropertyMappingProviderRAC),
 			// TODO: Remove after 2024.10
-			"authentik_property_mapping_rac":             tr(markDeprecated(resourcePropertyMappingProviderRAC, "authentik_property_mapping_provider_rac")),
+			"authentik_property_mapping_rac":             tr(helpers.MarkDeprecated(resourcePropertyMappingProviderRAC, "authentik_property_mapping_provider_rac")),
 			"authentik_property_mapping_provider_radius": tr(resourcePropertyMappingProviderRadius),
 			// TODO: Remove after 2024.10
-			"authentik_property_mapping_radius":        tr(markDeprecated(resourcePropertyMappingProviderRadius, "authentik_property_mapping_provider_radius")),
+			"authentik_property_mapping_radius":        tr(helpers.MarkDeprecated(resourcePropertyMappingProviderRadius, "authentik_property_mapping_provider_radius")),
 			"authentik_property_mapping_provider_saml": tr(resourcePropertyMappingProviderSAML),
 			// TODO: Remove after 2024.10
-			"authentik_property_mapping_saml":          tr(markDeprecated(resourcePropertyMappingProviderSAML, "authentik_property_mapping_provider_saml")),
+			"authentik_property_mapping_saml":          tr(helpers.MarkDeprecated(resourcePropertyMappingProviderSAML, "authentik_property_mapping_provider_saml")),
 			"authentik_property_mapping_provider_scim": tr(resourcePropertyMappingProviderSCIM),
 			// TODO: Remove after 2024.10
-			"authentik_property_mapping_scim":           tr(markDeprecated(resourcePropertyMappingProviderSCIM, "authentik_property_mapping_provider_scim")),
+			"authentik_property_mapping_scim":           tr(helpers.MarkDeprecated(resourcePropertyMappingProviderSCIM, "authentik_property_mapping_provider_scim")),
 			"authentik_property_mapping_provider_scope": tr(resourcePropertyMappingProviderScope),
 			"authentik_property_mapping_source_ldap":    tr(resourcePropertyMappingSourceLDAP),
 			// TODO: Remove after 2024.10
-			"authentik_property_mapping_ldap":            tr(markDeprecated(resourcePropertyMappingSourceLDAP, "authentik_property_mapping_source_ldap")),
+			"authentik_property_mapping_ldap":            tr(helpers.MarkDeprecated(resourcePropertyMappingSourceLDAP, "authentik_property_mapping_source_ldap")),
 			"authentik_property_mapping_source_oauth":    tr(resourcePropertyMappingSourceOAuth),
 			"authentik_property_mapping_source_plex":     tr(resourcePropertyMappingSourcePlex),
 			"authentik_property_mapping_source_saml":     tr(resourcePropertyMappingSourceSAML),
@@ -135,7 +136,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_rbac_permission_user":             tr(resourceRBACUserObjectPermission),
 			"authentik_rbac_role":                        tr(resourceRBACRole),
 			// TODO: Remove after 2024.10
-			"authentik_scope_mapping":                     tr(markDeprecated(resourcePropertyMappingProviderScope, "authentik_property_mapping_provider_scope")),
+			"authentik_scope_mapping":                     tr(helpers.MarkDeprecated(resourcePropertyMappingProviderScope, "authentik_property_mapping_provider_scope")),
 			"authentik_service_connection_docker":         tr(resourceServiceConnectionDocker),
 			"authentik_service_connection_kubernetes":     tr(resourceServiceConnectionKubernetes),
 			"authentik_source_kerberos":                   tr(resourceSourceKerberos),

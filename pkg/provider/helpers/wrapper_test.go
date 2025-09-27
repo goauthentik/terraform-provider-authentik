@@ -1,4 +1,4 @@
-package provider
+package helpers
 
 import (
 	"testing"
@@ -8,6 +8,6 @@ import (
 
 func Test_castSlice(t *testing.T) {
 	foo := []interface{}{"test"}
-	bar := castSlice[string](foo)
+	bar := CastSlice[string](foo)
 	assert.Equal(t, bar, []string{"test"})
 }

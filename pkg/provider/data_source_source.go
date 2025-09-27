@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceSource() *schema.Resource {
@@ -51,7 +52,7 @@ func dataSourceSourceRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {
@@ -59,9 +60,9 @@ func dataSourceSourceRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	f := res.Results[0]
 	d.SetId(f.Pk)
-	setWrapper(d, "name", f.Name)
-	setWrapper(d, "slug", f.Slug)
-	setWrapper(d, "managed", f.Managed.Get())
-	setWrapper(d, "uuid", f.Pk)
+	helpers.SetWrapper(d, "name", f.Name)
+	helpers.SetWrapper(d, "slug", f.Slug)
+	helpers.SetWrapper(d, "managed", f.Managed.Get())
+	helpers.SetWrapper(d, "uuid", f.Pk)
 	return diags
 }

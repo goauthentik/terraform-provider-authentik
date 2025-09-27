@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceEnterpriseLicense() *schema.Resource {
@@ -58,7 +59,7 @@ func resourceEnterpriseLicenseCreate(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseCreate(ctx).LicenseRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.LicenseUuid)
@@ -71,14 +72,14 @@ func resourceEnterpriseLicenseRead(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expiry", res.Expiry.Unix())
-	setWrapper(d, "key", res.Key)
-	setWrapper(d, "internal_users", res.InternalUsers)
-	setWrapper(d, "external_users", res.ExternalUsers)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expiry", res.Expiry.Unix())
+	helpers.SetWrapper(d, "key", res.Key)
+	helpers.SetWrapper(d, "internal_users", res.InternalUsers)
+	helpers.SetWrapper(d, "external_users", res.ExternalUsers)
 	return diags
 }
 
@@ -89,7 +90,7 @@ func resourceEnterpriseLicenseUpdate(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseUpdate(ctx, d.Id()).LicenseRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.LicenseUuid)
@@ -100,7 +101,7 @@ func resourceEnterpriseLicenseDelete(ctx context.Context, d *schema.ResourceData
 	c := m.(*APIClient)
 	hr, err := c.client.EnterpriseApi.EnterpriseLicenseDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

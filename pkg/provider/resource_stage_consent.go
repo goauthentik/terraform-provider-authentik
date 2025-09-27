@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageConsent() *schema.Resource {
@@ -27,15 +28,15 @@ func resourceStageConsent() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE,
-				Description:      EnumToDescription(api.AllowedConsentStageModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedConsentStageModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
 			},
 			"consent_expire_in": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "weeks=4",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 		},
 	}
@@ -43,15 +44,12 @@ func resourceStageConsent() *schema.Resource {
 
 func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentStageRequest {
 	r := api.ConsentStageRequest{
-		Name: d.Get("name").(string),
+		Name:            d.Get("name").(string),
+		ConsentExpireIn: helpers.GetP[string](d, "consent_expire_in"),
 	}
 
 	if m, mSet := d.GetOk("mode"); mSet {
 		r.Mode = api.ConsentStageModeEnum(m.(string)).Ptr()
-	}
-
-	if ex, exSet := d.GetOk("consent_expire_in"); exSet {
-		r.ConsentExpireIn = api.PtrString(ex.(string))
 	}
 	return &r
 }
@@ -63,7 +61,7 @@ func resourceStageConsentCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesConsentCreate(ctx).ConsentStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -76,12 +74,12 @@ func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.StagesApi.StagesConsentRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "consent_expire_in", res.ConsentExpireIn)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "consent_expire_in", res.ConsentExpireIn)
 	return diags
 }
 
@@ -92,7 +90,7 @@ func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesConsentUpdate(ctx, d.Id()).ConsentStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -103,7 +101,7 @@ func resourceStageConsentDelete(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesConsentDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

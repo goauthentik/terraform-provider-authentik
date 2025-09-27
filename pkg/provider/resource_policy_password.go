@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyPassword() *schema.Resource {
@@ -99,50 +100,23 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.Passwor
 	r := api.PasswordPolicyRequest{
 		Name:             d.Get("name").(string),
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
-	}
+		PasswordField:    helpers.GetP[string](d, "password_field"),
 
-	if s, sSet := d.GetOk("password_field"); sSet {
-		r.PasswordField = api.PtrString(s.(string))
-	}
+		CheckStaticRules:    helpers.GetP[bool](d, "check_static_rules"),
+		CheckHaveIBeenPwned: helpers.GetP[bool](d, "check_have_i_been_pwned"),
+		CheckZxcvbn:         helpers.GetP[bool](d, "check_zxcvbn"),
 
-	if e, eSet := d.GetOk("check_static_rules"); eSet {
-		r.CheckStaticRules = api.PtrBool(e.(bool))
-	}
-	if e, eSet := d.GetOk("check_have_i_been_pwned"); eSet {
-		r.CheckHaveIBeenPwned = api.PtrBool(e.(bool))
-	}
-	if e, eSet := d.GetOk("check_zxcvbn"); eSet {
-		r.CheckZxcvbn = api.PtrBool(e.(bool))
-	}
+		SymbolCharset:   helpers.GetP[string](d, "symbol_charset"),
+		ErrorMessage:    helpers.GetP[string](d, "error_message"),
+		AmountUppercase: helpers.GetIntP(d, "amount_uppercase"),
+		AmountDigits:    helpers.GetIntP(d, "amount_digits"),
+		AmountLowercase: helpers.GetIntP(d, "amount_lowercase"),
+		AmountSymbols:   helpers.GetIntP(d, "amount_symbols"),
+		LengthMin:       helpers.GetIntP(d, "length_min"),
 
-	if s, sSet := d.GetOk("symbol_charset"); sSet {
-		r.SymbolCharset = api.PtrString(s.(string))
-	}
-	if s, sSet := d.GetOk("error_message"); sSet {
-		r.ErrorMessage = api.PtrString(s.(string))
-	}
-	if p, pSet := d.GetOk("amount_uppercase"); pSet {
-		r.AmountUppercase = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("amount_digits"); pSet {
-		r.AmountDigits = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("amount_lowercase"); pSet {
-		r.AmountLowercase = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("amount_symbols"); pSet {
-		r.AmountSymbols = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("length_min"); pSet {
-		r.LengthMin = api.PtrInt32(int32(p.(int)))
-	}
+		HibpAllowedCount: helpers.GetIntP(d, "hibp_allowed_count"),
 
-	if p, pSet := d.GetOk("hibp_allowed_count"); pSet {
-		r.HibpAllowedCount = api.PtrInt32(int32(p.(int)))
-	}
-
-	if p, pSet := d.GetOk("zxcvbn_score_threshold"); pSet {
-		r.ZxcvbnScoreThreshold = api.PtrInt32(int32(p.(int)))
+		ZxcvbnScoreThreshold: helpers.GetIntP(d, "zxcvbn_score_threshold"),
 	}
 	return &r
 }
@@ -154,7 +128,7 @@ func resourcePolicyPasswordCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordCreate(ctx).PasswordPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -167,19 +141,19 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "password_field", res.PasswordField)
-	setWrapper(d, "error_message", res.ErrorMessage)
-	setWrapper(d, "amount_uppercase", res.AmountUppercase)
-	setWrapper(d, "amount_lowercase", res.AmountLowercase)
-	setWrapper(d, "amount_symbols", res.AmountSymbols)
-	setWrapper(d, "amount_digits", res.AmountDigits)
-	setWrapper(d, "length_min", res.LengthMin)
-	setWrapper(d, "symbol_charset", res.SymbolCharset)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "password_field", res.PasswordField)
+	helpers.SetWrapper(d, "error_message", res.ErrorMessage)
+	helpers.SetWrapper(d, "amount_uppercase", res.AmountUppercase)
+	helpers.SetWrapper(d, "amount_lowercase", res.AmountLowercase)
+	helpers.SetWrapper(d, "amount_symbols", res.AmountSymbols)
+	helpers.SetWrapper(d, "amount_digits", res.AmountDigits)
+	helpers.SetWrapper(d, "length_min", res.LengthMin)
+	helpers.SetWrapper(d, "symbol_charset", res.SymbolCharset)
 	return diags
 }
 
@@ -190,7 +164,7 @@ func resourcePolicyPasswordUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.PoliciesApi.PoliciesPasswordUpdate(ctx, d.Id()).PasswordPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -201,7 +175,7 @@ func resourcePolicyPasswordDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

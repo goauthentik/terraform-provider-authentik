@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceWebAuthnDeviceType() *schema.Resource {
@@ -36,7 +37,7 @@ func dataSourceWebAuthnDeviceTypeRead(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {
@@ -44,7 +45,7 @@ func dataSourceWebAuthnDeviceTypeRead(ctx context.Context, d *schema.ResourceDat
 	}
 	f := res.Results[0]
 	d.SetId(f.Aaguid)
-	setWrapper(d, "aaguid", f.Aaguid)
-	setWrapper(d, "description", f.Description)
+	helpers.SetWrapper(d, "aaguid", f.Aaguid)
+	helpers.SetWrapper(d, "description", f.Description)
 	return diags
 }

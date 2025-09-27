@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageRedirect() *schema.Resource {
@@ -27,8 +28,8 @@ func resourceStageRedirect() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.REDIRECTSTAGEMODEENUM_FLOW,
-				Description:      EnumToDescription(api.AllowedRedirectStageModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedRedirectStageModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedRedirectStageModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedRedirectStageModeEnumEnumValues),
 			},
 			"keep_context": {
 				Type:     schema.TypeBool,
@@ -49,16 +50,11 @@ func resourceStageRedirect() *schema.Resource {
 
 func resourceStageRedirectSchemaToProvider(d *schema.ResourceData) *api.RedirectStageRequest {
 	r := api.RedirectStageRequest{
-		Name:        d.Get("name").(string),
-		Mode:        api.RedirectStageModeEnum(d.Get("mode").(string)),
-		KeepContext: api.PtrBool(d.Get("keep_context").(bool)),
-	}
-
-	if target, targetSet := d.GetOk("target_static"); targetSet {
-		r.TargetStatic = api.PtrString(target.(string))
-	}
-	if target, targetSet := d.GetOk("target_flow"); targetSet {
-		r.TargetFlow.Set(api.PtrString(target.(string)))
+		Name:         d.Get("name").(string),
+		Mode:         api.RedirectStageModeEnum(d.Get("mode").(string)),
+		KeepContext:  api.PtrBool(d.Get("keep_context").(bool)),
+		TargetStatic: helpers.GetP[string](d, "target_static"),
+		TargetFlow:   *api.NewNullableString(helpers.GetP[string](d, "target_flow")),
 	}
 	return &r
 }
@@ -70,7 +66,7 @@ func resourceStageRedirectCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesRedirectCreate(ctx).RedirectStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -83,14 +79,14 @@ func resourceStageRedirectRead(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesRedirectRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "keep_context", res.KeepContext)
-	setWrapper(d, "target_flow", res.TargetFlow.Get())
-	setWrapper(d, "target_static", res.TargetStatic)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "keep_context", res.KeepContext)
+	helpers.SetWrapper(d, "target_flow", res.TargetFlow.Get())
+	helpers.SetWrapper(d, "target_static", res.TargetStatic)
 	return diags
 }
 
@@ -101,7 +97,7 @@ func resourceStageRedirectUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesRedirectUpdate(ctx, d.Id()).RedirectStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -112,7 +108,7 @@ func resourceStageRedirectDelete(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesRedirectDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

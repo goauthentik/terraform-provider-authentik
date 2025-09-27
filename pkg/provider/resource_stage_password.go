@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStagePassword() *schema.Resource {
@@ -28,8 +29,8 @@ func resourceStagePassword() *schema.Resource {
 				Required: true,
 				Elem: &schema.Schema{
 					Type:             schema.TypeString,
-					Description:      EnumToDescription(api.AllowedBackendsEnumEnumValues),
-					ValidateDiagFunc: StringInEnum(api.AllowedBackendsEnumEnumValues),
+					Description:      helpers.EnumToDescription(api.AllowedBackendsEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedBackendsEnumEnumValues),
 				},
 			},
 			"configure_flow": {
@@ -52,16 +53,10 @@ func resourceStagePassword() *schema.Resource {
 
 func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordStageRequest {
 	r := api.PasswordStageRequest{
-		Name:              d.Get("name").(string),
-		AllowShowPassword: api.PtrBool(d.Get("allow_show_password").(bool)),
-	}
-
-	if s, sok := d.GetOk("configure_flow"); sok && s.(string) != "" {
-		r.ConfigureFlow.Set(api.PtrString(s.(string)))
-	}
-
-	if fa, sok := d.GetOk("failed_attempts_before_cancel"); sok {
-		r.FailedAttemptsBeforeCancel = api.PtrInt32(int32(fa.(int)))
+		Name:                       d.Get("name").(string),
+		AllowShowPassword:          api.PtrBool(d.Get("allow_show_password").(bool)),
+		ConfigureFlow:              *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		FailedAttemptsBeforeCancel: helpers.GetIntP(d, "failed_attempts_before_cancel"),
 	}
 
 	backend := make([]api.BackendsEnum, 0)
@@ -79,7 +74,7 @@ func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesPasswordCreate(ctx).PasswordStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -92,16 +87,16 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.StagesApi.StagesPasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "backends", res.Backends)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "backends", res.Backends)
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
-	setWrapper(d, "failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
-	setWrapper(d, "allow_show_password", res.AllowShowPassword)
+	helpers.SetWrapper(d, "failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
+	helpers.SetWrapper(d, "allow_show_password", res.AllowShowPassword)
 	return diags
 }
 
@@ -112,7 +107,7 @@ func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.StagesApi.StagesPasswordUpdate(ctx, d.Id()).PasswordStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -123,7 +118,7 @@ func resourceStagePasswordDelete(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceFlow() *schema.Resource {
@@ -38,22 +39,22 @@ func resourceFlow() *schema.Resource {
 			"designation": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      EnumToDescription(api.AllowedFlowDesignationEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedFlowDesignationEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedFlowDesignationEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedFlowDesignationEnumEnumValues),
 			},
 			"authentication": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.AUTHENTICATIONENUM_NONE,
-				Description:      EnumToDescription(api.AllowedAuthenticationEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedAuthenticationEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedAuthenticationEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthenticationEnumEnumValues),
 			},
 			"layout": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.FLOWLAYOUTENUM_STACKED,
-				Description:      EnumToDescription(api.AllowedFlowLayoutEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedFlowLayoutEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedFlowLayoutEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedFlowLayoutEnumEnumValues),
 			},
 			"background": {
 				Type:        schema.TypeString,
@@ -64,8 +65,8 @@ func resourceFlow() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"denied_action": {
 				Type:     schema.TypeString,
@@ -103,7 +104,7 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesCreate(ctx).FlowRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -113,7 +114,7 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface
 			Url: bg.(string),
 		}).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 	}
 	return resourceFlowRead(ctx, d, m)
@@ -125,21 +126,21 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "title", res.Title)
-	setWrapper(d, "designation", res.Designation)
-	setWrapper(d, "authentication", res.Authentication)
-	setWrapper(d, "denied_action", res.DeniedAction)
-	setWrapper(d, "layout", res.Layout)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "compatibility_mode", res.CompatibilityMode)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "title", res.Title)
+	helpers.SetWrapper(d, "designation", res.Designation)
+	helpers.SetWrapper(d, "authentication", res.Authentication)
+	helpers.SetWrapper(d, "denied_action", res.DeniedAction)
+	helpers.SetWrapper(d, "layout", res.Layout)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	if _, bg := d.GetOk("background"); bg {
-		setWrapper(d, "background", res.Background)
+		helpers.SetWrapper(d, "background", res.Background)
 	}
 	return diags
 }
@@ -151,7 +152,7 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.FlowsApi.FlowsInstancesUpdate(ctx, d.Id()).FlowRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -161,7 +162,7 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface
 			Url: bg.(string),
 		}).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 	}
 	return resourceFlowRead(ctx, d, m)
@@ -171,7 +172,7 @@ func resourceFlowDelete(ctx context.Context, d *schema.ResourceData, m interface
 	c := m.(*APIClient)
 	hr, err := c.client.FlowsApi.FlowsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

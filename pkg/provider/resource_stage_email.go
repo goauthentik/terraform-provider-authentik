@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageEmail() *schema.Resource {
@@ -69,8 +70,8 @@ func resourceStageEmail() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"subject": {
 				Type:     schema.TypeString,
@@ -96,8 +97,8 @@ func resourceStageEmail() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=5",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 		},
 	}
@@ -105,50 +106,22 @@ func resourceStageEmail() *schema.Resource {
 
 func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageRequest {
 	r := api.EmailStageRequest{
-		Name:              d.Get("name").(string),
-		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
-		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
-		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
-	}
-
-	if h, hSet := d.GetOk("host"); hSet {
-		r.Host = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("port"); pSet {
-		r.Port = api.PtrInt32(int32(p.(int)))
-	}
-
-	if h, hSet := d.GetOk("username"); hSet {
-		r.Username = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("password"); hSet {
-		r.Password = api.PtrString(h.(string))
-	}
-
-	if p, pSet := d.GetOk("timeout"); pSet {
-		r.Timeout = api.PtrInt32(int32(p.(int)))
-	}
-
-	if h, hSet := d.GetOk("from_address"); hSet {
-		r.FromAddress = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("token_expiry"); pSet {
-		r.TokenExpiry = api.PtrString(p.(string))
-	}
-	if h, hSet := d.GetOk("subject"); hSet {
-		r.Subject = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("template"); hSet {
-		r.Template = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("activate_user_on_success"); hSet {
-		r.ActivateUserOnSuccess = api.PtrBool(h.(bool))
-	}
-	if k, set := d.GetOk("recovery_max_attempts"); set {
-		r.RecoveryMaxAttempts = api.PtrInt32(int32(k.(int)))
-	}
-	if k, set := d.GetOk("recovery_cache_timeout"); set {
-		r.RecoveryCacheTimeout = api.PtrString(k.(string))
+		Name:                  d.Get("name").(string),
+		UseGlobalSettings:     api.PtrBool(d.Get("use_global_settings").(bool)),
+		UseSsl:                api.PtrBool(d.Get("use_ssl").(bool)),
+		UseTls:                api.PtrBool(d.Get("use_tls").(bool)),
+		Host:                  helpers.GetP[string](d, "host"),
+		Username:              helpers.GetP[string](d, "username"),
+		Password:              helpers.GetP[string](d, "password"),
+		FromAddress:           helpers.GetP[string](d, "from_address"),
+		TokenExpiry:           helpers.GetP[string](d, "token_expiry"),
+		Subject:               helpers.GetP[string](d, "subject"),
+		Template:              helpers.GetP[string](d, "template"),
+		RecoveryCacheTimeout:  helpers.GetP[string](d, "recovery_cache_timeout"),
+		Port:                  helpers.GetIntP(d, "port"),
+		Timeout:               helpers.GetIntP(d, "timeout"),
+		RecoveryMaxAttempts:   helpers.GetIntP(d, "recovery_max_attempts"),
+		ActivateUserOnSuccess: helpers.GetP[bool](d, "activate_user_on_success"),
 	}
 	return &r
 }
@@ -160,7 +133,7 @@ func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.StagesApi.StagesEmailCreate(ctx).EmailStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -173,24 +146,24 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	res, hr, err := c.client.StagesApi.StagesEmailRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "use_global_settings", res.UseGlobalSettings)
-	setWrapper(d, "host", res.Host)
-	setWrapper(d, "port", res.Port)
-	setWrapper(d, "username", res.Username)
-	setWrapper(d, "use_tls", res.UseTls)
-	setWrapper(d, "use_ssl", res.UseSsl)
-	setWrapper(d, "timeout", res.Timeout)
-	setWrapper(d, "from_address", res.FromAddress)
-	setWrapper(d, "token_expiry", res.TokenExpiry)
-	setWrapper(d, "subject", res.Subject)
-	setWrapper(d, "template", res.Template)
-	setWrapper(d, "activate_user_on_success", res.ActivateUserOnSuccess)
-	setWrapper(d, "recovery_max_attempts", res.RecoveryMaxAttempts)
-	setWrapper(d, "recovery_cache_timeout", res.RecoveryCacheTimeout)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "use_global_settings", res.UseGlobalSettings)
+	helpers.SetWrapper(d, "host", res.Host)
+	helpers.SetWrapper(d, "port", res.Port)
+	helpers.SetWrapper(d, "username", res.Username)
+	helpers.SetWrapper(d, "use_tls", res.UseTls)
+	helpers.SetWrapper(d, "use_ssl", res.UseSsl)
+	helpers.SetWrapper(d, "timeout", res.Timeout)
+	helpers.SetWrapper(d, "from_address", res.FromAddress)
+	helpers.SetWrapper(d, "token_expiry", res.TokenExpiry)
+	helpers.SetWrapper(d, "subject", res.Subject)
+	helpers.SetWrapper(d, "template", res.Template)
+	helpers.SetWrapper(d, "activate_user_on_success", res.ActivateUserOnSuccess)
+	helpers.SetWrapper(d, "recovery_max_attempts", res.RecoveryMaxAttempts)
+	helpers.SetWrapper(d, "recovery_cache_timeout", res.RecoveryCacheTimeout)
 	return diags
 }
 
@@ -201,7 +174,7 @@ func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.StagesApi.StagesEmailUpdate(ctx, d.Id()).EmailStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -212,7 +185,7 @@ func resourceStageEmailDelete(ctx context.Context, d *schema.ResourceData, m int
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingProviderMicrosoftEntra() *schema.Resource {
@@ -26,7 +27,7 @@ func resourcePropertyMappingProviderMicrosoftEntra() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 		},
 	}
@@ -47,7 +48,7 @@ func resourcePropertyMappingProviderMicrosoftEntraCreate(ctx context.Context, d 
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraCreate(ctx).MicrosoftEntraProviderMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -60,11 +61,11 @@ func resourcePropertyMappingProviderMicrosoftEntraRead(ctx context.Context, d *s
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.Expression)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.Expression)
 	return diags
 }
 
@@ -75,7 +76,7 @@ func resourcePropertyMappingProviderMicrosoftEntraUpdate(ctx context.Context, d 
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraUpdate(ctx, d.Id()).MicrosoftEntraProviderMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +87,7 @@ func resourcePropertyMappingProviderMicrosoftEntraDelete(ctx context.Context, d 
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

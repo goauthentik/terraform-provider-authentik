@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceCertificateKeyPair() *schema.Resource {
@@ -75,7 +76,7 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	if len(res.Results) < 1 {
 		return diag.Errorf("No matching groups found")
@@ -83,26 +84,26 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 	f := res.Results[0]
 
 	d.SetId(f.Pk)
-	setWrapper(d, "name", f.Name)
-	setWrapper(d, "expiry", f.CertExpiry.Get().String())
-	setWrapper(d, "subject", f.CertSubject.Get())
-	setWrapper(d, "fingerprint1", f.FingerprintSha1.Get())
-	setWrapper(d, "fingerprint256", f.FingerprintSha256.Get())
+	helpers.SetWrapper(d, "name", f.Name)
+	helpers.SetWrapper(d, "expiry", f.CertExpiry.Get().String())
+	helpers.SetWrapper(d, "subject", f.CertSubject.Get())
+	helpers.SetWrapper(d, "fingerprint1", f.FingerprintSha1.Get())
+	helpers.SetWrapper(d, "fingerprint256", f.FingerprintSha256.Get())
 
 	if d.Get("fetch_certificate").(bool) {
 		rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
-		setWrapper(d, "certificate_data", rc.Data+"\n")
+		helpers.SetWrapper(d, "certificate_data", rc.Data+"\n")
 	}
 
 	if d.Get("fetch_key").(bool) {
 		rk, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
-		setWrapper(d, "key_data", rk.Data+"\n")
+		helpers.SetWrapper(d, "key_data", rk.Data+"\n")
 	}
 	return diags
 }

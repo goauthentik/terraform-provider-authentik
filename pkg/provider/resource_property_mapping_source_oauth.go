@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingSourceOAuth() *schema.Resource {
@@ -26,7 +27,7 @@ func resourcePropertyMappingSourceOAuth() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 		},
 	}
@@ -47,7 +48,7 @@ func resourcePropertyMappingSourceOAuthCreate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthCreate(ctx).OAuthSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -60,11 +61,11 @@ func resourcePropertyMappingSourceOAuthRead(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.Expression)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.Expression)
 	return diags
 }
 
@@ -75,7 +76,7 @@ func resourcePropertyMappingSourceOAuthUpdate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthUpdate(ctx, d.Id()).OAuthSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +87,7 @@ func resourcePropertyMappingSourceOAuthDelete(ctx context.Context, d *schema.Res
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

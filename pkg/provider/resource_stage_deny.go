@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageDeny() *schema.Resource {
@@ -33,10 +34,8 @@ func resourceStageDeny() *schema.Resource {
 
 func resourceStageDenySchemaToProvider(d *schema.ResourceData) *api.DenyStageRequest {
 	r := api.DenyStageRequest{
-		Name: d.Get("name").(string),
-	}
-	if m, mok := d.GetOk("deny_message"); mok {
-		r.DenyMessage = api.PtrString(m.(string))
+		Name:        d.Get("name").(string),
+		DenyMessage: helpers.GetP[string](d, "deny_message"),
 	}
 	return &r
 }
@@ -48,7 +47,7 @@ func resourceStageDenyCreate(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.StagesApi.StagesDenyCreate(ctx).DenyStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -61,11 +60,11 @@ func resourceStageDenyRead(ctx context.Context, d *schema.ResourceData, m interf
 
 	res, hr, err := c.client.StagesApi.StagesDenyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "deny_message", res.GetDenyMessage())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "deny_message", res.GetDenyMessage())
 	return diags
 }
 
@@ -76,7 +75,7 @@ func resourceStageDenyUpdate(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.StagesApi.StagesDenyUpdate(ctx, d.Id()).DenyStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -87,7 +86,7 @@ func resourceStageDenyDelete(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesDenyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

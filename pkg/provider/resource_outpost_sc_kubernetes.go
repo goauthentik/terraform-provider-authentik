@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceServiceConnectionKubernetes() *schema.Resource {
@@ -35,9 +35,9 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 				Optional:         true,
 				Sensitive:        true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 			"verify_ssl": {
 				Type:     schema.TypeBool,
@@ -55,16 +55,9 @@ func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*
 		Local:     api.PtrBool(d.Get("local").(bool)),
 	}
 
-	if l, ok := d.Get("kubeconfig").(string); ok {
-		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-		m.Kubeconfig = c
-	}
-
-	return &m, nil
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("kubeconfig"))
+	m.Kubeconfig = attr
+	return &m, err
 }
 
 func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -77,7 +70,7 @@ func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesCreate(ctx).KubernetesServiceConnectionRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -90,17 +83,17 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "local", res.Local)
-	setWrapper(d, "verify_ssl", res.VerifySsl)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "local", res.Local)
+	helpers.SetWrapper(d, "verify_ssl", res.VerifySsl)
 	b, err := json.Marshal(res.Kubeconfig)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "kubeconfig", string(b))
+	helpers.SetWrapper(d, "kubeconfig", string(b))
 	return diags
 }
 
@@ -114,7 +107,7 @@ func resourceServiceConnectionKubernetesUpdate(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesUpdate(ctx, d.Id()).KubernetesServiceConnectionRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -125,7 +118,7 @@ func resourceServiceConnectionKubernetesDelete(ctx context.Context, d *schema.Re
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }
