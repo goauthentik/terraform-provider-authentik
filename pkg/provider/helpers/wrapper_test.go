@@ -32,3 +32,14 @@ func Test_GetP_Enum(t *testing.T) {
 	assert.NotNil(t, v)
 	assert.Equal(t, api.NOTCONFIGUREDACTIONENUM_SKIP, *v)
 }
+
+func Test_CastSlice_New(t *testing.T) {
+	v := CastSlice_New[string](TestResource{
+		"foo": []interface{}{
+			"foo",
+			"bar",
+		},
+	}, "foo")
+	assert.NotNil(t, v)
+	assert.Equal(t, []string{"foo", "bar"}, v)
+}

@@ -77,8 +77,8 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		LastAuthThreshold:          api.PtrString(d.Get("last_auth_threshold").(string)),
 		WebauthnAllowedDeviceTypes: helpers.CastSlice[string](d.Get("webauthn_allowed_device_types").([]interface{})),
 		NotConfiguredAction:        helpers.GetP[api.NotConfiguredActionEnum](d, "not_configured_action"),
-		ConfigurationStages:        helpers.GetP[string](d, "configuration_stages"),
-		WebauthnUserVerification:   helpers.GetP[string](d, "webauthn_user_verification"),
+		ConfigurationStages:        helpers.CastSlice_New[string](d, "configuration_stages"),
+		WebauthnUserVerification:   helpers.CastString[api.UserVerificationEnum](helpers.GetP[string](d, "webauthn_user_verification")),
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)
