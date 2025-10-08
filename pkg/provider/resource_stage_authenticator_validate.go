@@ -73,18 +73,12 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 
 func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorValidateStageRequest {
 	r := api.AuthenticatorValidateStageRequest{
-		Name:              d.Get("name").(string),
-		LastAuthThreshold: api.PtrString(d.Get("last_auth_threshold").(string)),
-	}
-
-	if h, hSet := d.GetOk("not_configured_action"); hSet {
-		r.NotConfiguredAction = api.NotConfiguredActionEnum(h.(string)).Ptr()
-	}
-	if h, hSet := d.GetOk("configuration_stages"); hSet {
-		r.ConfigurationStages = helpers.CastSlice[string](h.([]interface{}))
-	}
-	if x, set := d.GetOk("webauthn_user_verification"); set {
-		r.WebauthnUserVerification = api.UserVerificationEnum(x.(string)).Ptr()
+		Name:                       d.Get("name").(string),
+		LastAuthThreshold:          api.PtrString(d.Get("last_auth_threshold").(string)),
+		WebauthnAllowedDeviceTypes: helpers.CastSlice[string](d.Get("webauthn_allowed_device_types").([]interface{})),
+		NotConfiguredAction:        helpers.GetP[api.NotConfiguredActionEnum](d, "not_configured_action"),
+		ConfigurationStages:        helpers.GetP[string](d, "configuration_stages"),
+		WebauthnUserVerification:   helpers.GetP[string](d, "webauthn_user_verification"),
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)
@@ -92,7 +86,6 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		classes = append(classes, api.DeviceClassesEnum(classesS.(string)))
 	}
 	r.DeviceClasses = classes
-	r.WebauthnAllowedDeviceTypes = helpers.CastSlice[string](d.Get("webauthn_allowed_device_types").([]interface{}))
 	return &r
 }
 

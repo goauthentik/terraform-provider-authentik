@@ -105,7 +105,6 @@ func resourceBrand() *schema.Resource {
 
 func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag.Diagnostics) {
 	m := api.BrandRequest{
-		ClientCertificates:            helpers.CastSlice[string](d.Get("client_certificates").([]interface{})),
 		Domain:                        d.Get("domain").(string),
 		Default:                       api.PtrBool(d.Get("default").(bool)),
 		BrandingTitle:                 helpers.GetP[string](d, "branding_title"),
@@ -120,6 +119,7 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 		FlowUserSettings:              *api.NewNullableString(helpers.GetP[string](d, "flow_user_settings")),
 		FlowDeviceCode:                *api.NewNullableString(helpers.GetP[string](d, "flow_device_code")),
 		WebCertificate:                *api.NewNullableString(helpers.GetP[string](d, "web_certificate")),
+		ClientCertificates:            helpers.CastSlice_New[string](d, "client_certificates"),
 		DefaultApplication:            *api.NewNullableString(helpers.GetP[string](d, "default_application")),
 	}
 
@@ -182,8 +182,10 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 		helpers.SetWrapper(d, "web_certificate", res.WebCertificate.Get())
 	}
 	if res.HasClientCertificates() {
-		localClientCertificates := helpers.CastSlice[string](d.Get("client_certificates").([]interface{}))
-		helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(localClientCertificates, res.ClientCertificates))
+		helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(
+			helpers.CastSlice_New[string](d, "client_certificates"),
+			res.ClientCertificates,
+		))
 	}
 	if res.DefaultApplication.IsSet() {
 		helpers.SetWrapper(d, "default_application", res.DefaultApplication.Get())

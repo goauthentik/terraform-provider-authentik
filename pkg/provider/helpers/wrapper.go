@@ -5,19 +5,33 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"goauthentik.io/api/v3"
 )
 
-func SetWrapper(d *schema.ResourceData, key string, data interface{}) {
+type ResourceData interface {
+	Set(key string, value interface{}) error
+	GetOk(key string) (interface{}, bool)
+}
+
+func SetWrapper(d ResourceData, key string, data interface{}) {
 	err := d.Set(key, data)
 	if err != nil {
 		panic(err)
 	}
 }
 
+// Cast string to enum
+func CastString[T ~string](raw any) *T {
+	if raw == nil {
+		return nil
+	}
+	tt := raw.(*string)
+	t := T(*tt)
+	return &t
+}
+
 // Get Pointer value from resource data, if castable to generic type
-func GetP[T any](d *schema.ResourceData, key string) *T {
+func GetP[T any](d ResourceData, key string) *T {
 	rv, ok := d.GetOk(key)
 	if !ok {
 		return nil
@@ -29,7 +43,7 @@ func GetP[T any](d *schema.ResourceData, key string) *T {
 }
 
 // Similar to `GetP` however also casts to an int32 as that is what the API prefers
-func GetIntP(d *schema.ResourceData, key string) *int32 {
+func GetIntP(d ResourceData, key string) *int32 {
 	rv, ok := d.GetOk(key)
 	if !ok {
 		return nil
@@ -41,7 +55,7 @@ func GetIntP(d *schema.ResourceData, key string) *int32 {
 }
 
 // Similar to `GetP` however also casts to an int64 as that is what the API prefers
-func GetInt64P(d *schema.ResourceData, key string) *int64 {
+func GetInt64P(d ResourceData, key string) *int64 {
 	rv, ok := d.GetOk(key)
 	if !ok {
 		return nil
@@ -52,7 +66,7 @@ func GetInt64P(d *schema.ResourceData, key string) *int64 {
 	return nil
 }
 
-func GetJSON[T any](d *schema.ResourceData, key string) (T, diag.Diagnostics) {
+func GetJSON[T any](d ResourceData, key string) (T, diag.Diagnostics) {
 	var v T
 	if sv := GetP[string](d, key); sv != nil {
 		err := json.NewDecoder(strings.NewReader(*sv)).Decode(&v)
@@ -63,7 +77,7 @@ func GetJSON[T any](d *schema.ResourceData, key string) (T, diag.Diagnostics) {
 	return v, nil
 }
 
-func CastSlice_New[T any](d *schema.ResourceData, key string) []T {
+func CastSlice_New[T any](d ResourceData, key string) []T {
 	sl := make([]T, 0)
 	rv, ok := d.GetOk(key)
 	if !ok {
