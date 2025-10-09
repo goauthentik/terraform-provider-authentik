@@ -27,6 +27,7 @@ func resourceStageAuthenticatorEmail() *schema.Resource {
 			"friendly_name": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "",
 			},
 			"configure_flow": {
 				Type:     schema.TypeString,

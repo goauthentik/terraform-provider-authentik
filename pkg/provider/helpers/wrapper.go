@@ -83,7 +83,7 @@ func CastSlice_New[T any](d ResourceData, key string) []T {
 	if !ok {
 		return sl
 	}
-	in, ok := rv.([]interface{})
+	in, ok := rv.([]any)
 	if !ok {
 		return sl
 	}
@@ -93,7 +93,7 @@ func CastSlice_New[T any](d ResourceData, key string) []T {
 	return sl
 }
 
-func CastSlice[T any](in []interface{}) []T {
+func CastSlice[T any](in []any) []T {
 	sl := make([]T, len(in))
 	for i, m := range in {
 		sl[i] = m.(T)
@@ -101,7 +101,7 @@ func CastSlice[T any](in []interface{}) []T {
 	return sl
 }
 
-func CastSliceInt32(in []interface{}) []int32 {
+func CastSliceInt32(in []any) []int32 {
 	sl := make([]int32, len(in))
 	for i, m := range in {
 		sl[i] = int32(m.(int))
