@@ -80,7 +80,7 @@ func resourceSourceTelegram() *schema.Resource {
 			},
 			"request_message_access": {
 				Type:     schema.TypeBool,
-				Required: true,
+				Optional: true,
 				Default:  false,
 			},
 
