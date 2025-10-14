@@ -68,6 +68,7 @@ resource "authentik_application" "name" {
  Defaults to `backchannel`.
 - `logout_uri` (String)
 - `property_mappings` (List of String)
+- `refresh_token_threshold` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `seconds=0`.
 - `refresh_token_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=30`.
 - `signing_key` (String)
 - `sub_mode` (String) Allowed values:

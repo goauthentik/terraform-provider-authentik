@@ -82,6 +82,13 @@ func resourceProviderOAuth2() *schema.Resource {
 				Description:      helpers.RelativeDurationDescription,
 				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
+			"refresh_token_threshold": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "seconds=0",
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
+			},
 			"include_claims_in_id_token": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -164,6 +171,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		AccessCodeValidity:     api.PtrString(d.Get("access_code_validity").(string)),
 		AccessTokenValidity:    api.PtrString(d.Get("access_token_validity").(string)),
 		RefreshTokenValidity:   api.PtrString(d.Get("refresh_token_validity").(string)),
+		RefreshTokenThreshold:  helpers.GetP[string](d, "refresh_token_threshold"),
 		IncludeClaimsInIdToken: api.PtrBool(d.Get("include_claims_in_id_token").(bool)),
 		ClientId:               api.PtrString(d.Get("client_id").(string)),
 		ClientSecret:           helpers.GetP[string](d, "client_secret"),
@@ -265,6 +273,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "access_code_validity", res.AccessCodeValidity)
 	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
+	helpers.SetWrapper(d, "refresh_token_threshold", res.RefreshTokenThreshold)
 	localJWKSProviders := helpers.CastSlice[int](d, "jwt_federation_providers")
 	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
 	localJWKSSources := helpers.CastSlice[string](d, "jwt_federation_sources")
