@@ -173,7 +173,7 @@ func resourceProviderSAML() *schema.Resource {
 			},
 			"sls_binding": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Default:          api.SAMLBINDINGSENUM_REDIRECT,
 				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),

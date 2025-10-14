@@ -20,7 +20,6 @@ description: |-
 - `bot_username` (String)
 - `name` (String)
 - `pre_authentication_flow` (String)
-- `request_message_access` (Boolean) Defaults to `false`.
 - `slug` (String)
 
 ### Optional
@@ -34,6 +33,7 @@ description: |-
  Defaults to `any`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
+- `request_message_access` (Boolean) Defaults to `false`.
 - `user_matching_mode` (String) Allowed values:
   - `identifier`
   - `email_link`
