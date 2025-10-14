@@ -21,7 +21,7 @@ description: |-
 ### Optional
 
 - `configure_flow` (String)
-- `friendly_name` (String)
+- `friendly_name` (String) Defaults to ``.
 - `from_address` (String) Defaults to `system@authentik.local`.
 - `host` (String) Defaults to `localhost`.
 - `password` (String, Sensitive)

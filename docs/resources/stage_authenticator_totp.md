@@ -33,7 +33,7 @@ resource "authentik_stage_authenticator_totp" "name" {
   - `6`
   - `8`
  Defaults to `6`.
-- `friendly_name` (String)
+- `friendly_name` (String) Defaults to ``.
 
 ### Read-Only
 

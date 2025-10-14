@@ -46,6 +46,7 @@ resource "authentik_provider_scim" "name" {
   - `default`
   - `aws`
   - `slack`
+  - `sfdc`
  Defaults to `default`.
 - `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)

@@ -29,7 +29,7 @@ resource "authentik_stage_authenticator_static" "name" {
 ### Optional
 
 - `configure_flow` (String)
-- `friendly_name` (String)
+- `friendly_name` (String) Defaults to ``.
 - `token_count` (Number) Defaults to `6`.
 - `token_length` (Number) Defaults to `12`.
 

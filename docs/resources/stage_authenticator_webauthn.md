@@ -46,7 +46,7 @@ resource "authentik_stage_authenticator_webauthn" "name" {
   - `cross-platform`
 - `configure_flow` (String)
 - `device_type_restrictions` (List of String)
-- `friendly_name` (String)
+- `friendly_name` (String) Defaults to ``.
 - `max_attempts` (Number)
 - `resident_key_requirement` (String) Allowed values:
   - `discouraged`

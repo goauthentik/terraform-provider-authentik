@@ -22,7 +22,7 @@ description: |-
 ### Optional
 
 - `configure_flow` (String)
-- `friendly_name` (String)
+- `friendly_name` (String) Defaults to ``.
 
 ### Read-Only
 
