@@ -16,19 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version-file: go.mod
           cache: true
-      - uses: golangci/golangci-lint-action@v8
+      - uses: golangci/golangci-lint-action@4afd733a84b1f43292c63897423277bb7f4313a9 # v8
   lint:
     name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version-file: go.mod
           cache: true
@@ -59,17 +59,17 @@ jobs:
             terraform: latest
             allow_failure: true
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version-file: go.mod
           cache: true
-      - uses: goauthentik/action-setup-authentik@224742cef59f3d90fdd68ec7d300f513303a1655
+      - uses: goauthentik/action-setup-authentik@224742cef59f3d90fdd68ec7d300f513303a1655 # v1.4
         id: setup
         with:
           version: ${{ matrix.authentik_version }}
           sentry_env: goauthentik-terraform-ci
-      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
@@ -89,8 +89,7 @@ jobs:
             ./pkg/provider/ 2>&1 | tee test-output
       - if: ${{ always() }}
         run: |
-          go install github.com/jstemmer/go-junit-report/v2@latest
-          $(go env GOPATH)/bin/go-junit-report -in test-output -set-exit-code -iocopy -out junit.xml
+          go tool github.com/jstemmer/go-junit-report/v2 -in test-output -set-exit-code -iocopy -out junit.xml
       - name: authentik Server logs
         if: ${{ always() }}
         run: |
@@ -100,17 +99,17 @@ jobs:
         run: |
           docker logs ${{ steps.setup.outputs.worker_container_id }}
       - if: ${{ always() }}
-        uses: test-summary/action@31493c76ec9e7aa675f1585d3ed6f1da69269a86
+        uses: test-summary/action@31493c76ec9e7aa675f1585d3ed6f1da69269a86 # v2
         with:
           paths: junit.xml
           show: "fail"
       - if: ${{ always() }}
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5
         with:
           flags: authentik-${{ matrix.authentik_version }}
           use_oidc: true
       - if: ${{ always() }}
-        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
+        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1
         with:
           flags: authentik-${{ matrix.authentik_version }}
           use_oidc: true
