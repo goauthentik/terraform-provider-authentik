@@ -102,7 +102,7 @@ func resourceStageAuthenticatorEmailSchemaToProvider(d *schema.ResourceData) *ap
 		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
 		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
 		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
-		FriendlyName:      *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		FriendlyName:      helpers.GetP[string](d, "friendly_name"),
 		ConfigureFlow:     *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 
 		Host: helpers.GetP[string](d, "host"),
@@ -156,7 +156,7 @@ func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.Resource
 	helpers.SetWrapper(d, "token_expiry", res.TokenExpiry)
 	helpers.SetWrapper(d, "subject", res.Subject)
 	helpers.SetWrapper(d, "template", res.Template)
-	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
 	if res.ConfigureFlow.IsSet() {
 		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}

@@ -76,7 +76,7 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 	r := api.SCIMProviderRequest{
 		Name:                       d.Get("name").(string),
 		Url:                        d.Get("url").(string),
-		Token:                      d.Get("token").(string),
+		Token:                      helpers.GetP[string](d, "token"),
 		PropertyMappings:           helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
 		PropertyMappingsGroup:      helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),

@@ -107,7 +107,7 @@ func dataSourceGroup() *schema.Resource {
 	}
 }
 
-func mapFromGroupMember(member api.GroupMember) (map[string]interface{}, error) {
+func mapFromGroupMember(member api.PartialUser) (map[string]interface{}, error) {
 	m := map[string]interface{}{
 		"pk":         int(member.GetPk()),
 		"username":   member.GetUsername(),

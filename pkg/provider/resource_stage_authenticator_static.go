@@ -52,7 +52,7 @@ func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *a
 		Name:          d.Get("name").(string),
 		TokenCount:    api.PtrInt32(int32(d.Get("token_count").(int))),
 		TokenLength:   api.PtrInt32(int32(d.Get("token_length").(int))),
-		FriendlyName:  *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		FriendlyName:  helpers.GetP[string](d, "friendly_name"),
 		ConfigureFlow: *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 	}
 	return &r
@@ -84,7 +84,7 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "token_count", res.TokenCount)
 	helpers.SetWrapper(d, "token_length", res.TokenLength)
-	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
 	if res.ConfigureFlow.IsSet() {
 		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}

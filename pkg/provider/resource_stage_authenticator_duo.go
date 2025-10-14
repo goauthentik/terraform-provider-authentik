@@ -65,7 +65,7 @@ func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.
 		ClientId:            d.Get("client_id").(string),
 		ClientSecret:        d.Get("client_secret").(string),
 		ApiHostname:         d.Get("api_hostname").(string),
-		FriendlyName:        *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		FriendlyName:        helpers.GetP[string](d, "friendly_name"),
 		AdminIntegrationKey: helpers.GetP[string](d, "admin_integration_key"),
 		AdminSecretKey:      helpers.GetP[string](d, "admin_secret_key"),
 		ConfigureFlow:       *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
@@ -100,7 +100,7 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 	helpers.SetWrapper(d, "client_id", res.ClientId)
 	helpers.SetWrapper(d, "admin_integration_key", res.AdminIntegrationKey)
 	helpers.SetWrapper(d, "api_hostname", res.ApiHostname)
-	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
 	if res.ConfigureFlow.IsSet() {
 		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}

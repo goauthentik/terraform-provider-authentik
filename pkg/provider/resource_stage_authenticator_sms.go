@@ -87,7 +87,7 @@ func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.
 		AccountSid:    d.Get("account_sid").(string),
 		AuthType:      api.AuthTypeEnum(d.Get("auth_type").(string)).Ptr(),
 		Auth:          d.Get("auth").(string),
-		FriendlyName:  *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+		FriendlyName:  helpers.GetP[string](d, "friendly_name"),
 		ConfigureFlow: *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 		AuthPassword:  helpers.GetP[string](d, "auth_password"),
 		Mapping:       *api.NewNullableString(helpers.GetP[string](d, "mapping")),
@@ -128,7 +128,7 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 	helpers.SetWrapper(d, "auth_type", res.AuthType)
 	helpers.SetWrapper(d, "verify_only", res.VerifyOnly)
 	helpers.SetWrapper(d, "mapping", res.Mapping.Get())
-	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
 	if res.ConfigureFlow.IsSet() {
 		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
