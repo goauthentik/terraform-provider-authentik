@@ -37,7 +37,27 @@ func resourceProviderSCIM() *schema.Resource {
 			"token": {
 				Type:      schema.TypeString,
 				Sensitive: true,
-				Required:  true,
+				Optional:  true,
+			},
+			"auth_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SCIMAUTHENTICATIONMODEENUM_TOKEN,
+				Description:      helpers.EnumToDescription(api.AllowedSCIMAuthenticationModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSCIMAuthenticationModeEnumEnumValues),
+			},
+			"auth_oauth": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Slug of an OAuth source used for authentication",
+			},
+			"auth_oauth_params": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "{}",
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 			"compatibility_mode": {
 				Type:             schema.TypeString,
@@ -72,10 +92,12 @@ func resourceProviderSCIM() *schema.Resource {
 	}
 }
 
-func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProviderRequest {
+func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) (*api.SCIMProviderRequest, diag.Diagnostics) {
 	r := api.SCIMProviderRequest{
 		Name:                       d.Get("name").(string),
 		Url:                        d.Get("url").(string),
+		AuthMode:                   helpers.CastString[api.SCIMAuthenticationModeEnum](helpers.GetP[string](d, "auth_mode")),
+		AuthOauth:                  *api.NewNullableString(helpers.GetP[string](d, "auth_oauth")),
 		Token:                      helpers.GetP[string](d, "token"),
 		PropertyMappings:           helpers.CastSlice[string](d, "property_mappings"),
 		PropertyMappingsGroup:      helpers.CastSlice[string](d, "property_mappings_group"),
@@ -84,13 +106,19 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
 		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
-	return &r
+
+	attr, err := helpers.GetJSON[map[string]interface{}](d, "auth_oauth_params")
+	r.AuthOauthParams = attr
+	return &r, err
 }
 
 func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceProviderSCIMSchemaToProvider(d)
+	r, diags := resourceProviderSCIMSchemaToProvider(d)
+	if diags != nil {
+		return diags
+	}
 
 	res, hr, err := c.client.ProvidersApi.ProvidersScimCreate(ctx).SCIMProviderRequest(*r).Execute()
 	if err != nil {
@@ -133,7 +161,10 @@ func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	app := resourceProviderSCIMSchemaToProvider(d)
+	app, diags := resourceProviderSCIMSchemaToProvider(d)
+	if diags != nil {
+		return diags
+	}
 
 	res, hr, err := c.client.ProvidersApi.ProvidersScimUpdate(ctx, int32(id)).SCIMProviderRequest(*app).Execute()
 	if err != nil {
