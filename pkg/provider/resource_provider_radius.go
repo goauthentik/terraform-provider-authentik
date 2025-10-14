@@ -67,7 +67,7 @@ func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusP
 		ClientNetworks:    api.PtrString(d.Get("client_networks").(string)),
 		SharedSecret:      api.PtrString(d.Get("shared_secret").(string)),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
-		PropertyMappings:  helpers.CastSlice_New[string](d, "property_mappings"),
+		PropertyMappings:  helpers.CastSlice[string](d, "property_mappings"),
 	}
 	return &r
 }
@@ -101,7 +101,7 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	helpers.SetWrapper(d, "client_networks", res.ClientNetworks)
 	helpers.SetWrapper(d, "shared_secret", res.SharedSecret)

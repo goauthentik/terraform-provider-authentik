@@ -170,8 +170,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
-		PropertyMappings:       helpers.CastSlice_New[string](d, "property_mappings"),
-		JwtFederationSources:   helpers.CastSlice_New[string](d, "jwt_federation_sources"),
+		PropertyMappings:       helpers.CastSlice[string](d, "property_mappings"),
+		JwtFederationSources:   helpers.CastSlice[string](d, "jwt_federation_sources"),
 		LogoutMethod:           api.OAuth2ProviderLogoutMethodEnum(d.Get("logout_method").(string)).Ptr(),
 		LogoutUri:              helpers.GetP[string](d, "logout_uri"),
 
@@ -255,7 +255,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "issuer_mode", res.IssuerMode)
 	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
 	helpers.SetWrapper(d, "logout_uri", res.LogoutUri)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
 	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris)))
@@ -265,9 +265,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "access_code_validity", res.AccessCodeValidity)
 	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localJWKSProviders := helpers.CastSlice_New[int](d, "jwt_federation_providers")
+	localJWKSProviders := helpers.CastSlice[int](d, "jwt_federation_providers")
 	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := helpers.CastSlice_New[string](d, "jwt_federation_sources")
+	localJWKSSources := helpers.CastSlice[string](d, "jwt_federation_sources")
 	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }

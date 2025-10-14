@@ -180,7 +180,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		DigestAlgorithm:             api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:          api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		SpBinding:                   api.SAMLBindingsEnum(d.Get("sp_binding").(string)).Ptr(),
-		PropertyMappings:            helpers.CastSlice_New[string](d, "property_mappings"),
+		PropertyMappings:            helpers.CastSlice[string](d, "property_mappings"),
 		SignAssertion:               api.PtrBool(d.Get("sign_assertion").(bool)),
 		SignResponse:                api.PtrBool(d.Get("sign_response").(bool)),
 		AuthenticationFlow:          *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
@@ -224,7 +224,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 
 	helpers.SetWrapper(d, "acs_url", res.AcsUrl)

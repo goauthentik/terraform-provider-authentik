@@ -179,8 +179,8 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		AuthenticationFlow:    *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		EnrollmentFlow:        *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
-		UserPropertyMappings:  helpers.CastSlice_New[string](d, "property_mappings"),
-		GroupPropertyMappings: helpers.CastSlice_New[string](d, "property_mappings_group"),
+		UserPropertyMappings:  helpers.CastSlice[string](d, "property_mappings"),
+		GroupPropertyMappings: helpers.CastSlice[string](d, "property_mappings_group"),
 
 		SsoUrl:                   d.Get("sso_url").(string),
 		SloUrl:                   *api.NewNullableString(helpers.GetP[string](d, "slo_url")),
@@ -263,9 +263,9 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 	helpers.SetWrapper(d, "metadata", meta.Metadata)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
+	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
 	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }

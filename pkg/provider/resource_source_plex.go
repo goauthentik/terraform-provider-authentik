@@ -113,7 +113,7 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 		ClientId:       api.PtrString(d.Get("client_id").(string)),
 		AllowFriends:   api.PtrBool(d.Get("allow_friends").(bool)),
 		PlexToken:      d.Get("plex_token").(string),
-		AllowedServers: helpers.CastSlice_New[string](d, "allowed_servers"),
+		AllowedServers: helpers.CastSlice[string](d, "allowed_servers"),
 	}
 	return &r
 }
@@ -157,7 +157,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
 	helpers.SetWrapper(d, "client_id", res.ClientId)
-	localServers := helpers.CastSlice_New[string](d, "allowed_servers")
+	localServers := helpers.CastSlice[string](d, "allowed_servers")
 	helpers.SetWrapper(d, "allowed_servers", helpers.ListConsistentMerge(localServers, res.AllowedServers))
 	helpers.SetWrapper(d, "allow_friends", res.AllowFriends)
 	helpers.SetWrapper(d, "plex_token", res.PlexToken)

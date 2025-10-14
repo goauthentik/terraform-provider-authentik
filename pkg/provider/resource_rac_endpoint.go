@@ -72,7 +72,7 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 		Protocol:           api.ProtocolEnum(d.Get("protocol").(string)),
 		Host:               d.Get("host").(string),
 		AuthMode:           api.ENDPOINTAUTHMODEENUM_PROMPT,
-		PropertyMappings:   helpers.CastSlice_New[string](d, "property_mappings"),
+		PropertyMappings:   helpers.CastSlice[string](d, "property_mappings"),
 		MaximumConnections: api.PtrInt32(int32(d.Get("maximum_connections").(int))),
 	}
 
@@ -111,7 +111,7 @@ func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "host", res.Host)
 	helpers.SetWrapper(d, "protocol", res.Protocol)
 	helpers.SetWrapper(d, "maximum_connections", res.MaximumConnections)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	if len(localMappings) > 0 {
 		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}

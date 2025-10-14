@@ -77,8 +77,8 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProvi
 		Name:                       d.Get("name").(string),
 		Url:                        d.Get("url").(string),
 		Token:                      helpers.GetP[string](d, "token"),
-		PropertyMappings:           helpers.CastSlice_New[string](d, "property_mappings"),
-		PropertyMappingsGroup:      helpers.CastSlice_New[string](d, "property_mappings_group"),
+		PropertyMappings:           helpers.CastSlice[string](d, "property_mappings"),
+		PropertyMappingsGroup:      helpers.CastSlice[string](d, "property_mappings_group"),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		CompatibilityMode:          api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
 		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
@@ -116,9 +116,9 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "url", res.Url)
 	helpers.SetWrapper(d, "token", res.Token)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
+	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
 	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	helpers.SetWrapper(d, "filter_group", res.FilterGroup.Get())

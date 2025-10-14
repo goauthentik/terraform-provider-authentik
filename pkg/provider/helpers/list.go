@@ -47,7 +47,7 @@ func ListConsistentMerge[T comparable](old []T, new []T) []T {
 	return res
 }
 
-func CastSlice_New[T any](d ResourceData, key string) []T {
+func CastSlice[T any](d ResourceData, key string) []T {
 	sl := make([]T, 0)
 	rv, ok := d.GetOk(key)
 	if !ok {

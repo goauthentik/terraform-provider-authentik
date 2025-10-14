@@ -66,7 +66,7 @@ func dataSourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.R
 	req := c.client.PropertymappingsApi.PropertymappingsProviderScopeList(ctx)
 
 	if _, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(helpers.CastSlice_New[string](d, "managed_list"))
+		req = req.Managed(helpers.CastSlice[string](d, "managed_list"))
 	} else if m, ok := d.GetOk("managed"); ok {
 		req = req.Managed([]string{m.(string)})
 	}
