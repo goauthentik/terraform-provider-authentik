@@ -76,17 +76,10 @@ jobs:
       - name: TF acceptance tests
         timeout-minutes: 30
         env:
-          TF_ACC: "1"
           AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
           AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
         run: |
-          go test \
-            -p 1 \
-            -v \
-            -coverprofile=coverage.txt \
-            -covermode=atomic \
-            -cover \
-            ./pkg/provider/ 2>&1 | tee test-output
+          make test 2>&1 | tee test-output
       - if: ${{ always() }}
         run: |
           go tool github.com/jstemmer/go-junit-report/v2 -in test-output -set-exit-code -iocopy -out junit.xml

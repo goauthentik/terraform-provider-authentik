@@ -104,6 +104,7 @@ func resourceProviderOAuth2() *schema.Resource {
 			},
 			"logout_method": {
 				Type:             schema.TypeString,
+				Default:          api.OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
 				Optional:         true,
 				Description:      helpers.EnumToDescription(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
@@ -171,7 +172,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
 		PropertyMappings:       helpers.CastSlice[string](d, "property_mappings"),
 		JwtFederationSources:   helpers.CastSlice[string](d, "jwt_federation_sources"),
-		LogoutMethod:           helpers.CastString[api.OAuth2ProviderLogoutMethodEnum](helpers.GetP[string](d, "logout_method")).Ptr(),
+		LogoutMethod:           helpers.CastString[api.OAuth2ProviderLogoutMethodEnum](helpers.GetP[string](d, "logout_method")),
 		LogoutUri:              helpers.GetP[string](d, "logout_uri"),
 
 		SigningKey:             *api.NewNullableString(helpers.GetP[string](d, "signing_key")),
