@@ -7,12 +7,6 @@ import (
 	"goauthentik.io/api/v3"
 )
 
-func Test_CastSlice(t *testing.T) {
-	foo := []interface{}{"test"}
-	bar := CastSlice[string](foo)
-	assert.Equal(t, bar, []string{"test"})
-}
-
 type TestResource map[string]interface{}
 
 func (tr TestResource) GetOk(key string) (interface{}, bool) {

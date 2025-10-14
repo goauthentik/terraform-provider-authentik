@@ -157,7 +157,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	if res.PasswordlessFlow.IsSet() {
 		helpers.SetWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
 	}
-	localSources := helpers.CastSlice[string](d.Get("sources").([]interface{}))
+	localSources := helpers.CastSlice_New[string](d, "sources")
 	helpers.SetWrapper(d, "sources", helpers.ListConsistentMerge(localSources, res.Sources))
 	return diags
 }

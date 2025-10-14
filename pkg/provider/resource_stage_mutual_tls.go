@@ -94,7 +94,7 @@ func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "mode", res.Mode)
 	helpers.SetWrapper(d, "cert_attribute", res.CertAttribute)
 	helpers.SetWrapper(d, "user_attribute", res.UserAttribute)
-	localCertificateAuthorities := helpers.CastSlice[string](d.Get("certificate_authorities").([]interface{}))
+	localCertificateAuthorities := helpers.CastSlice_New[string](d, "certificate_authorities")
 	helpers.SetWrapper(d, "certificate_authorities", helpers.ListConsistentMerge(localCertificateAuthorities, res.CertificateAuthorities))
 	return diags
 }

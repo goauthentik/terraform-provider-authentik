@@ -150,11 +150,11 @@ func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.Resource
 	helpers.SetWrapper(d, "group_delete_action", res.GroupDeleteAction)
 	helpers.SetWrapper(d, "filter_group", res.FilterGroup)
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
-	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
 		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localGroupMappings := helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{}))
+	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
 	if len(localGroupMappings) > 0 {
 		helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	}

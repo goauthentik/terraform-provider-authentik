@@ -67,7 +67,7 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
 		Parent:      *api.NewNullableString(helpers.GetP[string](d, "parent")),
 		Users:       helpers.CastSliceInt32(d.Get("users").([]interface{})),
-		Roles:       helpers.CastSlice[string](d.Get("roles").([]interface{})),
+		Roles:       helpers.CastSlice_New[string](d, "roles"),
 	}
 	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr

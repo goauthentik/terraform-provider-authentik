@@ -75,9 +75,9 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	helpers.SetWrapper(d, "name", res.Name)
-	fields := helpers.CastSlice[string](d.Get("fields").([]interface{}))
+	fields := helpers.CastSlice_New[string](d, "fields")
 	helpers.SetWrapper(d, "fields", helpers.ListConsistentMerge(fields, res.Fields))
-	validationPolicies := helpers.CastSlice[string](d.Get("validation_policies").([]interface{}))
+	validationPolicies := helpers.CastSlice_New[string](d, "validation_policies")
 	helpers.SetWrapper(d, "validation_policies", helpers.ListConsistentMerge(validationPolicies, res.ValidationPolicies))
 	return diags
 }

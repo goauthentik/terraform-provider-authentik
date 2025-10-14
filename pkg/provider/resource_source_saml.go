@@ -263,9 +263,9 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 	helpers.SetWrapper(d, "metadata", meta.Metadata)
-	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{}))
+	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
 	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }

@@ -162,7 +162,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return diag.FromErr(err)
 	}
 	helpers.SetWrapper(d, "attributes", string(b))
-	localGroups := helpers.CastSlice[string](d.Get("groups").([]interface{}))
+	localGroups := helpers.CastSlice_New[string](d, "groups")
 	helpers.SetWrapper(d, "groups", helpers.ListConsistentMerge(localGroups, res.Groups))
 	return diags
 }

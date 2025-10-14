@@ -157,7 +157,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
 	helpers.SetWrapper(d, "client_id", res.ClientId)
-	localServers := helpers.CastSlice[string](d.Get("allowed_servers").([]interface{}))
+	localServers := helpers.CastSlice_New[string](d, "allowed_servers")
 	helpers.SetWrapper(d, "allowed_servers", helpers.ListConsistentMerge(localServers, res.AllowedServers))
 	helpers.SetWrapper(d, "allow_friends", res.AllowFriends)
 	helpers.SetWrapper(d, "plex_token", res.PlexToken)

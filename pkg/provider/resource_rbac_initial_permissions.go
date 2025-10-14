@@ -89,7 +89,7 @@ func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceD
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "role", res.Role)
 	helpers.SetWrapper(d, "mode", res.Mode)
-	localPermissions := helpers.CastSlice[int](d.Get("permissions").([]interface{}))
+	localPermissions := helpers.CastSlice_New[int](d, "permissions")
 	helpers.SetWrapper(d, "permissions", helpers.ListConsistentMerge(localPermissions, helpers.Slice32ToInt(res.Permissions)))
 	return diags
 }

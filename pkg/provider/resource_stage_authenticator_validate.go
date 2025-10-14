@@ -115,13 +115,13 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "not_configured_action", res.NotConfiguredAction)
 	if res.ConfigurationStages != nil {
-		localConfigurationStages := helpers.CastSlice[string](d.Get("configuration_stages").([]interface{}))
+		localConfigurationStages := helpers.CastSlice_New[string](d, "configuration_stages")
 		helpers.SetWrapper(d, "configuration_stages", helpers.ListConsistentMerge(localConfigurationStages, res.ConfigurationStages))
 	}
 	helpers.SetWrapper(d, "device_classes", res.DeviceClasses)
 	helpers.SetWrapper(d, "last_auth_threshold", res.LastAuthThreshold)
 	helpers.SetWrapper(d, "webauthn_user_verification", res.WebauthnUserVerification)
-	localDeviceTypeRestrictions := helpers.CastSlice[string](d.Get("webauthn_allowed_device_types").([]interface{}))
+	localDeviceTypeRestrictions := helpers.CastSlice_New[string](d, "webauthn_allowed_device_types")
 	helpers.SetWrapper(d, "webauthn_allowed_device_types", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.WebauthnAllowedDeviceTypes))
 	return diags
 }

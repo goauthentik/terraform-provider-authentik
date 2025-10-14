@@ -216,7 +216,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	helpers.SetWrapper(d, "cookie_domain", res.CookieDomain)
 	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
 		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}

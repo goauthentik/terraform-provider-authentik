@@ -15,11 +15,11 @@ func offsetInSlice[T comparable](s T, list []T) int {
 // ListConsistentMerge Consistent merge of TypeList elements, maintaining entries position within the list
 // Workaround to TF Plugin SDK issue https://github.com/hashicorp/terraform-plugin-sdk/issues/477
 // Taken from https://github.com/alexissavin/terraform-provider-solidserver/blob/master/solidserver/solidserver-helper.go#L62
-func ListConsistentMerge[T comparable](old []T, new []T) []interface{} {
+func ListConsistentMerge[T comparable](old []T, new []T) []T {
 	// Step 1 Build local list of member indexed by their offset
 	oldOffset := make(map[int]T, len(old))
 	diff := make([]T, 0, len(new))
-	res := make([]interface{}, 0, len(new))
+	res := make([]T, 0, len(new))
 
 	for _, n := range new {
 		offset := offsetInSlice(n, old)
@@ -43,10 +43,7 @@ func ListConsistentMerge[T comparable](old []T, new []T) []interface{} {
 	for _, k := range keys {
 		res = append(res, oldOffset[k])
 	}
-	for _, v := range diff {
-		res = append(res, v)
-	}
-
+	res = append(res, diff...)
 	return res
 }
 
@@ -62,15 +59,6 @@ func CastSlice_New[T any](d ResourceData, key string) []T {
 	}
 	for _, m := range in {
 		sl = append(sl, m.(T))
-	}
-	return sl
-}
-
-// Deprecated: Use CastSlice_New
-func CastSlice[T any](in []any) []T {
-	sl := make([]T, len(in))
-	for i, m := range in {
-		sl[i] = m.(T)
 	}
 	return sl
 }

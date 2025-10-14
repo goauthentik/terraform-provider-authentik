@@ -129,12 +129,12 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "check_impossible_travel", res.CheckImpossibleTravel)
 	helpers.SetWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
 	if res.HasAsns() {
-		localAsns := helpers.CastSlice[int](d.Get("asns").([]interface{}))
+		localAsns := helpers.CastSlice_New[int](d, "asns")
 		helpers.SetWrapper(d, "asns", helpers.ListConsistentMerge(localAsns, helpers.Slice32ToInt(res.Asns)))
 	}
 	if res.Countries != nil {
 		localCountries := make([]api.CountryCodeEnum, 0)
-		for _, c := range helpers.CastSlice[string](d.Get("countries").([]interface{})) {
+		for _, c := range helpers.CastSlice_New[string](d, "countries") {
 			localCountries = append(localCountries, api.CountryCodeEnum(c))
 		}
 		helpers.SetWrapper(d, "countries", helpers.ListConsistentMerge(localCountries, res.Countries))

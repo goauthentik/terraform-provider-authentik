@@ -111,7 +111,7 @@ func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "host", res.Host)
 	helpers.SetWrapper(d, "protocol", res.Protocol)
 	helpers.SetWrapper(d, "maximum_connections", res.MaximumConnections)
-	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
 		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}

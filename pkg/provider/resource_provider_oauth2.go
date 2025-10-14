@@ -249,7 +249,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
-	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(helpers.CastSlice[api.RedirectURI](helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris))))
+	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris)))
 	helpers.SetWrapper(d, "signing_key", res.SigningKey.Get())
 	helpers.SetWrapper(d, "encryption_key", res.EncryptionKey.Get())
 	helpers.SetWrapper(d, "sub_mode", res.SubMode)
