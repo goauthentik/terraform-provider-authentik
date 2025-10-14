@@ -18,14 +18,13 @@ func TestAccResourceSourceTelegram(t *testing.T) {
 			{
 				Config: testAccResourceSourceTelegram(rName, appName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_source_saml.name", "name", rName),
-					resource.TestCheckResourceAttrSet("authentik_source_saml.name", "metadata"),
+					resource.TestCheckResourceAttr("authentik_source_telegram.name", "name", rName),
 				),
 			},
 			{
 				Config: testAccResourceSourceTelegram(rName+"test", appName+"test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_source_saml.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_source_telegram.name", "name", rName+"test"),
 				),
 			},
 		},
