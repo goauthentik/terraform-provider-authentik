@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourcePropertyMappingProviderSAML() *schema.Resource {
@@ -66,8 +67,8 @@ func dataSourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Re
 
 	req := c.client.PropertymappingsApi.PropertymappingsProviderSamlList(ctx)
 
-	if ml, ok := d.GetOk("managed_list"); ok {
-		req = req.Managed(castSlice[string](ml.([]interface{})))
+	if _, ok := d.GetOk("managed_list"); ok {
+		req = req.Managed(helpers.CastSlice_New[string](d, "managed_list"))
 	} else if m, ok := d.GetOk("managed"); ok {
 		req = req.Managed([]string{m.(string)})
 	}
@@ -84,7 +85,7 @@ func dataSourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Re
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {
@@ -96,15 +97,15 @@ func dataSourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Re
 		for i, r := range res.Results {
 			ids[i] = r.Pk
 		}
-		setWrapper(d, "ids", ids)
+		helpers.SetWrapper(d, "ids", ids)
 	} else {
 		f := res.Results[0]
 		d.SetId(f.Pk)
-		setWrapper(d, "name", f.Name)
-		setWrapper(d, "expression", f.Expression)
-		setWrapper(d, "saml_name", f.SamlName)
+		helpers.SetWrapper(d, "name", f.Name)
+		helpers.SetWrapper(d, "expression", f.Expression)
+		helpers.SetWrapper(d, "saml_name", f.SamlName)
 		if f.FriendlyName.IsSet() {
-			setWrapper(d, "friendly_name", f.FriendlyName.Get())
+			helpers.SetWrapper(d, "friendly_name", f.FriendlyName.Get())
 		}
 	}
 	return diags

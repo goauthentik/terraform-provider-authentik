@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderProxy() *schema.Resource {
@@ -64,7 +65,7 @@ func resourceProviderProxy() *schema.Resource {
 			"skip_path_regex": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"intercept_header_auth": {
 				Type:     schema.TypeBool,
@@ -88,8 +89,8 @@ func resourceProviderProxy() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.PROXYMODE_PROXY,
-				ValidateDiagFunc: StringInEnum(api.AllowedProxyModeEnumValues),
-				Description:      EnumToDescription(api.AllowedProxyModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProxyModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedProxyModeEnumValues),
 			},
 			"cookie_domain": {
 				Type:     schema.TypeString,
@@ -99,15 +100,15 @@ func resourceProviderProxy() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=10",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"refresh_token_validity": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"jwks_sources": {
 				Type:     schema.TypeList,
@@ -139,51 +140,28 @@ func resourceProviderProxy() *schema.Resource {
 
 func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyProviderRequest {
 	r := api.ProxyProviderRequest{
-		Name:                 d.Get("name").(string),
-		AuthorizationFlow:    d.Get("authorization_flow").(string),
-		InvalidationFlow:     d.Get("invalidation_flow").(string),
-		ExternalHost:         d.Get("external_host").(string),
-		Mode:                 api.ProxyMode(d.Get("mode").(string)).Ptr(),
-		PropertyMappings:     castSlice[string](d.Get("property_mappings").([]interface{})),
-		JwtFederationSources: castSlice[string](d.Get("jwt_federation_sources").([]interface{})),
-	}
+		Name:                      d.Get("name").(string),
+		AuthorizationFlow:         d.Get("authorization_flow").(string),
+		InvalidationFlow:          d.Get("invalidation_flow").(string),
+		ExternalHost:              d.Get("external_host").(string),
+		Mode:                      api.ProxyMode(d.Get("mode").(string)).Ptr(),
+		PropertyMappings:          helpers.CastSlice_New[string](d, "property_mappings"),
+		JwtFederationSources:      helpers.CastSlice_New[string](d, "jwt_federation_sources"),
+		AuthenticationFlow:        *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		InternalHost:              helpers.GetP[string](d, "internal_host"),
+		InternalHostSslValidation: helpers.GetP[bool](d, "internal_host_ssl_validation"),
 
-	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
-	}
-	if l, ok := d.Get("internal_host").(string); ok {
-		r.InternalHost = &l
-	}
-	if l, ok := d.Get("internal_host_ssl_validation").(bool); ok {
-		r.InternalHostSslValidation = &l
-	}
+		SkipPathRegex: helpers.GetP[string](d, "skip_path_regex"),
 
-	if l, ok := d.Get("skip_path_regex").(string); ok {
-		r.SkipPathRegex = &l
-	}
+		BasicAuthEnabled:           helpers.GetP[bool](d, "basic_auth_enabled"),
+		InterceptHeaderAuth:        helpers.GetP[bool](d, "intercept_header_auth"),
+		BasicAuthUserAttribute:     helpers.GetP[string](d, "basic_auth_username_attribute"),
+		BasicAuthPasswordAttribute: helpers.GetP[string](d, "basic_auth_password_attribute"),
 
-	if l, ok := d.Get("basic_auth_enabled").(bool); ok {
-		r.BasicAuthEnabled = &l
-	}
-	if l, ok := d.Get("intercept_header_auth").(bool); ok {
-		r.InterceptHeaderAuth = &l
-	}
-	if l, ok := d.Get("basic_auth_username_attribute").(string); ok {
-		r.BasicAuthUserAttribute = &l
-	}
-	if l, ok := d.Get("basic_auth_password_attribute").(string); ok {
-		r.BasicAuthPasswordAttribute = &l
-	}
+		CookieDomain: helpers.GetP[string](d, "cookie_domain"),
 
-	if l, ok := d.Get("cookie_domain").(string); ok {
-		r.CookieDomain = &l
-	}
-
-	if l, ok := d.Get("access_token_validity").(string); ok {
-		r.AccessTokenValidity = &l
-	}
-	if l, ok := d.Get("refresh_token_validity").(string); ok {
-		r.RefreshTokenValidity = &l
+		AccessTokenValidity:  helpers.GetP[string](d, "access_token_validity"),
+		RefreshTokenValidity: helpers.GetP[string](d, "refresh_token_validity"),
 	}
 
 	providers := d.Get("jwt_federation_providers").([]interface{})
@@ -202,7 +180,7 @@ func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -218,34 +196,34 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "client_id", res.ClientId)
-	setWrapper(d, "intercept_header_auth", res.InterceptHeaderAuth)
-	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	setWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	setWrapper(d, "internal_host", res.InternalHost)
-	setWrapper(d, "external_host", res.ExternalHost)
-	setWrapper(d, "internal_host_ssl_validation", res.InternalHostSslValidation)
-	setWrapper(d, "skip_path_regex", res.SkipPathRegex)
-	setWrapper(d, "basic_auth_enabled", res.BasicAuthEnabled)
-	setWrapper(d, "basic_auth_username_attribute", res.BasicAuthUserAttribute)
-	setWrapper(d, "basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "cookie_domain", res.CookieDomain)
-	setWrapper(d, "access_token_validity", res.AccessTokenValidity)
-	setWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	helpers.SetWrapper(d, "intercept_header_auth", res.InterceptHeaderAuth)
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
+	helpers.SetWrapper(d, "internal_host", res.InternalHost)
+	helpers.SetWrapper(d, "external_host", res.ExternalHost)
+	helpers.SetWrapper(d, "internal_host_ssl_validation", res.InternalHostSslValidation)
+	helpers.SetWrapper(d, "skip_path_regex", res.SkipPathRegex)
+	helpers.SetWrapper(d, "basic_auth_enabled", res.BasicAuthEnabled)
+	helpers.SetWrapper(d, "basic_auth_username_attribute", res.BasicAuthUserAttribute)
+	helpers.SetWrapper(d, "basic_auth_password_attribute", res.BasicAuthPasswordAttribute)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "cookie_domain", res.CookieDomain)
+	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
+	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localJWKSProviders := castSlice[int](d.Get("jwt_federation_providers").([]interface{}))
-	setWrapper(d, "jwt_federation_providers", listConsistentMerge(localJWKSProviders, slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := castSlice[string](d.Get("jwt_federation_sources").([]interface{}))
-	setWrapper(d, "jwt_federation_sources", listConsistentMerge(localJWKSSources, res.JwtFederationSources))
+	localJWKSProviders := helpers.CastSlice_New[int](d, "jwt_federation_providers")
+	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
+	localJWKSSources := helpers.CastSlice_New[string](d, "jwt_federation_sources")
+	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }
 
@@ -259,7 +237,7 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.ProvidersApi.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -274,7 +252,7 @@ func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m 
 	}
 	hr, err := c.client.ProvidersApi.ProvidersProxyDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

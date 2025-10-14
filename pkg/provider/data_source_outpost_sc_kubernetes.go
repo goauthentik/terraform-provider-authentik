@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataOutpostServiceConnectionsKubernetes() *schema.Resource {
@@ -48,7 +49,7 @@ func dataOutpostServiceConnectionsKubernetesRead(ctx context.Context, d *schema.
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {
@@ -56,13 +57,13 @@ func dataOutpostServiceConnectionsKubernetesRead(ctx context.Context, d *schema.
 	}
 	f := res.Results[0]
 	d.SetId(f.Pk)
-	setWrapper(d, "name", f.Name)
-	setWrapper(d, "local", f.Local)
-	setWrapper(d, "verify_ssl", f.VerifySsl)
+	helpers.SetWrapper(d, "name", f.Name)
+	helpers.SetWrapper(d, "local", f.Local)
+	helpers.SetWrapper(d, "verify_ssl", f.VerifySsl)
 	b, err := json.Marshal(f.Kubeconfig)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "kubeconfig", string(b))
+	helpers.SetWrapper(d, "kubeconfig", string(b))
 	return diags
 }

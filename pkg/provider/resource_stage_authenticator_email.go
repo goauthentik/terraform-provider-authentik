@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorEmail() *schema.Resource {
@@ -26,6 +27,7 @@ func resourceStageAuthenticatorEmail() *schema.Resource {
 			"friendly_name": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "",
 			},
 			"configure_flow": {
 				Type:     schema.TypeString,
@@ -77,8 +79,8 @@ func resourceStageAuthenticatorEmail() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"subject": {
 				Type:     schema.TypeString,
@@ -100,44 +102,21 @@ func resourceStageAuthenticatorEmailSchemaToProvider(d *schema.ResourceData) *ap
 		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
 		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
 		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
-	}
+		FriendlyName:      helpers.GetP[string](d, "friendly_name"),
+		ConfigureFlow:     *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
-	}
+		Host: helpers.GetP[string](d, "host"),
+		Port: helpers.GetIntP(d, "port"),
 
-	if h, hSet := d.GetOk("host"); hSet {
-		r.Host = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("port"); pSet {
-		r.Port = api.PtrInt32(int32(p.(int)))
-	}
+		Username: helpers.GetP[string](d, "username"),
+		Password: helpers.GetP[string](d, "password"),
 
-	if h, hSet := d.GetOk("username"); hSet {
-		r.Username = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("password"); hSet {
-		r.Password = api.PtrString(h.(string))
-	}
+		Timeout: helpers.GetIntP(d, "timeout"),
 
-	if p, pSet := d.GetOk("timeout"); pSet {
-		r.Timeout = api.PtrInt32(int32(p.(int)))
-	}
-
-	if h, hSet := d.GetOk("from_address"); hSet {
-		r.FromAddress = api.PtrString(h.(string))
-	}
-	if p, pSet := d.GetOk("token_expiry"); pSet {
-		r.TokenExpiry = api.PtrString(p.(string))
-	}
-	if h, hSet := d.GetOk("subject"); hSet {
-		r.Subject = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("template"); hSet {
-		r.Template = api.PtrString(h.(string))
+		FromAddress: helpers.GetP[string](d, "from_address"),
+		TokenExpiry: helpers.GetP[string](d, "token_expiry"),
+		Subject:     helpers.GetP[string](d, "subject"),
+		Template:    helpers.GetP[string](d, "template"),
 	}
 	return &r
 }
@@ -149,7 +128,7 @@ func resourceStageAuthenticatorEmailCreate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailCreate(ctx).AuthenticatorEmailStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -162,24 +141,24 @@ func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.Resource
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "use_global_settings", res.UseGlobalSettings)
-	setWrapper(d, "host", res.Host)
-	setWrapper(d, "port", res.Port)
-	setWrapper(d, "username", res.Username)
-	setWrapper(d, "use_tls", res.UseTls)
-	setWrapper(d, "use_ssl", res.UseSsl)
-	setWrapper(d, "timeout", res.Timeout)
-	setWrapper(d, "from_address", res.FromAddress)
-	setWrapper(d, "token_expiry", res.TokenExpiry)
-	setWrapper(d, "subject", res.Subject)
-	setWrapper(d, "template", res.Template)
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "use_global_settings", res.UseGlobalSettings)
+	helpers.SetWrapper(d, "host", res.Host)
+	helpers.SetWrapper(d, "port", res.Port)
+	helpers.SetWrapper(d, "username", res.Username)
+	helpers.SetWrapper(d, "use_tls", res.UseTls)
+	helpers.SetWrapper(d, "use_ssl", res.UseSsl)
+	helpers.SetWrapper(d, "timeout", res.Timeout)
+	helpers.SetWrapper(d, "from_address", res.FromAddress)
+	helpers.SetWrapper(d, "token_expiry", res.TokenExpiry)
+	helpers.SetWrapper(d, "subject", res.Subject)
+	helpers.SetWrapper(d, "template", res.Template)
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }
@@ -191,7 +170,7 @@ func resourceStageAuthenticatorEmailUpdate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailUpdate(ctx, d.Id()).AuthenticatorEmailStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -202,7 +181,7 @@ func resourceStageAuthenticatorEmailDelete(ctx context.Context, d *schema.Resour
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

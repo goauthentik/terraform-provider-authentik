@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceEventRule() *schema.Resource {
@@ -34,8 +35,8 @@ func resourceEventRule() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SEVERITYENUM_WARNING,
-				Description:      EnumToDescription(api.AllowedSeverityEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSeverityEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSeverityEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSeverityEnumEnumValues),
 			},
 			"destination_group": {
 				Type:        schema.TypeString,
@@ -57,13 +58,9 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRu
 		Name:                 d.Get("name").(string),
 		Severity:             api.SeverityEnum(d.Get("severity").(string)).Ptr(),
 		DestinationEventUser: api.PtrBool(d.Get("destination_event_user").(bool)),
+		DestinationGroup:     *api.NewNullableString(helpers.GetP[string](d, ("destination_group"))),
+		Transports:           helpers.CastSlice_New[string](d, "transports"),
 	}
-
-	if w, ok := d.Get("destination_group").(string); ok {
-		m.DestinationGroup.Set(&w)
-	}
-
-	m.Transports = castSlice[string](d.Get("transports").([]interface{}))
 	return &m, nil
 }
 
@@ -77,7 +74,7 @@ func resourceEventRuleCreate(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.EventsApi.EventsRulesCreate(ctx).NotificationRuleRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -90,15 +87,15 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 
 	res, hr, err := c.client.EventsApi.EventsRulesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "destination_group", res.DestinationGroup.Get())
-	setWrapper(d, "destination_event_user", res.DestinationEventUser)
-	localTransports := castSlice[string](d.Get("transports").([]interface{}))
-	setWrapper(d, "transports", listConsistentMerge(localTransports, res.Transports))
-	setWrapper(d, "severity", res.Severity)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "destination_group", res.DestinationGroup.Get())
+	helpers.SetWrapper(d, "destination_event_user", res.DestinationEventUser)
+	localTransports := helpers.CastSlice_New[string](d, "transports")
+	helpers.SetWrapper(d, "transports", helpers.ListConsistentMerge(localTransports, res.Transports))
+	helpers.SetWrapper(d, "severity", res.Severity)
 	return diags
 }
 
@@ -111,7 +108,7 @@ func resourceEventRuleUpdate(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	res, hr, err := c.client.EventsApi.EventsRulesUpdate(ctx, d.Id()).NotificationRuleRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -122,7 +119,7 @@ func resourceEventRuleDelete(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*APIClient)
 	hr, err := c.client.EventsApi.EventsRulesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

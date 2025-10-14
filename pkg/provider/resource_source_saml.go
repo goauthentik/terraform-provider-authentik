@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceSourceSAML() *schema.Resource {
@@ -54,22 +55,22 @@ func resourceSourceSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"user_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
 			"group_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
 			},
 
 			"pre_authentication_flow": {
@@ -97,15 +98,15 @@ func resourceSourceSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SAMLNAMEIDPOLICYENUM__2_0NAMEID_FORMATPERSISTENT,
-				Description:      EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
 			},
 			"binding_type": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.BINDINGTYPEENUM_REDIRECT,
-				Description:      EnumToDescription(api.AllowedBindingTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedBindingTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedBindingTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedBindingTypeEnumEnumValues),
 			},
 			"signing_kp": {
 				Type:     schema.TypeString,
@@ -123,22 +124,22 @@ func resourceSourceSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.DIGESTALGORITHMENUM__2001_04_XMLENCSHA256,
-				Description:      EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
 			},
 			"signature_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SIGNATUREALGORITHMENUM__2001_04_XMLDSIG_MORERSA_SHA256,
-				Description:      EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
 			},
 			"temporary_user_delete_after": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=1",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 
 			"metadata": {
@@ -175,9 +176,17 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 
+		AuthenticationFlow:    *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		EnrollmentFlow:        *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
+		UserPropertyMappings:  helpers.CastSlice_New[string](d, "property_mappings"),
+		GroupPropertyMappings: helpers.CastSlice_New[string](d, "property_mappings_group"),
 
 		SsoUrl:                   d.Get("sso_url").(string),
+		SloUrl:                   *api.NewNullableString(helpers.GetP[string](d, "slo_url")),
+		SigningKp:                *api.NewNullableString(helpers.GetP[string](d, "signing_kp")),
+		EncryptionKp:             *api.NewNullableString(helpers.GetP[string](d, "encryption_kp")),
+		VerificationKp:           *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
 		Issuer:                   api.PtrString(d.Get("issuer").(string)),
 		AllowIdpInitiated:        api.PtrBool(d.Get("allow_idp_initiated").(bool)),
 		TemporaryUserDeleteAfter: api.PtrString(d.Get("temporary_user_delete_after").(string)),
@@ -186,29 +195,6 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		SignatureAlgorithm:       api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		NameIdPolicy:             api.SAMLNameIDPolicyEnum(d.Get("name_id_policy").(string)).Ptr(),
 	}
-
-	if ak, ok := d.GetOk("authentication_flow"); ok {
-		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
-	}
-	if ef, ok := d.GetOk("enrollment_flow"); ok {
-		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
-	}
-
-	if s, sok := d.GetOk("slo_url"); sok && s.(string) != "" {
-		r.SloUrl.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("signing_kp"); sok && s.(string) != "" {
-		r.SigningKp.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("encryption_kp"); sok && s.(string) != "" {
-		r.EncryptionKp.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("verification_kp"); sok && s.(string) != "" {
-		r.VerificationKp.Set(api.PtrString(s.(string)))
-	}
-	r.UserPropertyMappings = castSlice[string](d.Get("property_mappings").([]interface{}))
-	r.GroupPropertyMappings = castSlice[string](d.Get("property_mappings_group").([]interface{}))
-
 	return &r
 }
 
@@ -219,7 +205,7 @@ func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -231,56 +217,56 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesSamlRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	if res.AuthenticationFlow.IsSet() {
-		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
-	setWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
-	setWrapper(d, "issuer", res.Issuer)
-	setWrapper(d, "sso_url", res.SsoUrl)
+	helpers.SetWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
+	helpers.SetWrapper(d, "issuer", res.Issuer)
+	helpers.SetWrapper(d, "sso_url", res.SsoUrl)
 	if res.SloUrl.IsSet() {
-		setWrapper(d, "slo_url", res.SloUrl.Get())
+		helpers.SetWrapper(d, "slo_url", res.SloUrl.Get())
 	}
-	setWrapper(d, "allow_idp_initiated", res.AllowIdpInitiated)
-	setWrapper(d, "name_id_policy", res.NameIdPolicy)
-	setWrapper(d, "binding_type", res.BindingType)
+	helpers.SetWrapper(d, "allow_idp_initiated", res.AllowIdpInitiated)
+	helpers.SetWrapper(d, "name_id_policy", res.NameIdPolicy)
+	helpers.SetWrapper(d, "binding_type", res.BindingType)
 	if res.SigningKp.IsSet() {
-		setWrapper(d, "signing_kp", res.SigningKp.Get())
+		helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
 	}
 	if res.EncryptionKp.IsSet() {
-		setWrapper(d, "encryption_kp", res.EncryptionKp.Get())
+		helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
 	}
 	if res.VerificationKp.IsSet() {
-		setWrapper(d, "verification_kp", res.VerificationKp.Get())
+		helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
 	}
-	setWrapper(d, "digest_algorithm", res.DigestAlgorithm)
-	setWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
-	setWrapper(d, "temporary_user_delete_after", res.TemporaryUserDeleteAfter)
+	helpers.SetWrapper(d, "digest_algorithm", res.DigestAlgorithm)
+	helpers.SetWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
+	helpers.SetWrapper(d, "temporary_user_delete_after", res.TemporaryUserDeleteAfter)
 
 	meta, hr, err := c.client.SourcesApi.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
-	setWrapper(d, "metadata", meta.Metadata)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
-	setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
-	setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
+	helpers.SetWrapper(d, "metadata", meta.Metadata)
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
+	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }
 
@@ -290,7 +276,7 @@ func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -301,7 +287,7 @@ func resourceSourceSAMLDelete(ctx context.Context, d *schema.ResourceData, m int
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorSms() *schema.Resource {
@@ -26,6 +27,7 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 			"friendly_name": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "",
 			},
 			"configure_flow": {
 				Type:     schema.TypeString,
@@ -35,8 +37,8 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.PROVIDERENUM_TWILIO,
-				Description:      EnumToDescription(api.AllowedProviderEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedProviderEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedProviderEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProviderEnumEnumValues),
 			},
 			"from_number": {
 				Type:     schema.TypeString,
@@ -56,8 +58,8 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.AUTHTYPEENUM_BASIC,
-				Description:      EnumToDescription(api.AllowedAuthTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedAuthTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedAuthTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthTypeEnumEnumValues),
 			},
 			"auth_password": {
 				Type:      schema.TypeString,
@@ -79,28 +81,17 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 
 func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorSMSStageRequest {
 	r := api.AuthenticatorSMSStageRequest{
-		Name:       d.Get("name").(string),
-		Provider:   api.ProviderEnum(d.Get("sms_provider").(string)),
-		FromNumber: d.Get("from_number").(string),
-		AccountSid: d.Get("account_sid").(string),
-		AuthType:   api.AuthTypeEnum(d.Get("auth_type").(string)).Ptr(),
-		Auth:       d.Get("auth").(string),
-	}
-
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("auth_password"); hSet {
-		r.AuthPassword = api.PtrString(h.(string))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
-	}
-	if h, hSet := d.GetOk("mapping"); hSet {
-		r.Mapping.Set(api.PtrString(h.(string)))
-	}
-	if verify, verifySet := d.GetOk("verify_only"); verifySet {
-		r.VerifyOnly = api.PtrBool(verify.(bool))
+		Name:          d.Get("name").(string),
+		Provider:      api.ProviderEnum(d.Get("sms_provider").(string)),
+		FromNumber:    d.Get("from_number").(string),
+		AccountSid:    d.Get("account_sid").(string),
+		AuthType:      api.AuthTypeEnum(d.Get("auth_type").(string)).Ptr(),
+		Auth:          d.Get("auth").(string),
+		FriendlyName:  helpers.GetP[string](d, "friendly_name"),
+		ConfigureFlow: *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		AuthPassword:  helpers.GetP[string](d, "auth_password"),
+		Mapping:       *api.NewNullableString(helpers.GetP[string](d, "mapping")),
+		VerifyOnly:    helpers.GetP[bool](d, "verify_only"),
 	}
 	return &r
 }
@@ -112,7 +103,7 @@ func resourceStageAuthenticatorSmsCreate(ctx context.Context, d *schema.Resource
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsCreate(ctx).AuthenticatorSMSStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -125,21 +116,21 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "sms_provider", res.Provider)
-	setWrapper(d, "from_number", res.FromNumber)
-	setWrapper(d, "account_sid", res.AccountSid)
-	setWrapper(d, "auth", res.Auth)
-	setWrapper(d, "auth_password", res.AuthPassword)
-	setWrapper(d, "auth_type", res.AuthType)
-	setWrapper(d, "verify_only", res.VerifyOnly)
-	setWrapper(d, "mapping", res.Mapping.Get())
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "sms_provider", res.Provider)
+	helpers.SetWrapper(d, "from_number", res.FromNumber)
+	helpers.SetWrapper(d, "account_sid", res.AccountSid)
+	helpers.SetWrapper(d, "auth", res.Auth)
+	helpers.SetWrapper(d, "auth_password", res.AuthPassword)
+	helpers.SetWrapper(d, "auth_type", res.AuthType)
+	helpers.SetWrapper(d, "verify_only", res.VerifyOnly)
+	helpers.SetWrapper(d, "mapping", res.Mapping.Get())
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }
@@ -151,7 +142,7 @@ func resourceStageAuthenticatorSmsUpdate(ctx context.Context, d *schema.Resource
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsUpdate(ctx, d.Id()).AuthenticatorSMSStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -162,7 +153,7 @@ func resourceStageAuthenticatorSmsDelete(ctx context.Context, d *schema.Resource
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorSmsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

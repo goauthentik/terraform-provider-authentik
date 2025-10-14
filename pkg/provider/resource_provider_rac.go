@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderRAC() *schema.Resource {
@@ -46,16 +46,16 @@ func resourceProviderRAC() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 			"connection_expiry": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "seconds=0",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 		},
 	}
@@ -63,25 +63,15 @@ func resourceProviderRAC() *schema.Resource {
 
 func resourceProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACProviderRequest, diag.Diagnostics) {
 	r := api.RACProviderRequest{
-		Name:              d.Get("name").(string),
-		AuthorizationFlow: d.Get("authorization_flow").(string),
-		PropertyMappings:  castSlice[string](d.Get("property_mappings").([]interface{})),
-		ConnectionExpiry:  api.PtrString(d.Get("connection_expiry").(string)),
+		Name:               d.Get("name").(string),
+		AuthorizationFlow:  d.Get("authorization_flow").(string),
+		PropertyMappings:   helpers.CastSlice_New[string](d, "property_mappings"),
+		ConnectionExpiry:   api.PtrString(d.Get("connection_expiry").(string)),
+		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 	}
-
-	if s, sok := d.GetOk("authentication_flow"); sok && s.(string) != "" {
-		r.AuthenticationFlow.Set(api.PtrString(s.(string)))
-	}
-
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
 	r.Settings = attr
-	return &r, nil
+	return &r, err
 }
 
 func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -94,7 +84,7 @@ func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.ProvidersApi.ProvidersRacCreate(ctx).RACProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -110,22 +100,22 @@ func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersRacRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	setWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	setWrapper(d, "connection_expiry", res.ConnectionExpiry)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "connection_expiry", res.ConnectionExpiry)
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	b, err := json.Marshal(res.Settings)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "settings", string(b))
+	helpers.SetWrapper(d, "settings", string(b))
 	return diags
 }
 
@@ -142,7 +132,7 @@ func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.ProvidersApi.ProvidersRacUpdate(ctx, int32(id)).RACProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -157,7 +147,7 @@ func resourceProviderRACDelete(ctx context.Context, d *schema.ResourceData, m in
 	}
 	hr, err := c.client.ProvidersApi.ProvidersRacDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

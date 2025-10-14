@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingSourceKerberos() *schema.Resource {
@@ -26,7 +27,7 @@ func resourcePropertyMappingSourceKerberos() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 		},
 	}
@@ -47,7 +48,7 @@ func resourcePropertyMappingSourceKerberosCreate(ctx context.Context, d *schema.
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosCreate(ctx).KerberosSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -60,11 +61,11 @@ func resourcePropertyMappingSourceKerberosRead(ctx context.Context, d *schema.Re
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.Expression)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.Expression)
 	return diags
 }
 
@@ -75,7 +76,7 @@ func resourcePropertyMappingSourceKerberosUpdate(ctx context.Context, d *schema.
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosUpdate(ctx, d.Id()).KerberosSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,7 +87,7 @@ func resourcePropertyMappingSourceKerberosDelete(ctx context.Context, d *schema.
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

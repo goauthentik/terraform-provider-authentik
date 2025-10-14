@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorStatic() *schema.Resource {
@@ -26,6 +27,7 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 			"friendly_name": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "",
 			},
 			"configure_flow": {
 				Type:     schema.TypeString,
@@ -47,16 +49,11 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 
 func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorStaticStageRequest {
 	r := api.AuthenticatorStaticStageRequest{
-		Name:        d.Get("name").(string),
-		TokenCount:  api.PtrInt32(int32(d.Get("token_count").(int))),
-		TokenLength: api.PtrInt32(int32(d.Get("token_length").(int))),
-	}
-
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
+		Name:          d.Get("name").(string),
+		TokenCount:    api.PtrInt32(int32(d.Get("token_count").(int))),
+		TokenLength:   api.PtrInt32(int32(d.Get("token_length").(int))),
+		FriendlyName:  helpers.GetP[string](d, "friendly_name"),
+		ConfigureFlow: *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 	}
 	return &r
 }
@@ -68,7 +65,7 @@ func resourceStageAuthenticatorStaticCreate(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticCreate(ctx).AuthenticatorStaticStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -81,15 +78,15 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "token_count", res.TokenCount)
-	setWrapper(d, "token_length", res.TokenLength)
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "token_count", res.TokenCount)
+	helpers.SetWrapper(d, "token_length", res.TokenLength)
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
 	return diags
 }
@@ -101,7 +98,7 @@ func resourceStageAuthenticatorStaticUpdate(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticUpdate(ctx, d.Id()).AuthenticatorStaticStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -112,7 +109,7 @@ func resourceStageAuthenticatorStaticDelete(ctx context.Context, d *schema.Resou
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorStaticDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyDummy() *schema.Resource {
@@ -52,13 +53,8 @@ func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolic
 		Name:             d.Get("name").(string),
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		Result:           api.PtrBool(d.Get("result").(bool)),
-	}
-
-	if p, pSet := d.GetOk("wait_max"); pSet {
-		r.WaitMax = api.PtrInt32(int32(p.(int)))
-	}
-	if p, pSet := d.GetOk("wait_min"); pSet {
-		r.WaitMin = api.PtrInt32(int32(p.(int)))
+		WaitMin:          helpers.GetIntP(d, "wait_min"),
+		WaitMax:          helpers.GetIntP(d, "wait_max"),
 	}
 	return &r
 }
@@ -70,7 +66,7 @@ func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyCreate(ctx).DummyPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -83,14 +79,14 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "result", res.Result)
-	setWrapper(d, "wait_min", res.WaitMin)
-	setWrapper(d, "wait_max", res.WaitMax)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "result", res.Result)
+	helpers.SetWrapper(d, "wait_min", res.WaitMin)
+	helpers.SetWrapper(d, "wait_max", res.WaitMax)
 	return diags
 }
 
@@ -101,7 +97,7 @@ func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesDummyUpdate(ctx, d.Id()).DummyPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -112,7 +108,7 @@ func resourcePolicyDummyDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesDummyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

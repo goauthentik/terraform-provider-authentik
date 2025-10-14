@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyBinding() *schema.Resource {
@@ -77,26 +78,10 @@ func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) *api.PolicyBindi
 		Enabled:       api.PtrBool(d.Get("enabled").(bool)),
 		Timeout:       api.PtrInt32(int32(d.Get("timeout").(int))),
 		FailureResult: api.PtrBool(d.Get("failure_result").(bool)),
+		Policy:        *api.NewNullableString(helpers.GetP[string](d, "policy")),
+		User:          *api.NewNullableInt32(helpers.GetIntP(d, ("user"))),
+		Group:         *api.NewNullableString(helpers.GetP[string](d, "group")),
 	}
-
-	if u, uSet := d.GetOk("policy"); uSet {
-		m.Policy.Set(api.PtrString(u.(string)))
-	} else {
-		m.Policy.Set(nil)
-	}
-
-	if u, uSet := d.GetOk("user"); uSet {
-		m.User.Set(api.PtrInt32(int32(u.(int))))
-	} else {
-		m.User.Set(nil)
-	}
-
-	if u, uSet := d.GetOk("group"); uSet {
-		m.Group.Set(api.PtrString(u.(string)))
-	} else {
-		m.Group.Set(nil)
-	}
-
 	return &m
 }
 
@@ -107,7 +92,7 @@ func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsCreate(ctx).PolicyBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -120,24 +105,24 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "target", res.Target)
+	helpers.SetWrapper(d, "target", res.Target)
 	if res.Policy.IsSet() {
-		setWrapper(d, "policy", res.Policy.Get())
+		helpers.SetWrapper(d, "policy", res.Policy.Get())
 	}
 	if res.User.IsSet() {
-		setWrapper(d, "user", res.User.Get())
+		helpers.SetWrapper(d, "user", res.User.Get())
 	}
 	if res.Group.IsSet() {
-		setWrapper(d, "group", res.Group.Get())
+		helpers.SetWrapper(d, "group", res.Group.Get())
 	}
-	setWrapper(d, "order", res.Order)
-	setWrapper(d, "negate", res.Negate)
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "timeout", res.Timeout)
-	setWrapper(d, "failure_result", res.FailureResult)
+	helpers.SetWrapper(d, "order", res.Order)
+	helpers.SetWrapper(d, "negate", res.Negate)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "timeout", res.Timeout)
+	helpers.SetWrapper(d, "failure_result", res.FailureResult)
 	return diags
 }
 
@@ -148,7 +133,7 @@ func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	res, hr, err := c.client.PoliciesApi.PoliciesBindingsUpdate(ctx, d.Id()).PolicyBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -159,7 +144,7 @@ func resourcePolicyBindingDelete(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

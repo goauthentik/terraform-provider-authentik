@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageCaptcha() *schema.Resource {
@@ -75,12 +76,8 @@ func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaSt
 		ScoreMinThreshold:   api.PtrFloat64(d.Get("score_min_threshold").(float64)),
 		ScoreMaxThreshold:   api.PtrFloat64(d.Get("score_max_threshold").(float64)),
 		Interactive:         api.PtrBool(d.Get("interactive").(bool)),
-	}
-	if v, ok := d.GetOk("js_url"); ok {
-		r.JsUrl = api.PtrString(v.(string))
-	}
-	if v, ok := d.GetOk("api_url"); ok {
-		r.ApiUrl = api.PtrString(v.(string))
+		JsUrl:               helpers.GetP[string](d, "js_url"),
+		ApiUrl:              helpers.GetP[string](d, "api_url"),
 	}
 	return &r
 }
@@ -92,7 +89,7 @@ func resourceStageCaptchaCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaCreate(ctx).CaptchaStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -105,17 +102,17 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "public_key", res.PublicKey)
-	setWrapper(d, "api_url", res.GetApiUrl())
-	setWrapper(d, "js_url", res.GetJsUrl())
-	setWrapper(d, "error_on_invalid_score", res.GetErrorOnInvalidScore())
-	setWrapper(d, "score_min_threshold", res.GetScoreMinThreshold())
-	setWrapper(d, "score_max_threshold", res.GetScoreMaxThreshold())
-	setWrapper(d, "interactive", res.Interactive)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "public_key", res.PublicKey)
+	helpers.SetWrapper(d, "api_url", res.GetApiUrl())
+	helpers.SetWrapper(d, "js_url", res.GetJsUrl())
+	helpers.SetWrapper(d, "error_on_invalid_score", res.GetErrorOnInvalidScore())
+	helpers.SetWrapper(d, "score_min_threshold", res.GetScoreMinThreshold())
+	helpers.SetWrapper(d, "score_max_threshold", res.GetScoreMaxThreshold())
+	helpers.SetWrapper(d, "interactive", res.Interactive)
 	return diags
 }
 
@@ -126,7 +123,7 @@ func resourceStageCaptchaUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesCaptchaUpdate(ctx, d.Id()).CaptchaStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -137,7 +134,7 @@ func resourceStageCaptchaDelete(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesCaptchaDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

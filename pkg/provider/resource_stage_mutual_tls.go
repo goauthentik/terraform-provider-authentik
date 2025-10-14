@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageMutualTLS() *schema.Resource {
@@ -27,22 +28,22 @@ func resourceStageMutualTLS() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.MUTUALTLSSTAGEMODEENUM_OPTIONAL,
-				Description:      EnumToDescription(api.AllowedMutualTLSStageModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedMutualTLSStageModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedMutualTLSStageModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedMutualTLSStageModeEnumEnumValues),
 			},
 			"cert_attribute": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.CERTATTRIBUTEENUM_EMAIL,
-				Description:      EnumToDescription(api.AllowedCertAttributeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedCertAttributeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedCertAttributeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedCertAttributeEnumEnumValues),
 			},
 			"user_attribute": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERATTRIBUTEENUM_EMAIL,
-				Description:      EnumToDescription(api.AllowedUserAttributeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserAttributeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserAttributeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserAttributeEnumEnumValues),
 			},
 			"certificate_authorities": {
 				Type:     schema.TypeList,
@@ -61,7 +62,7 @@ func resourceStageMutualTLSSchemaToProvider(d *schema.ResourceData) *api.MutualT
 		Mode:                   api.MutualTLSStageModeEnum(d.Get("mode").(string)),
 		CertAttribute:          api.CertAttributeEnum(d.Get("cert_attribute").(string)),
 		UserAttribute:          api.UserAttributeEnum(d.Get("user_attribute").(string)),
-		CertificateAuthorities: castSlice[string](d.Get("certificate_authorities").([]interface{})),
+		CertificateAuthorities: helpers.CastSlice_New[string](d, "certificate_authorities"),
 	}
 	return &r
 }
@@ -73,7 +74,7 @@ func resourceStageMutualTLSCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesMtlsCreate(ctx).MutualTLSStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -86,15 +87,15 @@ func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.StagesApi.StagesMtlsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "cert_attribute", res.CertAttribute)
-	setWrapper(d, "user_attribute", res.UserAttribute)
-	localCertificateAuthorities := castSlice[string](d.Get("certificate_authorities").([]interface{}))
-	setWrapper(d, "certificate_authorities", listConsistentMerge(localCertificateAuthorities, res.CertificateAuthorities))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "cert_attribute", res.CertAttribute)
+	helpers.SetWrapper(d, "user_attribute", res.UserAttribute)
+	localCertificateAuthorities := helpers.CastSlice_New[string](d, "certificate_authorities")
+	helpers.SetWrapper(d, "certificate_authorities", helpers.ListConsistentMerge(localCertificateAuthorities, res.CertificateAuthorities))
 	return diags
 }
 
@@ -105,7 +106,7 @@ func resourceStageMutualTLSUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesMtlsUpdate(ctx, d.Id()).MutualTLSStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -116,7 +117,7 @@ func resourceStageMutualTLSDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesMtlsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

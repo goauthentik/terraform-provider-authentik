@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorEndpointGDTC() *schema.Resource {
@@ -28,6 +29,7 @@ func resourceStageAuthenticatorEndpointGDTC() *schema.Resource {
 			"friendly_name": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "",
 			},
 			"configure_flow": {
 				Type:     schema.TypeString,
@@ -65,7 +67,7 @@ func resourceStageAuthenticatorEndpointGDTCCreate(ctx context.Context, d *schema
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcCreate(ctx).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -78,15 +80,15 @@ func resourceStageAuthenticatorEndpointGDTCRead(ctx context.Context, d *schema.R
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "name", res.Name)
 	b, err := json.Marshal(res.Credentials)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "credentials", string(b))
+	helpers.SetWrapper(d, "credentials", string(b))
 	return diags
 }
 
@@ -100,7 +102,7 @@ func resourceStageAuthenticatorEndpointGDTCUpdate(ctx context.Context, d *schema
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcUpdate(ctx, d.Id()).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -111,7 +113,7 @@ func resourceStageAuthenticatorEndpointGDTCDelete(ctx context.Context, d *schema
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

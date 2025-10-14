@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyReputation() *schema.Resource {
@@ -53,10 +54,7 @@ func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.Reput
 		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
 		CheckIp:          api.PtrBool(d.Get("check_ip").(bool)),
 		CheckUsername:    api.PtrBool(d.Get("check_username").(bool)),
-	}
-
-	if p, pSet := d.GetOk("threshold"); pSet {
-		r.Threshold = api.PtrInt32(int32(p.(int)))
+		Threshold:        helpers.GetIntP(d, "threshold"),
 	}
 	return &r
 }
@@ -68,7 +66,7 @@ func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationCreate(ctx).ReputationPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -81,14 +79,14 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "check_ip", res.CheckIp)
-	setWrapper(d, "check_username", res.CheckUsername)
-	setWrapper(d, "threshold", res.Threshold)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "check_ip", res.CheckIp)
+	helpers.SetWrapper(d, "check_username", res.CheckUsername)
+	helpers.SetWrapper(d, "threshold", res.Threshold)
 	return diags
 }
 
@@ -99,7 +97,7 @@ func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.PoliciesApi.PoliciesReputationUpdate(ctx, d.Id()).ReputationPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -110,7 +108,7 @@ func resourcePolicyReputationDelete(ctx context.Context, d *schema.ResourceData,
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesReputationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

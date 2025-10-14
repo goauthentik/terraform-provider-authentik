@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStagePromptField() *schema.Resource {
@@ -34,8 +35,8 @@ func resourceStagePromptField() *schema.Resource {
 			"type": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      EnumToDescription(api.AllowedPromptTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPromptTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPromptTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPromptTypeEnumEnumValues),
 			},
 			"required": {
 				Type:     schema.TypeBool,
@@ -45,7 +46,7 @@ func resourceStagePromptField() *schema.Resource {
 			"placeholder": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"placeholder_expression": {
 				Type:     schema.TypeBool,
@@ -55,7 +56,7 @@ func resourceStagePromptField() *schema.Resource {
 			"initial_value": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"initial_value_expression": {
 				Type:     schema.TypeBool,
@@ -85,18 +86,9 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 		PlaceholderExpression:  api.PtrBool(d.Get("placeholder_expression").(bool)),
 		InitialValueExpression: api.PtrBool(d.Get("initial_value_expression").(bool)),
 		SubText:                api.PtrString(d.Get("sub_text").(string)),
-	}
-
-	if p, pSet := d.GetOk("placeholder"); pSet {
-		r.Placeholder = api.PtrString(p.(string))
-	}
-
-	if p, pSet := d.GetOk("initial_value"); pSet {
-		r.InitialValue = api.PtrString(p.(string))
-	}
-
-	if o, oSet := d.GetOk("order"); oSet {
-		r.Order = api.PtrInt32(int32(o.(int)))
+		Placeholder:            helpers.GetP[string](d, "placeholder"),
+		InitialValue:           helpers.GetP[string](d, "initial_value"),
+		Order:                  helpers.GetIntP(d, "order"),
 	}
 	return &r
 }
@@ -108,7 +100,7 @@ func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsCreate(ctx).PromptRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -121,20 +113,20 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "field_key", res.FieldKey)
-	setWrapper(d, "label", res.Label)
-	setWrapper(d, "type", res.Type)
-	setWrapper(d, "required", res.Required)
-	setWrapper(d, "placeholder", res.Placeholder)
-	setWrapper(d, "placeholder_expression", res.PlaceholderExpression)
-	setWrapper(d, "initial_value", res.InitialValue)
-	setWrapper(d, "initial_value_expression", res.InitialValueExpression)
-	setWrapper(d, "sub_text", res.SubText)
-	setWrapper(d, "order", res.Order)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "field_key", res.FieldKey)
+	helpers.SetWrapper(d, "label", res.Label)
+	helpers.SetWrapper(d, "type", res.Type)
+	helpers.SetWrapper(d, "required", res.Required)
+	helpers.SetWrapper(d, "placeholder", res.Placeholder)
+	helpers.SetWrapper(d, "placeholder_expression", res.PlaceholderExpression)
+	helpers.SetWrapper(d, "initial_value", res.InitialValue)
+	helpers.SetWrapper(d, "initial_value_expression", res.InitialValueExpression)
+	helpers.SetWrapper(d, "sub_text", res.SubText)
+	helpers.SetWrapper(d, "order", res.Order)
 	return diags
 }
 
@@ -145,7 +137,7 @@ func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.StagesApi.StagesPromptPromptsUpdate(ctx, d.Id()).PromptRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -156,7 +148,7 @@ func resourceStagePromptFieldDelete(ctx context.Context, d *schema.ResourceData,
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPromptPromptsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

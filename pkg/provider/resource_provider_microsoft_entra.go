@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderMicrosoftEntra() *schema.Resource {
@@ -68,11 +69,11 @@ func resourceProviderMicrosoftEntra() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description: EnumToDescription([]api.OutgoingSyncDeleteAction{
+				Description: helpers.EnumToDescription([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
-				ValidateDiagFunc: StringInEnum([]api.OutgoingSyncDeleteAction{
+				ValidateDiagFunc: helpers.StringInEnum([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
@@ -81,11 +82,11 @@ func resourceProviderMicrosoftEntra() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description: EnumToDescription([]api.OutgoingSyncDeleteAction{
+				Description: helpers.EnumToDescription([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
-				ValidateDiagFunc: StringInEnum([]api.OutgoingSyncDeleteAction{
+				ValidateDiagFunc: helpers.StringInEnum([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
@@ -100,18 +101,13 @@ func resourceProviderMicrosoftEntraSchemaToProvider(d *schema.ResourceData) (*ap
 		ClientId:                   d.Get("client_id").(string),
 		ClientSecret:               d.Get("client_secret").(string),
 		TenantId:                   d.Get("tenant_id").(string),
-		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
-		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		PropertyMappings:           helpers.CastSlice_New[string](d, "property_mappings"),
+		PropertyMappingsGroup:      helpers.CastSlice_New[string](d, "property_mappings_group"),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		UserDeleteAction:           api.OutgoingSyncDeleteAction(d.Get("user_delete_action").(string)).Ptr(),
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
-	}
-
-	if l, ok := d.Get("filter_group").(string); ok {
-		r.FilterGroup = *api.NewNullableString(&l)
-	}
-	if d, dok := d.GetOk("dry_run"); dok {
-		r.DryRun = api.PtrBool(d.(bool))
+		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
+		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
 	return &r, nil
 }
@@ -126,7 +122,7 @@ func resourceProviderMicrosoftEntraCreate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraCreate(ctx).MicrosoftEntraProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -142,25 +138,25 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "client_id", res.ClientId)
-	setWrapper(d, "client_secret", res.ClientSecret)
-	setWrapper(d, "tenant_id", res.TenantId)
-	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
-	setWrapper(d, "user_delete_action", res.UserDeleteAction)
-	setWrapper(d, "group_delete_action", res.GroupDeleteAction)
-	setWrapper(d, "filter_group", res.FilterGroup)
-	setWrapper(d, "dry_run", res.DryRun)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	helpers.SetWrapper(d, "client_secret", res.ClientSecret)
+	helpers.SetWrapper(d, "tenant_id", res.TenantId)
+	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
+	helpers.SetWrapper(d, "user_delete_action", res.UserDeleteAction)
+	helpers.SetWrapper(d, "group_delete_action", res.GroupDeleteAction)
+	helpers.SetWrapper(d, "filter_group", res.FilterGroup)
+	helpers.SetWrapper(d, "dry_run", res.DryRun)
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
+	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
 	if len(localGroupMappings) > 0 {
-		setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+		helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	}
 	return diags
 }
@@ -178,7 +174,7 @@ func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraUpdate(ctx, int32(id)).MicrosoftEntraProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -193,7 +189,7 @@ func resourceProviderMicrosoftEntraDelete(ctx context.Context, d *schema.Resourc
 	}
 	hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

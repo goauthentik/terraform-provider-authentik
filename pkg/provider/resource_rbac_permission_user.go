@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceRBACUserObjectPermission() *schema.Resource {
@@ -31,8 +32,8 @@ func resourceRBACUserObjectPermission() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				ForceNew:         true,
-				Description:      EnumToDescription(api.AllowedModelEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedModelEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedModelEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedModelEnumEnumValues),
 			},
 			"permission": {
 				Type:     schema.TypeString,
@@ -69,7 +70,7 @@ func resourceRBACUserObjectPermissionCreate(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.RbacApi.RbacPermissionsAssignedByUsersAssign(ctx, int32(user)).PermissionAssignRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	if len(res) != 1 {
 		return diag.Errorf("invalid API response")
@@ -91,18 +92,18 @@ func resourceRBACUserObjectPermissionRead(ctx context.Context, d *schema.Resourc
 		splitCodename := strings.Split(d.Get("permission").(string), ".")
 		res, hr, err := c.client.RbacApi.RbacPermissionsList(ctx).Codename(splitCodename[1]).User(int32(d.Get("user").(int))).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 		if len(res.Results) < 1 {
 			return diag.Errorf("Permission not found")
 		}
-		setWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
+		helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
 	} else {
 		res, hr, err := c.client.RbacApi.RbacPermissionsUsersRetrieve(ctx, int32(id)).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
-		setWrapper(d, "object_id", res.ObjectPk)
+		helpers.SetWrapper(d, "object_id", res.ObjectPk)
 	}
 	return diags
 }
@@ -118,7 +119,7 @@ func resourceRBACUserObjectPermissionUpdate(ctx context.Context, d *schema.Resou
 		ObjectPk: *req,
 	}).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Id)))
@@ -133,7 +134,7 @@ func resourceRBACUserObjectPermissionDelete(ctx context.Context, d *schema.Resou
 	}
 	hr, err := c.client.RbacApi.RbacPermissionsUsersDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

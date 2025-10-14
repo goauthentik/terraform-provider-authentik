@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceBrand() *schema.Resource {
@@ -109,7 +110,7 @@ func dataSourceBrandRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {
@@ -117,21 +118,21 @@ func dataSourceBrandRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	f := res.Results[0]
 	d.SetId(f.BrandUuid)
-	setWrapper(d, "domain", f.Domain)
-	setWrapper(d, "default", f.Default)
-	setWrapper(d, "branding_title", f.BrandingTitle)
-	setWrapper(d, "branding_logo", f.BrandingLogo)
-	setWrapper(d, "branding_favicon", f.BrandingFavicon)
-	setWrapper(d, "branding_default_flow_background", f.BrandingDefaultFlowBackground)
-	setWrapper(d, "branding_custom_css", f.BrandingCustomCss)
-	setWrapper(d, "flow_authentication", f.FlowAuthentication.Get())
-	setWrapper(d, "flow_invalidation", f.FlowInvalidation.Get())
-	setWrapper(d, "flow_recovery", f.FlowRecovery.Get())
-	setWrapper(d, "flow_unenrollment", f.FlowUnenrollment.Get())
-	setWrapper(d, "flow_user_settings", f.FlowUserSettings.Get())
-	setWrapper(d, "flow_device_code", f.FlowDeviceCode.Get())
-	setWrapper(d, "web_certificate", f.WebCertificate.Get())
-	setWrapper(d, "client_certificates", f.ClientCertificates)
-	setWrapper(d, "default_application", f.DefaultApplication.Get())
+	helpers.SetWrapper(d, "domain", f.Domain)
+	helpers.SetWrapper(d, "default", f.Default)
+	helpers.SetWrapper(d, "branding_title", f.BrandingTitle)
+	helpers.SetWrapper(d, "branding_logo", f.BrandingLogo)
+	helpers.SetWrapper(d, "branding_favicon", f.BrandingFavicon)
+	helpers.SetWrapper(d, "branding_default_flow_background", f.BrandingDefaultFlowBackground)
+	helpers.SetWrapper(d, "branding_custom_css", f.BrandingCustomCss)
+	helpers.SetWrapper(d, "flow_authentication", f.FlowAuthentication.Get())
+	helpers.SetWrapper(d, "flow_invalidation", f.FlowInvalidation.Get())
+	helpers.SetWrapper(d, "flow_recovery", f.FlowRecovery.Get())
+	helpers.SetWrapper(d, "flow_unenrollment", f.FlowUnenrollment.Get())
+	helpers.SetWrapper(d, "flow_user_settings", f.FlowUserSettings.Get())
+	helpers.SetWrapper(d, "flow_device_code", f.FlowDeviceCode.Get())
+	helpers.SetWrapper(d, "web_certificate", f.WebCertificate.Get())
+	helpers.SetWrapper(d, "client_certificates", f.ClientCertificates)
+	helpers.SetWrapper(d, "default_application", f.DefaultApplication.Get())
 	return diags
 }

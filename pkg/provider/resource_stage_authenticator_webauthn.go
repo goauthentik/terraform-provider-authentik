@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceStageAuthenticatorWebAuthn() *schema.Resource {
@@ -26,6 +27,7 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 			"friendly_name": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Default:  "",
 			},
 			"configure_flow": {
 				Type:     schema.TypeString,
@@ -35,21 +37,21 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERVERIFICATIONENUM_PREFERRED,
-				Description:      EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserVerificationEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserVerificationEnumEnumValues),
 			},
 			"resident_key_requirement": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.RESIDENTKEYREQUIREMENTENUM_PREFERRED,
-				Description:      EnumToDescription(api.AllowedResidentKeyRequirementEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedResidentKeyRequirementEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedResidentKeyRequirementEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedResidentKeyRequirementEnumEnumValues),
 			},
 			"authenticator_attachment": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedAuthenticatorAttachmentEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedAuthenticatorAttachmentEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedAuthenticatorAttachmentEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthenticatorAttachmentEnumEnumValues),
 			},
 			"device_type_restrictions": {
 				Type:     schema.TypeList,
@@ -71,20 +73,14 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 		Name:                   d.Get("name").(string),
 		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
 		ResidentKeyRequirement: api.ResidentKeyRequirementEnum(d.Get("resident_key_requirement").(string)).Ptr(),
-		DeviceTypeRestrictions: castSlice[string](d.Get("device_type_restrictions").([]interface{})),
+		DeviceTypeRestrictions: helpers.CastSlice_New[string](d, "device_type_restrictions"),
+		FriendlyName:           helpers.GetP[string](d, "friendly_name"),
+		ConfigureFlow:          *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		MaxAttempts:            helpers.GetIntP(d, "max_attempts"),
 	}
 
-	if fn, fnSet := d.GetOk("friendly_name"); fnSet {
-		r.FriendlyName.Set(api.PtrString(fn.(string)))
-	}
-	if h, hSet := d.GetOk("configure_flow"); hSet {
-		r.ConfigureFlow.Set(api.PtrString(h.(string)))
-	}
 	if x, set := d.GetOk("authenticator_attachment"); set {
 		r.AuthenticatorAttachment.Set(api.AuthenticatorAttachmentEnum(x.(string)).Ptr())
-	}
-	if m, set := d.GetOk("max_attempts"); set {
-		r.MaxAttempts = api.PtrInt32(int32(m.(int)))
 	}
 	return &r
 }
@@ -96,7 +92,7 @@ func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticatorWebAuthnStageRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -109,20 +105,20 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "friendly_name", res.FriendlyName.Get())
-	setWrapper(d, "user_verification", res.UserVerification)
-	setWrapper(d, "resident_key_requirement", res.ResidentKeyRequirement)
-	setWrapper(d, "authenticator_attachment", res.GetAuthenticatorAttachment())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
+	helpers.SetWrapper(d, "user_verification", res.UserVerification)
+	helpers.SetWrapper(d, "resident_key_requirement", res.ResidentKeyRequirement)
+	helpers.SetWrapper(d, "authenticator_attachment", res.GetAuthenticatorAttachment())
 	if res.ConfigureFlow.IsSet() {
-		setWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
-	localDeviceTypeRestrictions := castSlice[string](d.Get("device_type_restrictions").([]interface{}))
-	setWrapper(d, "device_type_restrictions", listConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
-	setWrapper(d, "max_attempts", res.MaxAttempts)
+	localDeviceTypeRestrictions := helpers.CastSlice_New[string](d, "device_type_restrictions")
+	helpers.SetWrapper(d, "device_type_restrictions", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
+	helpers.SetWrapper(d, "max_attempts", res.MaxAttempts)
 	return diags
 }
 
@@ -133,7 +129,7 @@ func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticatorWebAuthnStageRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -144,7 +140,7 @@ func resourceStageAuthenticatorWebAuthnDelete(ctx context.Context, d *schema.Res
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

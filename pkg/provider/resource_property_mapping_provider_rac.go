@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePropertyMappingProviderRAC() *schema.Resource {
@@ -28,15 +28,15 @@ func resourcePropertyMappingProviderRAC() *schema.Resource {
 			"expression": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: diffSuppressExpression,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"settings": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -44,21 +44,13 @@ func resourcePropertyMappingProviderRAC() *schema.Resource {
 
 func resourcePropertyMappingProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACPropertyMappingRequest, diag.Diagnostics) {
 	r := api.RACPropertyMappingRequest{
-		Name: d.Get("name").(string),
-	}
-	if s, sok := d.GetOk("expression"); sok && s.(string) != "" {
-		r.Expression = api.PtrString(s.(string))
+		Name:       d.Get("name").(string),
+		Expression: helpers.GetP[string](d, "expression"),
 	}
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("settings").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
-	r.StaticSettings = attr
-	return &r, nil
+	settings, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
+	r.StaticSettings = settings
+	return &r, err
 }
 
 func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -71,7 +63,7 @@ func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacCreate(ctx).RACPropertyMappingRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -84,16 +76,16 @@ func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Resou
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "expression", res.GetExpression())
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "expression", res.GetExpression())
 	b, err := json.Marshal(res.StaticSettings)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "settings", string(b))
+	helpers.SetWrapper(d, "settings", string(b))
 	return diags
 }
 
@@ -107,7 +99,7 @@ func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.Res
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacUpdate(ctx, d.Id()).RACPropertyMappingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -118,7 +110,7 @@ func resourcePropertyMappingProviderRACDelete(ctx context.Context, d *schema.Res
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

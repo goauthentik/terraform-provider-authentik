@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceRACEndpoint() *schema.Resource {
@@ -33,8 +33,8 @@ func resourceRACEndpoint() *schema.Resource {
 			"protocol": {
 				Type:             schema.TypeString,
 				Required:         true,
-				ValidateDiagFunc: StringInEnum(api.AllowedProtocolEnumEnumValues),
-				Description:      EnumToDescription(api.AllowedProtocolEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProtocolEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedProtocolEnumEnumValues),
 			},
 			"host": {
 				Type:     schema.TypeString,
@@ -57,9 +57,9 @@ func resourceRACEndpoint() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -71,20 +71,14 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 		Provider:           int32(d.Get("protocol_provider").(int)),
 		Protocol:           api.ProtocolEnum(d.Get("protocol").(string)),
 		Host:               d.Get("host").(string),
-		AuthMode:           api.AUTHMODEENUM_PROMPT,
-		PropertyMappings:   castSlice[string](d.Get("property_mappings").([]interface{})),
+		AuthMode:           api.ENDPOINTAUTHMODEENUM_PROMPT,
+		PropertyMappings:   helpers.CastSlice_New[string](d, "property_mappings"),
 		MaximumConnections: api.PtrInt32(int32(d.Get("maximum_connections").(int))),
 	}
 
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
 	r.Settings = attr
-	return &r, nil
+	return &r, err
 }
 
 func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -97,7 +91,7 @@ func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.RacApi.RacEndpointsCreate(ctx).EndpointRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -109,23 +103,23 @@ func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m inte
 	c := m.(*APIClient)
 	res, hr, err := c.client.RacApi.RacEndpointsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "protocol_provider", res.Provider)
-	setWrapper(d, "host", res.Host)
-	setWrapper(d, "protocol", res.Protocol)
-	setWrapper(d, "maximum_connections", res.MaximumConnections)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "protocol_provider", res.Provider)
+	helpers.SetWrapper(d, "host", res.Host)
+	helpers.SetWrapper(d, "protocol", res.Protocol)
+	helpers.SetWrapper(d, "maximum_connections", res.MaximumConnections)
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
 	b, err := json.Marshal(res.Settings)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "settings", string(b))
+	helpers.SetWrapper(d, "settings", string(b))
 	return diags
 }
 
@@ -138,7 +132,7 @@ func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.RacApi.RacEndpointsUpdate(ctx, d.Id()).EndpointRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -149,7 +143,7 @@ func resourceRACEndpointDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.RacApi.RacEndpointsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

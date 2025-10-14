@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceBrand() *schema.Resource {
@@ -95,9 +95,9 @@ func resourceBrand() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -105,84 +105,27 @@ func resourceBrand() *schema.Resource {
 
 func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag.Diagnostics) {
 	m := api.BrandRequest{
-		ClientCertificates: castSlice[string](d.Get("client_certificates").([]interface{})),
-		Domain:             d.Get("domain").(string),
-		Default:            api.PtrBool(d.Get("default").(bool)),
+		Domain:                        d.Get("domain").(string),
+		Default:                       api.PtrBool(d.Get("default").(bool)),
+		BrandingTitle:                 helpers.GetP[string](d, "branding_title"),
+		BrandingLogo:                  helpers.GetP[string](d, "branding_logo"),
+		BrandingFavicon:               helpers.GetP[string](d, "branding_favicon"),
+		BrandingDefaultFlowBackground: helpers.GetP[string](d, "branding_default_flow_background"),
+		BrandingCustomCss:             helpers.GetP[string](d, "branding_custom_css"),
+		FlowAuthentication:            *api.NewNullableString(helpers.GetP[string](d, "flow_authentication")),
+		FlowInvalidation:              *api.NewNullableString(helpers.GetP[string](d, "flow_invalidation")),
+		FlowRecovery:                  *api.NewNullableString(helpers.GetP[string](d, "flow_recovery")),
+		FlowUnenrollment:              *api.NewNullableString(helpers.GetP[string](d, "flow_unenrollment")),
+		FlowUserSettings:              *api.NewNullableString(helpers.GetP[string](d, "flow_user_settings")),
+		FlowDeviceCode:                *api.NewNullableString(helpers.GetP[string](d, "flow_device_code")),
+		WebCertificate:                *api.NewNullableString(helpers.GetP[string](d, "web_certificate")),
+		ClientCertificates:            helpers.CastSlice_New[string](d, "client_certificates"),
+		DefaultApplication:            *api.NewNullableString(helpers.GetP[string](d, "default_application")),
 	}
 
-	if l, ok := d.Get("branding_title").(string); ok {
-		m.BrandingTitle = &l
-	}
-	if l, ok := d.Get("branding_logo").(string); ok {
-		m.BrandingLogo = &l
-	}
-	if l, ok := d.Get("branding_favicon").(string); ok {
-		m.BrandingFavicon = &l
-	}
-	if l, ok := d.Get("branding_default_flow_background").(string); ok {
-		m.BrandingDefaultFlowBackground = &l
-	}
-	if l, ok := d.Get("branding_custom_css").(string); ok {
-		m.BrandingCustomCss = &l
-	}
-
-	if l, ok := d.Get("flow_authentication").(string); ok {
-		m.FlowAuthentication.Set(&l)
-	} else {
-		m.FlowAuthentication.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_invalidation").(string); ok {
-		m.FlowInvalidation.Set(&l)
-	} else {
-		m.FlowInvalidation.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_recovery").(string); ok {
-		m.FlowRecovery.Set(&l)
-	} else {
-		m.FlowRecovery.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_unenrollment").(string); ok {
-		m.FlowUnenrollment.Set(&l)
-	} else {
-		m.FlowUnenrollment.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_user_settings").(string); ok {
-		m.FlowUserSettings.Set(&l)
-	} else {
-		m.FlowUserSettings.Set(nil)
-	}
-
-	if l, ok := d.Get("flow_device_code").(string); ok {
-		m.FlowDeviceCode.Set(&l)
-	} else {
-		m.FlowDeviceCode.Set(nil)
-	}
-
-	if l, ok := d.Get("web_certificate").(string); ok {
-		m.WebCertificate.Set(&l)
-	} else {
-		m.WebCertificate.Set(nil)
-	}
-
-	if l, ok := d.Get("default_application").(string); ok {
-		m.DefaultApplication.Set(&l)
-	} else {
-		m.DefaultApplication.Set(nil)
-	}
-
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
-	return &m, nil
+	return &m, err
 }
 
 func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -195,7 +138,7 @@ func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreBrandsCreate(ctx).BrandRequest(*mo).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.BrandUuid)
@@ -208,48 +151,50 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	res, hr, err := c.client.CoreApi.CoreBrandsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "domain", res.Domain)
-	setWrapper(d, "branding_title", res.BrandingTitle)
-	setWrapper(d, "branding_logo", res.BrandingLogo)
-	setWrapper(d, "branding_favicon", res.BrandingFavicon)
-	setWrapper(d, "branding_default_flow_background", res.BrandingDefaultFlowBackground)
-	setWrapper(d, "branding_custom_css", res.BrandingCustomCss)
+	helpers.SetWrapper(d, "domain", res.Domain)
+	helpers.SetWrapper(d, "branding_title", res.BrandingTitle)
+	helpers.SetWrapper(d, "branding_logo", res.BrandingLogo)
+	helpers.SetWrapper(d, "branding_favicon", res.BrandingFavicon)
+	helpers.SetWrapper(d, "branding_default_flow_background", res.BrandingDefaultFlowBackground)
+	helpers.SetWrapper(d, "branding_custom_css", res.BrandingCustomCss)
 	if res.FlowAuthentication.IsSet() {
-		setWrapper(d, "flow_authentication", res.FlowAuthentication.Get())
+		helpers.SetWrapper(d, "flow_authentication", res.FlowAuthentication.Get())
 	}
 	if res.FlowInvalidation.IsSet() {
-		setWrapper(d, "flow_invalidation", res.FlowInvalidation.Get())
+		helpers.SetWrapper(d, "flow_invalidation", res.FlowInvalidation.Get())
 	}
 	if res.FlowRecovery.IsSet() {
-		setWrapper(d, "flow_recovery", res.FlowRecovery.Get())
+		helpers.SetWrapper(d, "flow_recovery", res.FlowRecovery.Get())
 	}
 	if res.FlowUnenrollment.IsSet() {
-		setWrapper(d, "flow_unenrollment", res.FlowUnenrollment.Get())
+		helpers.SetWrapper(d, "flow_unenrollment", res.FlowUnenrollment.Get())
 	}
 	if res.FlowUserSettings.IsSet() {
-		setWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
+		helpers.SetWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
 	}
 	if res.FlowDeviceCode.IsSet() {
-		setWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
+		helpers.SetWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
 	}
 	if res.WebCertificate.IsSet() {
-		setWrapper(d, "web_certificate", res.WebCertificate.Get())
+		helpers.SetWrapper(d, "web_certificate", res.WebCertificate.Get())
 	}
 	if res.HasClientCertificates() {
-		localClientCertificates := castSlice[string](d.Get("client_certificates").([]interface{}))
-		setWrapper(d, "client_certificates", listConsistentMerge(localClientCertificates, res.ClientCertificates))
+		helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(
+			helpers.CastSlice_New[string](d, "client_certificates"),
+			res.ClientCertificates,
+		))
 	}
 	if res.DefaultApplication.IsSet() {
-		setWrapper(d, "default_application", res.DefaultApplication.Get())
+		helpers.SetWrapper(d, "default_application", res.DefaultApplication.Get())
 	}
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "attributes", string(b))
+	helpers.SetWrapper(d, "attributes", string(b))
 	return diags
 }
 
@@ -263,7 +208,7 @@ func resourceBrandUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreBrandsUpdate(ctx, d.Id()).BrandRequest(*obj).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.BrandUuid)
@@ -274,7 +219,7 @@ func resourceBrandDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreBrandsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

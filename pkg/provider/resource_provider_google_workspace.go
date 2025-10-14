@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderGoogleWorkspace() *schema.Resource {
@@ -36,9 +36,9 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 			"delegated_subject": {
 				Type:     schema.TypeString,
@@ -74,18 +74,18 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description:      EnumToDescription(api.AllowedOutgoingSyncDeleteActionEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedOutgoingSyncDeleteActionEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedOutgoingSyncDeleteActionEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOutgoingSyncDeleteActionEnumValues),
 			},
 			"group_delete_action": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description: EnumToDescription([]api.OutgoingSyncDeleteAction{
+				Description: helpers.EnumToDescription([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
-				ValidateDiagFunc: StringInEnum([]api.OutgoingSyncDeleteAction{
+				ValidateDiagFunc: helpers.StringInEnum([]api.OutgoingSyncDeleteAction{
 					api.OUTGOINGSYNCDELETEACTION_DELETE,
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
@@ -99,28 +99,18 @@ func resourceProviderGoogleWorkspaceSchemaToProvider(d *schema.ResourceData) (*a
 		Name:                       d.Get("name").(string),
 		DelegatedSubject:           d.Get("delegated_subject").(string),
 		DefaultGroupEmailDomain:    d.Get("default_group_email_domain").(string),
-		PropertyMappings:           castSlice[string](d.Get("property_mappings").([]interface{})),
-		PropertyMappingsGroup:      castSlice[string](d.Get("property_mappings_group").([]interface{})),
+		PropertyMappings:           helpers.CastSlice_New[string](d, "property_mappings"),
+		PropertyMappingsGroup:      helpers.CastSlice_New[string](d, "property_mappings_group"),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		UserDeleteAction:           api.OutgoingSyncDeleteAction(d.Get("user_delete_action").(string)).Ptr(),
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
+		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
+		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
 
-	if l, ok := d.Get("filter_group").(string); ok {
-		r.FilterGroup = *api.NewNullableString(&l)
-	}
-	if d, dok := d.GetOk("dry_run"); dok {
-		r.DryRun = api.PtrBool(d.(bool))
-	}
-	credentials := make(map[string]interface{})
-	if l, ok := d.Get("credentials").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&credentials)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	credentials, err := helpers.GetJSON[map[string]interface{}](d, ("credentials"))
 	r.Credentials = credentials
-	return &r, nil
+	return &r, err
 }
 
 func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -133,7 +123,7 @@ func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -149,30 +139,30 @@ func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.Resource
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "delegated_subject", res.DelegatedSubject)
-	setWrapper(d, "default_group_email_domain", res.DefaultGroupEmailDomain)
-	setWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
-	setWrapper(d, "user_delete_action", res.UserDeleteAction)
-	setWrapper(d, "group_delete_action", res.GroupDeleteAction)
-	setWrapper(d, "filter_group", res.FilterGroup)
-	setWrapper(d, "dry_run", res.DryRun)
-	localMappings := castSlice[string](d.Get("property_mappings").([]interface{}))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "delegated_subject", res.DelegatedSubject)
+	helpers.SetWrapper(d, "default_group_email_domain", res.DefaultGroupEmailDomain)
+	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
+	helpers.SetWrapper(d, "user_delete_action", res.UserDeleteAction)
+	helpers.SetWrapper(d, "group_delete_action", res.GroupDeleteAction)
+	helpers.SetWrapper(d, "filter_group", res.FilterGroup)
+	helpers.SetWrapper(d, "dry_run", res.DryRun)
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
-		setWrapper(d, "property_mappings", listConsistentMerge(localMappings, res.PropertyMappings))
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localGroupMappings := castSlice[string](d.Get("property_mappings_group").([]interface{}))
+	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
 	if len(localGroupMappings) > 0 {
-		setWrapper(d, "property_mappings_group", listConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+		helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	}
 	b, err := json.Marshal(res.Credentials)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "credentials", string(b))
+	helpers.SetWrapper(d, "credentials", string(b))
 	return diags
 }
 
@@ -189,7 +179,7 @@ func resourceProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.Resour
 
 	res, hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceUpdate(ctx, int32(id)).GoogleWorkspaceProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -204,7 +194,7 @@ func resourceProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.Resour
 	}
 	hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

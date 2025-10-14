@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceUser() *schema.Resource {
@@ -35,8 +35,8 @@ func resourceUser() *schema.Resource {
 				Type:             schema.TypeString,
 				Default:          api.USERTYPEENUM_INTERNAL,
 				Optional:         true,
-				Description:      EnumToDescription(api.AllowedUserTypeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserTypeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserTypeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserTypeEnumEnumValues),
 			},
 			"password": {
 				Type:        schema.TypeString,
@@ -70,9 +70,9 @@ func resourceUser() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -85,23 +85,12 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 		Type:     api.UserTypeEnum(d.Get("type").(string)).Ptr(),
 		IsActive: api.PtrBool(d.Get("is_active").(bool)),
 		Path:     api.PtrString(d.Get("path").(string)),
+		Email:    helpers.GetP[string](d, "email"),
+		Groups:   helpers.CastSlice_New[string](d, "groups"),
 	}
-
-	if l, ok := d.Get("email").(string); ok {
-		m.Email = &l
-	}
-
-	m.Groups = castSlice[string](d.Get("groups").([]interface{}))
-
-	attr := make(map[string]interface{})
-	if l, ok := d.Get("attributes").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
-	return &m, nil
+	return &m, err
 }
 
 func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.Context) diag.Diagnostics {
@@ -120,9 +109,9 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 		Password: password,
 	}).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
-	setWrapper(d, "password", password)
+	helpers.SetWrapper(d, "password", password)
 	return nil
 }
 
@@ -136,7 +125,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 	res, hr, err := c.client.CoreApi.CoreUsersCreate(ctx).UserRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -159,22 +148,22 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	res, hr, err := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "type", res.Type)
-	setWrapper(d, "username", res.Username)
-	setWrapper(d, "email", res.Email)
-	setWrapper(d, "is_active", res.IsActive)
-	setWrapper(d, "path", res.Path)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "type", res.Type)
+	helpers.SetWrapper(d, "username", res.Username)
+	helpers.SetWrapper(d, "email", res.Email)
+	helpers.SetWrapper(d, "is_active", res.IsActive)
+	helpers.SetWrapper(d, "path", res.Path)
 	b, err := json.Marshal(res.Attributes)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "attributes", string(b))
-	localGroups := castSlice[string](d.Get("groups").([]interface{}))
-	setWrapper(d, "groups", listConsistentMerge(localGroups, res.Groups))
+	helpers.SetWrapper(d, "attributes", string(b))
+	localGroups := helpers.CastSlice_New[string](d, "groups")
+	helpers.SetWrapper(d, "groups", helpers.ListConsistentMerge(localGroups, res.Groups))
 	return diags
 }
 
@@ -191,7 +180,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	res, hr, err := c.client.CoreApi.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -211,7 +200,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	hr, err := c.client.CoreApi.CoreUsersDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

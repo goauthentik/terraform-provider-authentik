@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceFlowStageBinding() *schema.Resource {
@@ -47,15 +48,15 @@ func resourceFlowStageBinding() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"invalid_response_action": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.INVALIDRESPONSEACTIONENUM_RETRY,
-				Description:      EnumToDescription(api.AllowedInvalidResponseActionEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedInvalidResponseActionEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedInvalidResponseActionEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedInvalidResponseActionEnumEnumValues),
 			},
 		},
 	}
@@ -81,7 +82,7 @@ func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsCreate(ctx).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -94,16 +95,16 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "target", res.Target)
-	setWrapper(d, "stage", res.Stage)
-	setWrapper(d, "order", res.Order)
-	setWrapper(d, "evaluate_on_plan", res.EvaluateOnPlan)
-	setWrapper(d, "re_evaluate_policies", res.ReEvaluatePolicies)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "invalid_response_action", res.InvalidResponseAction)
+	helpers.SetWrapper(d, "target", res.Target)
+	helpers.SetWrapper(d, "stage", res.Stage)
+	helpers.SetWrapper(d, "order", res.Order)
+	helpers.SetWrapper(d, "evaluate_on_plan", res.EvaluateOnPlan)
+	helpers.SetWrapper(d, "re_evaluate_policies", res.ReEvaluatePolicies)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "invalid_response_action", res.InvalidResponseAction)
 	return diags
 }
 
@@ -114,7 +115,7 @@ func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData,
 
 	res, hr, err := c.client.FlowsApi.FlowsBindingsUpdate(ctx, d.Id()).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -125,7 +126,7 @@ func resourceFlowStageBindingDelete(ctx context.Context, d *schema.ResourceData,
 	c := m.(*APIClient)
 	hr, err := c.client.FlowsApi.FlowsBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

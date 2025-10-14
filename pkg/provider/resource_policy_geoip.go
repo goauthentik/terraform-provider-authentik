@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourcePolicyGeoIP() *schema.Resource {
@@ -66,10 +67,10 @@ func resourcePolicyGeoIP() *schema.Resource {
 			"countries": {
 				Type:        schema.TypeList,
 				Optional:    true,
-				Description: EnumToDescription(api.AllowedCountryCodeEnumEnumValues),
+				Description: helpers.EnumToDescription(api.AllowedCountryCodeEnumEnumValues),
 				Elem: &schema.Schema{
 					Type:             schema.TypeString,
-					ValidateDiagFunc: StringInEnum(api.AllowedCountryCodeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedCountryCodeEnumEnumValues),
 				},
 			},
 		},
@@ -78,38 +79,20 @@ func resourcePolicyGeoIP() *schema.Resource {
 
 func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolicyRequest {
 	r := api.GeoIPPolicyRequest{
-		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		Name:                  d.Get("name").(string),
+		ExecutionLogging:      api.PtrBool(d.Get("execution_logging").(bool)),
+		CheckHistoryDistance:  helpers.GetP[bool](d, "check_history_distance"),
+		HistoryMaxDistanceKm:  helpers.GetInt64P(d, "history_max_distance_km"),
+		DistanceToleranceKm:   helpers.GetIntP(d, "distance_tolerance_km"),
+		HistoryLoginCount:     helpers.GetIntP(d, "history_login_count"),
+		CheckImpossibleTravel: helpers.GetP[bool](d, "check_impossible_travel"),
+		ImpossibleToleranceKm: helpers.GetIntP(d, "impossible_tolerance_km"),
+		Asns:                  helpers.CastSliceInt32(d.Get("asns").([]interface{})),
 	}
 
-	asns := d.Get("asns").([]interface{})
-	r.Asns = make([]int32, len(asns))
-	for i, prov := range asns {
-		r.Asns[i] = int32(prov.(int))
-	}
-	if a, ok := d.Get("countries").([]interface{}); ok {
-		r.Countries = make([]api.CountryCodeEnum, 0)
-		for _, c := range castSlice[string](a) {
-			r.Countries = append(r.Countries, api.CountryCodeEnum(c))
-		}
-	}
-	if x, xok := d.GetOk("check_history_distance"); xok {
-		r.CheckHistoryDistance = api.PtrBool(x.(bool))
-	}
-	if x, xok := d.GetOk("history_max_distance_km"); xok {
-		r.HistoryMaxDistanceKm = api.PtrInt64(int64(x.(int)))
-	}
-	if x, xok := d.GetOk("distance_tolerance_km"); xok {
-		r.DistanceToleranceKm = api.PtrInt32(int32(x.(int)))
-	}
-	if x, xok := d.GetOk("history_login_count"); xok {
-		r.HistoryLoginCount = api.PtrInt32(int32(x.(int)))
-	}
-	if x, xok := d.GetOk("check_impossible_travel"); xok {
-		r.CheckImpossibleTravel = api.PtrBool(x.(bool))
-	}
-	if x, xok := d.GetOk("impossible_tolerance_km"); xok {
-		r.ImpossibleToleranceKm = api.PtrInt32(int32(x.(int)))
+	r.Countries = make([]api.CountryCodeEnum, 0)
+	for _, c := range helpers.CastSlice_New[string](d, "countries") {
+		r.Countries = append(r.Countries, api.CountryCodeEnum(c))
 	}
 	return &r
 }
@@ -121,7 +104,7 @@ func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesGeoipCreate(ctx).GeoIPPolicyRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -134,27 +117,27 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.PoliciesApi.PoliciesGeoipRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "execution_logging", res.ExecutionLogging)
-	setWrapper(d, "check_history_distance", res.CheckHistoryDistance)
-	setWrapper(d, "history_max_distance_km", res.HistoryMaxDistanceKm)
-	setWrapper(d, "distance_tolerance_km", res.DistanceToleranceKm)
-	setWrapper(d, "history_login_count", res.HistoryLoginCount)
-	setWrapper(d, "check_impossible_travel", res.CheckImpossibleTravel)
-	setWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
+	helpers.SetWrapper(d, "check_history_distance", res.CheckHistoryDistance)
+	helpers.SetWrapper(d, "history_max_distance_km", res.HistoryMaxDistanceKm)
+	helpers.SetWrapper(d, "distance_tolerance_km", res.DistanceToleranceKm)
+	helpers.SetWrapper(d, "history_login_count", res.HistoryLoginCount)
+	helpers.SetWrapper(d, "check_impossible_travel", res.CheckImpossibleTravel)
+	helpers.SetWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
 	if res.HasAsns() {
-		localAsns := castSlice[int](d.Get("asns").([]interface{}))
-		setWrapper(d, "asns", listConsistentMerge(localAsns, slice32ToInt(res.Asns)))
+		localAsns := helpers.CastSlice_New[int](d, "asns")
+		helpers.SetWrapper(d, "asns", helpers.ListConsistentMerge(localAsns, helpers.Slice32ToInt(res.Asns)))
 	}
 	if res.Countries != nil {
 		localCountries := make([]api.CountryCodeEnum, 0)
-		for _, c := range castSlice[string](d.Get("countries").([]interface{})) {
+		for _, c := range helpers.CastSlice_New[string](d, "countries") {
 			localCountries = append(localCountries, api.CountryCodeEnum(c))
 		}
-		setWrapper(d, "countries", listConsistentMerge(localCountries, res.Countries))
+		helpers.SetWrapper(d, "countries", helpers.ListConsistentMerge(localCountries, res.Countries))
 	}
 	return diags
 }
@@ -166,7 +149,7 @@ func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.PoliciesApi.PoliciesGeoipUpdate(ctx, d.Id()).GeoIPPolicyRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -177,7 +160,7 @@ func resourcePolicyGeoIPDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesGeoipDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

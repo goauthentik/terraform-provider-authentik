@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceApplication() *schema.Resource {
@@ -67,8 +68,8 @@ func resourceApplication() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"open_in_new_tab": {
 				Type:     schema.TypeBool,
@@ -83,32 +84,18 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 	m := api.ApplicationRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Provider:         api.NullableInt32{},
+		Provider:         *api.NewNullableInt32(helpers.GetIntP(d, ("protocol_provider"))),
 		OpenInNewTab:     api.PtrBool(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		Group:            helpers.GetP[string](d, "group"),
+		MetaLaunchUrl:    helpers.GetP[string](d, "meta_launch_url"),
+		MetaDescription:  helpers.GetP[string](d, "meta_description"),
+		MetaPublisher:    helpers.GetP[string](d, "meta_publisher"),
 	}
 
-	if p, pSet := d.GetOk("protocol_provider"); pSet {
-		m.Provider.Set(api.PtrInt32(int32(p.(int))))
-	} else {
-		m.Provider.Set(nil)
-	}
 	m.BackchannelProviders = []int32{}
 	for _, bp := range d.Get("backchannel_providers").([]interface{}) {
 		m.BackchannelProviders = append(m.BackchannelProviders, int32(bp.(int)))
-	}
-
-	if l, ok := d.Get("group").(string); ok {
-		m.Group = &l
-	}
-	if l, ok := d.Get("meta_launch_url").(string); ok {
-		m.MetaLaunchUrl = &l
-	}
-	if l, ok := d.Get("meta_description").(string); ok {
-		m.MetaDescription = &l
-	}
-	if l, ok := d.Get("meta_publisher").(string); ok {
-		m.MetaPublisher = &l
 	}
 	return &m
 }
@@ -120,7 +107,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsCreate(ctx).ApplicationRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -130,7 +117,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 			Url: i.(string),
 		}).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 	}
 	return resourceApplicationRead(ctx, d, m)
@@ -142,27 +129,27 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "group", res.Group)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "open_in_new_tab", res.OpenInNewTab)
-	setWrapper(d, "protocol_provider", 0)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "group", res.Group)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "open_in_new_tab", res.OpenInNewTab)
+	helpers.SetWrapper(d, "protocol_provider", 0)
 	if prov := res.Provider.Get(); prov != nil {
-		setWrapper(d, "protocol_provider", int(*prov))
+		helpers.SetWrapper(d, "protocol_provider", int(*prov))
 	}
-	setWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
+	helpers.SetWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
 	if res.MetaIcon.IsSet() {
-		setWrapper(d, "meta_icon", res.MetaIcon.Get())
+		helpers.SetWrapper(d, "meta_icon", res.MetaIcon.Get())
 	}
-	setWrapper(d, "meta_description", res.MetaDescription)
-	setWrapper(d, "meta_publisher", res.MetaPublisher)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "backchannel_providers", res.BackchannelProviders)
+	helpers.SetWrapper(d, "meta_description", res.MetaDescription)
+	helpers.SetWrapper(d, "meta_publisher", res.MetaPublisher)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "backchannel_providers", res.BackchannelProviders)
 	return diags
 }
 
@@ -173,7 +160,7 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	res, hr, err := c.client.CoreApi.CoreApplicationsUpdate(ctx, d.Id()).ApplicationRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if i, iok := d.GetOk("meta_icon"); iok {
@@ -181,7 +168,7 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 			Url: i.(string),
 		}).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 	}
 
@@ -193,7 +180,7 @@ func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

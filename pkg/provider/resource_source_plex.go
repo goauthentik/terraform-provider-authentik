@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceSourcePlex() *schema.Resource {
@@ -54,22 +55,22 @@ func resourceSourcePlex() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"user_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
 			"group_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
 			},
 
 			"client_id": {
@@ -99,27 +100,21 @@ func resourceSourcePlex() *schema.Resource {
 
 func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceRequest {
 	r := api.PlexSourceRequest{
-		Name:              d.Get("name").(string),
-		Slug:              d.Get("slug").(string),
-		Enabled:           api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate:  api.PtrString(d.Get("user_path_template").(string)),
-		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
-		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		Name:               d.Get("name").(string),
+		Slug:               d.Get("slug").(string),
+		Enabled:            api.PtrBool(d.Get("enabled").(bool)),
+		UserPathTemplate:   api.PtrString(d.Get("user_path_template").(string)),
+		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		EnrollmentFlow:     *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
-		ClientId:     api.PtrString(d.Get("client_id").(string)),
-		AllowFriends: api.PtrBool(d.Get("allow_friends").(bool)),
-		PlexToken:    d.Get("plex_token").(string),
+		ClientId:       api.PtrString(d.Get("client_id").(string)),
+		AllowFriends:   api.PtrBool(d.Get("allow_friends").(bool)),
+		PlexToken:      d.Get("plex_token").(string),
+		AllowedServers: helpers.CastSlice_New[string](d, "allowed_servers"),
 	}
-
-	if ak, ok := d.GetOk("authentication_flow"); ok {
-		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
-	}
-	if ef, ok := d.GetOk("enrollment_flow"); ok {
-		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
-	}
-
-	r.AllowedServers = castSlice[string](d.Get("allowed_servers").([]interface{}))
 	return &r
 }
 
@@ -130,7 +125,7 @@ func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesPlexCreate(ctx).PlexSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -142,30 +137,30 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesPlexRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	if res.AuthenticationFlow.IsSet() {
-		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	setWrapper(d, "group_matching_mode", res.GroupMatchingMode)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
-	setWrapper(d, "client_id", res.ClientId)
-	localServers := castSlice[string](d.Get("allowed_servers").([]interface{}))
-	setWrapper(d, "allowed_servers", listConsistentMerge(localServers, res.AllowedServers))
-	setWrapper(d, "allow_friends", res.AllowFriends)
-	setWrapper(d, "plex_token", res.PlexToken)
+	helpers.SetWrapper(d, "client_id", res.ClientId)
+	localServers := helpers.CastSlice_New[string](d, "allowed_servers")
+	helpers.SetWrapper(d, "allowed_servers", helpers.ListConsistentMerge(localServers, res.AllowedServers))
+	helpers.SetWrapper(d, "allow_friends", res.AllowFriends)
+	helpers.SetWrapper(d, "plex_token", res.PlexToken)
 	return diags
 }
 
@@ -175,7 +170,7 @@ func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	res, hr, err := c.client.SourcesApi.SourcesPlexUpdate(ctx, d.Id()).PlexSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -186,7 +181,7 @@ func resourceSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m int
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesPlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

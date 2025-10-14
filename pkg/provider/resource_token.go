@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceToken() *schema.Resource {
@@ -49,8 +50,8 @@ func resourceToken() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.INTENTENUM_API,
-				Description:      EnumToDescription(api.AllowedIntentEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedIntentEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedIntentEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedIntentEnumEnumValues),
 			},
 			"expires": {
 				Type:     schema.TypeString,
@@ -71,13 +72,10 @@ func resourceToken() *schema.Resource {
 
 func resourceTokenSchemaToModel(d *schema.ResourceData) (*api.TokenRequest, diag.Diagnostics) {
 	m := api.TokenRequest{
-		Identifier: d.Get("identifier").(string),
-		User:       api.PtrInt32(int32(d.Get("user").(int))),
-		Expiring:   api.PtrBool(d.Get("expiring").(bool)),
-	}
-
-	if l, ok := d.Get("description").(string); ok {
-		m.Description = &l
+		Identifier:  d.Get("identifier").(string),
+		User:        api.PtrInt32(int32(d.Get("user").(int))),
+		Expiring:    api.PtrBool(d.Get("expiring").(bool)),
+		Description: helpers.GetP[string](d, "description"),
 	}
 
 	if l, ok := d.Get("expires").(string); ok && l != "" {
@@ -102,7 +100,7 @@ func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	res, hr, err := c.client.CoreApi.CoreTokensCreate(ctx).TokenRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Identifier)
@@ -115,22 +113,22 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	res, hr, err := c.client.CoreApi.CoreTokensRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "identifier", res.Identifier)
-	setWrapper(d, "user", res.User)
-	setWrapper(d, "description", res.Description)
-	setWrapper(d, "intent", res.Intent)
+	helpers.SetWrapper(d, "identifier", res.Identifier)
+	helpers.SetWrapper(d, "user", res.User)
+	helpers.SetWrapper(d, "description", res.Description)
+	helpers.SetWrapper(d, "intent", res.Intent)
 	if res.Expires.IsSet() && res.Expires.Get() != nil {
-		setWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
+		helpers.SetWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
 	}
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
 		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
-		setWrapper(d, "key", res.Key)
+		helpers.SetWrapper(d, "key", res.Key)
 	}
 	return diags
 }
@@ -144,7 +142,7 @@ func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	res, hr, err := c.client.CoreApi.CoreTokensUpdate(ctx, d.Id()).TokenRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Identifier)
@@ -155,7 +153,7 @@ func resourceTokenDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

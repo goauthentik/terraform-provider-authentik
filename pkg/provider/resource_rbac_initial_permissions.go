@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceRBACInitialPermissions() *schema.Resource {
@@ -31,8 +32,8 @@ func resourceRBACInitialPermissions() *schema.Resource {
 			"mode": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      EnumToDescription(api.AllowedInitialPermissionsModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedInitialPermissionsModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedInitialPermissionsModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedInitialPermissionsModeEnumEnumValues),
 			},
 			"permissions": {
 				Type:     schema.TypeList,
@@ -47,14 +48,10 @@ func resourceRBACInitialPermissions() *schema.Resource {
 
 func resourceRBACInitialPermissionsSchemaToModel(d *schema.ResourceData) (*api.InitialPermissionsRequest, diag.Diagnostics) {
 	m := api.InitialPermissionsRequest{
-		Name: d.Get("name").(string),
-		Role: d.Get("role").(string),
-		Mode: api.InitialPermissionsModeEnum(d.Get("mode").(string)),
-	}
-	permissions := d.Get("permissions").([]interface{})
-	m.Permissions = make([]int32, len(permissions))
-	for i, prov := range permissions {
-		m.Permissions[i] = int32(prov.(int))
+		Name:        d.Get("name").(string),
+		Role:        d.Get("role").(string),
+		Mode:        api.InitialPermissionsModeEnum(d.Get("mode").(string)),
+		Permissions: helpers.CastSliceInt32(d.Get("permissions").([]interface{})),
 	}
 	return &m, nil
 }
@@ -69,7 +66,7 @@ func resourceRBACInitialPermissionsCreate(ctx context.Context, d *schema.Resourc
 
 	res, hr, err := c.client.RbacApi.RbacInitialPermissionsCreate(ctx).InitialPermissionsRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -86,14 +83,14 @@ func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceD
 
 	res, hr, err := c.client.RbacApi.RbacInitialPermissionsRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "role", res.Role)
-	setWrapper(d, "mode", res.Mode)
-	localPermissions := castSlice[int](d.Get("permissions").([]interface{}))
-	setWrapper(d, "permissions", listConsistentMerge(localPermissions, slice32ToInt(res.Permissions)))
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "role", res.Role)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	localPermissions := helpers.CastSlice_New[int](d, "permissions")
+	helpers.SetWrapper(d, "permissions", helpers.ListConsistentMerge(localPermissions, helpers.Slice32ToInt(res.Permissions)))
 	return diags
 }
 
@@ -110,7 +107,7 @@ func resourceRBACInitialPermissionsUpdate(ctx context.Context, d *schema.Resourc
 	}
 	res, hr, err := c.client.RbacApi.RbacInitialPermissionsUpdate(ctx, int32(id)).InitialPermissionsRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -125,7 +122,7 @@ func resourceRBACInitialPermissionsDelete(ctx context.Context, d *schema.Resourc
 	}
 	hr, err := c.client.RbacApi.RbacInitialPermissionsDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

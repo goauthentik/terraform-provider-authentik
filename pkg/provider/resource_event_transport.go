@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceEventTransport() *schema.Resource {
@@ -26,8 +27,8 @@ func resourceEventTransport() *schema.Resource {
 			"mode": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
 			},
 			"webhook_url": {
 				Type:     schema.TypeString,
@@ -62,26 +63,14 @@ func resourceEventTransport() *schema.Resource {
 
 func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.NotificationTransportRequest, diag.Diagnostics) {
 	m := api.NotificationTransportRequest{
-		Name:     d.Get("name").(string),
-		SendOnce: api.PtrBool(d.Get("send_once").(bool)),
-		Mode:     api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
-	}
-
-	if w, ok := d.Get("webhook_url").(string); ok {
-		m.WebhookUrl = &w
-	}
-
-	if w, ok := d.Get("webhook_mapping_body").(string); ok {
-		m.WebhookMappingBody.Set(&w)
-	}
-	if w, ok := d.Get("webhook_mapping_headers").(string); ok {
-		m.WebhookMappingHeaders.Set(&w)
-	}
-	if e, ok := d.GetOk("email_template"); ok {
-		m.EmailTemplate = api.PtrString(e.(string))
-	}
-	if e, ok := d.GetOk("email_subject_prefix"); ok {
-		m.EmailSubjectPrefix = api.PtrString(e.(string))
+		Name:                  d.Get("name").(string),
+		SendOnce:              api.PtrBool(d.Get("send_once").(bool)),
+		Mode:                  api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
+		WebhookUrl:            helpers.GetP[string](d, "webhook_url"),
+		WebhookMappingBody:    *api.NewNullableString(helpers.GetP[string](d, "webhook_mapping_body")),
+		WebhookMappingHeaders: *api.NewNullableString(helpers.GetP[string](d, "webhook_mapping_headers")),
+		EmailTemplate:         helpers.GetP[string](d, "email_template"),
+		EmailSubjectPrefix:    helpers.GetP[string](d, "email_subject_prefix"),
 	}
 	return &m, nil
 }
@@ -96,7 +85,7 @@ func resourceEventTransportCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.EventsApi.EventsTransportsCreate(ctx).NotificationTransportRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -109,17 +98,17 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.EventsApi.EventsTransportsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "mode", res.Mode)
-	setWrapper(d, "send_once", res.SendOnce)
-	setWrapper(d, "webhook_url", res.WebhookUrl)
-	setWrapper(d, "webhook_mapping_body", res.WebhookMappingBody.Get())
-	setWrapper(d, "webhook_mapping_headers", res.WebhookMappingHeaders.Get())
-	setWrapper(d, "email_template", res.EmailTemplate)
-	setWrapper(d, "email_subject_prefix", res.EmailSubjectPrefix)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "mode", res.Mode)
+	helpers.SetWrapper(d, "send_once", res.SendOnce)
+	helpers.SetWrapper(d, "webhook_url", res.WebhookUrl)
+	helpers.SetWrapper(d, "webhook_mapping_body", res.WebhookMappingBody.Get())
+	helpers.SetWrapper(d, "webhook_mapping_headers", res.WebhookMappingHeaders.Get())
+	helpers.SetWrapper(d, "email_template", res.EmailTemplate)
+	helpers.SetWrapper(d, "email_subject_prefix", res.EmailSubjectPrefix)
 	return diags
 }
 
@@ -132,7 +121,7 @@ func resourceEventTransportUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	res, hr, err := c.client.EventsApi.EventsTransportsUpdate(ctx, d.Id()).NotificationTransportRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -143,7 +132,7 @@ func resourceEventTransportDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.EventsApi.EventsTransportsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

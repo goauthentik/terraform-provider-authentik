@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceBlueprintInstance() *schema.Resource {
@@ -42,9 +42,9 @@ func resourceBlueprintInstance() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "{}",
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -54,24 +54,13 @@ func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData) (*api.Bluepr
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
 		Enabled: api.PtrBool(d.Get("enabled").(bool)),
+		Path:    helpers.GetP[string](d, "path"),
+		Content: helpers.GetP[string](d, "content"),
 	}
 
-	if p, ok := d.Get("path").(string); ok {
-		m.Path = api.PtrString(p)
-	}
-	if p, ok := d.Get("content").(string); ok {
-		m.Content = api.PtrString(p)
-	}
-
-	ctx := make(map[string]interface{})
-	if l, ok := d.Get("context").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&ctx)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
-	m.Context = ctx
-	return &m, nil
+	context, err := helpers.GetJSON[map[string]interface{}](d, ("context"))
+	m.Context = context
+	return &m, err
 }
 
 func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -84,7 +73,7 @@ func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsCreate(ctx).BlueprintInstanceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -98,18 +87,18 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "path", res.Path)
-	setWrapper(d, "content", res.Content)
-	setWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "path", res.Path)
+	helpers.SetWrapper(d, "content", res.Content)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
 	b, err := json.Marshal(res.Context)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "context", string(b))
+	helpers.SetWrapper(d, "context", string(b))
 	return diags
 }
 
@@ -123,7 +112,7 @@ func resourceBlueprintInstanceUpdate(ctx context.Context, d *schema.ResourceData
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsUpdate(ctx, d.Id()).BlueprintInstanceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -134,7 +123,7 @@ func resourceBlueprintInstanceDelete(ctx context.Context, d *schema.ResourceData
 	c := m.(*APIClient)
 	hr, err := c.client.ManagedApi.ManagedBlueprintsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

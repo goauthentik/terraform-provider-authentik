@@ -3,11 +3,11 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 const systemSettingsID = "system_settings"
@@ -47,8 +47,8 @@ func resourceSystemSettings() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "days=365",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"footer_links": {
 				Type:     schema.TypeList,
@@ -71,8 +71,8 @@ func resourceSystemSettings() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          "minutes=30",
-				Description:      RelativeDurationDescription,
-				ValidateDiagFunc: ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
 			"default_token_length": {
 				Type:     schema.TypeInt,
@@ -93,9 +93,9 @@ func resourceSystemSettings() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          `{"policies_buffered_access_view": false}`,
-				Description:      JSONDescription,
-				DiffSuppressFunc: diffSuppressJSON,
-				ValidateDiagFunc: ValidateJSON,
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 		},
 	}
@@ -116,15 +116,10 @@ func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) (*api.Settin
 		ReputationLowerLimit:      api.PtrInt32(int32(d.Get("reputation_lower_limit").(int))),
 		ReputationUpperLimit:      api.PtrInt32(int32(d.Get("reputation_upper_limit").(int))),
 	}
-	attr := api.PatchedSettingsRequestFlags{}
-	if l, ok := d.Get("flags").(string); ok && l != "" {
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&attr)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-	}
-	r.Flags = attr
-	return &r, nil
+
+	flags, err := helpers.GetJSON[api.PatchedSettingsRequestFlags](d, ("flags"))
+	r.Flags = flags
+	return &r, err
 }
 
 func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -137,7 +132,7 @@ func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m
 
 	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(systemSettingsID)
@@ -150,26 +145,26 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.AdminApi.AdminSettingsRetrieve(ctx).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "avatars", res.Avatars)
-	setWrapper(d, "default_user_change_name", res.DefaultUserChangeName)
-	setWrapper(d, "default_user_change_email", res.DefaultUserChangeEmail)
-	setWrapper(d, "default_user_change_username", res.DefaultUserChangeUsername)
-	setWrapper(d, "event_retention", res.EventRetention)
-	setWrapper(d, "footer_links", res.FooterLinks)
-	setWrapper(d, "gdpr_compliance", res.GdprCompliance)
-	setWrapper(d, "impersonation", res.Impersonation)
-	setWrapper(d, "default_token_duration", res.DefaultTokenDuration)
-	setWrapper(d, "default_token_length", res.DefaultTokenLength)
-	setWrapper(d, "reputation_lower_limit", res.ReputationLowerLimit)
-	setWrapper(d, "reputation_upper_limit", res.ReputationUpperLimit)
+	helpers.SetWrapper(d, "avatars", res.Avatars)
+	helpers.SetWrapper(d, "default_user_change_name", res.DefaultUserChangeName)
+	helpers.SetWrapper(d, "default_user_change_email", res.DefaultUserChangeEmail)
+	helpers.SetWrapper(d, "default_user_change_username", res.DefaultUserChangeUsername)
+	helpers.SetWrapper(d, "event_retention", res.EventRetention)
+	helpers.SetWrapper(d, "footer_links", res.FooterLinks)
+	helpers.SetWrapper(d, "gdpr_compliance", res.GdprCompliance)
+	helpers.SetWrapper(d, "impersonation", res.Impersonation)
+	helpers.SetWrapper(d, "default_token_duration", res.DefaultTokenDuration)
+	helpers.SetWrapper(d, "default_token_length", res.DefaultTokenLength)
+	helpers.SetWrapper(d, "reputation_lower_limit", res.ReputationLowerLimit)
+	helpers.SetWrapper(d, "reputation_upper_limit", res.ReputationUpperLimit)
 	b, err := json.Marshal(res.Flags)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	setWrapper(d, "flags", string(b))
+	helpers.SetWrapper(d, "flags", string(b))
 	return diags
 }
 
@@ -183,7 +178,7 @@ func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(systemSettingsID)

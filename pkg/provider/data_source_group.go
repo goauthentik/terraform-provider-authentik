@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceGroupMember() *schema.Resource {
@@ -106,7 +107,7 @@ func dataSourceGroup() *schema.Resource {
 	}
 }
 
-func mapFromGroupMember(member api.GroupMember) (map[string]interface{}, error) {
+func mapFromGroupMember(member api.PartialUser) (map[string]interface{}, error) {
 	m := map[string]interface{}{
 		"pk":         int(member.GetPk()),
 		"username":   member.GetUsername(),
@@ -180,17 +181,17 @@ func setGroup(data *schema.ResourceData, group api.Group) diag.Diagnostics {
 		switch key {
 		case "pk":
 			data.SetId(value.(string))
-			setWrapper(data, key, value.(string))
+			helpers.SetWrapper(data, key, value.(string))
 		case "num_pk":
-			setWrapper(data, key, value.(int))
+			helpers.SetWrapper(data, key, value.(int))
 		case "is_superuser":
-			setWrapper(data, key, value.(bool))
+			helpers.SetWrapper(data, key, value.(bool))
 		case "users":
-			setWrapper(data, key, value.([]int))
+			helpers.SetWrapper(data, key, value.([]int))
 		case "users_obj":
-			setWrapper(data, key, value.([]map[string]interface{}))
+			helpers.SetWrapper(data, key, value.([]map[string]interface{}))
 		default:
-			setWrapper(data, key, value.(string))
+			helpers.SetWrapper(data, key, value.(string))
 		}
 	}
 	return diag.Diagnostics{}
@@ -202,7 +203,7 @@ func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *API
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	return setGroup(d, *res)
@@ -215,7 +216,7 @@ func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *A
 
 	res, hr, err := req.Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	if len(res.Results) < 1 {

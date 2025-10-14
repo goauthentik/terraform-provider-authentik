@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceRBACRole() *schema.Resource {
@@ -44,7 +45,7 @@ func resourceRBACRoleCreate(ctx context.Context, d *schema.ResourceData, m inter
 
 	res, hr, err := c.client.RbacApi.RbacRolesCreate(ctx).RoleRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -57,10 +58,10 @@ func resourceRBACRoleRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	res, hr, err := c.client.RbacApi.RbacRolesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "name", res.Name)
 	return diags
 }
 
@@ -73,7 +74,7 @@ func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	res, hr, err := c.client.RbacApi.RbacRolesUpdate(ctx, d.Id()).RoleRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Pk)
@@ -84,7 +85,7 @@ func resourceRBACRoleDelete(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*APIClient)
 	hr, err := c.client.RbacApi.RbacRolesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

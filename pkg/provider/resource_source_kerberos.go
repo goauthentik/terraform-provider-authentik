@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceSourceKerberos() *schema.Resource {
@@ -54,22 +55,22 @@ func resourceSourceKerberos() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
 			},
 			"user_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
 			},
 			"group_matching_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
 			},
 
 			"realm": {
@@ -149,9 +150,11 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
 		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 
-		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
-		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
+		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
+		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
+		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
+		EnrollmentFlow:     *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
 		Realm:                               d.Get("realm").(string),
 		Krb5Conf:                            api.PtrString(d.Get("krb5_conf").(string)),
@@ -166,14 +169,6 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		SpnegoCcache:                        api.PtrString(d.Get("spnego_ccache").(string)),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 	}
-
-	if ak, ok := d.GetOk("authentication_flow"); ok {
-		r.AuthenticationFlow.Set(api.PtrString(ak.(string)))
-	}
-	if ef, ok := d.GetOk("enrollment_flow"); ok {
-		r.EnrollmentFlow.Set(api.PtrString(ef.(string)))
-	}
-
 	return &r, nil
 }
 
@@ -187,7 +182,7 @@ func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.SourcesApi.SourcesKerberosCreate(ctx).KerberosSourceRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -199,33 +194,33 @@ func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesKerberosRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "slug", res.Slug)
-	setWrapper(d, "uuid", res.Pk)
-	setWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "slug", res.Slug)
+	helpers.SetWrapper(d, "uuid", res.Pk)
+	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 	if res.AuthenticationFlow.IsSet() {
-		setWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	}
 	if res.EnrollmentFlow.IsSet() {
-		setWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	}
-	setWrapper(d, "enabled", res.Enabled)
-	setWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	setWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	setWrapper(d, "group_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
+	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "group_matching_mode", res.UserMatchingMode)
 
-	setWrapper(d, "realm", res.Realm)
-	setWrapper(d, "krb5_conf", res.Krb5Conf)
-	setWrapper(d, "sync_users", res.SyncUsers)
-	setWrapper(d, "sync_users_password", res.SyncUsersPassword)
-	setWrapper(d, "sync_principal", res.SyncPrincipal)
-	setWrapper(d, "sync_ccache", res.SyncCcache)
-	setWrapper(d, "spnego_server_name", res.SpnegoServerName)
-	setWrapper(d, "spnego_ccache", res.SpnegoCcache)
-	setWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
+	helpers.SetWrapper(d, "realm", res.Realm)
+	helpers.SetWrapper(d, "krb5_conf", res.Krb5Conf)
+	helpers.SetWrapper(d, "sync_users", res.SyncUsers)
+	helpers.SetWrapper(d, "sync_users_password", res.SyncUsersPassword)
+	helpers.SetWrapper(d, "sync_principal", res.SyncPrincipal)
+	helpers.SetWrapper(d, "sync_ccache", res.SyncCcache)
+	helpers.SetWrapper(d, "spnego_server_name", res.SpnegoServerName)
+	helpers.SetWrapper(d, "spnego_ccache", res.SpnegoCcache)
+	helpers.SetWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
 	return diags
 }
 
@@ -238,7 +233,7 @@ func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	res, hr, err := c.client.SourcesApi.SourcesKerberosUpdate(ctx, d.Id()).KerberosSourceRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(res.Slug)
@@ -249,7 +244,7 @@ func resourceSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesKerberosDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

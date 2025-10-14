@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func resourceProviderLDAP() *schema.Resource {
@@ -84,13 +85,8 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 		SearchMode:        api.LDAPAPIAccessMode(d.Get("search_mode").(string)).Ptr(),
 		BindMode:          api.LDAPAPIAccessMode(d.Get("bind_mode").(string)).Ptr(),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
-	}
-
-	if s, sok := d.GetOk("certificate"); sok && s.(string) != "" {
-		r.Certificate.Set(api.PtrString(s.(string)))
-	}
-	if s, sok := d.GetOk("tls_server_name"); sok && s.(string) != "" {
-		r.TlsServerName = api.PtrString(s.(string))
+		Certificate:       *api.NewNullableString(helpers.GetP[string](d, "certificate")),
+		TlsServerName:     helpers.GetP[string](d, "tls_server_name"),
 	}
 	return &r
 }
@@ -102,7 +98,7 @@ func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapCreate(ctx).LDAPProviderRequest(*r).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -118,22 +114,22 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	setWrapper(d, "name", res.Name)
-	setWrapper(d, "bind_flow", res.AuthorizationFlow)
-	setWrapper(d, "unbind_flow", res.InvalidationFlow)
-	setWrapper(d, "base_dn", res.BaseDn)
+	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "bind_flow", res.AuthorizationFlow)
+	helpers.SetWrapper(d, "unbind_flow", res.InvalidationFlow)
+	helpers.SetWrapper(d, "base_dn", res.BaseDn)
 	if res.Certificate.IsSet() {
-		setWrapper(d, "certificate", res.Certificate.Get())
+		helpers.SetWrapper(d, "certificate", res.Certificate.Get())
 	}
-	setWrapper(d, "tls_server_name", res.TlsServerName)
-	setWrapper(d, "uid_start_number", res.UidStartNumber)
-	setWrapper(d, "gid_start_number", res.GidStartNumber)
-	setWrapper(d, "bind_mode", res.BindMode)
-	setWrapper(d, "search_mode", res.SearchMode)
-	setWrapper(d, "mfa_support", res.MfaSupport)
+	helpers.SetWrapper(d, "tls_server_name", res.TlsServerName)
+	helpers.SetWrapper(d, "uid_start_number", res.UidStartNumber)
+	helpers.SetWrapper(d, "gid_start_number", res.GidStartNumber)
+	helpers.SetWrapper(d, "bind_mode", res.BindMode)
+	helpers.SetWrapper(d, "search_mode", res.SearchMode)
+	helpers.SetWrapper(d, "mfa_support", res.MfaSupport)
 	return diags
 }
 
@@ -147,7 +143,7 @@ func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	res, hr, err := c.client.ProvidersApi.ProvidersLdapUpdate(ctx, int32(id)).LDAPProviderRequest(*app).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	d.SetId(strconv.Itoa(int(res.Pk)))
@@ -162,7 +158,7 @@ func resourceProviderLDAPDelete(ctx context.Context, d *schema.ResourceData, m i
 	}
 	hr, err := c.client.ProvidersApi.ProvidersLdapDestroy(ctx, int32(id)).Execute()
 	if err != nil {
-		return httpToDiag(d, hr, err)
+		return helpers.HTTPToDiag(d, hr, err)
 	}
 	return diag.Diagnostics{}
 }

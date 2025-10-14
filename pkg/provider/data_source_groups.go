@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
 )
 
 func dataSourceGroups() *schema.Resource {
@@ -123,7 +124,7 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 		req = req.Page(page)
 		res, hr, err := req.Execute()
 		if err != nil {
-			return httpToDiag(d, hr, err)
+			return helpers.HTTPToDiag(d, hr, err)
 		}
 
 		for _, groupRes := range res.Results {
@@ -140,6 +141,6 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	d.SetId("0")
-	setWrapper(d, "groups", groups)
+	helpers.SetWrapper(d, "groups", groups)
 	return diag.Diagnostics{}
 }
