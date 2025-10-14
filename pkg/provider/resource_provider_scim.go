@@ -154,7 +154,7 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
 	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	helpers.SetWrapper(d, "auth_mode", res.AuthMode)
-	helpers.SetWrapper(d, "auth_oauth", res.AuthOauth)
+	helpers.SetWrapper(d, "auth_oauth", res.AuthOauth.Get())
 	b, err := json.Marshal(res.AuthOauthParams)
 	if err != nil {
 		return diag.FromErr(err)
