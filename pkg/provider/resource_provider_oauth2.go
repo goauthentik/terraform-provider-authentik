@@ -102,7 +102,14 @@ func resourceProviderOAuth2() *schema.Resource {
 					Type: schema.TypeMap,
 				},
 			},
-			"backchannel_logout_uri": {
+			"logout_method": {
+				Type:             schema.TypeString,
+				Default:          api.OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
+				Optional:         true,
+				Description:      helpers.EnumToDescription(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
+			},
+			"logout_uri": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -165,7 +172,8 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
 		PropertyMappings:       helpers.CastSlice_New[string](d, "property_mappings"),
 		JwtFederationSources:   helpers.CastSlice_New[string](d, "jwt_federation_sources"),
-		BackchannelLogoutUri:   helpers.GetP[string](d, "backchannel_logout_uri"),
+		LogoutMethod:           api.OAuth2ProviderLogoutMethodEnum(d.Get("logout_method").(string)).Ptr(),
+		LogoutUri:              helpers.GetP[string](d, "logout_uri"),
 
 		SigningKey:             *api.NewNullableString(helpers.GetP[string](d, "signing_key")),
 		EncryptionKey:          *api.NewNullableString(helpers.GetP[string](d, "encryption_key")),
@@ -245,7 +253,8 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "client_type", res.ClientType)
 	helpers.SetWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	helpers.SetWrapper(d, "issuer_mode", res.IssuerMode)
-	helpers.SetWrapper(d, "backchannel_logout_uri", res.BackchannelLogoutUri)
+	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
+	helpers.SetWrapper(d, "logout_uri", res.LogoutUri)
 	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))

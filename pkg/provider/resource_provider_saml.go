@@ -153,9 +153,9 @@ func resourceProviderSAML() *schema.Resource {
 			"sp_binding": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.SPBINDINGENUM_REDIRECT,
-				Description:      helpers.EnumToDescription(api.AllowedSpBindingEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSpBindingEnumEnumValues),
+				Default:          api.SAMLBINDINGSENUM_REDIRECT,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
 			},
 			"default_relay_state": {
 				Type:     schema.TypeString,
@@ -179,7 +179,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SessionValidNotOnOrAfter:    api.PtrString(d.Get("session_valid_not_on_or_after").(string)),
 		DigestAlgorithm:             api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:          api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
-		SpBinding:                   api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
+		SpBinding:                   api.SAMLBindingsEnum(d.Get("sp_binding").(string)).Ptr(),
 		PropertyMappings:            helpers.CastSlice_New[string](d, "property_mappings"),
 		SignAssertion:               api.PtrBool(d.Get("sign_assertion").(bool)),
 		SignResponse:                api.PtrBool(d.Get("sign_response").(bool)),
