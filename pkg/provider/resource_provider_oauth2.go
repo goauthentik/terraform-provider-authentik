@@ -171,7 +171,7 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
 		PropertyMappings:       helpers.CastSlice[string](d, "property_mappings"),
 		JwtFederationSources:   helpers.CastSlice[string](d, "jwt_federation_sources"),
-		LogoutMethod:           api.OAuth2ProviderLogoutMethodEnum(d.Get("logout_method").(string)).Ptr(),
+		LogoutMethod:           helpers.CastString[api.OAuth2ProviderLogoutMethodEnum](helpers.GetP[string](d, "logout_method")).Ptr(),
 		LogoutUri:              helpers.GetP[string](d, "logout_uri"),
 
 		SigningKey:             *api.NewNullableString(helpers.GetP[string](d, "signing_key")),
