@@ -39,7 +39,16 @@ resource "authentik_application" "name" {
 - `acs_url` (String)
 - `authorization_flow` (String)
 - `invalidation_flow` (String)
+- `logout_method` (String) Allowed values:
+  - `frontchannel_iframe`
+  - `frontchannel_native`
+  - `backchannel`
+ Defaults to `backchannel`.
 - `name` (String)
+- `sls_binding` (String) Allowed values:
+  - `redirect`
+  - `post`
+ Defaults to `redirect`.
 
 ### Optional
 
@@ -61,6 +70,7 @@ resource "authentik_application" "name" {
 - `property_mappings` (List of String)
 - `session_valid_not_on_or_after` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=86400`.
 - `sign_assertion` (Boolean) Defaults to `true`.
+- `sign_logout_request` (Boolean) Defaults to `false`.
 - `sign_response` (Boolean) Defaults to `false`.
 - `signature_algorithm` (String) Allowed values:
   - `http://www.w3.org/2000/09/xmldsig#rsa-sha1`
@@ -74,6 +84,7 @@ resource "authentik_application" "name" {
   - `http://www.w3.org/2000/09/xmldsig#dsa-sha1`
  Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
+- `sls_url` (String)
 - `sp_binding` (String) Allowed values:
   - `redirect`
   - `post`

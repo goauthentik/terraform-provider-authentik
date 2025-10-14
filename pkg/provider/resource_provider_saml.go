@@ -162,6 +162,29 @@ func resourceProviderSAML() *schema.Resource {
 				Optional: true,
 				Default:  "",
 			},
+			"sls_url": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"sign_logout_request": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"sls_binding": {
+				Type:             schema.TypeString,
+				Required:         true,
+				Default:          api.SAMLBINDINGSENUM_REDIRECT,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
+			},
+			"logout_method": {
+				Type:             schema.TypeString,
+				Required:         true,
+				Default:          api.SAMLPROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
+			},
 		},
 	}
 }
@@ -190,6 +213,10 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SigningKp:                   *api.NewNullableString(helpers.GetP[string](d, "signing_kp")),
 		VerificationKp:              *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
 		DefaultRelayState:           helpers.GetP[string](d, "default_relay_state"),
+		SlsUrl:                      helpers.GetP[string](d, "sls_url"),
+		SignLogoutRequest:           helpers.GetP[bool](d, "sign_logout_request"),
+		SlsBinding:                  helpers.CastString[api.SAMLBindingsEnum](helpers.GetP[string](d, "sls_binding")),
+		LogoutMethod:                helpers.CastString[api.SAMLProviderLogoutMethodEnum](helpers.GetP[string](d, "logout_method")),
 	}
 	return &r
 }
@@ -260,6 +287,10 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "url_sso_redirect", res.UrlSsoRedirect)
 	helpers.SetWrapper(d, "url_slo_post", res.UrlSloPost)
 	helpers.SetWrapper(d, "url_slo_redirect", res.UrlSloRedirect)
+	helpers.SetWrapper(d, "sls_url", res.SlsUrl)
+	helpers.SetWrapper(d, "sign_logout_request", res.SignLogoutRequest)
+	helpers.SetWrapper(d, "sls_binding", res.SlsBinding)
+	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
 	return diags
 }
 
