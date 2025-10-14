@@ -55,6 +55,10 @@ func resourceProviderRadius() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"certificate": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -68,6 +72,7 @@ func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusP
 		SharedSecret:      api.PtrString(d.Get("shared_secret").(string)),
 		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
 		PropertyMappings:  helpers.CastSlice[string](d, "property_mappings"),
+		Certificate:       *api.NewNullableString(helpers.GetP[string](d, "certificate")),
 	}
 	return &r
 }
@@ -106,6 +111,7 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "client_networks", res.ClientNetworks)
 	helpers.SetWrapper(d, "shared_secret", res.SharedSecret)
 	helpers.SetWrapper(d, "mfa_support", res.MfaSupport)
+	helpers.SetWrapper(d, "certificate", res.Certificate)
 	return diags
 }
 

@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -152,6 +153,13 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "filter_group", res.FilterGroup.Get())
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
 	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
+	helpers.SetWrapper(d, "auth_mode", res.AuthMode)
+	helpers.SetWrapper(d, "auth_oauth", res.AuthOauth)
+	b, err := json.Marshal(res.AuthOauthParams)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	helpers.SetWrapper(d, "auth_oauth_params", string(b))
 	return diags
 }
 
