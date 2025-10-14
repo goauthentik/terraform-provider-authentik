@@ -145,8 +145,8 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		InvalidationFlow:          d.Get("invalidation_flow").(string),
 		ExternalHost:              d.Get("external_host").(string),
 		Mode:                      api.ProxyMode(d.Get("mode").(string)).Ptr(),
-		PropertyMappings:          helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
-		JwtFederationSources:      helpers.CastSlice[string](d.Get("jwt_federation_sources").([]interface{})),
+		PropertyMappings:          helpers.CastSlice_New[string](d, "property_mappings"),
+		JwtFederationSources:      helpers.CastSlice_New[string](d, "jwt_federation_sources"),
 		AuthenticationFlow:        *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		InternalHost:              helpers.GetP[string](d, "internal_host"),
 		InternalHostSslValidation: helpers.GetP[bool](d, "internal_host_ssl_validation"),
@@ -220,9 +220,9 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	if len(localMappings) > 0 {
 		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}
-	localJWKSProviders := helpers.CastSlice[int](d.Get("jwt_federation_providers").([]interface{}))
+	localJWKSProviders := helpers.CastSlice_New[int](d, "jwt_federation_providers")
 	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := helpers.CastSlice[string](d.Get("jwt_federation_sources").([]interface{}))
+	localJWKSSources := helpers.CastSlice_New[string](d, "jwt_federation_sources")
 	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }

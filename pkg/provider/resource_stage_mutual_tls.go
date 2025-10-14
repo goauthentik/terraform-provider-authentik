@@ -62,7 +62,7 @@ func resourceStageMutualTLSSchemaToProvider(d *schema.ResourceData) *api.MutualT
 		Mode:                   api.MutualTLSStageModeEnum(d.Get("mode").(string)),
 		CertAttribute:          api.CertAttributeEnum(d.Get("cert_attribute").(string)),
 		UserAttribute:          api.UserAttributeEnum(d.Get("user_attribute").(string)),
-		CertificateAuthorities: helpers.CastSlice[string](d.Get("certificate_authorities").([]interface{})),
+		CertificateAuthorities: helpers.CastSlice_New[string](d, "certificate_authorities"),
 	}
 	return &r
 }

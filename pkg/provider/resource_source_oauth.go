@@ -189,8 +189,8 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		OidcWellKnownUrl: helpers.GetP[string](d, "oidc_well_known_url"),
 		OidcJwksUrl:      helpers.GetP[string](d, "oidc_jwks_url"),
 
-		UserPropertyMappings:  helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
-		GroupPropertyMappings: helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
+		UserPropertyMappings:  helpers.CastSlice_New[string](d, "property_mappings"),
+		GroupPropertyMappings: helpers.CastSlice_New[string](d, "property_mappings_group"),
 	}
 
 	jwks, err := helpers.GetJSON[map[string]interface{}](d, ("oidc_jwks"))
@@ -265,9 +265,9 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 		return diag.FromErr(err)
 	}
 	helpers.SetWrapper(d, "oidc_jwks", string(b))
-	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{}))
+	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
 	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }

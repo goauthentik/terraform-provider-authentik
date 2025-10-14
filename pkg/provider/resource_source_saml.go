@@ -179,8 +179,8 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		AuthenticationFlow:    *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		EnrollmentFlow:        *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 		PreAuthenticationFlow: d.Get("pre_authentication_flow").(string),
-		UserPropertyMappings:  helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
-		GroupPropertyMappings: helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
+		UserPropertyMappings:  helpers.CastSlice_New[string](d, "property_mappings"),
+		GroupPropertyMappings: helpers.CastSlice_New[string](d, "property_mappings_group"),
 
 		SsoUrl:                   d.Get("sso_url").(string),
 		SloUrl:                   *api.NewNullableString(helpers.GetP[string](d, "slo_url")),

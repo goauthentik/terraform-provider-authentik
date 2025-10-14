@@ -187,8 +187,8 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 		DeleteNotFoundObjects:               api.PtrBool(d.Get("delete_not_found_objects").(bool)),
 		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
-		UserPropertyMappings:                helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
-		GroupPropertyMappings:               helpers.CastSlice[string](d.Get("property_mappings_group").([]interface{})),
+		UserPropertyMappings:                helpers.CastSlice_New[string](d, "property_mappings"),
+		GroupPropertyMappings:               helpers.CastSlice_New[string](d, "property_mappings_group"),
 	}
 	return &r
 }

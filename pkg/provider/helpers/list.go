@@ -49,3 +49,44 @@ func ListConsistentMerge[T comparable](old []T, new []T) []interface{} {
 
 	return res
 }
+
+func CastSlice_New[T any](d ResourceData, key string) []T {
+	sl := make([]T, 0)
+	rv, ok := d.GetOk(key)
+	if !ok {
+		return sl
+	}
+	in, ok := rv.([]any)
+	if !ok {
+		return sl
+	}
+	for _, m := range in {
+		sl = append(sl, m.(T))
+	}
+	return sl
+}
+
+// Deprecated: Use CastSlice_New
+func CastSlice[T any](in []any) []T {
+	sl := make([]T, len(in))
+	for i, m := range in {
+		sl[i] = m.(T)
+	}
+	return sl
+}
+
+func CastSliceInt32(in []any) []int32 {
+	sl := make([]int32, len(in))
+	for i, m := range in {
+		sl[i] = int32(m.(int))
+	}
+	return sl
+}
+
+func Slice32ToInt(in []int32) []int {
+	sl := make([]int, len(in))
+	for i, m := range in {
+		sl[i] = int(m)
+	}
+	return sl
+}

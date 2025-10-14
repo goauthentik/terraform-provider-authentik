@@ -113,7 +113,7 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 		ClientId:       api.PtrString(d.Get("client_id").(string)),
 		AllowFriends:   api.PtrBool(d.Get("allow_friends").(bool)),
 		PlexToken:      d.Get("plex_token").(string),
-		AllowedServers: helpers.CastSlice[string](d.Get("allowed_servers").([]interface{})),
+		AllowedServers: helpers.CastSlice_New[string](d, "allowed_servers"),
 	}
 	return &r
 }

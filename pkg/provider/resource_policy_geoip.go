@@ -90,11 +90,9 @@ func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolic
 		Asns:                  helpers.CastSliceInt32(d.Get("asns").([]interface{})),
 	}
 
-	if a, ok := d.Get("countries").([]interface{}); ok {
-		r.Countries = make([]api.CountryCodeEnum, 0)
-		for _, c := range helpers.CastSlice[string](a) {
-			r.Countries = append(r.Countries, api.CountryCodeEnum(c))
-		}
+	r.Countries = make([]api.CountryCodeEnum, 0)
+	for _, c := range helpers.CastSlice_New[string](d, "countries") {
+		r.Countries = append(r.Countries, api.CountryCodeEnum(c))
 	}
 	return &r
 }

@@ -180,7 +180,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		DigestAlgorithm:             api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:          api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		SpBinding:                   api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
-		PropertyMappings:            helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappings:            helpers.CastSlice_New[string](d, "property_mappings"),
 		SignAssertion:               api.PtrBool(d.Get("sign_assertion").(bool)),
 		SignResponse:                api.PtrBool(d.Get("sign_response").(bool)),
 		AuthenticationFlow:          *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),

@@ -72,7 +72,7 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 		Protocol:           api.ProtocolEnum(d.Get("protocol").(string)),
 		Host:               d.Get("host").(string),
 		AuthMode:           api.ENDPOINTAUTHMODEENUM_PROMPT,
-		PropertyMappings:   helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappings:   helpers.CastSlice_New[string](d, "property_mappings"),
 		MaximumConnections: api.PtrInt32(int32(d.Get("maximum_connections").(int))),
 	}
 

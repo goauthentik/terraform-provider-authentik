@@ -96,7 +96,7 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		EnableRememberMe:        api.PtrBool(d.Get("enable_remember_me").(bool)),
 		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
-		Sources:                 helpers.CastSlice[string](d.Get("sources").([]interface{})),
+		Sources:                 helpers.CastSlice_New[string](d, "sources"),
 		PasswordStage:           *api.NewNullableString(api.PtrString(d.Get("password_stage").(string))),
 		CaptchaStage:            *api.NewNullableString(api.PtrString(d.Get("captcha_stage").(string))),
 		EnrollmentFlow:          *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),

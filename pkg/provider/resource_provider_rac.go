@@ -65,7 +65,7 @@ func resourceProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACProvid
 	r := api.RACProviderRequest{
 		Name:               d.Get("name").(string),
 		AuthorizationFlow:  d.Get("authorization_flow").(string),
-		PropertyMappings:   helpers.CastSlice[string](d.Get("property_mappings").([]interface{})),
+		PropertyMappings:   helpers.CastSlice_New[string](d, "property_mappings"),
 		ConnectionExpiry:   api.PtrString(d.Get("connection_expiry").(string)),
 		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 	}
@@ -107,7 +107,7 @@ func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	helpers.SetWrapper(d, "connection_expiry", res.ConnectionExpiry)
-	localMappings := helpers.CastSlice[string](d.Get("property_mappings").([]interface{}))
+	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
 	if len(localMappings) > 0 {
 		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	}

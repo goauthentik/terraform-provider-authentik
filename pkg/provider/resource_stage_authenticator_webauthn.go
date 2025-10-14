@@ -73,7 +73,7 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 		Name:                   d.Get("name").(string),
 		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
 		ResidentKeyRequirement: api.ResidentKeyRequirementEnum(d.Get("resident_key_requirement").(string)).Ptr(),
-		DeviceTypeRestrictions: helpers.CastSlice[string](d.Get("device_type_restrictions").([]interface{})),
+		DeviceTypeRestrictions: helpers.CastSlice_New[string](d, "device_type_restrictions"),
 		FriendlyName:           helpers.GetP[string](d, "friendly_name"),
 		ConfigureFlow:          *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 		MaxAttempts:            helpers.GetIntP(d, "max_attempts"),

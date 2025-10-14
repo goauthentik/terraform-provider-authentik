@@ -58,9 +58,9 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRu
 		Name:                 d.Get("name").(string),
 		Severity:             api.SeverityEnum(d.Get("severity").(string)).Ptr(),
 		DestinationEventUser: api.PtrBool(d.Get("destination_event_user").(bool)),
+		DestinationGroup:     *api.NewNullableString(helpers.GetP[string](d, ("destination_group"))),
+		Transports:           helpers.CastSlice_New[string](d, "transports"),
 	}
-	m.DestinationGroup.Set(helpers.GetP[string](d, ("destination_group")))
-	m.Transports = helpers.CastSlice[string](d.Get("transports").([]interface{}))
 	return &m, nil
 }
 
