@@ -104,7 +104,6 @@ func resourceProviderOAuth2() *schema.Resource {
 			},
 			"logout_method": {
 				Type:             schema.TypeString,
-				Default:          api.OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
 				Optional:         true,
 				Description:      helpers.EnumToDescription(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
