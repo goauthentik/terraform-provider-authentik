@@ -111,7 +111,7 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "client_networks", res.ClientNetworks)
 	helpers.SetWrapper(d, "shared_secret", res.SharedSecret)
 	helpers.SetWrapper(d, "mfa_support", res.MfaSupport)
-	helpers.SetWrapper(d, "certificate", res.Certificate)
+	helpers.SetWrapper(d, "certificate", res.Certificate.Get())
 	return diags
 }
 
