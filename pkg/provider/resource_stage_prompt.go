@@ -45,8 +45,8 @@ func resourceStagePrompt() *schema.Resource {
 func resourceStagePromptSchemaToProvider(d *schema.ResourceData) *api.PromptStageRequest {
 	r := api.PromptStageRequest{
 		Name:               d.Get("name").(string),
-		Fields:             helpers.CastSlice_New[string](d, "fields"),
-		ValidationPolicies: helpers.CastSlice_New[string](d, "validation_policies"),
+		Fields:             helpers.CastSlice[string](d, "fields"),
+		ValidationPolicies: helpers.CastSlice[string](d, "validation_policies"),
 	}
 	return &r
 }
@@ -75,9 +75,9 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	helpers.SetWrapper(d, "name", res.Name)
-	fields := helpers.CastSlice_New[string](d, "fields")
+	fields := helpers.CastSlice[string](d, "fields")
 	helpers.SetWrapper(d, "fields", helpers.ListConsistentMerge(fields, res.Fields))
-	validationPolicies := helpers.CastSlice_New[string](d, "validation_policies")
+	validationPolicies := helpers.CastSlice[string](d, "validation_policies")
 	helpers.SetWrapper(d, "validation_policies", helpers.ListConsistentMerge(validationPolicies, res.ValidationPolicies))
 	return diags
 }

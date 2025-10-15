@@ -86,7 +86,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 		IsActive: api.PtrBool(d.Get("is_active").(bool)),
 		Path:     api.PtrString(d.Get("path").(string)),
 		Email:    helpers.GetP[string](d, "email"),
-		Groups:   helpers.CastSlice_New[string](d, "groups"),
+		Groups:   helpers.CastSlice[string](d, "groups"),
 	}
 	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
@@ -162,7 +162,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		return diag.FromErr(err)
 	}
 	helpers.SetWrapper(d, "attributes", string(b))
-	localGroups := helpers.CastSlice_New[string](d, "groups")
+	localGroups := helpers.CastSlice[string](d, "groups")
 	helpers.SetWrapper(d, "groups", helpers.ListConsistentMerge(localGroups, res.Groups))
 	return diags
 }

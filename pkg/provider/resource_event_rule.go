@@ -59,7 +59,7 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRu
 		Severity:             api.SeverityEnum(d.Get("severity").(string)).Ptr(),
 		DestinationEventUser: api.PtrBool(d.Get("destination_event_user").(bool)),
 		DestinationGroup:     *api.NewNullableString(helpers.GetP[string](d, ("destination_group"))),
-		Transports:           helpers.CastSlice_New[string](d, "transports"),
+		Transports:           helpers.CastSlice[string](d, "transports"),
 	}
 	return &m, nil
 }
@@ -93,7 +93,7 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "destination_group", res.DestinationGroup.Get())
 	helpers.SetWrapper(d, "destination_event_user", res.DestinationEventUser)
-	localTransports := helpers.CastSlice_New[string](d, "transports")
+	localTransports := helpers.CastSlice[string](d, "transports")
 	helpers.SetWrapper(d, "transports", helpers.ListConsistentMerge(localTransports, res.Transports))
 	helpers.SetWrapper(d, "severity", res.Severity)
 	return diags

@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -37,7 +38,27 @@ func resourceProviderSCIM() *schema.Resource {
 			"token": {
 				Type:      schema.TypeString,
 				Sensitive: true,
-				Required:  true,
+				Optional:  true,
+			},
+			"auth_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SCIMAUTHENTICATIONMODEENUM_TOKEN,
+				Description:      helpers.EnumToDescription(api.AllowedSCIMAuthenticationModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSCIMAuthenticationModeEnumEnumValues),
+			},
+			"auth_oauth": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Slug of an OAuth source used for authentication",
+			},
+			"auth_oauth_params": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "{}",
+				Description:      helpers.JSONDescription,
+				DiffSuppressFunc: helpers.DiffSuppressJSON,
+				ValidateDiagFunc: helpers.ValidateJSON,
 			},
 			"compatibility_mode": {
 				Type:             schema.TypeString,
@@ -72,25 +93,33 @@ func resourceProviderSCIM() *schema.Resource {
 	}
 }
 
-func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) *api.SCIMProviderRequest {
+func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) (*api.SCIMProviderRequest, diag.Diagnostics) {
 	r := api.SCIMProviderRequest{
 		Name:                       d.Get("name").(string),
 		Url:                        d.Get("url").(string),
+		AuthMode:                   helpers.CastString[api.SCIMAuthenticationModeEnum](helpers.GetP[string](d, "auth_mode")),
+		AuthOauth:                  *api.NewNullableString(helpers.GetP[string](d, "auth_oauth")),
 		Token:                      helpers.GetP[string](d, "token"),
-		PropertyMappings:           helpers.CastSlice_New[string](d, "property_mappings"),
-		PropertyMappingsGroup:      helpers.CastSlice_New[string](d, "property_mappings_group"),
+		PropertyMappings:           helpers.CastSlice[string](d, "property_mappings"),
+		PropertyMappingsGroup:      helpers.CastSlice[string](d, "property_mappings_group"),
 		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
 		CompatibilityMode:          api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
 		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
 		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
 	}
-	return &r
+
+	attr, err := helpers.GetJSON[map[string]interface{}](d, "auth_oauth_params")
+	r.AuthOauthParams = attr
+	return &r, err
 }
 
 func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r := resourceProviderSCIMSchemaToProvider(d)
+	r, diags := resourceProviderSCIMSchemaToProvider(d)
+	if diags != nil {
+		return diags
+	}
 
 	res, hr, err := c.client.ProvidersApi.ProvidersScimCreate(ctx).SCIMProviderRequest(*r).Execute()
 	if err != nil {
@@ -116,14 +145,21 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "url", res.Url)
 	helpers.SetWrapper(d, "token", res.Token)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
+	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
 	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
 	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	helpers.SetWrapper(d, "filter_group", res.FilterGroup.Get())
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
 	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
+	helpers.SetWrapper(d, "auth_mode", res.AuthMode)
+	helpers.SetWrapper(d, "auth_oauth", res.AuthOauth.Get())
+	b, err := json.Marshal(res.AuthOauthParams)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	helpers.SetWrapper(d, "auth_oauth_params", string(b))
 	return diags
 }
 
@@ -133,7 +169,10 @@ func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	app := resourceProviderSCIMSchemaToProvider(d)
+	app, diags := resourceProviderSCIMSchemaToProvider(d)
+	if diags != nil {
+		return diags
+	}
 
 	res, hr, err := c.client.ProvidersApi.ProvidersScimUpdate(ctx, int32(id)).SCIMProviderRequest(*app).Execute()
 	if err != nil {

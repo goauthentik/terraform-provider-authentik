@@ -153,14 +153,37 @@ func resourceProviderSAML() *schema.Resource {
 			"sp_binding": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.SPBINDINGENUM_REDIRECT,
-				Description:      helpers.EnumToDescription(api.AllowedSpBindingEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSpBindingEnumEnumValues),
+				Default:          api.SAMLBINDINGSENUM_REDIRECT,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
 			},
 			"default_relay_state": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "",
+			},
+			"sls_url": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"sign_logout_request": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"sls_binding": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SAMLBINDINGSENUM_REDIRECT,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
+			},
+			"logout_method": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SAMLPROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
 			},
 		},
 	}
@@ -179,8 +202,8 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SessionValidNotOnOrAfter:    api.PtrString(d.Get("session_valid_not_on_or_after").(string)),
 		DigestAlgorithm:             api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:          api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
-		SpBinding:                   api.SpBindingEnum(d.Get("sp_binding").(string)).Ptr(),
-		PropertyMappings:            helpers.CastSlice_New[string](d, "property_mappings"),
+		SpBinding:                   api.SAMLBindingsEnum(d.Get("sp_binding").(string)).Ptr(),
+		PropertyMappings:            helpers.CastSlice[string](d, "property_mappings"),
 		SignAssertion:               api.PtrBool(d.Get("sign_assertion").(bool)),
 		SignResponse:                api.PtrBool(d.Get("sign_response").(bool)),
 		AuthenticationFlow:          *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
@@ -190,6 +213,10 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SigningKp:                   *api.NewNullableString(helpers.GetP[string](d, "signing_kp")),
 		VerificationKp:              *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
 		DefaultRelayState:           helpers.GetP[string](d, "default_relay_state"),
+		SlsUrl:                      helpers.GetP[string](d, "sls_url"),
+		SignLogoutRequest:           helpers.GetP[bool](d, "sign_logout_request"),
+		SlsBinding:                  helpers.CastString[api.SAMLBindingsEnum](helpers.GetP[string](d, "sls_binding")),
+		LogoutMethod:                helpers.CastString[api.SAMLProviderLogoutMethodEnum](helpers.GetP[string](d, "logout_method")),
 	}
 	return &r
 }
@@ -224,7 +251,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 
 	helpers.SetWrapper(d, "acs_url", res.AcsUrl)
@@ -260,6 +287,10 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "url_sso_redirect", res.UrlSsoRedirect)
 	helpers.SetWrapper(d, "url_slo_post", res.UrlSloPost)
 	helpers.SetWrapper(d, "url_slo_redirect", res.UrlSloRedirect)
+	helpers.SetWrapper(d, "sls_url", res.SlsUrl)
+	helpers.SetWrapper(d, "sign_logout_request", res.SignLogoutRequest)
+	helpers.SetWrapper(d, "sls_binding", res.SlsBinding)
+	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
 	return diags
 }
 

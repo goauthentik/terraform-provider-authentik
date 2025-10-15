@@ -33,6 +33,7 @@ resource "authentik_policy_event_matcher" "name" {
 
 - `action` (String)
 - `app` (String) Allowed values:
+  - `authentik.commands`
   - `authentik.tenants`
   - `authentik.tasks`
   - `authentik.admin`
@@ -66,6 +67,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.sources.plex`
   - `authentik.sources.saml`
   - `authentik.sources.scim`
+  - `authentik.sources.telegram`
   - `authentik.stages.authenticator`
   - `authentik.stages.authenticator_duo`
   - `authentik.stages.authenticator_email`
@@ -95,6 +97,8 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.enterprise.policies.unique_password`
   - `authentik.enterprise.providers.google_workspace`
   - `authentik.enterprise.providers.microsoft_entra`
+  - `authentik.enterprise.providers.radius`
+  - `authentik.enterprise.providers.scim`
   - `authentik.enterprise.providers.ssf`
   - `authentik.enterprise.search`
   - `authentik.enterprise.stages.authenticator_endpoint_gdtc`
@@ -166,6 +170,10 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_sources_saml.groupsamlsourceconnection`
   - `authentik_sources_scim.scimsource`
   - `authentik_sources_scim.scimsourcepropertymapping`
+  - `authentik_sources_telegram.telegramsource`
+  - `authentik_sources_telegram.telegramsourcepropertymapping`
+  - `authentik_sources_telegram.usertelegramsourceconnection`
+  - `authentik_sources_telegram.grouptelegramsourceconnection`
   - `authentik_stages_authenticator_duo.authenticatorduostage`
   - `authentik_stages_authenticator_duo.duodevice`
   - `authentik_stages_authenticator_email.authenticatoremailstage`
@@ -181,7 +189,6 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_stages_authenticator_webauthn.webauthndevice`
   - `authentik_stages_captcha.captchastage`
   - `authentik_stages_consent.consentstage`
-  - `authentik_stages_consent.userconsent`
   - `authentik_stages_deny.denystage`
   - `authentik_stages_dummy.dummystage`
   - `authentik_stages_email.emailstage`

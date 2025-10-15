@@ -21,12 +21,11 @@ func SetWrapper(d ResourceData, key string, data interface{}) {
 }
 
 // Cast string to enum
-func CastString[T ~string](raw any) *T {
+func CastString[T ~string](raw *string) *T {
 	if raw == nil {
 		return nil
 	}
-	tt := raw.(*string)
-	t := T(*tt)
+	t := T(*raw)
 	return &t
 }
 

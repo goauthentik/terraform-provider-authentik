@@ -187,8 +187,8 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
 		DeleteNotFoundObjects:               api.PtrBool(d.Get("delete_not_found_objects").(bool)),
 		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
-		UserPropertyMappings:                helpers.CastSlice_New[string](d, "property_mappings"),
-		GroupPropertyMappings:               helpers.CastSlice_New[string](d, "property_mappings_group"),
+		UserPropertyMappings:                helpers.CastSlice[string](d, "property_mappings"),
+		GroupPropertyMappings:               helpers.CastSlice[string](d, "property_mappings_group"),
 	}
 	return &r
 }
@@ -243,9 +243,9 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	if res.SyncParentGroup.IsSet() {
 		helpers.SetWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
 	}
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice_New[string](d, "property_mappings_group")
+	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
 	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }

@@ -75,9 +75,9 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 	r := api.AuthenticatorValidateStageRequest{
 		Name:                       d.Get("name").(string),
 		LastAuthThreshold:          api.PtrString(d.Get("last_auth_threshold").(string)),
-		WebauthnAllowedDeviceTypes: helpers.CastSlice_New[string](d, "webauthn_allowed_device_types"),
+		WebauthnAllowedDeviceTypes: helpers.CastSlice[string](d, "webauthn_allowed_device_types"),
 		NotConfiguredAction:        helpers.GetP[api.NotConfiguredActionEnum](d, "not_configured_action"),
-		ConfigurationStages:        helpers.CastSlice_New[string](d, "configuration_stages"),
+		ConfigurationStages:        helpers.CastSlice[string](d, "configuration_stages"),
 		WebauthnUserVerification:   helpers.CastString[api.UserVerificationEnum](helpers.GetP[string](d, "webauthn_user_verification")),
 	}
 
@@ -115,13 +115,13 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "not_configured_action", res.NotConfiguredAction)
 	if res.ConfigurationStages != nil {
-		localConfigurationStages := helpers.CastSlice_New[string](d, "configuration_stages")
+		localConfigurationStages := helpers.CastSlice[string](d, "configuration_stages")
 		helpers.SetWrapper(d, "configuration_stages", helpers.ListConsistentMerge(localConfigurationStages, res.ConfigurationStages))
 	}
 	helpers.SetWrapper(d, "device_classes", res.DeviceClasses)
 	helpers.SetWrapper(d, "last_auth_threshold", res.LastAuthThreshold)
 	helpers.SetWrapper(d, "webauthn_user_verification", res.WebauthnUserVerification)
-	localDeviceTypeRestrictions := helpers.CastSlice_New[string](d, "webauthn_allowed_device_types")
+	localDeviceTypeRestrictions := helpers.CastSlice[string](d, "webauthn_allowed_device_types")
 	helpers.SetWrapper(d, "webauthn_allowed_device_types", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.WebauthnAllowedDeviceTypes))
 	return diags
 }

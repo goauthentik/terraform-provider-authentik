@@ -73,7 +73,7 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 		Name:                   d.Get("name").(string),
 		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
 		ResidentKeyRequirement: api.ResidentKeyRequirementEnum(d.Get("resident_key_requirement").(string)).Ptr(),
-		DeviceTypeRestrictions: helpers.CastSlice_New[string](d, "device_type_restrictions"),
+		DeviceTypeRestrictions: helpers.CastSlice[string](d, "device_type_restrictions"),
 		FriendlyName:           helpers.GetP[string](d, "friendly_name"),
 		ConfigureFlow:          *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 		MaxAttempts:            helpers.GetIntP(d, "max_attempts"),
@@ -116,7 +116,7 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 	if res.ConfigureFlow.IsSet() {
 		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	}
-	localDeviceTypeRestrictions := helpers.CastSlice_New[string](d, "device_type_restrictions")
+	localDeviceTypeRestrictions := helpers.CastSlice[string](d, "device_type_restrictions")
 	helpers.SetWrapper(d, "device_type_restrictions", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
 	helpers.SetWrapper(d, "max_attempts", res.MaxAttempts)
 	return diags

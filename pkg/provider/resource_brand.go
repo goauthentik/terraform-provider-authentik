@@ -119,7 +119,7 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 		FlowUserSettings:              *api.NewNullableString(helpers.GetP[string](d, "flow_user_settings")),
 		FlowDeviceCode:                *api.NewNullableString(helpers.GetP[string](d, "flow_device_code")),
 		WebCertificate:                *api.NewNullableString(helpers.GetP[string](d, "web_certificate")),
-		ClientCertificates:            helpers.CastSlice_New[string](d, "client_certificates"),
+		ClientCertificates:            helpers.CastSlice[string](d, "client_certificates"),
 		DefaultApplication:            *api.NewNullableString(helpers.GetP[string](d, "default_application")),
 	}
 
@@ -183,7 +183,7 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 	if res.HasClientCertificates() {
 		helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(
-			helpers.CastSlice_New[string](d, "client_certificates"),
+			helpers.CastSlice[string](d, "client_certificates"),
 			res.ClientCertificates,
 		))
 	}

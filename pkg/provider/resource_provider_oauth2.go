@@ -82,6 +82,13 @@ func resourceProviderOAuth2() *schema.Resource {
 				Description:      helpers.RelativeDurationDescription,
 				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
+			"refresh_token_threshold": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          "seconds=0",
+				Description:      helpers.RelativeDurationDescription,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
+			},
 			"include_claims_in_id_token": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -102,7 +109,14 @@ func resourceProviderOAuth2() *schema.Resource {
 					Type: schema.TypeMap,
 				},
 			},
-			"backchannel_logout_uri": {
+			"logout_method": {
+				Type:             schema.TypeString,
+				Default:          api.OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
+				Optional:         true,
+				Description:      helpers.EnumToDescription(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
+			},
+			"logout_uri": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -157,15 +171,17 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		AccessCodeValidity:     api.PtrString(d.Get("access_code_validity").(string)),
 		AccessTokenValidity:    api.PtrString(d.Get("access_token_validity").(string)),
 		RefreshTokenValidity:   api.PtrString(d.Get("refresh_token_validity").(string)),
+		RefreshTokenThreshold:  helpers.GetP[string](d, "refresh_token_threshold"),
 		IncludeClaimsInIdToken: api.PtrBool(d.Get("include_claims_in_id_token").(bool)),
 		ClientId:               api.PtrString(d.Get("client_id").(string)),
 		ClientSecret:           helpers.GetP[string](d, "client_secret"),
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
 		ClientType:             api.ClientTypeEnum(d.Get("client_type").(string)).Ptr(),
-		PropertyMappings:       helpers.CastSlice_New[string](d, "property_mappings"),
-		JwtFederationSources:   helpers.CastSlice_New[string](d, "jwt_federation_sources"),
-		BackchannelLogoutUri:   helpers.GetP[string](d, "backchannel_logout_uri"),
+		PropertyMappings:       helpers.CastSlice[string](d, "property_mappings"),
+		JwtFederationSources:   helpers.CastSlice[string](d, "jwt_federation_sources"),
+		LogoutMethod:           helpers.CastString[api.OAuth2ProviderLogoutMethodEnum](helpers.GetP[string](d, "logout_method")),
+		LogoutUri:              helpers.GetP[string](d, "logout_uri"),
 
 		SigningKey:             *api.NewNullableString(helpers.GetP[string](d, "signing_key")),
 		EncryptionKey:          *api.NewNullableString(helpers.GetP[string](d, "encryption_key")),
@@ -245,8 +261,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "client_type", res.ClientType)
 	helpers.SetWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	helpers.SetWrapper(d, "issuer_mode", res.IssuerMode)
-	helpers.SetWrapper(d, "backchannel_logout_uri", res.BackchannelLogoutUri)
-	localMappings := helpers.CastSlice_New[string](d, "property_mappings")
+	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
+	helpers.SetWrapper(d, "logout_uri", res.LogoutUri)
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
 	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
 	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris)))
@@ -256,9 +273,10 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "access_code_validity", res.AccessCodeValidity)
 	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localJWKSProviders := helpers.CastSlice_New[int](d, "jwt_federation_providers")
+	helpers.SetWrapper(d, "refresh_token_threshold", res.RefreshTokenThreshold)
+	localJWKSProviders := helpers.CastSlice[int](d, "jwt_federation_providers")
 	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := helpers.CastSlice_New[string](d, "jwt_federation_sources")
+	localJWKSSources := helpers.CastSlice[string](d, "jwt_federation_sources")
 	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
 	return diags
 }

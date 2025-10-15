@@ -44,10 +44,9 @@ AUTHENTIK_TOKEN=this-token-is-for-testing-dont-use
 Afterwards, tests can be run from VS Code with the Command Palette or Test UI, or via CLI like so:
 
 ```
-export TF_ACC=1
 export AUTHENTIK_URL=http://localhost:9000
 export AUTHENTIK_TOKEN=this-token-is-for-testing-dont-use
-go test -timeout 30m ./... -count=1
+make test
 ```
 
 If you're trying to run tests with VS Code in your local environment, be sure to change `AUTHENTIK_URL` in `.vscode/settings.json` to: `"AUTHENTIK_URL": "http://localhost:9000"`

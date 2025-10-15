@@ -43,7 +43,7 @@ resource "authentik_event_transport" "transport" {
 
 ### Optional
 
-- `email_subject_prefix` (String) Defaults to `authentik Notification: `.
+- `email_subject_prefix` (String) Defaults to `authentik Notification:`.
 - `email_template` (String) Defaults to `email/event_notification.html`.
 - `send_once` (Boolean) Defaults to `true`.
 - `webhook_mapping_body` (String)

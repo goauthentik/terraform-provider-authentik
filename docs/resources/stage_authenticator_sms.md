@@ -29,7 +29,7 @@ description: |-
   - `bearer`
  Defaults to `basic`.
 - `configure_flow` (String)
-- `friendly_name` (String)
+- `friendly_name` (String) Defaults to ``.
 - `mapping` (String)
 - `sms_provider` (String) Allowed values:
   - `twilio`

@@ -57,10 +57,16 @@ resource "authentik_application" "name" {
  Defaults to `http://www.w3.org/2001/04/xmlenc#sha256`.
 - `encryption_kp` (String)
 - `issuer` (String) Defaults to `authentik`.
+- `logout_method` (String) Allowed values:
+  - `frontchannel_iframe`
+  - `frontchannel_native`
+  - `backchannel`
+ Defaults to `backchannel`.
 - `name_id_mapping` (String)
 - `property_mappings` (List of String)
 - `session_valid_not_on_or_after` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=86400`.
 - `sign_assertion` (Boolean) Defaults to `true`.
+- `sign_logout_request` (Boolean) Defaults to `false`.
 - `sign_response` (Boolean) Defaults to `false`.
 - `signature_algorithm` (String) Allowed values:
   - `http://www.w3.org/2000/09/xmldsig#rsa-sha1`
@@ -74,6 +80,11 @@ resource "authentik_application" "name" {
   - `http://www.w3.org/2000/09/xmldsig#dsa-sha1`
  Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
 - `signing_kp` (String)
+- `sls_binding` (String) Allowed values:
+  - `redirect`
+  - `post`
+ Defaults to `redirect`.
+- `sls_url` (String)
 - `sp_binding` (String) Allowed values:
   - `redirect`
   - `post`

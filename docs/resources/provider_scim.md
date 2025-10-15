@@ -37,21 +37,28 @@ resource "authentik_provider_scim" "name" {
 ### Required
 
 - `name` (String)
-- `token` (String, Sensitive)
 - `url` (String)
 
 ### Optional
 
+- `auth_mode` (String) Allowed values:
+  - `token`
+  - `oauth`
+ Defaults to `token`.
+- `auth_oauth` (String) Slug of an OAuth source used for authentication
+- `auth_oauth_params` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 - `compatibility_mode` (String) Allowed values:
   - `default`
   - `aws`
   - `slack`
+  - `sfdc`
  Defaults to `default`.
 - `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)
 - `filter_group` (String)
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
+- `token` (String, Sensitive)
 
 ### Read-Only
 

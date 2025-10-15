@@ -28,7 +28,7 @@ func Test_GetP_Enum(t *testing.T) {
 }
 
 func Test_CastSlice_New(t *testing.T) {
-	v := CastSlice_New[string](TestResource{
+	v := CastSlice[string](TestResource{
 		"foo": []interface{}{
 			"foo",
 			"bar",

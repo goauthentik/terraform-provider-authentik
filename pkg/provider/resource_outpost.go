@@ -109,7 +109,7 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "type", res.Type)
-	localProviders := helpers.CastSlice_New[int](d, "protocol_providers")
+	localProviders := helpers.CastSlice[int](d, "protocol_providers")
 	helpers.SetWrapper(d, "protocol_providers", helpers.ListConsistentMerge(localProviders, helpers.Slice32ToInt(res.Providers)))
 	if res.ServiceConnection.IsSet() {
 		helpers.SetWrapper(d, "service_connection", res.ServiceConnection.Get())

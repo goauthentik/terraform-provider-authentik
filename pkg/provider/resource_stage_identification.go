@@ -96,7 +96,7 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		EnableRememberMe:        api.PtrBool(d.Get("enable_remember_me").(bool)),
 		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
 		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
-		Sources:                 helpers.CastSlice_New[string](d, "sources"),
+		Sources:                 helpers.CastSlice[string](d, "sources"),
 		PasswordStage:           *api.NewNullableString(api.PtrString(d.Get("password_stage").(string))),
 		CaptchaStage:            *api.NewNullableString(api.PtrString(d.Get("captcha_stage").(string))),
 		EnrollmentFlow:          *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
@@ -157,7 +157,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	if res.PasswordlessFlow.IsSet() {
 		helpers.SetWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
 	}
-	localSources := helpers.CastSlice_New[string](d, "sources")
+	localSources := helpers.CastSlice[string](d, "sources")
 	helpers.SetWrapper(d, "sources", helpers.ListConsistentMerge(localSources, res.Sources))
 	return diags
 }

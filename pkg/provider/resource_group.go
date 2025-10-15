@@ -67,7 +67,7 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
 		Parent:      *api.NewNullableString(helpers.GetP[string](d, "parent")),
 		Users:       helpers.CastSliceInt32(d.Get("users").([]interface{})),
-		Roles:       helpers.CastSlice_New[string](d, "roles"),
+		Roles:       helpers.CastSlice[string](d, "roles"),
 	}
 	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
 	m.Attributes = attr
@@ -108,11 +108,11 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 	helpers.SetWrapper(d, "attributes", string(b))
 	helpers.SetWrapper(d, "users", helpers.ListConsistentMerge(
-		helpers.CastSlice_New[int](d, "users"),
+		helpers.CastSlice[int](d, "users"),
 		helpers.Slice32ToInt(res.Users),
 	))
 	helpers.SetWrapper(d, "roles", helpers.ListConsistentMerge(
-		helpers.CastSlice_New[string](d, "role"),
+		helpers.CastSlice[string](d, "role"),
 		res.Roles,
 	))
 	return diags

@@ -44,6 +44,7 @@ resource "authentik_application" "name" {
 
 ### Optional
 
+- `certificate` (String)
 - `client_networks` (String) Defaults to `0.0.0.0/0, ::/0`.
 - `mfa_support` (Boolean) Defaults to `true`.
 - `property_mappings` (List of String)
