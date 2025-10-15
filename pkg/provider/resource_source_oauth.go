@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceSourceOAuth() *schema.Resource {
@@ -121,7 +121,7 @@ func resourceSourceOAuth() *schema.Resource {
 			"oidc_jwks": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use jsonencode() to pass objects.",
+				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication." + helpers.JSONDescription,
 				Computed:         true,
 				DiffSuppressFunc: helpers.DiffSuppressJSON,
 				ValidateDiagFunc: helpers.ValidateJSON,

@@ -2,13 +2,11 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceOutpost() *schema.Resource {
@@ -64,18 +62,15 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 		Providers:         helpers.CastSliceInt32(d.Get("protocol_providers").([]interface{})),
 	}
 
-	defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
-	if err != nil {
-		return nil, helpers.HTTPToDiag(d, hr, err)
-	}
 	if l, ok := d.Get("config").(string); ok && l != "" {
-		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-		m.Config = c
+		attr, err := helpers.GetJSON[map[string]interface{}](d, ("config"))
+		m.Config = attr
+		return &m, err
 	} else {
+		defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
+		if err != nil {
+			return nil, helpers.HTTPToDiag(d, hr, err)
+		}
 		m.Config = defaultConfig.Config
 	}
 	return &m, nil

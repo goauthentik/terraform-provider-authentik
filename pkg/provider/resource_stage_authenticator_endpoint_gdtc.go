@@ -2,13 +2,11 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceStageAuthenticatorEndpointGDTC() *schema.Resource {
@@ -44,25 +42,21 @@ func resourceStageAuthenticatorEndpointGDTC() *schema.Resource {
 	}
 }
 
-func resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d *schema.ResourceData) (*api.AuthenticatorEndpointGDTCStageRequest, error) {
+func resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d *schema.ResourceData) (*api.AuthenticatorEndpointGDTCStageRequest, diag.Diagnostics) {
 	r := api.AuthenticatorEndpointGDTCStageRequest{
 		Name: d.Get("name").(string),
 	}
-	var creds map[string]interface{}
-	err := json.NewDecoder(strings.NewReader(d.Get("credentials").(string))).Decode(&creds)
-	if err != nil {
-		return nil, err
-	}
-	r.Credentials = creds
-	return &r, nil
+	attr, err := helpers.GetJSON[map[string]interface{}](d, ("credentials"))
+	r.Credentials = attr
+	return &r, err
 }
 
 func resourceStageAuthenticatorEndpointGDTCCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, err := resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d)
-	if err != nil {
-		return diag.FromErr(err)
+	r, diags := resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d)
+	if diags != nil {
+		return diags
 	}
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcCreate(ctx).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
@@ -89,9 +83,9 @@ func resourceStageAuthenticatorEndpointGDTCRead(ctx context.Context, d *schema.R
 func resourceStageAuthenticatorEndpointGDTCUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	r, err := resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d)
-	if err != nil {
-		return diag.FromErr(err)
+	r, diags := resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d)
+	if diags != nil {
+		return diags
 	}
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcUpdate(ctx, d.Id()).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
