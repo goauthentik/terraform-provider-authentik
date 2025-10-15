@@ -21,3 +21,27 @@ func Test_CastSliceString(t *testing.T) {
 	})
 	assert.Equal(t, []api.IntentEnum{api.INTENTENUM_API}, v)
 }
+
+func Test_CastSliceInt32(t *testing.T) {
+	v := CastSliceInt32([]interface{}{
+		1, 2, 3,
+	})
+	assert.Equal(t, []int32{1, 2, 3}, v)
+}
+
+func Test_Slice32ToInt(t *testing.T) {
+	v := Slice32ToInt([]int32{
+		1, 2, 3,
+	})
+	assert.Equal(t, []int{1, 2, 3}, v)
+}
+
+func Test_ListConsistentMerge(t *testing.T) {
+	v := ListConsistentMerge(
+		[]string{"foo", "bar", "baz"},
+		[]string{"baz", "foo", "bar", "quox"},
+	)
+	assert.Equal(t, []string{
+		"foo", "bar", "baz", "quox",
+	}, v)
+}
