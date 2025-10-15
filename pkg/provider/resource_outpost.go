@@ -99,7 +99,6 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
@@ -109,17 +108,12 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "type", res.Type)
-	localProviders := helpers.CastSlice[int](d, "protocol_providers")
-	helpers.SetWrapper(d, "protocol_providers", helpers.ListConsistentMerge(localProviders, helpers.Slice32ToInt(res.Providers)))
-	if res.ServiceConnection.IsSet() {
-		helpers.SetWrapper(d, "service_connection", res.ServiceConnection.Get())
-	}
-	b, err := json.Marshal(res.Config)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "config", string(b))
-	return diags
+	helpers.SetWrapper(d, "protocol_providers", helpers.ListConsistentMerge(
+		helpers.CastSlice[int](d, "protocol_providers"),
+		helpers.Slice32ToInt(res.Providers),
+	))
+	helpers.SetWrapper(d, "service_connection", res.ServiceConnection.Get())
+	return helpers.SetJSON(d, "config", res.Config)
 }
 
 func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

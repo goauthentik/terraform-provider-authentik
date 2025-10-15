@@ -101,9 +101,7 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 	helpers.SetWrapper(d, "admin_integration_key", res.AdminIntegrationKey)
 	helpers.SetWrapper(d, "api_hostname", res.ApiHostname)
 	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
-	if res.ConfigureFlow.IsSet() {
-		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
-	}
+	helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	return diags
 }
 

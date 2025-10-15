@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -82,7 +81,6 @@ func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsRetrieve(ctx, d.Id()).Execute()
@@ -94,12 +92,7 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 	helpers.SetWrapper(d, "path", res.Path)
 	helpers.SetWrapper(d, "content", res.Content)
 	helpers.SetWrapper(d, "enabled", res.Enabled)
-	b, err := json.Marshal(res.Context)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "context", string(b))
-	return diags
+	return helpers.SetJSON(d, "context", res.Context)
 }
 
 func resourceBlueprintInstanceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

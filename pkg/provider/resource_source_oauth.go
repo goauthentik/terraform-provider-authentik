@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -219,7 +218,6 @@ func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m in
 }
 
 func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesOauthRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -231,12 +229,8 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "uuid", res.Pk)
 	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
-	if res.AuthenticationFlow.IsSet() {
-		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	}
-	if res.EnrollmentFlow.IsSet() {
-		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
-	}
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	helpers.SetWrapper(d, "enabled", res.Enabled)
 	helpers.SetWrapper(d, "authorization_code_auth_method", res.AuthorizationCodeAuthMethod)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
@@ -245,31 +239,22 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "additional_scopes", res.AdditionalScopes)
 	helpers.SetWrapper(d, "provider_type", res.ProviderType)
 	helpers.SetWrapper(d, "consumer_key", res.ConsumerKey)
-	if res.RequestTokenUrl.IsSet() {
-		helpers.SetWrapper(d, "request_token_url", res.RequestTokenUrl.Get())
-	}
-	if res.AuthorizationUrl.IsSet() {
-		helpers.SetWrapper(d, "authorization_url", res.AuthorizationUrl.Get())
-	}
-	if res.AccessTokenUrl.IsSet() {
-		helpers.SetWrapper(d, "access_token_url", res.AccessTokenUrl.Get())
-	}
-	if res.ProfileUrl.IsSet() {
-		helpers.SetWrapper(d, "profile_url", res.ProfileUrl.Get())
-	}
+	helpers.SetWrapper(d, "request_token_url", res.RequestTokenUrl.Get())
+	helpers.SetWrapper(d, "authorization_url", res.AuthorizationUrl.Get())
+	helpers.SetWrapper(d, "access_token_url", res.AccessTokenUrl.Get())
+	helpers.SetWrapper(d, "profile_url", res.ProfileUrl.Get())
 	helpers.SetWrapper(d, "callback_uri", res.CallbackUrl)
 	helpers.SetWrapper(d, "oidc_well_known_url", res.GetOidcWellKnownUrl())
 	helpers.SetWrapper(d, "oidc_jwks_url", res.GetOidcJwksUrl())
-	b, err := json.Marshal(res.GetOidcJwks())
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "oidc_jwks", string(b))
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
-	return diags
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.UserPropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.GroupPropertyMappings,
+	))
+	return helpers.SetJSON(d, "oidc_jwks", res.OidcJwks)
 }
 
 func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

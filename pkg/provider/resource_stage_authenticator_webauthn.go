@@ -113,11 +113,11 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 	helpers.SetWrapper(d, "user_verification", res.UserVerification)
 	helpers.SetWrapper(d, "resident_key_requirement", res.ResidentKeyRequirement)
 	helpers.SetWrapper(d, "authenticator_attachment", res.GetAuthenticatorAttachment())
-	if res.ConfigureFlow.IsSet() {
-		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
-	}
-	localDeviceTypeRestrictions := helpers.CastSlice[string](d, "device_type_restrictions")
-	helpers.SetWrapper(d, "device_type_restrictions", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.DeviceTypeRestrictions))
+	helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
+	helpers.SetWrapper(d, "device_type_restrictions", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "device_type_restrictions"),
+		res.DeviceTypeRestrictions,
+	))
 	helpers.SetWrapper(d, "max_attempts", res.MaxAttempts)
 	return diags
 }

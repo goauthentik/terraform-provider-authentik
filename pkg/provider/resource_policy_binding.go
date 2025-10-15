@@ -109,15 +109,9 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	helpers.SetWrapper(d, "target", res.Target)
-	if res.Policy.IsSet() {
-		helpers.SetWrapper(d, "policy", res.Policy.Get())
-	}
-	if res.User.IsSet() {
-		helpers.SetWrapper(d, "user", res.User.Get())
-	}
-	if res.Group.IsSet() {
-		helpers.SetWrapper(d, "group", res.Group.Get())
-	}
+	helpers.SetWrapper(d, "policy", res.Policy.Get())
+	helpers.SetWrapper(d, "user", res.User.Get())
+	helpers.SetWrapper(d, "group", res.Group.Get())
 	helpers.SetWrapper(d, "order", res.Order)
 	helpers.SetWrapper(d, "negate", res.Negate)
 	helpers.SetWrapper(d, "enabled", res.Enabled)

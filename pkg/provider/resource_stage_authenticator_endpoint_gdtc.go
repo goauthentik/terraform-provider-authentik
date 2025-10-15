@@ -75,7 +75,6 @@ func resourceStageAuthenticatorEndpointGDTCCreate(ctx context.Context, d *schema
 }
 
 func resourceStageAuthenticatorEndpointGDTCRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcRetrieve(ctx, d.Id()).Execute()
@@ -84,12 +83,7 @@ func resourceStageAuthenticatorEndpointGDTCRead(ctx context.Context, d *schema.R
 	}
 
 	helpers.SetWrapper(d, "name", res.Name)
-	b, err := json.Marshal(res.Credentials)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "credentials", string(b))
-	return diags
+	return helpers.SetJSON(d, "credentials", res.Credentials)
 }
 
 func resourceStageAuthenticatorEndpointGDTCUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

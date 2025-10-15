@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -99,7 +98,6 @@ func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m in
 }
 
 func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.RacApi.RacEndpointsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -111,16 +109,11 @@ func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "host", res.Host)
 	helpers.SetWrapper(d, "protocol", res.Protocol)
 	helpers.SetWrapper(d, "maximum_connections", res.MaximumConnections)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	if len(localMappings) > 0 {
-		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	}
-	b, err := json.Marshal(res.Settings)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "settings", string(b))
-	return diags
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
+	return helpers.SetJSON(d, "settings", res.Settings)
 }
 
 func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

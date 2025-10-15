@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -70,7 +69,6 @@ func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsRetrieve(ctx, d.Id()).Execute()
@@ -81,12 +79,7 @@ func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceD
 	d.SetId(res.PbmUuid)
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "application", res.App)
-	b, err := json.Marshal(res.Attributes)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "attributes", string(b))
-	return diags
+	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
 func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

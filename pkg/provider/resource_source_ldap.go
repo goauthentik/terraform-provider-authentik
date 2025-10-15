@@ -240,13 +240,15 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "sync_groups", res.SyncGroups)
 	helpers.SetWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
 	helpers.SetWrapper(d, "delete_not_found_objects", res.DeleteNotFoundObjects)
-	if res.SyncParentGroup.IsSet() {
-		helpers.SetWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
-	}
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
+	helpers.SetWrapper(d, "sync_parent_group", res.SyncParentGroup.Get())
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.UserPropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.GroupPropertyMappings,
+	))
 	return diags
 }
 

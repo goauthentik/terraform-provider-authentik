@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -131,7 +130,6 @@ func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m i
 }
 
 func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -145,22 +143,21 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "url", res.Url)
 	helpers.SetWrapper(d, "token", res.Token)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.PropertyMappingsGroup,
+	))
 	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	helpers.SetWrapper(d, "filter_group", res.FilterGroup.Get())
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
 	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	helpers.SetWrapper(d, "auth_mode", res.AuthMode)
 	helpers.SetWrapper(d, "auth_oauth", res.AuthOauth.Get())
-	b, err := json.Marshal(res.AuthOauthParams)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "auth_oauth_params", string(b))
-	return diags
+	return helpers.SetJSON(d, "auth_oauth_params", res.AuthOauthParams)
 }
 
 func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

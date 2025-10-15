@@ -75,3 +75,13 @@ func GetJSON[T any](d ResourceData, key string) (T, diag.Diagnostics) {
 	}
 	return v, nil
 }
+
+func SetJSON[T any](d ResourceData, key string, v T) diag.Diagnostics {
+	var diags diag.Diagnostics
+	b, err := json.Marshal(v)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	SetWrapper(d, key, string(b))
+	return diags
+}

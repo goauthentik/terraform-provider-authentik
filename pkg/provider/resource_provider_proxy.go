@@ -216,14 +216,18 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	helpers.SetWrapper(d, "cookie_domain", res.CookieDomain)
 	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	if len(localMappings) > 0 {
-		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	}
-	localJWKSProviders := helpers.CastSlice[int](d, "jwt_federation_providers")
-	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := helpers.CastSlice[string](d, "jwt_federation_sources")
-	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
+	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(
+		helpers.CastSlice[int](d, "jwt_federation_providers"),
+		helpers.Slice32ToInt(res.JwtFederationProviders),
+	))
+	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "jwt_federation_sources"),
+		res.JwtFederationSources,
+	))
 	return diags
 }
 

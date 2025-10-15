@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -138,7 +137,6 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 }
 
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -157,14 +155,11 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	helpers.SetWrapper(d, "email", res.Email)
 	helpers.SetWrapper(d, "is_active", res.IsActive)
 	helpers.SetWrapper(d, "path", res.Path)
-	b, err := json.Marshal(res.Attributes)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "attributes", string(b))
-	localGroups := helpers.CastSlice[string](d, "groups")
-	helpers.SetWrapper(d, "groups", helpers.ListConsistentMerge(localGroups, res.Groups))
-	return diags
+	helpers.SetWrapper(d, "groups", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "groups"),
+		res.Groups,
+	))
+	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

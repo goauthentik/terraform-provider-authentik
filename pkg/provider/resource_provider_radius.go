@@ -106,8 +106,10 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
 	helpers.SetWrapper(d, "client_networks", res.ClientNetworks)
 	helpers.SetWrapper(d, "shared_secret", res.SharedSecret)
 	helpers.SetWrapper(d, "mfa_support", res.MfaSupport)

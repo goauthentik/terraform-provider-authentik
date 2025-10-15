@@ -251,8 +251,10 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
 	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
 
 	helpers.SetWrapper(d, "acs_url", res.AcsUrl)
 	helpers.SetWrapper(d, "audience", res.Audience)
@@ -263,21 +265,11 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "session_valid_not_on_or_after", res.SessionValidNotOnOrAfter)
 	helpers.SetWrapper(d, "sign_assertion", res.SignAssertion)
 	helpers.SetWrapper(d, "sign_response", res.SignResponse)
-	if res.NameIdMapping.IsSet() {
-		helpers.SetWrapper(d, "name_id_mapping", res.NameIdMapping.Get())
-	}
-	if res.AuthnContextClassRefMapping.IsSet() {
-		helpers.SetWrapper(d, "authn_context_class_ref_mapping", res.AuthnContextClassRefMapping.Get())
-	}
-	if res.SigningKp.IsSet() {
-		helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
-	}
-	if res.VerificationKp.IsSet() {
-		helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
-	}
-	if res.EncryptionKp.IsSet() {
-		helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
-	}
+	helpers.SetWrapper(d, "name_id_mapping", res.NameIdMapping.Get())
+	helpers.SetWrapper(d, "authn_context_class_ref_mapping", res.AuthnContextClassRefMapping.Get())
+	helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
+	helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
+	helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
 	helpers.SetWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	helpers.SetWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
 	helpers.SetWrapper(d, "default_relay_state", res.DefaultRelayState)

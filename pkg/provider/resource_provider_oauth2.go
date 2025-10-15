@@ -263,10 +263,16 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "issuer_mode", res.IssuerMode)
 	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
 	helpers.SetWrapper(d, "logout_uri", res.LogoutUri)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	localRedirectURIs := listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{}))
-	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(helpers.ListConsistentMerge(localRedirectURIs, res.RedirectUris)))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
+	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(
+		helpers.ListConsistentMerge(
+			listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{})),
+			res.RedirectUris,
+		),
+	))
 	helpers.SetWrapper(d, "signing_key", res.SigningKey.Get())
 	helpers.SetWrapper(d, "encryption_key", res.EncryptionKey.Get())
 	helpers.SetWrapper(d, "sub_mode", res.SubMode)
@@ -274,10 +280,14 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_threshold", res.RefreshTokenThreshold)
-	localJWKSProviders := helpers.CastSlice[int](d, "jwt_federation_providers")
-	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(localJWKSProviders, helpers.Slice32ToInt(res.JwtFederationProviders)))
-	localJWKSSources := helpers.CastSlice[string](d, "jwt_federation_sources")
-	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(localJWKSSources, res.JwtFederationSources))
+	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(
+		helpers.CastSlice[int](d, "jwt_federation_providers"),
+		helpers.Slice32ToInt(res.JwtFederationProviders),
+	))
+	helpers.SetWrapper(d, "jwt_federation_sources", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "jwt_federation_sources"),
+		res.JwtFederationSources,
+	))
 	return diags
 }
 

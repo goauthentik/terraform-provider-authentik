@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -78,7 +77,6 @@ func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.Re
 }
 
 func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesRetrieve(ctx, d.Id()).Execute()
@@ -89,12 +87,7 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "local", res.Local)
 	helpers.SetWrapper(d, "verify_ssl", res.VerifySsl)
-	b, err := json.Marshal(res.Kubeconfig)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "kubeconfig", string(b))
-	return diags
+	return helpers.SetJSON(d, "kubeconfig", res.Kubeconfig)
 }
 
 func resourceServiceConnectionKubernetesUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

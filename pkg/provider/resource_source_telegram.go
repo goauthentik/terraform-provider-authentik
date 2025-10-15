@@ -151,22 +151,21 @@ func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "uuid", res.Pk)
 	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
-	if res.AuthenticationFlow.IsSet() {
-		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	}
-	if res.EnrollmentFlow.IsSet() {
-		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
-	}
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	helpers.SetWrapper(d, "enabled", res.Enabled)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
 	helpers.SetWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
 
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
-
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.UserPropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.GroupPropertyMappings,
+	))
 	helpers.SetWrapper(d, "bot_username", res.BotUsername)
 	helpers.SetWrapper(d, "request_message_access", res.RequestMessageAccess)
 	return diags

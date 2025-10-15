@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -140,7 +139,6 @@ func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.AdminApi.AdminSettingsRetrieve(ctx).Execute()
@@ -160,12 +158,7 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "default_token_length", res.DefaultTokenLength)
 	helpers.SetWrapper(d, "reputation_lower_limit", res.ReputationLowerLimit)
 	helpers.SetWrapper(d, "reputation_upper_limit", res.ReputationUpperLimit)
-	b, err := json.Marshal(res.Flags)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "flags", string(b))
-	return diags
+	return helpers.SetJSON(d, "flags", res.Flags)
 }
 
 func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

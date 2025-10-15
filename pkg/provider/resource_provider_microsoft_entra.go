@@ -150,14 +150,14 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 	helpers.SetWrapper(d, "group_delete_action", res.GroupDeleteAction)
 	helpers.SetWrapper(d, "filter_group", res.FilterGroup)
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	if len(localMappings) > 0 {
-		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	}
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	if len(localGroupMappings) > 0 {
-		helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
-	}
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.PropertyMappingsGroup,
+	))
 	return diags
 }
 

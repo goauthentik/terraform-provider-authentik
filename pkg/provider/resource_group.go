@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -92,7 +91,6 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 }
 
 func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.CoreApi.CoreGroupsRetrieve(ctx, d.Id()).IncludeUsers(false).Execute()
@@ -102,11 +100,6 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "is_superuser", res.IsSuperuser)
-	b, err := json.Marshal(res.Attributes)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "attributes", string(b))
 	helpers.SetWrapper(d, "users", helpers.ListConsistentMerge(
 		helpers.CastSlice[int](d, "users"),
 		helpers.Slice32ToInt(res.Users),
@@ -115,7 +108,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 		helpers.CastSlice[string](d, "role"),
 		res.Roles,
 	))
-	return diags
+	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
 func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

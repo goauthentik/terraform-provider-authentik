@@ -77,9 +77,7 @@ func resourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Reso
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "expression", res.Expression)
 	helpers.SetWrapper(d, "saml_name", res.SamlName)
-	if res.FriendlyName.IsSet() {
-		helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
-	}
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
 	return diags
 }
 

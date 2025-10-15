@@ -92,9 +92,7 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "backends", res.Backends)
-	if res.ConfigureFlow.IsSet() {
-		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
-	}
+	helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	helpers.SetWrapper(d, "failed_attempts_before_cancel", res.FailedAttemptsBeforeCancel)
 	helpers.SetWrapper(d, "allow_show_password", res.AllowShowPassword)
 	return diags
