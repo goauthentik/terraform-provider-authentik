@@ -216,10 +216,15 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	helpers.SetWrapper(d, "cookie_domain", res.CookieDomain)
 	helpers.SetWrapper(d, "access_token_validity", res.AccessTokenValidity)
 	helpers.SetWrapper(d, "refresh_token_validity", res.RefreshTokenValidity)
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
-		helpers.CastSlice[string](d, "property_mappings"),
-		res.PropertyMappings,
-	))
+	localMappings := helpers.CastSlice[string](d, "property_mappings")
+	if len(localMappings) > 0 {
+		// Only update mappings if any were set in TF resource, since authentik will always set the
+		// default mappings, even when nothing is specified
+		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+			localMappings,
+			res.PropertyMappings,
+		))
+	}
 	helpers.SetWrapper(d, "jwt_federation_providers", helpers.ListConsistentMerge(
 		helpers.CastSlice[int](d, "jwt_federation_providers"),
 		helpers.Slice32ToInt(res.JwtFederationProviders),
