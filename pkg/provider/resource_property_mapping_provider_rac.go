@@ -2,12 +2,11 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourcePropertyMappingProviderRAC() *schema.Resource {
@@ -71,7 +70,6 @@ func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.Res
 }
 
 func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacRetrieve(ctx, d.Id()).Execute()
@@ -81,12 +79,7 @@ func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Resou
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "expression", res.GetExpression())
-	b, err := json.Marshal(res.StaticSettings)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "settings", string(b))
-	return diags
+	return helpers.SetJSON(d, "settings", res.StaticSettings)
 }
 
 func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

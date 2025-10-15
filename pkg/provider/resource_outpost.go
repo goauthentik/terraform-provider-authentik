@@ -2,13 +2,11 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceOutpost() *schema.Resource {
@@ -64,18 +62,15 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 		Providers:         helpers.CastSliceInt32(d.Get("protocol_providers").([]interface{})),
 	}
 
-	defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
-	if err != nil {
-		return nil, helpers.HTTPToDiag(d, hr, err)
-	}
 	if l, ok := d.Get("config").(string); ok && l != "" {
-		var c map[string]interface{}
-		err := json.NewDecoder(strings.NewReader(l)).Decode(&c)
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-		m.Config = c
+		attr, err := helpers.GetJSON[map[string]interface{}](d, ("config"))
+		m.Config = attr
+		return &m, err
 	} else {
+		defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
+		if err != nil {
+			return nil, helpers.HTTPToDiag(d, hr, err)
+		}
 		m.Config = defaultConfig.Config
 	}
 	return &m, nil
@@ -99,7 +94,6 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
@@ -109,17 +103,12 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "type", res.Type)
-	localProviders := helpers.CastSlice[int](d, "protocol_providers")
-	helpers.SetWrapper(d, "protocol_providers", helpers.ListConsistentMerge(localProviders, helpers.Slice32ToInt(res.Providers)))
-	if res.ServiceConnection.IsSet() {
-		helpers.SetWrapper(d, "service_connection", res.ServiceConnection.Get())
-	}
-	b, err := json.Marshal(res.Config)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "config", string(b))
-	return diags
+	helpers.SetWrapper(d, "protocol_providers", helpers.ListConsistentMerge(
+		helpers.CastSlice[int](d, "protocol_providers"),
+		helpers.Slice32ToInt(res.Providers),
+	))
+	helpers.SetWrapper(d, "service_connection", res.ServiceConnection.Get())
+	return helpers.SetJSON(d, "config", res.Config)
 }
 
 func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

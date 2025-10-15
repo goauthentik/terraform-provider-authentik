@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceProviderLDAP() *schema.Resource {
@@ -121,9 +121,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "bind_flow", res.AuthorizationFlow)
 	helpers.SetWrapper(d, "unbind_flow", res.InvalidationFlow)
 	helpers.SetWrapper(d, "base_dn", res.BaseDn)
-	if res.Certificate.IsSet() {
-		helpers.SetWrapper(d, "certificate", res.Certificate.Get())
-	}
+	helpers.SetWrapper(d, "certificate", res.Certificate.Get())
 	helpers.SetWrapper(d, "tls_server_name", res.TlsServerName)
 	helpers.SetWrapper(d, "uid_start_number", res.UidStartNumber)
 	helpers.SetWrapper(d, "gid_start_number", res.GidStartNumber)

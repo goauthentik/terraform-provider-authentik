@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceSourcePlex() *schema.Resource {
@@ -145,20 +145,18 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "uuid", res.Pk)
 	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
-	if res.AuthenticationFlow.IsSet() {
-		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	}
-	if res.EnrollmentFlow.IsSet() {
-		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
-	}
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	helpers.SetWrapper(d, "enabled", res.Enabled)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
 	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
 	helpers.SetWrapper(d, "client_id", res.ClientId)
-	localServers := helpers.CastSlice[string](d, "allowed_servers")
-	helpers.SetWrapper(d, "allowed_servers", helpers.ListConsistentMerge(localServers, res.AllowedServers))
+	helpers.SetWrapper(d, "allowed_servers", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "allowed_servers"),
+		res.AllowedServers,
+	))
 	helpers.SetWrapper(d, "allow_friends", res.AllowFriends)
 	helpers.SetWrapper(d, "plex_token", res.PlexToken)
 	return diags

@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceSourceSCIM() *schema.Resource {
@@ -113,10 +113,14 @@ func resourceSourceSCIMRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "uuid", res.Pk)
 	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 	helpers.SetWrapper(d, "enabled", res.Enabled)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.UserPropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.GroupPropertyMappings,
+	))
 
 	meta, hr, err := c.client.SourcesApi.SourcesScimRetrieve(ctx, d.Id()).Execute()
 	if err != nil {

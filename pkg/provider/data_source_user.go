@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func dataSourceUser() *schema.Resource {
@@ -122,7 +122,6 @@ func mapFromUser(user api.User) (map[string]interface{}, error) {
 		return nil, err
 	}
 	m["attributes"] = string(b)
-
 	return m, nil
 }
 

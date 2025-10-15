@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceStageAuthenticatorValidate() *schema.Resource {
@@ -114,15 +114,17 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "not_configured_action", res.NotConfiguredAction)
-	if res.ConfigurationStages != nil {
-		localConfigurationStages := helpers.CastSlice[string](d, "configuration_stages")
-		helpers.SetWrapper(d, "configuration_stages", helpers.ListConsistentMerge(localConfigurationStages, res.ConfigurationStages))
-	}
+	helpers.SetWrapper(d, "configuration_stages", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "configuration_stages"),
+		res.ConfigurationStages,
+	))
 	helpers.SetWrapper(d, "device_classes", res.DeviceClasses)
 	helpers.SetWrapper(d, "last_auth_threshold", res.LastAuthThreshold)
 	helpers.SetWrapper(d, "webauthn_user_verification", res.WebauthnUserVerification)
-	localDeviceTypeRestrictions := helpers.CastSlice[string](d, "webauthn_allowed_device_types")
-	helpers.SetWrapper(d, "webauthn_allowed_device_types", helpers.ListConsistentMerge(localDeviceTypeRestrictions, res.WebauthnAllowedDeviceTypes))
+	helpers.SetWrapper(d, "webauthn_allowed_device_types", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "webauthn_allowed_device_types"),
+		res.WebauthnAllowedDeviceTypes,
+	))
 	return diags
 }
 

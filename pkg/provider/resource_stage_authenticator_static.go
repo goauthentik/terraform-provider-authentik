@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceStageAuthenticatorStatic() *schema.Resource {
@@ -85,9 +85,7 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 	helpers.SetWrapper(d, "token_count", res.TokenCount)
 	helpers.SetWrapper(d, "token_length", res.TokenLength)
 	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
-	if res.ConfigureFlow.IsSet() {
-		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
-	}
+	helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	return diags
 }
 

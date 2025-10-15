@@ -2,12 +2,11 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceBrand() *schema.Resource {
@@ -146,7 +145,6 @@ func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interfac
 }
 
 func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.CoreApi.CoreBrandsRetrieve(ctx, d.Id()).Execute()
@@ -160,42 +158,19 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 	helpers.SetWrapper(d, "branding_favicon", res.BrandingFavicon)
 	helpers.SetWrapper(d, "branding_default_flow_background", res.BrandingDefaultFlowBackground)
 	helpers.SetWrapper(d, "branding_custom_css", res.BrandingCustomCss)
-	if res.FlowAuthentication.IsSet() {
-		helpers.SetWrapper(d, "flow_authentication", res.FlowAuthentication.Get())
-	}
-	if res.FlowInvalidation.IsSet() {
-		helpers.SetWrapper(d, "flow_invalidation", res.FlowInvalidation.Get())
-	}
-	if res.FlowRecovery.IsSet() {
-		helpers.SetWrapper(d, "flow_recovery", res.FlowRecovery.Get())
-	}
-	if res.FlowUnenrollment.IsSet() {
-		helpers.SetWrapper(d, "flow_unenrollment", res.FlowUnenrollment.Get())
-	}
-	if res.FlowUserSettings.IsSet() {
-		helpers.SetWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
-	}
-	if res.FlowDeviceCode.IsSet() {
-		helpers.SetWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
-	}
-	if res.WebCertificate.IsSet() {
-		helpers.SetWrapper(d, "web_certificate", res.WebCertificate.Get())
-	}
-	if res.HasClientCertificates() {
-		helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(
-			helpers.CastSlice[string](d, "client_certificates"),
-			res.ClientCertificates,
-		))
-	}
-	if res.DefaultApplication.IsSet() {
-		helpers.SetWrapper(d, "default_application", res.DefaultApplication.Get())
-	}
-	b, err := json.Marshal(res.Attributes)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "attributes", string(b))
-	return diags
+	helpers.SetWrapper(d, "flow_authentication", res.FlowAuthentication.Get())
+	helpers.SetWrapper(d, "flow_invalidation", res.FlowInvalidation.Get())
+	helpers.SetWrapper(d, "flow_recovery", res.FlowRecovery.Get())
+	helpers.SetWrapper(d, "flow_unenrollment", res.FlowUnenrollment.Get())
+	helpers.SetWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
+	helpers.SetWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
+	helpers.SetWrapper(d, "web_certificate", res.WebCertificate.Get())
+	helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "client_certificates"),
+		res.ClientCertificates,
+	))
+	helpers.SetWrapper(d, "default_application", res.DefaultApplication.Get())
+	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
 func resourceBrandUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

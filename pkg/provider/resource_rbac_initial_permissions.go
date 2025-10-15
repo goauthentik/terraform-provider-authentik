@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceRBACInitialPermissions() *schema.Resource {
@@ -89,8 +89,10 @@ func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceD
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "role", res.Role)
 	helpers.SetWrapper(d, "mode", res.Mode)
-	localPermissions := helpers.CastSlice[int](d, "permissions")
-	helpers.SetWrapper(d, "permissions", helpers.ListConsistentMerge(localPermissions, helpers.Slice32ToInt(res.Permissions)))
+	helpers.SetWrapper(d, "permissions", helpers.ListConsistentMerge(
+		helpers.CastSlice[int](d, "permissions"),
+		helpers.Slice32ToInt(res.Permissions),
+	))
 	return diags
 }
 

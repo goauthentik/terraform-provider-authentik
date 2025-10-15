@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceApplication() *schema.Resource {
@@ -138,14 +138,9 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "group", res.Group)
 	helpers.SetWrapper(d, "slug", res.Slug)
 	helpers.SetWrapper(d, "open_in_new_tab", res.OpenInNewTab)
-	helpers.SetWrapper(d, "protocol_provider", 0)
-	if prov := res.Provider.Get(); prov != nil {
-		helpers.SetWrapper(d, "protocol_provider", int(*prov))
-	}
+	helpers.SetWrapper(d, "protocol_provider", res.Provider.Get())
 	helpers.SetWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
-	if res.MetaIcon.IsSet() {
-		helpers.SetWrapper(d, "meta_icon", res.MetaIcon.Get())
-	}
+	helpers.SetWrapper(d, "meta_icon", res.MetaIcon.Get())
 	helpers.SetWrapper(d, "meta_description", res.MetaDescription)
 	helpers.SetWrapper(d, "meta_publisher", res.MetaPublisher)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)

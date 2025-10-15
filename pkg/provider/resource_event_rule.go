@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceEventRule() *schema.Resource {
@@ -93,8 +93,10 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "destination_group", res.DestinationGroup.Get())
 	helpers.SetWrapper(d, "destination_event_user", res.DestinationEventUser)
-	localTransports := helpers.CastSlice[string](d, "transports")
-	helpers.SetWrapper(d, "transports", helpers.ListConsistentMerge(localTransports, res.Transports))
+	helpers.SetWrapper(d, "transports", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "transports"),
+		res.Transports,
+	))
 	helpers.SetWrapper(d, "severity", res.Severity)
 	return diags
 }

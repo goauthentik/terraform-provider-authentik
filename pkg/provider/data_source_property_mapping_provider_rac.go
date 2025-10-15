@@ -2,11 +2,10 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func dataSourcePropertyMappingProviderRAC() *schema.Resource {
@@ -93,11 +92,7 @@ func dataSourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Res
 		helpers.SetWrapper(d, "name", f.Name)
 		helpers.SetWrapper(d, "name", f.Name)
 		helpers.SetWrapper(d, "expression", f.Expression)
-		b, err := json.Marshal(f.StaticSettings)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-		helpers.SetWrapper(d, "settings", string(b))
+		helpers.SetJSON(d, "settings", f.StaticSettings)
 	}
 	return diags
 }

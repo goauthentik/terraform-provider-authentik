@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceSourceSAML() *schema.Resource {
@@ -225,12 +225,8 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "uuid", res.Pk)
 	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
-	if res.AuthenticationFlow.IsSet() {
-		helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	}
-	if res.EnrollmentFlow.IsSet() {
-		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
-	}
+	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
+	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	helpers.SetWrapper(d, "enabled", res.Enabled)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
@@ -239,34 +235,30 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
 	helpers.SetWrapper(d, "issuer", res.Issuer)
 	helpers.SetWrapper(d, "sso_url", res.SsoUrl)
-	if res.SloUrl.IsSet() {
-		helpers.SetWrapper(d, "slo_url", res.SloUrl.Get())
-	}
+	helpers.SetWrapper(d, "slo_url", res.SloUrl.Get())
 	helpers.SetWrapper(d, "allow_idp_initiated", res.AllowIdpInitiated)
 	helpers.SetWrapper(d, "name_id_policy", res.NameIdPolicy)
 	helpers.SetWrapper(d, "binding_type", res.BindingType)
-	if res.SigningKp.IsSet() {
-		helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
-	}
-	if res.EncryptionKp.IsSet() {
-		helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
-	}
-	if res.VerificationKp.IsSet() {
-		helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
-	}
+	helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
+	helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
+	helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
 	helpers.SetWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	helpers.SetWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
 	helpers.SetWrapper(d, "temporary_user_delete_after", res.TemporaryUserDeleteAfter)
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.UserPropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.GroupPropertyMappings,
+	))
 
 	meta, hr, err := c.client.SourcesApi.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 	helpers.SetWrapper(d, "metadata", meta.Metadata)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.UserPropertyMappings))
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.GroupPropertyMappings))
 	return diags
 }
 

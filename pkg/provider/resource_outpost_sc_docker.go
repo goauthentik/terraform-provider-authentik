@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceServiceConnectionDocker() *schema.Resource {
@@ -83,12 +83,8 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "url", res.Url)
 	helpers.SetWrapper(d, "local", res.Local)
-	if res.TlsVerification.IsSet() {
-		helpers.SetWrapper(d, "tls_verification", res.TlsVerification.Get())
-	}
-	if res.TlsAuthentication.IsSet() {
-		helpers.SetWrapper(d, "tls_authentication", res.TlsAuthentication.Get())
-	}
+	helpers.SetWrapper(d, "tls_verification", res.TlsVerification.Get())
+	helpers.SetWrapper(d, "tls_authentication", res.TlsAuthentication.Get())
 	return diags
 }
 

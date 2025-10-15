@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourcePolicyGeoIP() *schema.Resource {
@@ -128,17 +128,14 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "history_login_count", res.HistoryLoginCount)
 	helpers.SetWrapper(d, "check_impossible_travel", res.CheckImpossibleTravel)
 	helpers.SetWrapper(d, "impossible_tolerance_km", res.ImpossibleToleranceKm)
-	if res.HasAsns() {
-		localAsns := helpers.CastSlice[int](d, "asns")
-		helpers.SetWrapper(d, "asns", helpers.ListConsistentMerge(localAsns, helpers.Slice32ToInt(res.Asns)))
-	}
-	if res.Countries != nil {
-		localCountries := make([]api.CountryCodeEnum, 0)
-		for _, c := range helpers.CastSlice[string](d, "countries") {
-			localCountries = append(localCountries, api.CountryCodeEnum(c))
-		}
-		helpers.SetWrapper(d, "countries", helpers.ListConsistentMerge(localCountries, res.Countries))
-	}
+	helpers.SetWrapper(d, "asns", helpers.ListConsistentMerge(
+		helpers.CastSlice[int](d, "asns"),
+		helpers.Slice32ToInt(res.Asns),
+	))
+	helpers.SetWrapper(d, "countries", helpers.ListConsistentMerge(
+		helpers.CastSliceString[api.CountryCodeEnum](helpers.CastSlice[string](d, "countries")),
+		res.Countries,
+	))
 	return diags
 }
 

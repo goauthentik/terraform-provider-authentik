@@ -63,6 +63,15 @@ func CastSlice[T any](d ResourceData, key string) []T {
 	return sl
 }
 
+// Cast a slice of string-like objects to their respective types
+func CastSliceString[T ~string](raw []string) []T {
+	nl := make([]T, len(raw))
+	for i, r := range raw {
+		nl[i] = T(r)
+	}
+	return nl
+}
+
 func CastSliceInt32(in []any) []int32 {
 	sl := make([]int32, len(in))
 	for i, m := range in {

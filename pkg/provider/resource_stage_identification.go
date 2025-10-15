@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceStageIdentification() *schema.Resource {
@@ -137,28 +137,20 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "user_fields", res.UserFields)
-	if res.PasswordStage.IsSet() {
-		helpers.SetWrapper(d, "password_stage", res.PasswordStage.Get())
-	}
-	if res.CaptchaStage.IsSet() {
-		helpers.SetWrapper(d, "captcha_stage", res.CaptchaStage.Get())
-	}
+	helpers.SetWrapper(d, "password_stage", res.PasswordStage.Get())
+	helpers.SetWrapper(d, "captcha_stage", res.CaptchaStage.Get())
 	helpers.SetWrapper(d, "case_insensitive_matching", res.CaseInsensitiveMatching)
 	helpers.SetWrapper(d, "show_matched_user", res.ShowMatchedUser)
 	helpers.SetWrapper(d, "enable_remember_me", res.EnableRememberMe)
 	helpers.SetWrapper(d, "show_source_labels", res.ShowSourceLabels)
 	helpers.SetWrapper(d, "pretend_user_exists", res.PretendUserExists)
-	if res.EnrollmentFlow.IsSet() {
-		helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
-	}
-	if res.RecoveryFlow.IsSet() {
-		helpers.SetWrapper(d, "recovery_flow", res.RecoveryFlow.Get())
-	}
-	if res.PasswordlessFlow.IsSet() {
-		helpers.SetWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
-	}
-	localSources := helpers.CastSlice[string](d, "sources")
-	helpers.SetWrapper(d, "sources", helpers.ListConsistentMerge(localSources, res.Sources))
+	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
+	helpers.SetWrapper(d, "recovery_flow", res.RecoveryFlow.Get())
+	helpers.SetWrapper(d, "passwordless_flow", res.PasswordlessFlow.Get())
+	helpers.SetWrapper(d, "sources", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "sources"),
+		res.Sources,
+	))
 	return diags
 }
 

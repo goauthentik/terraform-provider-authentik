@@ -2,13 +2,12 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceProviderGoogleWorkspace() *schema.Resource {
@@ -131,7 +130,6 @@ func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.Resour
 }
 
 func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -150,20 +148,15 @@ func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.Resource
 	helpers.SetWrapper(d, "group_delete_action", res.GroupDeleteAction)
 	helpers.SetWrapper(d, "filter_group", res.FilterGroup)
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
-	localMappings := helpers.CastSlice[string](d, "property_mappings")
-	if len(localMappings) > 0 {
-		helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(localMappings, res.PropertyMappings))
-	}
-	localGroupMappings := helpers.CastSlice[string](d, "property_mappings_group")
-	if len(localGroupMappings) > 0 {
-		helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(localGroupMappings, res.PropertyMappingsGroup))
-	}
-	b, err := json.Marshal(res.Credentials)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "credentials", string(b))
-	return diags
+	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings"),
+		res.PropertyMappings,
+	))
+	helpers.SetWrapper(d, "property_mappings_group", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "property_mappings_group"),
+		res.PropertyMappingsGroup,
+	))
+	return helpers.SetJSON(d, "credentials", res.Credentials)
 }
 
 func resourceProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

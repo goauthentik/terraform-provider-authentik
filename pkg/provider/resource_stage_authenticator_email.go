@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceStageAuthenticatorEmail() *schema.Resource {
@@ -157,9 +157,7 @@ func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.Resource
 	helpers.SetWrapper(d, "subject", res.Subject)
 	helpers.SetWrapper(d, "template", res.Template)
 	helpers.SetWrapper(d, "friendly_name", res.FriendlyName)
-	if res.ConfigureFlow.IsSet() {
-		helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
-	}
+	helpers.SetWrapper(d, "configure_flow", res.ConfigureFlow.Get())
 	return diags
 }
 

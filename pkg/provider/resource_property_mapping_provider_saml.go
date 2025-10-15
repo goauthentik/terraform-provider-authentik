@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourcePropertyMappingProviderSAML() *schema.Resource {
@@ -77,9 +77,7 @@ func resourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Reso
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "expression", res.Expression)
 	helpers.SetWrapper(d, "saml_name", res.SamlName)
-	if res.FriendlyName.IsSet() {
-		helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
-	}
+	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
 	return diags
 }
 

@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/provider/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func resourceStageMutualTLS() *schema.Resource {
@@ -94,8 +94,10 @@ func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "mode", res.Mode)
 	helpers.SetWrapper(d, "cert_attribute", res.CertAttribute)
 	helpers.SetWrapper(d, "user_attribute", res.UserAttribute)
-	localCertificateAuthorities := helpers.CastSlice[string](d, "certificate_authorities")
-	helpers.SetWrapper(d, "certificate_authorities", helpers.ListConsistentMerge(localCertificateAuthorities, res.CertificateAuthorities))
+	helpers.SetWrapper(d, "certificate_authorities", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "certificate_authorities"),
+		res.CertificateAuthorities,
+	))
 	return diags
 }
 
