@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -60,10 +59,6 @@ func dataOutpostServiceConnectionsKubernetesRead(ctx context.Context, d *schema.
 	helpers.SetWrapper(d, "name", f.Name)
 	helpers.SetWrapper(d, "local", f.Local)
 	helpers.SetWrapper(d, "verify_ssl", f.VerifySsl)
-	b, err := json.Marshal(f.Kubeconfig)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	helpers.SetWrapper(d, "kubeconfig", string(b))
+	helpers.SetJSON(d, "kubeconfig", f.Kubeconfig)
 	return diags
 }

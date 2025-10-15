@@ -122,7 +122,6 @@ func mapFromUser(user api.User) (map[string]interface{}, error) {
 		return nil, err
 	}
 	m["attributes"] = string(b)
-
 	return m, nil
 }
 
