@@ -121,10 +121,17 @@ func resourceSourceOAuth() *schema.Resource {
 			"oidc_jwks": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication." + helpers.JSONDescription,
+				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication. " + helpers.JSONDescription,
 				Computed:         true,
 				DiffSuppressFunc: helpers.DiffSuppressJSON,
 				ValidateDiagFunc: helpers.ValidateJSON,
+			},
+			"pkce": {
+				Type:             schema.TypeString,
+				Required:         true,
+				Default:          api.PKCEMETHODENUM_NONE,
+				Description:      helpers.EnumToDescription(api.AllowedPKCEMethodEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPKCEMethodEnumEnumValues),
 			},
 
 			"additional_scopes": {
@@ -180,14 +187,14 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		AuthenticationFlow:          *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		EnrollmentFlow:              *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
-		RequestTokenUrl:  *api.NewNullableString(helpers.GetP[string](d, "request_token_url")),
-		AuthorizationUrl: *api.NewNullableString(helpers.GetP[string](d, "authorization_url")),
-		AccessTokenUrl:   *api.NewNullableString(helpers.GetP[string](d, "access_token_url")),
-		ProfileUrl:       *api.NewNullableString(helpers.GetP[string](d, "profile_url")),
-		AdditionalScopes: helpers.GetP[string](d, "additional_scopes"),
-		OidcWellKnownUrl: helpers.GetP[string](d, "oidc_well_known_url"),
-		OidcJwksUrl:      helpers.GetP[string](d, "oidc_jwks_url"),
-
+		RequestTokenUrl:       *api.NewNullableString(helpers.GetP[string](d, "request_token_url")),
+		AuthorizationUrl:      *api.NewNullableString(helpers.GetP[string](d, "authorization_url")),
+		AccessTokenUrl:        *api.NewNullableString(helpers.GetP[string](d, "access_token_url")),
+		ProfileUrl:            *api.NewNullableString(helpers.GetP[string](d, "profile_url")),
+		AdditionalScopes:      helpers.GetP[string](d, "additional_scopes"),
+		OidcWellKnownUrl:      helpers.GetP[string](d, "oidc_well_known_url"),
+		OidcJwksUrl:           helpers.GetP[string](d, "oidc_jwks_url"),
+		Pkce:                  helpers.CastString[api.PKCEMethodEnum](helpers.GetP[string](d, "pkce")),
 		UserPropertyMappings:  helpers.CastSlice[string](d, "property_mappings"),
 		GroupPropertyMappings: helpers.CastSlice[string](d, "property_mappings_group"),
 	}
@@ -246,6 +253,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "callback_uri", res.CallbackUrl)
 	helpers.SetWrapper(d, "oidc_well_known_url", res.GetOidcWellKnownUrl())
 	helpers.SetWrapper(d, "oidc_jwks_url", res.GetOidcJwksUrl())
+	helpers.SetWrapper(d, "pkce", res.GetPkce())
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
 		helpers.CastSlice[string](d, "property_mappings"),
 		res.UserPropertyMappings,
