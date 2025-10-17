@@ -128,7 +128,7 @@ func resourceSourceOAuth() *schema.Resource {
 			},
 			"pkce": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Default:          api.PKCEMETHODENUM_NONE,
 				Description:      helpers.EnumToDescription(api.AllowedPKCEMethodEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPKCEMethodEnumEnumValues),
