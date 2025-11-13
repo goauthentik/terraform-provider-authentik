@@ -223,8 +223,22 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		config := api.NewConfiguration()
 		config.Debug = true
 		config.UserAgent = fmt.Sprintf("authentik-terraform@%s", version)
-		config.Host = akURL.Host
-		config.Scheme = akURL.Scheme
+
+		// Construct full server URL including path component
+		// This ensures subpath deployments (e.g., https://api.example.com/sso/) work correctly
+		serverURL := fmt.Sprintf("%s://%s", akURL.Scheme, akURL.Host)
+		if akURL.Path != "" && akURL.Path != "/" {
+			// Preserve path component, removing trailing slash to avoid double slashes
+			serverURL += strings.TrimSuffix(akURL.Path, "/")
+		}
+
+		config.Servers = api.ServerConfigurations{
+			{
+				URL:         serverURL,
+				Description: "Authentik API Server",
+			},
+		}
+
 		config.HTTPClient = &http.Client{
 			Transport: GetTLSTransport(insecure),
 		}
