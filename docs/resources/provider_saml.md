@@ -61,7 +61,7 @@ resource "authentik_application" "name" {
   - `frontchannel_iframe`
   - `frontchannel_native`
   - `backchannel`
- Defaults to `backchannel`.
+ Defaults to `frontchannel_iframe`.
 - `name_id_mapping` (String)
 - `property_mappings` (List of String)
 - `session_valid_not_on_or_after` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=86400`.

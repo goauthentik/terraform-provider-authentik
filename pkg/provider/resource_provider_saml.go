@@ -181,7 +181,7 @@ func resourceProviderSAML() *schema.Resource {
 			"logout_method": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.SAMLPROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
+				Default:          api.SAMLPROVIDERLOGOUTMETHODENUM_FRONTCHANNEL_IFRAME,
 				Description:      helpers.EnumToDescription(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
 			},
