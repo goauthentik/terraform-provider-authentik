@@ -29,7 +29,7 @@ resource "authentik_outpost" "outpost" {
 
 resource "authentik_outpost_provider_attachment" "attachment" {
   outpost  = authentik_outpost.outpost.id
-  provider = authentik_provider_proxy.proxy.id
+  protocol_provider = authentik_provider_proxy.proxy.id
 }
 
 # Use an existing outpost (e.g. embedded outpost)
@@ -40,7 +40,7 @@ data "authentik_outpost" "embedded" {
 
 resource "authentik_outpost_provider_attachment" "attachment_embedded" {
   outpost  = data.authentik_outpost.embedded.id
-  provider = authentik_provider_proxy.proxy.id
+  protocol_provider = authentik_provider_proxy.proxy.id
 }
 ```
 
@@ -50,7 +50,7 @@ resource "authentik_outpost_provider_attachment" "attachment_embedded" {
 ### Required
 
 - `outpost` (String) The ID of the outpost.
-- `provider` (Number) The ID of the provider.
+- `protocol_provider` (Number) The ID of the provider.
 
 ### Read-Only
 
