@@ -5,7 +5,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
@@ -42,24 +41,18 @@ func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	if name, ok := d.GetOk("name"); ok {
-		res, hr, err := c.client.OutpostsApi.OutpostsInstancesList(ctx).Execute()
+		res, hr, err := c.client.OutpostsApi.OutpostsInstancesList(ctx).NameIexact(name.(string)).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		var found []api.Outpost
-		for _, o := range res.Results {
-			if o.Name == name.(string) {
-				found = append(found, o)
-			}
-		}
-		if len(found) < 1 {
+		if len(res.Results) < 1 {
 			return diag.Errorf("No matching outpost found")
 		}
-		if len(found) > 1 {
+		if len(res.Results) > 1 {
 			return diag.Errorf("Multiple outposts found")
 		}
-		d.SetId(found[0].Pk)
-		d.Set("id", found[0].Pk)
+		d.SetId(res.Results[0].Pk)
+		d.Set("id", res.Results[0].Pk)
 		return nil
 	}
 
