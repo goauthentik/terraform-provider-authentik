@@ -22,7 +22,7 @@ resource "authentik_provider_proxy" "proxy" {
 resource "authentik_outpost" "outpost" {
   name = "test-outpost"
   # protocol_providers is not specified here, or ignored
-  lifecycle {
+  lifecycle { 
     ignore_changes = [protocol_providers]
   }
 }
