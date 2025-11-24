@@ -62,15 +62,11 @@ func resourceOutpostProviderAttachmentCreate(ctx context.Context, d *schema.Reso
 	outpost.Providers = append(outpost.Providers, providerID)
 
 	// Update outpost
-	req := api.OutpostRequest{
-		Name:              outpost.Name,
-		Type:              outpost.Type,
-		Providers:         outpost.Providers,
-		ServiceConnection: outpost.ServiceConnection,
-		Config:            outpost.Config,
+	req := api.PatchedOutpostRequest{
+		Providers: outpost.Providers,
 	}
 
-	_, hr, err = c.client.OutpostsApi.OutpostsInstancesUpdate(ctx, outpostID).OutpostRequest(req).Execute()
+	_, hr, err = c.client.OutpostsApi.OutpostsInstancesPartialUpdate(ctx, outpostID).PatchedOutpostRequest(req).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -139,15 +135,11 @@ func resourceOutpostProviderAttachmentDelete(ctx context.Context, d *schema.Reso
 	}
 
 	// Update outpost
-	req := api.OutpostRequest{
-		Name:              outpost.Name,
-		Type:              outpost.Type,
-		Providers:         newProviders,
-		ServiceConnection: outpost.ServiceConnection,
-		Config:            outpost.Config,
+	req := api.PatchedOutpostRequest{
+		Providers: newProviders,
 	}
 
-	_, hr, err = c.client.OutpostsApi.OutpostsInstancesUpdate(ctx, outpostID).OutpostRequest(req).Execute()
+	_, hr, err = c.client.OutpostsApi.OutpostsInstancesPartialUpdate(ctx, outpostID).PatchedOutpostRequest(req).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
