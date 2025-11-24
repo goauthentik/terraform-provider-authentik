@@ -19,8 +19,6 @@
     "go.testEnvVars": {
         "TF_LOG": "trace",
         "TF_ACC": "1",
-        "AUTHENTIK_URL": "http://localhost:9000",
-        "AUTHENTIK_TOKEN": "this-token-is-for-testing-dont-use",
     },
     "gopls": {
         "build.buildFlags": [
