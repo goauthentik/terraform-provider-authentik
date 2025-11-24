@@ -36,7 +36,7 @@ func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interf
 			return helpers.HTTPToDiag(d, hr, err)
 		}
 		d.SetId(res.Pk)
-		d.Set("name", res.Name)
+		helpers.SetWrapper(d, "name", res.Name)
 		return nil
 	}
 
@@ -52,7 +52,7 @@ func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interf
 			return diag.Errorf("Multiple outposts found")
 		}
 		d.SetId(res.Results[0].Pk)
-		d.Set("id", res.Results[0].Pk)
+		helpers.SetWrapper(d, "name", res.Results[0].Name)
 		return nil
 	}
 

@@ -108,8 +108,8 @@ func resourceOutpostProviderAttachmentRead(ctx context.Context, d *schema.Resour
 		return nil
 	}
 
-	d.Set("outpost", outpostID)
-	d.Set("protocol_provider", int(providerIDInt))
+	helpers.SetWrapper(d, "outpost", outpostID)
+	helpers.SetWrapper(d, "protocol_provider", int(providerIDInt))
 
 	return nil
 }
