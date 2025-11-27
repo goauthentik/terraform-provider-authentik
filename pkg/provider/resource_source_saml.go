@@ -120,6 +120,16 @@ func resourceSourceSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"signed_assertion": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"signed_response": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"digest_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -187,6 +197,8 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		SigningKp:                *api.NewNullableString(helpers.GetP[string](d, "signing_kp")),
 		EncryptionKp:             *api.NewNullableString(helpers.GetP[string](d, "encryption_kp")),
 		VerificationKp:           *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
+		SignedAssertion:          api.PtrBool(d.Get("signed_assertion").(bool)),
+		SignedResponse:           api.PtrBool(d.Get("signed_response").(bool)),
 		Issuer:                   api.PtrString(d.Get("issuer").(string)),
 		AllowIdpInitiated:        api.PtrBool(d.Get("allow_idp_initiated").(bool)),
 		TemporaryUserDeleteAfter: api.PtrString(d.Get("temporary_user_delete_after").(string)),
@@ -242,6 +254,8 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
 	helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
 	helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
+	helpers.SetWrapper(d, "signed_assertion", res.SignedAssertion)
+	helpers.SetWrapper(d, "signed_response", res.SignedResponse)
 	helpers.SetWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	helpers.SetWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
 	helpers.SetWrapper(d, "temporary_user_delete_after", res.TemporaryUserDeleteAfter)

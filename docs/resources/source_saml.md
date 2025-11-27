@@ -2,7 +2,7 @@
 page_title: "authentik_source_saml Resource - terraform-provider-authentik"
 subcategory: "Directory"
 description: |-
-  
+
 ---
 
 # authentik_source_saml (Resource)
@@ -108,6 +108,8 @@ resource "authentik_source_saml" "name" {
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String) Generated.
 - `verification_kp` (String)
+- `signed_assertion` (Boolean)
+- `signed_response` (Boolean)
 
 ### Read-Only
 
