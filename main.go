@@ -1,13 +1,18 @@
 package main
 
 import (
+	"context"
 	"flag"
-	"fmt"
+	"log"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6/tf6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
 
 	"goauthentik.io/terraform-provider-authentik/pkg/provider"
+	"goauthentik.io/terraform-provider-authentik/pkg/providerv2"
 )
 
 // these will be set by the goreleaser configuration
@@ -19,6 +24,8 @@ var version string = "dev"
 //go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 
 func main() {
+	ctx := context.Background()
+
 	var debugMode bool
 	var versionMode bool
 
@@ -26,17 +33,41 @@ func main() {
 	flag.BoolVar(&versionMode, "version", false, "Show version and exit")
 	flag.Parse()
 
-	opts := &plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return provider.Provider(version, false)
+	upgradedSdkServer, err := tf5to6server.UpgradeServer(
+		ctx,
+		provider.Provider(version, false).GRPCProvider,
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	providers := []func() tfprotov6.ProviderServer{
+		providerserver.NewProtocol6(providerv2.New()),
+		func() tfprotov6.ProviderServer {
+			return upgradedSdkServer
 		},
-		Debug: debugMode,
 	}
 
-	if versionMode {
-		fmt.Println(version)
-		return
+	muxServer, err := tf6muxserver.NewMuxServer(ctx, providers...)
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	plugin.Serve(opts)
+	var serveOpts []tf6server.ServeOpt
+
+	if debugMode {
+		serveOpts = append(serveOpts, tf6server.WithManagedDebug())
+	}
+
+	err = tf6server.Serve(
+		"registry.terraform.io/goauthentik/authentik",
+		muxServer.ProviderServer,
+		serveOpts...,
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
