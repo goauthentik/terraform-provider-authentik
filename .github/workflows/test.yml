@@ -102,7 +102,8 @@ jobs:
           flags: authentik-${{ matrix.authentik_version }}
           use_oidc: true
       - if: ${{ always() }}
-        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         with:
           flags: authentik-${{ matrix.authentik_version }}
           use_oidc: true
+          report_type: test_results
