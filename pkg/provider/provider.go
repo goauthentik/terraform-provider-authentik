@@ -227,6 +227,16 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		config.UserAgent = fmt.Sprintf("authentik-terraform@%s", version)
 		config.Host = akURL.Host
 		config.Scheme = akURL.Scheme
+		// Support subpaths by updating the Servers configuration
+		if akURL.Path != "" && akURL.Path != "/" {
+			basePath := strings.TrimSuffix(akURL.Path, "/")
+			config.Servers = api.ServerConfigurations{
+				{
+					URL:         basePath + "/api/v3",
+					Description: "authentik API",
+				},
+			}
+		}
 		config.HTTPClient = &http.Client{
 			Transport: GetTLSTransport(insecure),
 		}
