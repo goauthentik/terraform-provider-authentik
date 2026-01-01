@@ -19,48 +19,51 @@ func resourceStageUserWrite() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_USER_WRITE_USERWRITESTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"create_users_as_inactive": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"user_creation_mode": {
+					Type:             schema.TypeString,
+					Default:          api.USERCREATIONMODEENUM_CREATE_WHEN_REQUIRED,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedUserCreationModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserCreationModeEnumEnumValues),
+				},
+				"create_users_group": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"user_path_template": {
+					Type:     schema.TypeString,
+					Default:  "",
+					Optional: true,
+				},
+				"user_type": {
+					Type:     schema.TypeString,
+					Default:  api.USERTYPEENUM_EXTERNAL,
+					Optional: true,
+					Description: helpers.EnumToDescription([]api.UserTypeEnum{
+						api.USERTYPEENUM_INTERNAL,
+						api.USERTYPEENUM_EXTERNAL,
+						api.USERTYPEENUM_SERVICE_ACCOUNT,
+					}),
+					ValidateDiagFunc: helpers.StringInEnum([]api.UserTypeEnum{
+						api.USERTYPEENUM_INTERNAL,
+						api.USERTYPEENUM_EXTERNAL,
+						api.USERTYPEENUM_SERVICE_ACCOUNT,
+					}),
+				},
 			},
-			"create_users_as_inactive": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"user_creation_mode": {
-				Type:             schema.TypeString,
-				Default:          api.USERCREATIONMODEENUM_CREATE_WHEN_REQUIRED,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedUserCreationModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserCreationModeEnumEnumValues),
-			},
-			"create_users_group": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "",
-				Optional: true,
-			},
-			"user_type": {
-				Type:     schema.TypeString,
-				Default:  api.USERTYPEENUM_EXTERNAL,
-				Optional: true,
-				Description: helpers.EnumToDescription([]api.UserTypeEnum{
-					api.USERTYPEENUM_INTERNAL,
-					api.USERTYPEENUM_EXTERNAL,
-					api.USERTYPEENUM_SERVICE_ACCOUNT,
-				}),
-				ValidateDiagFunc: helpers.StringInEnum([]api.UserTypeEnum{
-					api.USERTYPEENUM_INTERNAL,
-					api.USERTYPEENUM_EXTERNAL,
-					api.USERTYPEENUM_SERVICE_ACCOUNT,
-				}),
-			},
-		},
+		),
 	}
 }
 

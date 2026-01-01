@@ -47,3 +47,5 @@ resource "authentik_stage_authenticator_validate" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_authenticator_validate`. Generated.
+- `meta_model` (String) Defaults to `authenticatorvalidatestage`. Generated.

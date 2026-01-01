@@ -49,3 +49,5 @@ resource "authentik_policy_binding" "test-ent-access" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_core`. Generated.
+- `meta_model` (String) Defaults to `applicationentitlement`. Generated.

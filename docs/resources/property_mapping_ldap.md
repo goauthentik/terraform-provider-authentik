@@ -25,3 +25,5 @@ Manage LDAP Source Property mappings
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_sources_ldap`. Generated.
+- `meta_model` (String) Defaults to `ldapsourcepropertymapping`. Generated.

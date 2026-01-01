@@ -19,154 +19,157 @@ func resourceSourceOAuth() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "goauthentik.io/sources/%(slug)s",
-				Optional: true,
-			},
-			"authentication_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enrollment_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"authorization_code_auth_method": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.AUTHORIZATIONCODEAUTHMETHODENUM_BASIC_AUTH,
-				Description:      helpers.EnumToDescription(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
-			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
-			},
-			"user_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
-			},
-			"group_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_SOURCES_OAUTH_OAUTHSOURCE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user_path_template": {
+					Type:     schema.TypeString,
+					Default:  "goauthentik.io/sources/%(slug)s",
+					Optional: true,
+				},
+				"authentication_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enrollment_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"authorization_code_auth_method": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.AUTHORIZATIONCODEAUTHMETHODENUM_BASIC_AUTH,
+					Description:      helpers.EnumToDescription(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthorizationCodeAuthMethodEnumEnumValues),
+				},
+				"policy_engine_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.POLICYENGINEMODE_ANY,
+					Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				},
+				"user_matching_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
+					Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				},
+				"group_matching_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
+					Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				},
 
-			"provider_type": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedProviderTypeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProviderTypeEnumEnumValues),
-			},
+				"provider_type": {
+					Type:             schema.TypeString,
+					Required:         true,
+					Description:      helpers.EnumToDescription(api.AllowedProviderTypeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedProviderTypeEnumEnumValues),
+				},
 
-			"request_token_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
-			},
-			"authorization_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
-			},
-			"access_token_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Only required for OAuth1.",
-			},
-			"profile_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
-			},
+				"request_token_url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
+				},
+				"authorization_url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
+				},
+				"access_token_url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Only required for OAuth1.",
+				},
+				"profile_url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
+				},
 
-			"oidc_well_known_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Automatically configure source from OIDC well-known endpoint. URL is taken as is, and should end with `.well-known/openid-configuration`.",
-			},
-			"oidc_jwks_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Automatically configure JWKS if not specified by `oidc_well_known_url`.",
-			},
-			"oidc_jwks": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Description:      "Manually configure JWKS keys for use with machine-to-machine authentication. " + helpers.JSONDescription,
-				Computed:         true,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-			"pkce": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.PKCEMETHODENUM_NONE,
-				Description:      helpers.EnumToDescription(api.AllowedPKCEMethodEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPKCEMethodEnumEnumValues),
-			},
+				"oidc_well_known_url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Automatically configure source from OIDC well-known endpoint. URL is taken as is, and should end with `.well-known/openid-configuration`.",
+				},
+				"oidc_jwks_url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Automatically configure JWKS if not specified by `oidc_well_known_url`.",
+				},
+				"oidc_jwks": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      "Manually configure JWKS keys for use with machine-to-machine authentication. " + helpers.JSONDescription,
+					Computed:         true,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
+				},
+				"pkce": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.PKCEMETHODENUM_NONE,
+					Description:      helpers.EnumToDescription(api.AllowedPKCEMethodEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPKCEMethodEnumEnumValues),
+				},
 
-			"additional_scopes": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"consumer_key": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"consumer_secret": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
+				"additional_scopes": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"consumer_key": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"consumer_secret": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
 
-			"callback_uri": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"property_mappings": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"callback_uri": {
+					Type:     schema.TypeString,
+					Computed: true,
+				},
+				"property_mappings": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"property_mappings_group": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 			},
-			"property_mappings_group": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-		},
+		),
 	}
 }
 

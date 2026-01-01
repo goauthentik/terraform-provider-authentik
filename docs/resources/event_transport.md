@@ -53,3 +53,5 @@ resource "authentik_event_transport" "transport" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_events`. Generated.
+- `meta_model` (String) Defaults to `notificationtransport`. Generated.

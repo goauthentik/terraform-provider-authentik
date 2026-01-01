@@ -19,54 +19,57 @@ func resourcePolicyBinding() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"target": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "ID of the object this binding should apply to",
-			},
-			"policy": {
-				Type:        schema.TypeString,
-				Description: "UUID of the policy",
-				Optional:    true,
-			},
-			"user": {
-				Type:        schema.TypeInt,
-				Description: "PK of the user",
-				Optional:    true,
-			},
-			"group": {
-				Type:        schema.TypeString,
-				Description: "UUID of the group",
-				Optional:    true,
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_POLICIES_POLICYBINDING,
+			map[string]*schema.Schema{
+				"target": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "ID of the object this binding should apply to",
+				},
+				"policy": {
+					Type:        schema.TypeString,
+					Description: "UUID of the policy",
+					Optional:    true,
+				},
+				"user": {
+					Type:        schema.TypeInt,
+					Description: "PK of the user",
+					Optional:    true,
+				},
+				"group": {
+					Type:        schema.TypeString,
+					Description: "UUID of the group",
+					Optional:    true,
+				},
 
-			// General attributes
-			"order": {
-				Type:     schema.TypeInt,
-				Required: true,
+				// General attributes
+				"order": {
+					Type:     schema.TypeInt,
+					Required: true,
+				},
+				"negate": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"timeout": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  30,
+				},
+				"failure_result": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
 			},
-			"negate": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  30,
-			},
-			"failure_result": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-		},
+		),
 	}
 }
 

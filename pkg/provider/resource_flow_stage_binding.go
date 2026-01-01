@@ -19,46 +19,49 @@ func resourceFlowStageBinding() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"target": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_FLOWS_FLOWSTAGEBINDING,
+			map[string]*schema.Schema{
+				"target": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"stage": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"evaluate_on_plan": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     true,
+					Description: "Evaluate policies during the Flow planning process.",
+				},
+				"re_evaluate_policies": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
+					Description: "Evaluate policies when the Stage is present to the user.",
+				},
+				"order": {
+					Type:     schema.TypeInt,
+					Required: true,
+				},
+				"policy_engine_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.POLICYENGINEMODE_ANY,
+					Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				},
+				"invalid_response_action": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.INVALIDRESPONSEACTIONENUM_RETRY,
+					Description:      helpers.EnumToDescription(api.AllowedInvalidResponseActionEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedInvalidResponseActionEnumEnumValues),
+				},
 			},
-			"stage": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"evaluate_on_plan": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     true,
-				Description: "Evaluate policies during the Flow planning process.",
-			},
-			"re_evaluate_policies": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-				Description: "Evaluate policies when the Stage is present to the user.",
-			},
-			"order": {
-				Type:     schema.TypeInt,
-				Required: true,
-			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
-			},
-			"invalid_response_action": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.INVALIDRESPONSEACTIONENUM_RETRY,
-				Description:      helpers.EnumToDescription(api.AllowedInvalidResponseActionEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedInvalidResponseActionEnumEnumValues),
-			},
-		},
+		),
 	}
 }
 

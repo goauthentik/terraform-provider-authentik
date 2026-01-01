@@ -19,23 +19,26 @@ func resourceStageSource() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_SOURCE_SOURCESTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"source": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"resume_timeout": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=10",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
 			},
-			"source": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"resume_timeout": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=10",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-		},
+		),
 	}
 }
 

@@ -19,86 +19,89 @@ func resourceSourceTelegram() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "goauthentik.io/sources/%(slug)s",
-				Optional: true,
-			},
-			"authentication_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enrollment_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
-			},
-			"user_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
-			},
-			"pre_authentication_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_SOURCES_TELEGRAM_TELEGRAMSOURCE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user_path_template": {
+					Type:     schema.TypeString,
+					Default:  "goauthentik.io/sources/%(slug)s",
+					Optional: true,
+				},
+				"authentication_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enrollment_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"policy_engine_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.POLICYENGINEMODE_ANY,
+					Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				},
+				"user_matching_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
+					Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				},
+				"pre_authentication_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
 
-			"bot_username": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"bot_token": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"request_message_access": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
+				"bot_username": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"bot_token": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"request_message_access": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
 
-			"property_mappings": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"property_mappings": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"property_mappings_group": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 			},
-			"property_mappings_group": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-		},
+		),
 	}
 }
 

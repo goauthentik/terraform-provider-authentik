@@ -48,3 +48,5 @@ resource "authentik_policy_password" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_policies_password`. Generated.
+- `meta_model` (String) Defaults to `passwordpolicy`. Generated.

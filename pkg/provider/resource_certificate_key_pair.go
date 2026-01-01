@@ -19,21 +19,24 @@ func resourceCertificateKeyPair() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_CRYPTO_CERTIFICATEKEYPAIR,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"certificate_data": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"key_data": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
 			},
-			"certificate_data": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"key_data": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
-			},
-		},
+		),
 	}
 }
 

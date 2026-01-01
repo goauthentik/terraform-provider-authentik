@@ -19,48 +19,51 @@ func resourceRACEndpoint() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"protocol_provider": {
-				Type:     schema.TypeInt,
-				Required: true,
-			},
-
-			"protocol": {
-				Type:             schema.TypeString,
-				Required:         true,
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProtocolEnumEnumValues),
-				Description:      helpers.EnumToDescription(api.AllowedProtocolEnumEnumValues),
-			},
-			"host": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"maximum_connections": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  0,
-			},
-
-			"property_mappings": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_RAC_ENDPOINT,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
-				Optional: true,
+				"protocol_provider": {
+					Type:     schema.TypeInt,
+					Required: true,
+				},
+
+				"protocol": {
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedProtocolEnumEnumValues),
+					Description:      helpers.EnumToDescription(api.AllowedProtocolEnumEnumValues),
+				},
+				"host": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"maximum_connections": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  0,
+				},
+
+				"property_mappings": {
+					Type: schema.TypeList,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Optional: true,
+				},
+				"settings": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
+				},
 			},
-			"settings": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-		},
+		),
 	}
 }
 

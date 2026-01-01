@@ -19,52 +19,55 @@ func resourceStageUserLogin() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_USER_LOGIN_USERLOGINSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"session_duration": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "seconds=0",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"remember_me_offset": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "seconds=0",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"terminate_other_sessions": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"network_binding": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.NETWORKBINDINGENUM_NO_BINDING,
+					Description:      helpers.EnumToDescription(api.AllowedNetworkBindingEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedNetworkBindingEnumEnumValues),
+				},
+				"geoip_binding": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.GEOIPBINDINGENUM_NO_BINDING,
+					Description:      helpers.EnumToDescription(api.AllowedGeoipBindingEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGeoipBindingEnumEnumValues),
+				},
+				"remember_device": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "days=30",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
 			},
-			"session_duration": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "seconds=0",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"remember_me_offset": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "seconds=0",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"terminate_other_sessions": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"network_binding": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.NETWORKBINDINGENUM_NO_BINDING,
-				Description:      helpers.EnumToDescription(api.AllowedNetworkBindingEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedNetworkBindingEnumEnumValues),
-			},
-			"geoip_binding": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.GEOIPBINDINGENUM_NO_BINDING,
-				Description:      helpers.EnumToDescription(api.AllowedGeoipBindingEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGeoipBindingEnumEnumValues),
-			},
-			"remember_device": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "days=30",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-		},
+		),
 	}
 }
 

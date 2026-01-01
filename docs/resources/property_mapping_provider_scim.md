@@ -22,3 +22,5 @@ Manage SCIM Provider Property mappings
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_providers_scim`. Generated.
+- `meta_model` (String) Defaults to `scimmapping`. Generated.

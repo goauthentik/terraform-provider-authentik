@@ -19,32 +19,35 @@ func resourcePolicyDummy() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_POLICIES_DUMMY_DUMMYPOLICY,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"execution_logging": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"result": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"wait_min": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  5,
+				},
+				"wait_max": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  30,
+				},
 			},
-			"execution_logging": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"result": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"wait_min": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  5,
-			},
-			"wait_max": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  30,
-			},
-		},
+		),
 	}
 }
 

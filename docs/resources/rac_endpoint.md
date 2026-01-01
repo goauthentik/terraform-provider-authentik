@@ -33,3 +33,5 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_providers_rac`. Generated.
+- `meta_model` (String) Defaults to `endpoint`. Generated.

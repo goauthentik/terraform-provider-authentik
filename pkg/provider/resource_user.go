@@ -20,60 +20,63 @@ func resourceUser() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"username": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"name": {
-				Type:     schema.TypeString,
-				Default:  "",
-				Optional: true,
-			},
-			"type": {
-				Type:             schema.TypeString,
-				Default:          api.USERTYPEENUM_INTERNAL,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedUserTypeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserTypeEnumEnumValues),
-			},
-			"password": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-				Description: `Optionally set the user's password. Changing the password in authentik will not trigger an update here.`,
-			},
-			"is_active": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"email": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"path": {
-				Type:     schema.TypeString,
-				Default:  "users",
-				Optional: true,
-			},
-			"groups": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Computed: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_CORE_USER,
+			map[string]*schema.Schema{
+				"username": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"name": {
+					Type:     schema.TypeString,
+					Default:  "",
+					Optional: true,
+				},
+				"type": {
+					Type:             schema.TypeString,
+					Default:          api.USERTYPEENUM_INTERNAL,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedUserTypeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserTypeEnumEnumValues),
+				},
+				"password": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: `Optionally set the user's password. Changing the password in authentik will not trigger an update here.`,
+				},
+				"is_active": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"email": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"path": {
+					Type:     schema.TypeString,
+					Default:  "users",
+					Optional: true,
+				},
+				"groups": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Computed: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"attributes": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
 				},
 			},
-			"attributes": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-		},
+		),
 	}
 }
 

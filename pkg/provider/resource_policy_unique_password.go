@@ -19,27 +19,30 @@ func resourcePolicyUniquePassword() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_POLICIES_UNIQUE_PASSWORD_UNIQUEPASSWORDPOLICY,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"execution_logging": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"password_field": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "password",
+				},
+				"num_historical_passwords": {
+					Type:     schema.TypeInt,
+					Default:  1,
+					Optional: true,
+				},
 			},
-			"execution_logging": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"password_field": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "password",
-			},
-			"num_historical_passwords": {
-				Type:     schema.TypeInt,
-				Default:  1,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

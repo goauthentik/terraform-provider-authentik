@@ -46,3 +46,5 @@ resource "authentik_stage_mutual_tls" "mtls" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_mtls`. Generated.
+- `meta_model` (String) Defaults to `mutualtlsstage`. Generated.

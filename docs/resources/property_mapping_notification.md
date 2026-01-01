@@ -31,3 +31,5 @@ resource "authentik_property_mapping_notification" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_events`. Generated.
+- `meta_model` (String) Defaults to `notificationwebhookmapping`. Generated.

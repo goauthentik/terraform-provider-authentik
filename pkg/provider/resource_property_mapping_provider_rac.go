@@ -19,25 +19,28 @@ func resourcePropertyMappingProviderRAC() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_RAC_RACPROPERTYMAPPING,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"expression": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					DiffSuppressFunc: helpers.DiffSuppressExpression,
+				},
+				"settings": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
+				},
 			},
-			"expression": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
-			},
-			"settings": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-		},
+		),
 	}
 }
 

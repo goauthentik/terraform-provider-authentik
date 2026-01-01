@@ -19,55 +19,58 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"not_configured_action": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedNotConfiguredActionEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedNotConfiguredActionEnumEnumValues),
-			},
-			"device_classes": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_AUTHENTICATOR_VALIDATE_AUTHENTICATORVALIDATESTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"not_configured_action": {
 					Type:             schema.TypeString,
-					Description:      helpers.EnumToDescription(api.AllowedDeviceClassesEnumEnumValues),
-					ValidateDiagFunc: helpers.StringInEnum(api.AllowedDeviceClassesEnumEnumValues),
+					Required:         true,
+					Description:      helpers.EnumToDescription(api.AllowedNotConfiguredActionEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedNotConfiguredActionEnumEnumValues),
+				},
+				"device_classes": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						Description:      helpers.EnumToDescription(api.AllowedDeviceClassesEnumEnumValues),
+						ValidateDiagFunc: helpers.StringInEnum(api.AllowedDeviceClassesEnumEnumValues),
+					},
+				},
+				"configuration_stages": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"last_auth_threshold": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "seconds=0",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"webauthn_user_verification": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.USERVERIFICATIONENUM_PREFERRED,
+					Description:      helpers.EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserVerificationEnumEnumValues),
+				},
+				"webauthn_allowed_device_types": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 			},
-			"configuration_stages": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"last_auth_threshold": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "seconds=0",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"webauthn_user_verification": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERVERIFICATIONENUM_PREFERRED,
-				Description:      helpers.EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserVerificationEnumEnumValues),
-			},
-			"webauthn_allowed_device_types": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-		},
+		),
 	}
 }
 

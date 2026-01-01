@@ -53,3 +53,5 @@ resource "authentik_stage_redirect" "flow" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_redirect`. Generated.
+- `meta_model` (String) Defaults to `redirectstage`. Generated.

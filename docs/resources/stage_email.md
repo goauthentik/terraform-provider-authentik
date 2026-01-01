@@ -47,3 +47,5 @@ resource "authentik_stage_email" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_email`. Generated.
+- `meta_model` (String) Defaults to `emailstage`. Generated.

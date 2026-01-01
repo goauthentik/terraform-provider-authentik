@@ -62,3 +62,5 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_authenticator_webauthn`. Generated.
+- `meta_model` (String) Defaults to `authenticatorwebauthnstage`. Generated.

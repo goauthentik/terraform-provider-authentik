@@ -29,3 +29,5 @@ resource "authentik_stage_dummy" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_dummy`. Generated.
+- `meta_model` (String) Defaults to `dummystage`. Generated.

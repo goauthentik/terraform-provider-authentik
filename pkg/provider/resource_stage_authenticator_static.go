@@ -19,31 +19,34 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_AUTHENTICATOR_STATIC_AUTHENTICATORSTATICSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"friendly_name": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"configure_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"token_count": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  6,
+				},
+				"token_length": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  12,
+				},
 			},
-			"friendly_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"configure_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"token_count": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  6,
-			},
-			"token_length": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  12,
-			},
-		},
+		),
 	}
 }
 

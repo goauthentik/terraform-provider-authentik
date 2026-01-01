@@ -106,3 +106,5 @@ resource "authentik_source_oauth" "name" {
 
 - `callback_uri` (String) Generated.
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_sources_oauth`. Generated.
+- `meta_model` (String) Defaults to `oauthsource`. Generated.

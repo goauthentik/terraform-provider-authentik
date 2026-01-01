@@ -19,26 +19,29 @@ func resourceStageConsent() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_CONSENT_CONSENTSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE,
+					Description:      helpers.EnumToDescription(api.AllowedConsentStageModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
+				},
+				"consent_expire_in": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "weeks=4",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
 			},
-			"mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE,
-				Description:      helpers.EnumToDescription(api.AllowedConsentStageModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
-			},
-			"consent_expire_in": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "weeks=4",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-		},
+		),
 	}
 }
 

@@ -19,80 +19,83 @@ func resourceStageAuthenticatorEmail() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_AUTHENTICATOR_EMAIL_AUTHENTICATOREMAILSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"friendly_name": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"configure_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"use_global_settings": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"host": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "localhost",
+				},
+				"port": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  25,
+				},
+				"username": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"password": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
+				"use_tls": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"use_ssl": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"timeout": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  30,
+				},
+				"from_address": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "system@authentik.local",
+				},
+				"token_expiry": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=30",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"subject": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "authentik",
+				},
+				"template": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "email/password_reset.html",
+				},
 			},
-			"friendly_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"configure_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"use_global_settings": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"host": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "localhost",
-			},
-			"port": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  25,
-			},
-			"username": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"password": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
-			},
-			"use_tls": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"use_ssl": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  30,
-			},
-			"from_address": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "system@authentik.local",
-			},
-			"token_expiry": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=30",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"subject": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "authentik",
-			},
-			"template": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "email/password_reset.html",
-			},
-		},
+		),
 	}
 }
 

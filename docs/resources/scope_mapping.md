@@ -30,3 +30,5 @@ Manage Scope Provider Property mappings
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_providers_oauth2`. Generated.
+- `meta_model` (String) Defaults to `scopemapping`. Generated.

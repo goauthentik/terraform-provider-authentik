@@ -19,17 +19,20 @@ func resourcePropertyMappingProviderSCIM() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_SCIM_SCIMMAPPING,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"expression": {
+					Type:             schema.TypeString,
+					Required:         true,
+					DiffSuppressFunc: helpers.DiffSuppressExpression,
+				},
 			},
-			"expression": {
-				Type:             schema.TypeString,
-				Required:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
-			},
-		},
+		),
 	}
 }
 

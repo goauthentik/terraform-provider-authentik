@@ -22,3 +22,5 @@ Manage SCIM Source Property mappings
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_sources_scim`. Generated.
+- `meta_model` (String) Defaults to `scimsourcepropertymapping`. Generated.

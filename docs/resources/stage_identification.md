@@ -67,3 +67,5 @@ resource "authentik_stage_identification" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_identification`. Generated.
+- `meta_model` (String) Defaults to `identificationstage`. Generated.

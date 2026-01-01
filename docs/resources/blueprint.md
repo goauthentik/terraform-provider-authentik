@@ -40,3 +40,5 @@ resource "authentik_blueprint" "instance" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_blueprints`. Generated.
+- `meta_model` (String) Defaults to `blueprintinstance`. Generated.

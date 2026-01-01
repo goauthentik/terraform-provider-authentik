@@ -20,57 +20,60 @@ func resourceProviderLDAP() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_LDAP_LDAPPROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"bind_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"unbind_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"base_dn": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"certificate": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"tls_server_name": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"uid_start_number": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  2000,
+				},
+				"gid_start_number": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  4000,
+				},
+				"search_mode": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  api.LDAPAPIACCESSMODE_DIRECT,
+				},
+				"bind_mode": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  api.LDAPAPIACCESSMODE_DIRECT,
+				},
+				"mfa_support": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
 			},
-			"bind_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"unbind_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"base_dn": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"certificate": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"tls_server_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"uid_start_number": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  2000,
-			},
-			"gid_start_number": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  4000,
-			},
-			"search_mode": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.LDAPAPIACCESSMODE_DIRECT,
-			},
-			"bind_mode": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.LDAPAPIACCESSMODE_DIRECT,
-			},
-			"mfa_support": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-		},
+		),
 	}
 }
 

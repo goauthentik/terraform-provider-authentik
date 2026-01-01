@@ -30,3 +30,5 @@ Manage SAML Provider Property mappings
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_providers_saml`. Generated.
+- `meta_model` (String) Defaults to `samlpropertymapping`. Generated.

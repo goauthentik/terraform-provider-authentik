@@ -19,66 +19,69 @@ func resourceFlow() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_FLOWS_FLOW,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"title": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"designation": {
+					Type:             schema.TypeString,
+					Required:         true,
+					Description:      helpers.EnumToDescription(api.AllowedFlowDesignationEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedFlowDesignationEnumEnumValues),
+				},
+				"authentication": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.AUTHENTICATIONENUM_NONE,
+					Description:      helpers.EnumToDescription(api.AllowedAuthenticationEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthenticationEnumEnumValues),
+				},
+				"layout": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.FLOWLAYOUTENUM_STACKED,
+					Description:      helpers.EnumToDescription(api.AllowedFlowLayoutEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedFlowLayoutEnumEnumValues),
+				},
+				"background": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Optional URL to an image which will be used as the background during the flow.",
+				},
+				"policy_engine_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.POLICYENGINEMODE_ANY,
+					Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				},
+				"denied_action": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  api.DENIEDACTIONENUM_MESSAGE_CONTINUE,
+				},
+				"compatibility_mode": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
 			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"title": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"designation": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedFlowDesignationEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedFlowDesignationEnumEnumValues),
-			},
-			"authentication": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.AUTHENTICATIONENUM_NONE,
-				Description:      helpers.EnumToDescription(api.AllowedAuthenticationEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthenticationEnumEnumValues),
-			},
-			"layout": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.FLOWLAYOUTENUM_STACKED,
-				Description:      helpers.EnumToDescription(api.AllowedFlowLayoutEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedFlowLayoutEnumEnumValues),
-			},
-			"background": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Optional URL to an image which will be used as the background during the flow.",
-			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
-			},
-			"denied_action": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.DENIEDACTIONENUM_MESSAGE_CONTINUE,
-			},
-			"compatibility_mode": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-		},
+		),
 	}
 }
 

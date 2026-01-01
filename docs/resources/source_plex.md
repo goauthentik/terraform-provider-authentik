@@ -67,3 +67,5 @@ resource "authentik_source_plex" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_sources_plex`. Generated.
+- `meta_model` (String) Defaults to `plexsource`. Generated.

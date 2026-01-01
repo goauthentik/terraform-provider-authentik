@@ -19,82 +19,85 @@ func resourceSourcePlex() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "goauthentik.io/sources/%(slug)s",
-				Optional: true,
-			},
-			"authentication_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enrollment_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
-			},
-			"user_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
-			},
-			"group_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_SOURCES_PLEX_PLEXSOURCE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user_path_template": {
+					Type:     schema.TypeString,
+					Default:  "goauthentik.io/sources/%(slug)s",
+					Optional: true,
+				},
+				"authentication_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enrollment_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"policy_engine_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.POLICYENGINEMODE_ANY,
+					Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				},
+				"user_matching_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
+					Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				},
+				"group_matching_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
+					Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				},
 
-			"client_id": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"allowed_servers": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"client_id": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"allowed_servers": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"allow_friends": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"plex_token": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
 				},
 			},
-			"allow_friends": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"plex_token": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-		},
+		),
 	}
 }
 

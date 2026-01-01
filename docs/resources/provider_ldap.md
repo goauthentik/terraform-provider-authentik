@@ -54,3 +54,5 @@ resource "authentik_application" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_providers_ldap`. Generated.
+- `meta_model` (String) Defaults to `ldapprovider`. Generated.

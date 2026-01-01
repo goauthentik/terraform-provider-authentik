@@ -19,63 +19,66 @@ func resourceStageAuthenticatorSms() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_AUTHENTICATOR_SMS_AUTHENTICATORSMSSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"friendly_name": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"configure_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"sms_provider": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.PROVIDERENUM_TWILIO,
+					Description:      helpers.EnumToDescription(api.AllowedProviderEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedProviderEnumEnumValues),
+				},
+				"from_number": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"account_sid": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
+				"auth": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
+				"auth_type": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.AUTHTYPEENUM_BASIC,
+					Description:      helpers.EnumToDescription(api.AllowedAuthTypeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthTypeEnumEnumValues),
+				},
+				"auth_password": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
+				"mapping": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"verify_only": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
 			},
-			"friendly_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"configure_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"sms_provider": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.PROVIDERENUM_TWILIO,
-				Description:      helpers.EnumToDescription(api.AllowedProviderEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProviderEnumEnumValues),
-			},
-			"from_number": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"account_sid": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-			"auth": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-			"auth_type": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.AUTHTYPEENUM_BASIC,
-				Description:      helpers.EnumToDescription(api.AllowedAuthTypeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthTypeEnumEnumValues),
-			},
-			"auth_password": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
-			},
-			"mapping": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"verify_only": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-		},
+		),
 	}
 }
 

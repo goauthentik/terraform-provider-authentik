@@ -19,35 +19,38 @@ func resourceStagePassword() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"backends": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem: &schema.Schema{
-					Type:             schema.TypeString,
-					Description:      helpers.EnumToDescription(api.AllowedBackendsEnumEnumValues),
-					ValidateDiagFunc: helpers.StringInEnum(api.AllowedBackendsEnumEnumValues),
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_PASSWORD_PASSWORDSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"backends": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						Description:      helpers.EnumToDescription(api.AllowedBackendsEnumEnumValues),
+						ValidateDiagFunc: helpers.StringInEnum(api.AllowedBackendsEnumEnumValues),
+					},
+				},
+				"configure_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"failed_attempts_before_cancel": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  5,
+				},
+				"allow_show_password": {
+					Type:     schema.TypeBool,
+					Default:  false,
+					Optional: true,
 				},
 			},
-			"configure_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"failed_attempts_before_cancel": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  5,
-			},
-			"allow_show_password": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

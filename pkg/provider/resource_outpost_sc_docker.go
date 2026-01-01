@@ -19,30 +19,33 @@ func resourceServiceConnectionDocker() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_OUTPOSTS_DOCKERSERVICECONNECTION,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"local": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"url": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "http+unix:///var/run/docker.sock",
+				},
+				"tls_verification": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"tls_authentication": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
 			},
-			"local": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"url": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "http+unix:///var/run/docker.sock",
-			},
-			"tls_verification": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"tls_authentication": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

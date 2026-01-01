@@ -20,53 +20,56 @@ func resourceToken() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			// Computed
-			"key": {
-				Type:      schema.TypeString,
-				Sensitive: true,
-				Computed:  true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_CORE_TOKEN,
+			map[string]*schema.Schema{
+				// Computed
+				"key": {
+					Type:      schema.TypeString,
+					Sensitive: true,
+					Computed:  true,
+				},
+				"expires_in": {
+					Type:     schema.TypeInt,
+					Computed: true,
+				},
+				// Meta
+				"retrieve_key": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				// Actual
+				"identifier": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user": {
+					Type:     schema.TypeInt,
+					Required: true,
+				},
+				"intent": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.INTENTENUM_API,
+					Description:      helpers.EnumToDescription(api.AllowedIntentEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedIntentEnumEnumValues),
+				},
+				"expires": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"expiring": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"description": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
 			},
-			"expires_in": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-			// Meta
-			"retrieve_key": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			// Actual
-			"identifier": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user": {
-				Type:     schema.TypeInt,
-				Required: true,
-			},
-			"intent": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.INTENTENUM_API,
-				Description:      helpers.EnumToDescription(api.AllowedIntentEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedIntentEnumEnumValues),
-			},
-			"expires": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"expiring": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

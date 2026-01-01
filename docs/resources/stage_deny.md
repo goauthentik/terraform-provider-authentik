@@ -33,3 +33,5 @@ resource "authentik_stage_deny" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_deny`. Generated.
+- `meta_model` (String) Defaults to `denystage`. Generated.

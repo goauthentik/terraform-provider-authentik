@@ -63,3 +63,5 @@ resource "authentik_stage_prompt_field" "field" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_prompt`. Generated.
+- `meta_model` (String) Defaults to `prompt`. Generated.

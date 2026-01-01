@@ -19,40 +19,43 @@ func resourceStageMutualTLS() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.MUTUALTLSSTAGEMODEENUM_OPTIONAL,
-				Description:      helpers.EnumToDescription(api.AllowedMutualTLSStageModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedMutualTLSStageModeEnumEnumValues),
-			},
-			"cert_attribute": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.CERTATTRIBUTEENUM_EMAIL,
-				Description:      helpers.EnumToDescription(api.AllowedCertAttributeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedCertAttributeEnumEnumValues),
-			},
-			"user_attribute": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERATTRIBUTEENUM_EMAIL,
-				Description:      helpers.EnumToDescription(api.AllowedUserAttributeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserAttributeEnumEnumValues),
-			},
-			"certificate_authorities": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_MTLS_MUTUALTLSSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.MUTUALTLSSTAGEMODEENUM_OPTIONAL,
+					Description:      helpers.EnumToDescription(api.AllowedMutualTLSStageModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedMutualTLSStageModeEnumEnumValues),
+				},
+				"cert_attribute": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.CERTATTRIBUTEENUM_EMAIL,
+					Description:      helpers.EnumToDescription(api.AllowedCertAttributeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedCertAttributeEnumEnumValues),
+				},
+				"user_attribute": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.USERATTRIBUTEENUM_EMAIL,
+					Description:      helpers.EnumToDescription(api.AllowedUserAttributeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserAttributeEnumEnumValues),
+				},
+				"certificate_authorities": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 			},
-		},
+		),
 	}
 }
 

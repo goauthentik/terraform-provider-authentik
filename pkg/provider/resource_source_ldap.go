@@ -19,142 +19,145 @@ func resourceSourceLDAP() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "goauthentik.io/sources/%(slug)s",
-				Optional: true,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_SOURCES_LDAP_LDAPSOURCE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user_path_template": {
+					Type:     schema.TypeString,
+					Default:  "goauthentik.io/sources/%(slug)s",
+					Optional: true,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
 
-			"server_uri": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"bind_cn": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"bind_password": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-			"start_tls": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"sni": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"base_dn": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"additional_user_dn": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"additional_group_dn": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"user_object_filter": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "(objectClass=person)",
-			},
-			"user_membership_attribute": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "distinguishedName",
-			},
-			"group_object_filter": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "(objectClass=group)",
-			},
-			"group_membership_field": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "member",
-			},
-			"object_uniqueness_field": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "objectSid",
-			},
-			"lookup_groups_from_user": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"sync_users": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"sync_users_password": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"sync_groups": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"sync_parent_group": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"password_login_update_internal_password": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"delete_not_found_objects": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"property_mappings": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"server_uri": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"bind_cn": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"bind_password": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
+				"start_tls": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"sni": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"base_dn": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"additional_user_dn": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"additional_group_dn": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"user_object_filter": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "(objectClass=person)",
+				},
+				"user_membership_attribute": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "distinguishedName",
+				},
+				"group_object_filter": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "(objectClass=group)",
+				},
+				"group_membership_field": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "member",
+				},
+				"object_uniqueness_field": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "objectSid",
+				},
+				"lookup_groups_from_user": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"sync_users": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"sync_users_password": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"sync_groups": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"sync_parent_group": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"password_login_update_internal_password": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"delete_not_found_objects": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"property_mappings": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"property_mappings_group": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 			},
-			"property_mappings_group": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-		},
+		),
 	}
 }
 

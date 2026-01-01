@@ -19,43 +19,46 @@ func resourceStageAuthenticatorDuo() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_AUTHENTICATOR_DUO_AUTHENTICATORDUOSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"friendly_name": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"configure_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"client_id": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"client_secret": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
+				"admin_integration_key": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"admin_secret_key": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
+				"api_hostname": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
 			},
-			"friendly_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"configure_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"client_id": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"client_secret": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-			"admin_integration_key": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"admin_secret_key": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
-			},
-			"api_hostname": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-		},
+		),
 	}
 }
 

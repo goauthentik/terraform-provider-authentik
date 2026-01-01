@@ -19,86 +19,89 @@ func resourceBrand() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"domain": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"default": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"branding_title": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "authentik",
-			},
-			"branding_logo": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"branding_default_flow_background": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "/static/dist/assets/images/flow_background.jpg",
-			},
-			"branding_custom_css": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"branding_favicon": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"flow_authentication": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"flow_invalidation": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"flow_recovery": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"flow_unenrollment": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"flow_user_settings": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"flow_device_code": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"web_certificate": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"client_certificates": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_BRANDS_BRAND,
+			map[string]*schema.Schema{
+				"domain": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"default": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"branding_title": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "authentik",
+				},
+				"branding_logo": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"branding_default_flow_background": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "/static/dist/assets/images/flow_background.jpg",
+				},
+				"branding_custom_css": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"branding_favicon": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"flow_authentication": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"flow_invalidation": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"flow_recovery": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"flow_unenrollment": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"flow_user_settings": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"flow_device_code": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"web_certificate": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"client_certificates": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"default_application": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"attributes": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
 				},
 			},
-			"default_application": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"attributes": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-		},
+		),
 	}
 }
 

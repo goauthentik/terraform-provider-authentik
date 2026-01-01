@@ -36,3 +36,5 @@ resource "authentik_policy_dummy" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_policies_dummy`. Generated.
+- `meta_model` (String) Defaults to `dummypolicy`. Generated.

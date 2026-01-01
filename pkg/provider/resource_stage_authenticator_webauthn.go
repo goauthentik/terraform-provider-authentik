@@ -19,52 +19,55 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"friendly_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"configure_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"user_verification": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERVERIFICATIONENUM_PREFERRED,
-				Description:      helpers.EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserVerificationEnumEnumValues),
-			},
-			"resident_key_requirement": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.RESIDENTKEYREQUIREMENTENUM_PREFERRED,
-				Description:      helpers.EnumToDescription(api.AllowedResidentKeyRequirementEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedResidentKeyRequirementEnumEnumValues),
-			},
-			"authenticator_attachment": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedAuthenticatorAttachmentEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthenticatorAttachmentEnumEnumValues),
-			},
-			"device_type_restrictions": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_AUTHENTICATOR_WEBAUTHN_AUTHENTICATORWEBAUTHNSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"friendly_name": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"configure_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"user_verification": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.USERVERIFICATIONENUM_PREFERRED,
+					Description:      helpers.EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserVerificationEnumEnumValues),
+				},
+				"resident_key_requirement": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.RESIDENTKEYREQUIREMENTENUM_PREFERRED,
+					Description:      helpers.EnumToDescription(api.AllowedResidentKeyRequirementEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedResidentKeyRequirementEnumEnumValues),
+				},
+				"authenticator_attachment": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedAuthenticatorAttachmentEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedAuthenticatorAttachmentEnumEnumValues),
+				},
+				"device_type_restrictions": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"max_attempts": {
+					Type:     schema.TypeInt,
+					Optional: true,
 				},
 			},
-			"max_attempts": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

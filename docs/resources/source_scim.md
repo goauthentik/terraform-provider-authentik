@@ -39,5 +39,7 @@ resource "authentik_source_scim" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_sources_scim`. Generated.
+- `meta_model` (String) Defaults to `scimsource`. Generated.
 - `scim_url` (String) SCIM URL Generated.
 - `token` (String) SCIM URL Generated.

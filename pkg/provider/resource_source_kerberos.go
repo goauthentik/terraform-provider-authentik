@@ -19,127 +19,130 @@ func resourceSourceKerberos() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "goauthentik.io/sources/%(slug)s",
-				Optional: true,
-			},
-			"authentication_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enrollment_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
-			},
-			"user_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
-			},
-			"group_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_SOURCES_KERBEROS_KERBEROSSOURCE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user_path_template": {
+					Type:     schema.TypeString,
+					Default:  "goauthentik.io/sources/%(slug)s",
+					Optional: true,
+				},
+				"authentication_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enrollment_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"policy_engine_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.POLICYENGINEMODE_ANY,
+					Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				},
+				"user_matching_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
+					Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+				},
+				"group_matching_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
+					Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+				},
 
-			"realm": {
-				Description: "Kerberos realm",
-				Type:        schema.TypeString,
-				Required:    true,
+				"realm": {
+					Description: "Kerberos realm",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"krb5_conf": {
+					Description: "Custom krb5.conf to use. Uses the system one by default",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"sync_users": {
+					Description: "Sync users from Kerberos into authentik",
+					Type:        schema.TypeBool,
+					Default:     true,
+					Optional:    true,
+				},
+				"sync_users_password": {
+					Description: "When a user changes their password, sync it back to Kerberos",
+					Type:        schema.TypeBool,
+					Default:     true,
+					Optional:    true,
+				},
+				"sync_principal": {
+					Description: "Principal to authenticate to kadmin for sync.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"sync_password": {
+					Description: "Password to authenticate to kadmin for sync",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+				},
+				"sync_keytab": {
+					Description: "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+				},
+				"sync_ccache": {
+					Description: "Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"spnego_server_name": {
+					Description: "Force the use of a specific server name for SPNEGO",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"spnego_keytab": {
+					Description: "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+				},
+				"spnego_ccache": {
+					Description: "Credential cache to use for SPNEGO in form type:residual",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"password_login_update_internal_password": {
+					Description: "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
+				},
 			},
-			"krb5_conf": {
-				Description: "Custom krb5.conf to use. Uses the system one by default",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"sync_users": {
-				Description: "Sync users from Kerberos into authentik",
-				Type:        schema.TypeBool,
-				Default:     true,
-				Optional:    true,
-			},
-			"sync_users_password": {
-				Description: "When a user changes their password, sync it back to Kerberos",
-				Type:        schema.TypeBool,
-				Default:     true,
-				Optional:    true,
-			},
-			"sync_principal": {
-				Description: "Principal to authenticate to kadmin for sync.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"sync_password": {
-				Description: "Password to authenticate to kadmin for sync",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-			},
-			"sync_keytab": {
-				Description: "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-			},
-			"sync_ccache": {
-				Description: "Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"spnego_server_name": {
-				Description: "Force the use of a specific server name for SPNEGO",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"spnego_keytab": {
-				Description: "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-			},
-			"spnego_ccache": {
-				Description: "Credential cache to use for SPNEGO in form type:residual",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"password_login_update_internal_password": {
-				Description: "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-			},
-		},
+		),
 	}
 }
 

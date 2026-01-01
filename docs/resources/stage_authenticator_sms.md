@@ -40,3 +40,5 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_stages_authenticator_sms`. Generated.
+- `meta_model` (String) Defaults to `authenticatorsmsstage`. Generated.

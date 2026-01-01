@@ -26,3 +26,5 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Defaults to `authentik_rbac`. Generated.
+- `meta_model` (String) Defaults to `initialpermissions`. Generated.

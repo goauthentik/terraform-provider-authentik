@@ -19,37 +19,40 @@ func resourcePolicyEventMatcher() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_POLICIES_EVENT_MATCHER_EVENTMATCHERPOLICY,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"execution_logging": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"action": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"client_ip": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"app": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedAppEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedAppEnumEnumValues),
+				},
+				"model": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedModelEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedModelEnumEnumValues),
+				},
 			},
-			"execution_logging": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"action": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"client_ip": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"app": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedAppEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedAppEnumEnumValues),
-			},
-			"model": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedModelEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedModelEnumEnumValues),
-			},
-		},
+		),
 	}
 }
 
