@@ -2,7 +2,7 @@
 page_title: "authentik_source_saml Resource - terraform-provider-authentik"
 subcategory: "Directory"
 description: |-
-
+  
 ---
 
 # authentik_source_saml (Resource)
@@ -95,6 +95,8 @@ resource "authentik_source_saml" "name" {
   - `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512`
   - `http://www.w3.org/2000/09/xmldsig#dsa-sha1`
  Defaults to `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`.
+- `signed_assertion` (Boolean) Defaults to `false`.
+- `signed_response` (Boolean) Defaults to `false`.
 - `signing_kp` (String)
 - `slo_url` (String)
 - `temporary_user_delete_after` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=1`.
@@ -108,8 +110,6 @@ resource "authentik_source_saml" "name" {
 - `user_path_template` (String) Defaults to `goauthentik.io/sources/%(slug)s`.
 - `uuid` (String) Generated.
 - `verification_kp` (String)
-- `signed_assertion` (Boolean)
-- `signed_response` (Boolean)
 
 ### Read-Only
 
