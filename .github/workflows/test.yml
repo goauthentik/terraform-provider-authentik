@@ -36,7 +36,7 @@ jobs:
           cache: true
       - uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v8
   test:
-    name: Acceptance tests - Terraform ${{ matrix.terraform }} - authentik ${{ matrix.authentik_version }}
+    name: Acceptance tests - authentik ${{ matrix.authentik_version }} - Terraform ${{ matrix.terraform }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
