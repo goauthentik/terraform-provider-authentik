@@ -88,6 +88,7 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		OpenInNewTab:     api.PtrBool(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		Group:            helpers.GetP[string](d, "group"),
+		MetaIcon:         helpers.GetP[string](d, "meta_icon"),
 		MetaLaunchUrl:    helpers.GetP[string](d, "meta_launch_url"),
 		MetaDescription:  helpers.GetP[string](d, "meta_description"),
 		MetaPublisher:    helpers.GetP[string](d, "meta_publisher"),
@@ -112,14 +113,6 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 
 	d.SetId(res.Slug)
 
-	if i, iok := d.GetOk("meta_icon"); iok {
-		hr, err := c.client.CoreApi.CoreApplicationsSetIconUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
-			Url: i.(string),
-		}).Execute()
-		if err != nil {
-			return helpers.HTTPToDiag(d, hr, err)
-		}
-	}
 	return resourceApplicationRead(ctx, d, m)
 }
 
@@ -140,7 +133,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "open_in_new_tab", res.OpenInNewTab)
 	helpers.SetWrapper(d, "protocol_provider", res.Provider.Get())
 	helpers.SetWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
-	helpers.SetWrapper(d, "meta_icon", res.MetaIcon.Get())
+	helpers.SetWrapper(d, "meta_icon", res.MetaIcon)
 	helpers.SetWrapper(d, "meta_description", res.MetaDescription)
 	helpers.SetWrapper(d, "meta_publisher", res.MetaPublisher)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
@@ -156,15 +149,6 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 	res, hr, err := c.client.CoreApi.CoreApplicationsUpdate(ctx, d.Id()).ApplicationRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	if i, iok := d.GetOk("meta_icon"); iok {
-		hr, err := c.client.CoreApi.CoreApplicationsSetIconUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
-			Url: i.(string),
-		}).Execute()
-		if err != nil {
-			return helpers.HTTPToDiag(d, hr, err)
-		}
 	}
 
 	d.SetId(res.Slug)
