@@ -24,14 +24,16 @@ func resourceOutpostProviderAttachment() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"outpost": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The ID of the outpost.",
 			},
 			"protocol_provider": {
-				Type:     schema.TypeInt,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeInt,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The ID of the provider.",
 			},
 		},
 	}
