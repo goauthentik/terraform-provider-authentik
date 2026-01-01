@@ -91,6 +91,7 @@ resource "authentik_source_oauth" "name" {
   - `any`
  Defaults to `any`.
 - `profile_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
+- `promoted` (Boolean) Defaults to `false`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
 - `request_token_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
