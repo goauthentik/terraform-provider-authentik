@@ -30,7 +30,7 @@ resource "authentik_outpost" "outpost" {
 }
 
 resource "authentik_outpost_provider_attachment" "attachment" {
-  outpost  = authentik_outpost.outpost.id
+  outpost           = authentik_outpost.outpost.id
   protocol_provider = authentik_provider_proxy.proxy.id
 }
 
@@ -41,7 +41,7 @@ data "authentik_outpost" "embedded" {
 }
 
 resource "authentik_outpost_provider_attachment" "attachment_embedded" {
-  outpost  = data.authentik_outpost.embedded.id
+  outpost           = data.authentik_outpost.embedded.id
   protocol_provider = authentik_provider_proxy.proxy.id
 }
 ```
