@@ -22,6 +22,7 @@ build:
 gen:
 	golangci-lint run -v
 	AUTHENTIK_URL="" go tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+	terraform fmt -recursive .
 
 gen-client-go:
 	mkdir -p ${PWD}/${AUTHENTIK_MAIN}

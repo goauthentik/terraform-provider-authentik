@@ -2,10 +2,12 @@
 page_title: "authentik_outpost Data Source - terraform-provider-authentik"
 subcategory: "Applications"
 description: |-
-  
+  Get outposts by id or name
 ---
 
 # authentik_outpost (Data Source)
+
+Get outposts by id or name
 
 ## Example Usage
 
@@ -24,5 +26,8 @@ data "authentik_outpost" "by_id" {
 
 ### Optional
 
-- `id` (String) The ID of the outpost.
-- `name` (String) The name of the outpost.
+- `name` (String)
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
