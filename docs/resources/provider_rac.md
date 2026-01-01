@@ -29,5 +29,5 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_providers_rac`. Generated.
-- `meta_model` (String) Defaults to `racprovider`. Generated.
+- `meta_app` (String) Static value of `authentik_providers_rac` Generated.
+- `meta_model` (String) Static value of `racprovider` Generated.

@@ -42,5 +42,5 @@ resource "authentik_stage_authenticator_duo" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_stages_authenticator_duo`. Generated.
-- `meta_model` (String) Defaults to `authenticatorduostage`. Generated.
+- `meta_app` (String) Static value of `authentik_stages_authenticator_duo` Generated.
+- `meta_model` (String) Static value of `authenticatorduostage` Generated.

@@ -36,5 +36,5 @@ resource "authentik_policy_reputation" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_policies_reputation`. Generated.
-- `meta_model` (String) Defaults to `reputationpolicy`. Generated.
+- `meta_app` (String) Static value of `authentik_policies_reputation` Generated.
+- `meta_model` (String) Static value of `reputationpolicy` Generated.

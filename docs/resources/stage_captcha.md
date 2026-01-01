@@ -42,5 +42,5 @@ resource "authentik_stage_captcha" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_stages_captcha`. Generated.
-- `meta_model` (String) Defaults to `captchastage`. Generated.
+- `meta_app` (String) Static value of `authentik_stages_captcha` Generated.
+- `meta_model` (String) Static value of `captchastage` Generated.

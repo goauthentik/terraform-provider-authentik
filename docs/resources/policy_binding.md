@@ -69,5 +69,5 @@ resource "authentik_policy_binding" "app-access" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_policies`. Generated.
-- `meta_model` (String) Defaults to `policybinding`. Generated.
+- `meta_app` (String) Static value of `authentik_policies` Generated.
+- `meta_model` (String) Static value of `policybinding` Generated.

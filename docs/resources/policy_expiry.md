@@ -36,5 +36,5 @@ resource "authentik_policy_expiry" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_policies_expiry`. Generated.
-- `meta_model` (String) Defaults to `passwordexpirypolicy`. Generated.
+- `meta_app` (String) Static value of `authentik_policies_expiry` Generated.
+- `meta_model` (String) Static value of `passwordexpirypolicy` Generated.

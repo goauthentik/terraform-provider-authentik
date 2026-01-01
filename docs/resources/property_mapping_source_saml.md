@@ -22,5 +22,5 @@ Manage SAML Source Property mappings
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_sources_saml`. Generated.
-- `meta_model` (String) Defaults to `samlsourcepropertymapping`. Generated.
+- `meta_app` (String) Static value of `authentik_sources_saml` Generated.
+- `meta_model` (String) Static value of `samlsourcepropertymapping` Generated.

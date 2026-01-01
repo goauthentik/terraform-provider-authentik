@@ -50,5 +50,5 @@ resource "authentik_brand" "default" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_brands`. Generated.
-- `meta_model` (String) Defaults to `brand`. Generated.
+- `meta_app` (String) Static value of `authentik_brands` Generated.
+- `meta_model` (String) Static value of `brand` Generated.

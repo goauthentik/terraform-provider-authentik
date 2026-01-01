@@ -41,5 +41,5 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_providers_google_workspace`. Generated.
-- `meta_model` (String) Defaults to `googleworkspaceprovider`. Generated.
+- `meta_app` (String) Static value of `authentik_providers_google_workspace` Generated.
+- `meta_model` (String) Static value of `googleworkspaceprovider` Generated.

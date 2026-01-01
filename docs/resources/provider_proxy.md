@@ -69,5 +69,5 @@ resource "authentik_application" "name" {
 
 - `client_id` (String) Generated.
 - `id` (String) The ID of this resource.
-- `meta_app` (String) Defaults to `authentik_providers_proxy`. Generated.
-- `meta_model` (String) Defaults to `proxyprovider`. Generated.
+- `meta_app` (String) Static value of `authentik_providers_proxy` Generated.
+- `meta_model` (String) Static value of `proxyprovider` Generated.
