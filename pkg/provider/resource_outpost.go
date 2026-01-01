@@ -19,38 +19,41 @@ func resourceOutpost() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"type": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.OUTPOSTTYPEENUM_PROXY,
-				Description:      helpers.EnumToDescription(api.AllowedOutpostTypeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOutpostTypeEnumEnumValues),
-			},
-			"protocol_providers": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_OUTPOSTS_OUTPOST,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"type": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.OUTPOSTTYPEENUM_PROXY,
+					Description:      helpers.EnumToDescription(api.AllowedOutpostTypeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedOutpostTypeEnumEnumValues),
+				},
+				"protocol_providers": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
+				},
+				"service_connection": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"config": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Computed:         true,
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
 				},
 			},
-			"service_connection": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"config": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Computed:         true,
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-		},
+		),
 	}
 }
 

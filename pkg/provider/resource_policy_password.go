@@ -19,80 +19,83 @@ func resourcePolicyPassword() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"execution_logging": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"password_field": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "password",
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_POLICIES_PASSWORD_PASSWORDPOLICY,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"execution_logging": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"password_field": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "password",
+				},
 
-			"check_static_rules": {
-				Type:     schema.TypeBool,
-				Default:  true,
-				Optional: true,
-			},
-			"check_have_i_been_pwned": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
-			},
-			"check_zxcvbn": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
-			},
+				"check_static_rules": {
+					Type:     schema.TypeBool,
+					Default:  true,
+					Optional: true,
+				},
+				"check_have_i_been_pwned": {
+					Type:     schema.TypeBool,
+					Default:  false,
+					Optional: true,
+				},
+				"check_zxcvbn": {
+					Type:     schema.TypeBool,
+					Default:  false,
+					Optional: true,
+				},
 
-			"error_message": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"amount_uppercase": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"amount_lowercase": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"amount_symbols": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"amount_digits": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"length_min": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"symbol_charset": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "!\\\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
-			},
+				"error_message": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"amount_uppercase": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"amount_lowercase": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"amount_symbols": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"amount_digits": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"length_min": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"symbol_charset": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "!\\\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+				},
 
-			"hibp_allowed_count": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  1,
-			},
+				"hibp_allowed_count": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  1,
+				},
 
-			"zxcvbn_score_threshold": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  2,
+				"zxcvbn_score_threshold": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  2,
+				},
 			},
-		},
+		),
 	}
 }
 

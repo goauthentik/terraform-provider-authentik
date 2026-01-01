@@ -19,72 +19,75 @@ func resourceStageIdentification() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user_fields": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type:             schema.TypeString,
-					Description:      helpers.EnumToDescription(api.AllowedUserFieldsEnumEnumValues),
-					ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserFieldsEnumEnumValues),
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_IDENTIFICATION_IDENTIFICATIONSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user_fields": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						Description:      helpers.EnumToDescription(api.AllowedUserFieldsEnumEnumValues),
+						ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserFieldsEnumEnumValues),
+					},
+				},
+				"password_stage": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"captcha_stage": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"case_insensitive_matching": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"show_matched_user": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"pretend_user_exists": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"show_source_labels": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"enable_remember_me": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"enrollment_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"recovery_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"passwordless_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"sources": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 			},
-			"password_stage": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"captcha_stage": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"case_insensitive_matching": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"show_matched_user": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"pretend_user_exists": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"show_source_labels": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"enable_remember_me": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"enrollment_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"recovery_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"passwordless_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"sources": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-		},
+		),
 	}
 }
 

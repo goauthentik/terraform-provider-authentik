@@ -19,26 +19,29 @@ func resourceStageAuthenticatorEndpointGDTC() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_AUTHENTICATOR_ENDPOINT_GDTC_AUTHENTICATORENDPOINTGDTCSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"friendly_name": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"configure_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"credentials": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
 			},
-			"friendly_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"configure_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"credentials": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-		},
+		),
 	}
 }
 

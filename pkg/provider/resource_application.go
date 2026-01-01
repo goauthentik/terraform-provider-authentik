@@ -19,64 +19,67 @@ func resourceApplication() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"group": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"protocol_provider": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"backchannel_providers": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_CORE_APPLICATION,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"group": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"protocol_provider": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"backchannel_providers": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
+				},
+				"meta_launch_url": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"meta_icon": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"meta_description": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"meta_publisher": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"policy_engine_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.POLICYENGINEMODE_ANY,
+					Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+				},
+				"open_in_new_tab": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
 				},
 			},
-			"meta_launch_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"meta_icon": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"meta_description": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"meta_publisher": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
-			},
-			"open_in_new_tab": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-		},
+		),
 	}
 }
 

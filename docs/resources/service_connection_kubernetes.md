@@ -46,3 +46,5 @@ EOF
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_outposts` Generated.
+- `meta_model` (String) Static value of `kubernetesserviceconnection` Generated.

@@ -38,3 +38,5 @@ resource "authentik_stage_authenticator_totp" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_stages_authenticator_totp` Generated.
+- `meta_model` (String) Static value of `authenticatortotpstage` Generated.

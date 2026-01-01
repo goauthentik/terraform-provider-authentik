@@ -27,3 +27,5 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_policies_unique_password` Generated.
+- `meta_model` (String) Static value of `uniquepasswordpolicy` Generated.

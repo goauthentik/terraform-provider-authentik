@@ -19,37 +19,40 @@ func resourceEventRule() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"transports": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_EVENTS_NOTIFICATIONRULE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"transports": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"severity": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.SEVERITYENUM_WARNING,
+					Description:      helpers.EnumToDescription(api.AllowedSeverityEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedSeverityEnumEnumValues),
+				},
+				"destination_group": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Group to send notification to",
+				},
+				"destination_event_user": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
+					Description: "Send notification to event user",
 				},
 			},
-			"severity": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.SEVERITYENUM_WARNING,
-				Description:      helpers.EnumToDescription(api.AllowedSeverityEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSeverityEnumEnumValues),
-			},
-			"destination_group": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Group to send notification to",
-			},
-			"destination_event_user": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-				Description: "Send notification to event user",
-			},
-		},
+		),
 	}
 }
 

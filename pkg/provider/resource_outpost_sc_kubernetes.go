@@ -19,31 +19,34 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_OUTPOSTS_KUBERNETESSERVICECONNECTION,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"local": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"kubeconfig": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Sensitive:        true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
+				},
+				"verify_ssl": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
 			},
-			"local": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"kubeconfig": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Sensitive:        true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-			"verify_ssl": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-		},
+		),
 	}
 }
 

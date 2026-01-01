@@ -22,3 +22,5 @@ Manage OAuth Source Property mappings
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_sources_oauth` Generated.
+- `meta_model` (String) Static value of `oauthsourcepropertymapping` Generated.

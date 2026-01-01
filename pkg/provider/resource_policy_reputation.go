@@ -19,32 +19,35 @@ func resourcePolicyReputation() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_POLICIES_REPUTATION_REPUTATIONPOLICY,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"execution_logging": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"check_ip": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"check_username": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"threshold": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  10,
+				},
 			},
-			"execution_logging": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"check_ip": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"check_username": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"threshold": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  10,
-			},
-		},
+		),
 	}
 }
 

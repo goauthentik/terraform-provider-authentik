@@ -24,4 +24,6 @@ description: |-
 - `external_users` (Number) Generated.
 - `id` (String) The ID of this resource.
 - `internal_users` (Number) Generated.
+- `meta_app` (String) Static value of `authentik_enterprise` Generated.
+- `meta_model` (String) Static value of `license` Generated.
 - `name` (String) Generated.

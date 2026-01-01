@@ -19,29 +19,32 @@ func resourceEnterpriseLicense() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"key": {
-				Type:      schema.TypeString,
-				Sensitive: true,
-				Required:  true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_ENTERPRISE_LICENSE,
+			map[string]*schema.Schema{
+				"key": {
+					Type:      schema.TypeString,
+					Sensitive: true,
+					Required:  true,
+				},
+				"name": {
+					Type:     schema.TypeString,
+					Computed: true,
+				},
+				"expiry": {
+					Type:     schema.TypeInt,
+					Computed: true,
+				},
+				"internal_users": {
+					Type:     schema.TypeInt,
+					Computed: true,
+				},
+				"external_users": {
+					Type:     schema.TypeInt,
+					Computed: true,
+				},
 			},
-			"name": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"expiry": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-			"internal_users": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-			"external_users": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-		},
+		),
 	}
 }
 

@@ -37,3 +37,5 @@ resource "authentik_stage_password" "test" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_stages_password` Generated.
+- `meta_model` (String) Static value of `passwordstage` Generated.

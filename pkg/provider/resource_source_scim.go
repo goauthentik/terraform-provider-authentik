@@ -19,57 +19,60 @@ func resourceSourceSCIM() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
-			"slug": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "goauthentik.io/sources/%(slug)s",
-				Optional: true,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_SOURCES_SCIM_SCIMSOURCE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"uuid": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Computed: true,
+				},
+				"slug": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"user_path_template": {
+					Type:     schema.TypeString,
+					Default:  "goauthentik.io/sources/%(slug)s",
+					Optional: true,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
 
-			"property_mappings": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"property_mappings": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"property_mappings_group": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+
+				"scim_url": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "SCIM URL",
+				},
+				"token": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "SCIM URL",
 				},
 			},
-			"property_mappings_group": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-
-			"scim_url": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "SCIM URL",
-			},
-			"token": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "SCIM URL",
-			},
-		},
+		),
 	}
 }
 

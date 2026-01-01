@@ -20,75 +20,78 @@ func resourceProviderSCIM() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"dry_run": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
-			},
-			"url": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"token": {
-				Type:      schema.TypeString,
-				Sensitive: true,
-				Optional:  true,
-			},
-			"auth_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.SCIMAUTHENTICATIONMODEENUM_TOKEN,
-				Description:      helpers.EnumToDescription(api.AllowedSCIMAuthenticationModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSCIMAuthenticationModeEnumEnumValues),
-			},
-			"auth_oauth": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Slug of an OAuth source used for authentication",
-			},
-			"auth_oauth_params": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-			"compatibility_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.COMPATIBILITYMODEENUM_DEFAULT,
-				Description:      helpers.EnumToDescription(api.AllowedCompatibilityModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedCompatibilityModeEnumEnumValues),
-			},
-			"property_mappings": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_SCIM_SCIMPROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"dry_run": {
+					Type:     schema.TypeBool,
+					Default:  false,
+					Optional: true,
+				},
+				"url": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"token": {
+					Type:      schema.TypeString,
+					Sensitive: true,
+					Optional:  true,
+				},
+				"auth_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.SCIMAUTHENTICATIONMODEENUM_TOKEN,
+					Description:      helpers.EnumToDescription(api.AllowedSCIMAuthenticationModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedSCIMAuthenticationModeEnumEnumValues),
+				},
+				"auth_oauth": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Slug of an OAuth source used for authentication",
+				},
+				"auth_oauth_params": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
+				},
+				"compatibility_mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.COMPATIBILITYMODEENUM_DEFAULT,
+					Description:      helpers.EnumToDescription(api.AllowedCompatibilityModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedCompatibilityModeEnumEnumValues),
+				},
+				"property_mappings": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"property_mappings_group": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"exclude_users_service_account": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"filter_group": {
+					Type:     schema.TypeString,
+					Optional: true,
 				},
 			},
-			"property_mappings_group": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"exclude_users_service_account": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"filter_group": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

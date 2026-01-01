@@ -20,31 +20,34 @@ func resourceProviderSSF() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"signing_key": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"jwt_federation_providers": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_SSF_SSFPROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
-				Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
+				"signing_key": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"jwt_federation_providers": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
+					Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
+				},
+				"event_retention": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "days=30",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
 			},
-			"event_retention": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "days=30",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-		},
+		),
 	}
 }
 

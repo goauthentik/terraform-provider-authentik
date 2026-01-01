@@ -19,60 +19,63 @@ func resourceStagePromptField() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_PROMPT_PROMPT,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"field_key": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"label": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"type": {
+					Type:             schema.TypeString,
+					Required:         true,
+					Description:      helpers.EnumToDescription(api.AllowedPromptTypeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedPromptTypeEnumEnumValues),
+				},
+				"required": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"placeholder": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					DiffSuppressFunc: helpers.DiffSuppressExpression,
+				},
+				"placeholder_expression": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"initial_value": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					DiffSuppressFunc: helpers.DiffSuppressExpression,
+				},
+				"initial_value_expression": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"order": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"sub_text": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
 			},
-			"field_key": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"label": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"type": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedPromptTypeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPromptTypeEnumEnumValues),
-			},
-			"required": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"placeholder": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
-			},
-			"placeholder_expression": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"initial_value": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
-			},
-			"initial_value_expression": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"order": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"sub_text": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-		},
+		),
 	}
 }
 

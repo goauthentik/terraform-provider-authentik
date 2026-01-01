@@ -53,3 +53,5 @@ resource "authentik_token" "default" {
 - `expires_in` (Number) Generated.
 - `id` (String) The ID of this resource.
 - `key` (String, Sensitive) Generated.
+- `meta_app` (String) Static value of `authentik_core` Generated.
+- `meta_model` (String) Static value of `token` Generated.

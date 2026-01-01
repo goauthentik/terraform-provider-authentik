@@ -20,121 +20,124 @@ func resourceProviderProxy() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"client_id": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_PROXY_PROXYPROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"client_id": {
+					Type:     schema.TypeString,
+					Computed: true,
+				},
 
-			"authentication_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"authorization_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"invalidation_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"internal_host": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"external_host": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"internal_host_ssl_validation": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"property_mappings": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"authentication_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
 				},
-				Optional: true,
-			},
-			"skip_path_regex": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
-			},
-			"intercept_header_auth": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"basic_auth_enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"basic_auth_username_attribute": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"basic_auth_password_attribute": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.PROXYMODE_PROXY,
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedProxyModeEnumValues),
-				Description:      helpers.EnumToDescription(api.AllowedProxyModeEnumValues),
-			},
-			"cookie_domain": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"access_token_validity": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=10",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"refresh_token_validity": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "days=30",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"jwks_sources": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"authorization_flow": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
-				Description: "Deprecated. Use `jwt_federation_sources` instead.",
-			},
-			"jwt_federation_sources": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"invalidation_flow": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
-				Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
-			},
-			"jwt_federation_providers": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+				"internal_host": {
+					Type:     schema.TypeString,
+					Optional: true,
 				},
-				Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
+				"external_host": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"internal_host_ssl_validation": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"property_mappings": {
+					Type: schema.TypeList,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Optional: true,
+				},
+				"skip_path_regex": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					DiffSuppressFunc: helpers.DiffSuppressExpression,
+				},
+				"intercept_header_auth": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"basic_auth_enabled": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"basic_auth_username_attribute": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"basic_auth_password_attribute": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.PROXYMODE_PROXY,
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedProxyModeEnumValues),
+					Description:      helpers.EnumToDescription(api.AllowedProxyModeEnumValues),
+				},
+				"cookie_domain": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"access_token_validity": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=10",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"refresh_token_validity": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "days=30",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"jwks_sources": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Description: "Deprecated. Use `jwt_federation_sources` instead.",
+				},
+				"jwt_federation_sources": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
+				},
+				"jwt_federation_providers": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
+					Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
+				},
 			},
-		},
+		),
 	}
 }
 

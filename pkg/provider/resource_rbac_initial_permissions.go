@@ -20,29 +20,32 @@ func resourceRBACInitialPermissions() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"role": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"mode": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedInitialPermissionsModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedInitialPermissionsModeEnumEnumValues),
-			},
-			"permissions": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_RBAC_INITIALPERMISSIONS,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"role": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"mode": {
+					Type:             schema.TypeString,
+					Required:         true,
+					Description:      helpers.EnumToDescription(api.AllowedInitialPermissionsModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedInitialPermissionsModeEnumEnumValues),
+				},
+				"permissions": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
 				},
 			},
-		},
+		),
 	}
 }
 

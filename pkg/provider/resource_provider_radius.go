@@ -20,46 +20,49 @@ func resourceProviderRadius() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"authorization_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"invalidation_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"property_mappings": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_RADIUS_RADIUSPROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
-				Optional: true,
+				"authorization_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"invalidation_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"property_mappings": {
+					Type: schema.TypeList,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Optional: true,
+				},
+				"client_networks": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "0.0.0.0/0, ::/0",
+				},
+				"shared_secret": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
+				"mfa_support": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"certificate": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
 			},
-			"client_networks": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "0.0.0.0/0, ::/0",
-			},
-			"shared_secret": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-			"mfa_support": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"certificate": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

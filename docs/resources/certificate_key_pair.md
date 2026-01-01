@@ -59,3 +59,5 @@ resource "authentik_certificate_key_pair" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_crypto` Generated.
+- `meta_model` (String) Static value of `certificatekeypair` Generated.

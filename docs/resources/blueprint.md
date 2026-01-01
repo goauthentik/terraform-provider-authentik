@@ -40,3 +40,5 @@ resource "authentik_blueprint" "instance" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_blueprints` Generated.
+- `meta_model` (String) Static value of `blueprintinstance` Generated.

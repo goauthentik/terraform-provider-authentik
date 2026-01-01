@@ -19,45 +19,48 @@ func resourceEventTransport() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_EVENTS_NOTIFICATIONTRANSPORT,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"mode": {
+					Type:             schema.TypeString,
+					Required:         true,
+					Description:      helpers.EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
+				},
+				"webhook_url": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"webhook_mapping_body": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"webhook_mapping_headers": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"email_template": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "email/event_notification.html",
+				},
+				"email_subject_prefix": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "authentik Notification:",
+				},
+				"send_once": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
 			},
-			"mode": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
-			},
-			"webhook_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"webhook_mapping_body": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"webhook_mapping_headers": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"email_template": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "email/event_notification.html",
-			},
-			"email_subject_prefix": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "authentik Notification:",
-			},
-			"send_once": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-		},
+		),
 	}
 }
 

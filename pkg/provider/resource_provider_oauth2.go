@@ -20,145 +20,148 @@ func resourceProviderOAuth2() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"authentication_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"authorization_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"invalidation_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"property_mappings": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_OAUTH2_OAUTH2PROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
-				Optional: true,
-			},
-			"client_type": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.CLIENTTYPEENUM_CONFIDENTIAL,
-				Description:      helpers.EnumToDescription(api.AllowedClientTypeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedClientTypeEnumEnumValues),
-			},
-			"client_id": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"client_secret": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
-				Computed:  true,
-			},
-			"access_code_validity": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=1",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"access_token_validity": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=10",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"refresh_token_validity": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "days=30",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"refresh_token_threshold": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "seconds=0",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"include_claims_in_id_token": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"signing_key": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"encryption_key": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"allowed_redirect_uris": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeMap,
+				"authentication_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"authorization_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"invalidation_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"property_mappings": {
+					Type: schema.TypeList,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Optional: true,
+				},
+				"client_type": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.CLIENTTYPEENUM_CONFIDENTIAL,
+					Description:      helpers.EnumToDescription(api.AllowedClientTypeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedClientTypeEnumEnumValues),
+				},
+				"client_id": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"client_secret": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+					Computed:  true,
+				},
+				"access_code_validity": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=1",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"access_token_validity": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=10",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"refresh_token_validity": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "days=30",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"refresh_token_threshold": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "seconds=0",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"include_claims_in_id_token": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"signing_key": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"encryption_key": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"allowed_redirect_uris": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeMap,
+					},
+				},
+				"logout_method": {
+					Type:             schema.TypeString,
+					Default:          api.OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
+				},
+				"logout_uri": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"sub_mode": {
+					Type:             schema.TypeString,
+					Default:          api.SUBMODEENUM_HASHED_USER_ID,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedSubModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedSubModeEnumEnumValues),
+				},
+				"issuer_mode": {
+					Type:             schema.TypeString,
+					Default:          api.ISSUERMODEENUM_PER_PROVIDER,
+					Optional:         true,
+					Description:      helpers.EnumToDescription(api.AllowedIssuerModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedIssuerModeEnumEnumValues),
+				},
+				"jwks_sources": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Description: "Deprecated. Use `jwt_federation_sources` instead.",
+				},
+				"jwt_federation_sources": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
+				},
+				"jwt_federation_providers": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
+					Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
 				},
 			},
-			"logout_method": {
-				Type:             schema.TypeString,
-				Default:          api.OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOAuth2ProviderLogoutMethodEnumEnumValues),
-			},
-			"logout_uri": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"sub_mode": {
-				Type:             schema.TypeString,
-				Default:          api.SUBMODEENUM_HASHED_USER_ID,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedSubModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSubModeEnumEnumValues),
-			},
-			"issuer_mode": {
-				Type:             schema.TypeString,
-				Default:          api.ISSUERMODEENUM_PER_PROVIDER,
-				Optional:         true,
-				Description:      helpers.EnumToDescription(api.AllowedIssuerModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedIssuerModeEnumEnumValues),
-			},
-			"jwks_sources": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Description: "Deprecated. Use `jwt_federation_sources` instead.",
-			},
-			"jwt_federation_sources": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Description: "JWTs issued by keys configured in any of the selected sources can be used to authenticate on behalf of this provider.",
-			},
-			"jwt_federation_providers": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
-				},
-				Description: "JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.",
-			},
-		},
+		),
 	}
 }
 

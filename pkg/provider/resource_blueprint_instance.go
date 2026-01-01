@@ -19,33 +19,36 @@ func resourceBlueprintInstance() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_BLUEPRINTS_BLUEPRINTINSTANCE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"path": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"content": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"enabled": {
+					Type:     schema.TypeBool,
+					Default:  true,
+					Optional: true,
+				},
+				"context": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
+				},
 			},
-			"path": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"content": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Default:  true,
-				Optional: true,
-			},
-			"context": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-		},
+		),
 	}
 }
 

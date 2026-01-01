@@ -19,17 +19,20 @@ func resourcePropertyMappingSourceSAML() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_SOURCES_SAML_SAMLSOURCEPROPERTYMAPPING,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"expression": {
+					Type:             schema.TypeString,
+					Required:         true,
+					DiffSuppressFunc: helpers.DiffSuppressExpression,
+				},
 			},
-			"expression": {
-				Type:             schema.TypeString,
-				Required:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
-			},
-		},
+		),
 	}
 }
 

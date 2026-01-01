@@ -51,3 +51,5 @@ resource "authentik_stage_source" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_stages_source` Generated.
+- `meta_model` (String) Static value of `sourcestage` Generated.

@@ -58,3 +58,5 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_flows` Generated.
+- `meta_model` (String) Static value of `flowstagebinding` Generated.

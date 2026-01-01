@@ -46,4 +46,4 @@ resource "authentik_system_settings" "settings" {
 
 Import is supported using the following syntax:
 
-{{codefile "shell" "examples/resources/authentik_system_settings/import.sh"}}
+{{codefile "shell" "/Users/jens/dev/terraform-provider-authentik/examples/resources/authentik_system_settings/import.sh"}}

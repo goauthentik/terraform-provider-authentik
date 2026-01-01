@@ -227,3 +227,5 @@ resource "authentik_policy_event_matcher" "name" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `meta_app` (String) Static value of `authentik_policies_event_matcher` Generated.
+- `meta_model` (String) Static value of `eventmatcherpolicy` Generated.

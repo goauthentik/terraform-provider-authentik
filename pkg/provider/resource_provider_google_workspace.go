@@ -20,76 +20,79 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"dry_run": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
-			},
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_GOOGLE_WORKSPACE_GOOGLEWORKSPACEPROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"dry_run": {
+					Type:     schema.TypeBool,
+					Default:  false,
+					Optional: true,
+				},
 
-			"credentials": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-			"delegated_subject": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"default_group_email_domain": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"property_mappings": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"credentials": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
 				},
-				Optional: true,
-			},
-			"property_mappings_group": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"delegated_subject": {
+					Type:     schema.TypeString,
+					Optional: true,
 				},
-				Optional: true,
+				"default_group_email_domain": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"property_mappings": {
+					Type: schema.TypeList,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Optional: true,
+				},
+				"property_mappings_group": {
+					Type: schema.TypeList,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Optional: true,
+				},
+				"exclude_users_service_account": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"filter_group": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"user_delete_action": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.OUTGOINGSYNCDELETEACTION_DELETE,
+					Description:      helpers.EnumToDescription(api.AllowedOutgoingSyncDeleteActionEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedOutgoingSyncDeleteActionEnumValues),
+				},
+				"group_delete_action": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
+					Description: helpers.EnumToDescription([]api.OutgoingSyncDeleteAction{
+						api.OUTGOINGSYNCDELETEACTION_DELETE,
+						api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
+					}),
+					ValidateDiagFunc: helpers.StringInEnum([]api.OutgoingSyncDeleteAction{
+						api.OUTGOINGSYNCDELETEACTION_DELETE,
+						api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
+					}),
+				},
 			},
-			"exclude_users_service_account": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"filter_group": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"user_delete_action": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description:      helpers.EnumToDescription(api.AllowedOutgoingSyncDeleteActionEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedOutgoingSyncDeleteActionEnumValues),
-			},
-			"group_delete_action": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  api.OUTGOINGSYNCDELETEACTION_DELETE,
-				Description: helpers.EnumToDescription([]api.OutgoingSyncDeleteAction{
-					api.OUTGOINGSYNCDELETEACTION_DELETE,
-					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
-				}),
-				ValidateDiagFunc: helpers.StringInEnum([]api.OutgoingSyncDeleteAction{
-					api.OUTGOINGSYNCDELETEACTION_DELETE,
-					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
-				}),
-			},
-		},
+		),
 	}
 }
 

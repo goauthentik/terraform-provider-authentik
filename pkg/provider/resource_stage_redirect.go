@@ -19,32 +19,35 @@ func resourceStageRedirect() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_REDIRECT_REDIRECTSTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"mode": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.REDIRECTSTAGEMODEENUM_FLOW,
+					Description:      helpers.EnumToDescription(api.AllowedRedirectStageModeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedRedirectStageModeEnumEnumValues),
+				},
+				"keep_context": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  true,
+				},
+				"target_static": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"target_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
 			},
-			"mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.REDIRECTSTAGEMODEENUM_FLOW,
-				Description:      helpers.EnumToDescription(api.AllowedRedirectStageModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedRedirectStageModeEnumEnumValues),
-			},
-			"keep_context": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
-			"target_static": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"target_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-		},
+		),
 	}
 }
 

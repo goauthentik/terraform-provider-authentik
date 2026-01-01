@@ -19,61 +19,64 @@ func resourcePolicyGeoIP() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"execution_logging": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"asns": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_POLICIES_GEOIP_GEOIPPOLICY,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"execution_logging": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"asns": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
+				},
+				"check_history_distance": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"history_max_distance_km": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  100,
+				},
+				"distance_tolerance_km": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  50,
+				},
+				"history_login_count": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  5,
+				},
+				"check_impossible_travel": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"impossible_tolerance_km": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  100,
+				},
+				"countries": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: helpers.EnumToDescription(api.AllowedCountryCodeEnumEnumValues),
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: helpers.StringInEnum(api.AllowedCountryCodeEnumEnumValues),
+					},
 				},
 			},
-			"check_history_distance": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"history_max_distance_km": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  100,
-			},
-			"distance_tolerance_km": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  50,
-			},
-			"history_login_count": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  5,
-			},
-			"check_impossible_travel": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
-			"impossible_tolerance_km": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  100,
-			},
-			"countries": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: helpers.EnumToDescription(api.AllowedCountryCodeEnumEnumValues),
-				Elem: &schema.Schema{
-					Type:             schema.TypeString,
-					ValidateDiagFunc: helpers.StringInEnum(api.AllowedCountryCodeEnumEnumValues),
-				},
-			},
-		},
+		),
 	}
 }
 

@@ -19,51 +19,54 @@ func resourceStageCaptcha() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_STAGES_CAPTCHA_CAPTCHASTAGE,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"public_key": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"js_url": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "https://www.recaptcha.net/recaptcha/api.js",
+				},
+				"api_url": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "https://www.recaptcha.net/recaptcha/api/siteverify",
+				},
+				"private_key": {
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
+				},
+				"score_min_threshold": {
+					Type:     schema.TypeFloat,
+					Optional: true,
+					Default:  1,
+				},
+				"score_max_threshold": {
+					Type:     schema.TypeFloat,
+					Optional: true,
+					Default:  0.5,
+				},
+				"error_on_invalid_score": {
+					Type:     schema.TypeBool,
+					Default:  true,
+					Optional: true,
+				},
+				"interactive": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
 			},
-			"public_key": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"js_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "https://www.recaptcha.net/recaptcha/api.js",
-			},
-			"api_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "https://www.recaptcha.net/recaptcha/api/siteverify",
-			},
-			"private_key": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
-			"score_min_threshold": {
-				Type:     schema.TypeFloat,
-				Optional: true,
-				Default:  1,
-			},
-			"score_max_threshold": {
-				Type:     schema.TypeFloat,
-				Optional: true,
-				Default:  0.5,
-			},
-			"error_on_invalid_score": {
-				Type:     schema.TypeBool,
-				Default:  true,
-				Optional: true,
-			},
-			"interactive": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-		},
+		),
 	}
 }
 

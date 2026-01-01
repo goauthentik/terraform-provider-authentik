@@ -19,44 +19,47 @@ func resourceGroup() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"is_superuser": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"parent": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"users": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Computed: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_CORE_GROUP,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"is_superuser": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"parent": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"users": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Computed: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeInt,
+					},
+				},
+				"attributes": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "{}",
+					Description:      helpers.JSONDescription,
+					DiffSuppressFunc: helpers.DiffSuppressJSON,
+					ValidateDiagFunc: helpers.ValidateJSON,
+				},
+				"roles": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 			},
-			"attributes": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
-			},
-			"roles": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-		},
+		),
 	}
 }
 

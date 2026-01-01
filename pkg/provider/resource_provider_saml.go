@@ -20,172 +20,175 @@ func resourceProviderSAML() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-
-			"url_sso_init": {
-				Type:     schema.TypeString,
-				Computed: true,
-				Optional: true,
-			},
-			"url_sso_post": {
-				Type:     schema.TypeString,
-				Computed: true,
-				Optional: true,
-			},
-			"url_sso_redirect": {
-				Type:     schema.TypeString,
-				Computed: true,
-				Optional: true,
-			},
-			"url_slo_post": {
-				Type:     schema.TypeString,
-				Computed: true,
-				Optional: true,
-			},
-			"url_slo_redirect": {
-				Type:     schema.TypeString,
-				Computed: true,
-				Optional: true,
-			},
-
-			"authentication_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"authorization_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"invalidation_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"property_mappings": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		Schema: helpers.ModelSchema(
+			api.MODELENUM_PROVIDERS_SAML_SAMLPROVIDER,
+			map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
-				Optional: true,
+
+				"url_sso_init": {
+					Type:     schema.TypeString,
+					Computed: true,
+					Optional: true,
+				},
+				"url_sso_post": {
+					Type:     schema.TypeString,
+					Computed: true,
+					Optional: true,
+				},
+				"url_sso_redirect": {
+					Type:     schema.TypeString,
+					Computed: true,
+					Optional: true,
+				},
+				"url_slo_post": {
+					Type:     schema.TypeString,
+					Computed: true,
+					Optional: true,
+				},
+				"url_slo_redirect": {
+					Type:     schema.TypeString,
+					Computed: true,
+					Optional: true,
+				},
+
+				"authentication_flow": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"authorization_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"invalidation_flow": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"property_mappings": {
+					Type: schema.TypeList,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+					Optional: true,
+				},
+				"acs_url": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"audience": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"issuer": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "authentik",
+				},
+				"assertion_valid_not_before": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=-5",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"assertion_valid_not_on_or_after": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=5",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"session_valid_not_on_or_after": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "minutes=86400",
+					Description:      helpers.RelativeDurationDescription,
+					ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				},
+				"name_id_mapping": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"authn_context_class_ref_mapping": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"digest_algorithm": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.DIGESTALGORITHMENUM__2001_04_XMLENCSHA256,
+					Description:      helpers.EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
+				},
+				"signature_algorithm": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.SIGNATUREALGORITHMENUM__2001_04_XMLDSIG_MORERSA_SHA256,
+					Description:      helpers.EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
+				},
+				"signing_kp": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"sign_assertion": {
+					Type:     schema.TypeBool,
+					Default:  true,
+					Optional: true,
+				},
+				"sign_response": {
+					Type:     schema.TypeBool,
+					Default:  false,
+					Optional: true,
+				},
+				"verification_kp": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"encryption_kp": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"sp_binding": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.SAMLBINDINGSENUM_REDIRECT,
+					Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
+				},
+				"default_relay_state": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"sls_url": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"sign_logout_request": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"sls_binding": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.SAMLBINDINGSENUM_REDIRECT,
+					Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
+				},
+				"logout_method": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          api.SAMLPROVIDERLOGOUTMETHODENUM_FRONTCHANNEL_IFRAME,
+					Description:      helpers.EnumToDescription(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
+				},
 			},
-			"acs_url": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"audience": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"issuer": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "authentik",
-			},
-			"assertion_valid_not_before": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=-5",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"assertion_valid_not_on_or_after": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=5",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"session_valid_not_on_or_after": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "minutes=86400",
-				Description:      helpers.RelativeDurationDescription,
-				ValidateDiagFunc: helpers.ValidateRelativeDuration,
-			},
-			"name_id_mapping": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"authn_context_class_ref_mapping": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"digest_algorithm": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.DIGESTALGORITHMENUM__2001_04_XMLENCSHA256,
-				Description:      helpers.EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
-			},
-			"signature_algorithm": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.SIGNATUREALGORITHMENUM__2001_04_XMLDSIG_MORERSA_SHA256,
-				Description:      helpers.EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
-			},
-			"signing_kp": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"sign_assertion": {
-				Type:     schema.TypeBool,
-				Default:  true,
-				Optional: true,
-			},
-			"sign_response": {
-				Type:     schema.TypeBool,
-				Default:  false,
-				Optional: true,
-			},
-			"verification_kp": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"encryption_kp": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"sp_binding": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.SAMLBINDINGSENUM_REDIRECT,
-				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
-			},
-			"default_relay_state": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
-			},
-			"sls_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"sign_logout_request": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"sls_binding": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.SAMLBINDINGSENUM_REDIRECT,
-				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
-			},
-			"logout_method": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.SAMLPROVIDERLOGOUTMETHODENUM_FRONTCHANNEL_IFRAME,
-				Description:      helpers.EnumToDescription(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
-			},
-		},
+		),
 	}
 }
 
