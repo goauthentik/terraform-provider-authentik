@@ -55,8 +55,10 @@ resource "authentik_source_oauth" "name" {
   - `okta`
   - `patreon`
   - `reddit`
+  - `slack`
   - `twitch`
   - `twitter`
+  - `wechat`
 - `slug` (String)
 
 ### Optional

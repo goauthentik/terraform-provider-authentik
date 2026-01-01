@@ -36,8 +36,8 @@ data "authentik_group" "admins" {
 - `id` (String) The ID of this resource.
 - `is_superuser` (Boolean) Generated.
 - `num_pk` (Number) Generated.
-- `parent` (String) Generated.
 - `parent_name` (String) Generated.
+- `parents` (List of String) Generated.
 - `users` (List of Number) Generated.
 - `users_obj` (List of Object) Generated. (see [below for nested schema](#nestedatt--users_obj))
 
