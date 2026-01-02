@@ -51,6 +51,11 @@ func resourceSourceOAuth() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"promoted": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"authorization_code_auth_method": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -175,6 +180,7 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
 		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
+		Promoted:         api.PtrBool(d.Get("promoted").(bool)),
 		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
 
 		ProviderType:                api.ProviderTypeEnum(d.Get("provider_type").(string)),
@@ -235,10 +241,11 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	helpers.SetWrapper(d, "slug", res.Slug)
 	helpers.SetWrapper(d, "uuid", res.Pk)
 	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
+	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "promoted", res.Promoted)
 
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
-	helpers.SetWrapper(d, "enabled", res.Enabled)
 	helpers.SetWrapper(d, "authorization_code_auth_method", res.AuthorizationCodeAuthMethod)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)

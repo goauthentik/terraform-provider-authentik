@@ -29,9 +29,12 @@ func resourceGroup() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
-			"parent": {
-				Type:     schema.TypeString,
+			"parents": {
+				Type:     schema.TypeList,
 				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"users": {
 				Type:     schema.TypeList,
@@ -64,7 +67,7 @@ func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag
 	m := api.GroupRequest{
 		Name:        d.Get("name").(string),
 		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
-		Parent:      *api.NewNullableString(helpers.GetP[string](d, "parent")),
+		Parents:     helpers.CastSlice[string](d, "parents"),
 		Users:       helpers.CastSliceInt32(d.Get("users").([]interface{})),
 		Roles:       helpers.CastSlice[string](d, "roles"),
 	}
@@ -100,6 +103,10 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "is_superuser", res.IsSuperuser)
+	helpers.SetWrapper(d, "parents", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "parents"),
+		res.Parents,
+	))
 	helpers.SetWrapper(d, "users", helpers.ListConsistentMerge(
 		helpers.CastSlice[int](d, "users"),
 		helpers.Slice32ToInt(res.Users),

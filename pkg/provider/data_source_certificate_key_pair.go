@@ -69,7 +69,7 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.CryptoApi.CryptoCertificatekeypairsList(ctx).IncludeDetails(true)
+	req := c.client.CryptoApi.CryptoCertificatekeypairsList(ctx)
 	if n, ok := d.GetOk("name"); ok {
 		req = req.Name(n.(string))
 	}

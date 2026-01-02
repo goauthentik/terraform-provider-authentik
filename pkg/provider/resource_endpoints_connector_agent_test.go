@@ -8,36 +8,32 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccResourceBrand(t *testing.T) {
+func TestAccResourceEndpointsAgent(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceBrand(rName),
+				Config: testAccResourceEndpointsAgent(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_brand.name", "domain", rName),
+					resource.TestCheckResourceAttr("authentik_endpoints_connector_agent.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourceBrand(rName + "test"),
+				Config: testAccResourceEndpointsAgent(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_brand.name", "domain", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_endpoints_connector_agent.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourceBrand(name string) string {
-	// TODO: branding_logo should be optional
-	// TODO: branding_favicon should be optional
+func testAccResourceEndpointsAgent(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_brand" "name" {
-  domain = "%[1]s"
-  branding_logo = "test"
-  branding_favicon = "test"
+resource "authentik_endpoints_connector_agent" "name" {
+  name = "%[1]s"
 }
 `, name)
 }

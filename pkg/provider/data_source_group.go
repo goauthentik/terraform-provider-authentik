@@ -79,9 +79,12 @@ func dataSourceGroup() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"parent": {
-				Type:     schema.TypeString,
+			"parents": {
+				Type:     schema.TypeList,
 				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"parent_name": {
 				Type:     schema.TypeString,
@@ -140,8 +143,6 @@ func mapFromGroup(group api.Group) (map[string]interface{}, error) {
 		"num_pk":       int(group.GetNumPk()),
 		"name":         group.GetName(),
 		"is_superuser": group.GetIsSuperuser(),
-		"parent":       group.GetParent(),
-		"parent_name":  group.GetParentName(),
 		"users":        []int{},
 		"attributes":   "",
 		"users_obj":    []map[string]interface{}{},
@@ -158,6 +159,12 @@ func mapFromGroup(group api.Group) (map[string]interface{}, error) {
 		users[i] = int(user_pk)
 	}
 	m["users"] = users
+
+	parents := make([]string, len(group.GetParents()))
+	for i, group_pk := range group.GetParents() {
+		parents[i] = group_pk
+	}
+	m["parents"] = parents
 
 	users_obj := make([]map[string]interface{}, len(group.GetUsersObj()))
 	for i, member := range group.GetUsersObj() {

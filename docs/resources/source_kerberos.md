@@ -41,6 +41,11 @@ description: |-
 - `spnego_server_name` (String) Force the use of a specific server name for SPNEGO
 - `sync_ccache` (String) Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
 - `sync_keytab` (String, Sensitive) Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual
+- `sync_outgoing_trigger_mode` (String) Allowed values:
+  - `none`
+  - `immediate`
+  - `deferred_end`
+ Defaults to `deferred_end`.
 - `sync_password` (String, Sensitive) Password to authenticate to kadmin for sync
 - `sync_principal` (String) Principal to authenticate to kadmin for sync.
 - `sync_users` (Boolean) Sync users from Kerberos into authentik Defaults to `true`.

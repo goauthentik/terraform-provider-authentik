@@ -27,9 +27,9 @@ func resourceStageMutualTLS() *schema.Resource {
 			"mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.MUTUALTLSSTAGEMODEENUM_OPTIONAL,
-				Description:      helpers.EnumToDescription(api.AllowedMutualTLSStageModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedMutualTLSStageModeEnumEnumValues),
+				Default:          api.STAGEMODEENUM_OPTIONAL,
+				Description:      helpers.EnumToDescription(api.AllowedStageModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedStageModeEnumEnumValues),
 			},
 			"cert_attribute": {
 				Type:             schema.TypeString,
@@ -59,7 +59,7 @@ func resourceStageMutualTLS() *schema.Resource {
 func resourceStageMutualTLSSchemaToProvider(d *schema.ResourceData) *api.MutualTLSStageRequest {
 	r := api.MutualTLSStageRequest{
 		Name:                   d.Get("name").(string),
-		Mode:                   api.MutualTLSStageModeEnum(d.Get("mode").(string)),
+		Mode:                   api.StageModeEnum(d.Get("mode").(string)),
 		CertAttribute:          api.CertAttributeEnum(d.Get("cert_attribute").(string)),
 		UserAttribute:          api.UserAttributeEnum(d.Get("user_attribute").(string)),
 		CertificateAuthorities: helpers.CastSlice[string](d, "certificate_authorities"),

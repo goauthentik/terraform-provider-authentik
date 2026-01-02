@@ -54,6 +54,7 @@ resource "authentik_source_plex" "name" {
   - `all`
   - `any`
  Defaults to `any`.
+- `promoted` (Boolean) Defaults to `false`.
 - `user_matching_mode` (String) Allowed values:
   - `identifier`
   - `email_link`

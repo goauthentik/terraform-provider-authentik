@@ -82,6 +82,7 @@ resource "authentik_source_saml" "name" {
   - `all`
   - `any`
  Defaults to `any`.
+- `promoted` (Boolean) Defaults to `false`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
 - `signature_algorithm` (String) Allowed values:

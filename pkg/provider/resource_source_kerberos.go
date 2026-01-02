@@ -139,6 +139,13 @@ func resourceSourceKerberos() *schema.Resource {
 				Optional:    true,
 				Default:     false,
 			},
+			"sync_outgoing_trigger_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SYNCOUTGOINGTRIGGERMODEENUM_DEFERRED_END,
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSyncOutgoingTriggerModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSyncOutgoingTriggerModeEnumEnumValues),
+			},
 		},
 	}
 }
@@ -168,6 +175,7 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		SpnegoKeytab:                        api.PtrString(d.Get("spnego_keytab").(string)),
 		SpnegoCcache:                        api.PtrString(d.Get("spnego_ccache").(string)),
 		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
+		SyncOutgoingTriggerMode:             api.SyncOutgoingTriggerModeEnum(d.Get("sync_outgoing_trigger_mode").(string)).Ptr(),
 	}
 	return &r, nil
 }
@@ -217,6 +225,7 @@ func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "spnego_server_name", res.SpnegoServerName)
 	helpers.SetWrapper(d, "spnego_ccache", res.SpnegoCcache)
 	helpers.SetWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
+	helpers.SetWrapper(d, "sync_outgoing_trigger_mode", res.SyncOutgoingTriggerMode)
 	return diags
 }
 

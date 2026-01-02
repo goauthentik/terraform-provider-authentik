@@ -60,6 +60,7 @@ func resourceFlow() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Optional URL to an image which will be used as the background during the flow.",
+				Default:     "/static/dist/assets/images/flow_background.jpg",
 			},
 			"policy_engine_mode": {
 				Type:             schema.TypeString,
@@ -93,6 +94,7 @@ func resourceFlowSchemaToModel(d *schema.ResourceData) *api.FlowRequest {
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		Layout:            api.FlowLayoutEnum(d.Get("layout").(string)).Ptr(),
 		DeniedAction:      api.DeniedActionEnum(d.Get("denied_action").(string)).Ptr(),
+		Background:        helpers.GetP[string](d, "background"),
 	}
 	return &m
 }
@@ -109,14 +111,6 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 	d.SetId(res.Slug)
 
-	if bg, ok := d.GetOk("background"); ok {
-		hr, err := c.client.FlowsApi.FlowsInstancesSetBackgroundUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
-			Url: bg.(string),
-		}).Execute()
-		if err != nil {
-			return helpers.HTTPToDiag(d, hr, err)
-		}
-	}
 	return resourceFlowRead(ctx, d, m)
 }
 
@@ -139,9 +133,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	helpers.SetWrapper(d, "layout", res.Layout)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
-	if _, bg := d.GetOk("background"); bg {
-		helpers.SetWrapper(d, "background", res.Background)
-	}
+	helpers.SetWrapper(d, "background", res.Background)
 	return diags
 }
 
@@ -157,14 +149,6 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface
 
 	d.SetId(res.Slug)
 
-	if bg, ok := d.GetOk("background"); ok {
-		hr, err := c.client.FlowsApi.FlowsInstancesSetBackgroundUrlCreate(ctx, res.Slug).FilePathRequest(api.FilePathRequest{
-			Url: bg.(string),
-		}).Execute()
-		if err != nil {
-			return helpers.HTTPToDiag(d, hr, err)
-		}
-	}
 	return resourceFlowRead(ctx, d, m)
 }
 
