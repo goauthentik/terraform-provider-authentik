@@ -96,6 +96,16 @@ func resourceSystemSettings() *schema.Resource {
 				DiffSuppressFunc: helpers.DiffSuppressJSON,
 				ValidateDiagFunc: helpers.ValidateJSON,
 			},
+			"pagination_default_page_size": {
+				Type:     schema.TypeInt,
+				Default:  20,
+				Optional: true,
+			},
+			"pagination_max_page_size": {
+				Type:     schema.TypeInt,
+				Default:  100,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -114,6 +124,8 @@ func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) (*api.Settin
 		DefaultTokenLength:        api.PtrInt32(int32(d.Get("default_token_length").(int))),
 		ReputationLowerLimit:      api.PtrInt32(int32(d.Get("reputation_lower_limit").(int))),
 		ReputationUpperLimit:      api.PtrInt32(int32(d.Get("reputation_upper_limit").(int))),
+		PaginationDefaultPageSize: api.PtrInt32(int32(d.Get("pagination_default_page_size").(int))),
+		PaginationMaxPageSize:     api.PtrInt32(int32(d.Get("pagination_max_page_size").(int))),
 	}
 
 	flags, err := helpers.GetJSON[api.PatchedSettingsRequestFlags](d, ("flags"))
@@ -158,6 +170,8 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m i
 	helpers.SetWrapper(d, "default_token_length", res.DefaultTokenLength)
 	helpers.SetWrapper(d, "reputation_lower_limit", res.ReputationLowerLimit)
 	helpers.SetWrapper(d, "reputation_upper_limit", res.ReputationUpperLimit)
+	helpers.SetWrapper(d, "pagination_default_page_size", res.PaginationDefaultPageSize)
+	helpers.SetWrapper(d, "pagination_max_page_size", res.PaginationMaxPageSize)
 	return helpers.SetJSON(d, "flags", res.Flags)
 }
 

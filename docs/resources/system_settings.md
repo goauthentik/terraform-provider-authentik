@@ -35,6 +35,8 @@ resource "authentik_system_settings" "settings" {
 - `footer_links` (List of Map of String)
 - `gdpr_compliance` (Boolean) Defaults to `true`.
 - `impersonation` (Boolean) Defaults to `true`.
+- `pagination_default_page_size` (Number) Defaults to `20`.
+- `pagination_max_page_size` (Number) Defaults to `100`.
 - `reputation_lower_limit` (Number) Defaults to `-5`.
 - `reputation_upper_limit` (Number) Defaults to `5`.
 
