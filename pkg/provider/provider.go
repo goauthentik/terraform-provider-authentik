@@ -146,6 +146,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_stage_deny":                                 tr(resourceStageDeny),
 			"authentik_stage_dummy":                                tr(resourceStageDummy),
 			"authentik_stage_email":                                tr(resourceStageEmail),
+			"authentik_stage_endpoints":                            tr(resourceStageEndpoints),
 			"authentik_stage_identification":                       tr(resourceStageIdentification),
 			"authentik_stage_invitation":                           tr(resourceStageInvitation),
 			"authentik_stage_mutual_tls":                           tr(resourceStageMutualTLS),
