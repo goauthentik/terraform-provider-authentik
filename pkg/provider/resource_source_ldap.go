@@ -154,6 +154,13 @@ func resourceSourceLDAP() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"sync_outgoing_trigger_mode": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SYNCOUTGOINGTRIGGERMODEENUM_DEFERRED_END,
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSyncOutgoingTriggerModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSyncOutgoingTriggerModeEnumEnumValues),
+			},
 		},
 	}
 }
@@ -189,6 +196,7 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
 		UserPropertyMappings:                helpers.CastSlice[string](d, "property_mappings"),
 		GroupPropertyMappings:               helpers.CastSlice[string](d, "property_mappings_group"),
+		SyncOutgoingTriggerMode:             api.SyncOutgoingTriggerModeEnum(d.Get("sync_outgoing_trigger_mode").(string)).Ptr(),
 	}
 	return &r
 }
@@ -249,6 +257,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 		helpers.CastSlice[string](d, "property_mappings_group"),
 		res.GroupPropertyMappings,
 	))
+	helpers.SetWrapper(d, "sync_outgoing_trigger_mode", res.SyncOutgoingTriggerMode)
 	return diags
 }
 
