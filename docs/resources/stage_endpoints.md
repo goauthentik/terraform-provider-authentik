@@ -17,7 +17,7 @@ resource "authentik_endpoints_connector_agent" "name" {
 }
 
 resource "authentik_stage_endpoints" "name" {
-  name = "agent-connector"
+  name      = "agent-connector"
   connector = authentik_endpoints_connector_agent.name.id
 }
 ```
