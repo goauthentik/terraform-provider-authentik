@@ -115,7 +115,7 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 			}
 		}
 	}
-	return diag.FromErr(errors.New("Permission not found"))
+	return diag.FromErr(errors.New("permission not found"))
 }
 
 func resourceRBACRoleObjectPermissionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
