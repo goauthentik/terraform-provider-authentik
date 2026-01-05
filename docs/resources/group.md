@@ -37,7 +37,7 @@ resource "authentik_group" "group" {
 
 - `attributes` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
 - `is_superuser` (Boolean) Defaults to `false`.
-- `parent` (String)
+- `parents` (List of String)
 - `roles` (List of String)
 - `users` (List of Number) Generated.
 

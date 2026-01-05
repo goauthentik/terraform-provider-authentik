@@ -44,6 +44,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.endpoints.connectors.agent`
   - `authentik.enterprise`
   - `authentik.events`
+  - `authentik.admin.files`
   - `authentik.flows`
   - `authentik.outposts`
   - `authentik.policies.dummy`
@@ -103,6 +104,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.enterprise.providers.radius`
   - `authentik.enterprise.providers.scim`
   - `authentik.enterprise.providers.ssf`
+  - `authentik.enterprise.reports`
   - `authentik.enterprise.search`
   - `authentik.enterprise.stages.authenticator_endpoint_gdtc`
   - `authentik.enterprise.stages.mtls`
@@ -118,6 +120,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_core.token`
   - `authentik_crypto.certificatekeypair`
   - `authentik_endpoints.deviceuserbinding`
+  - `authentik_endpoints.deviceaccessgroup`
   - `authentik_endpoints.endpointstage`
   - `authentik_endpoints_connectors_agent.agentconnector`
   - `authentik_endpoints_connectors_agent.agentdeviceuserbinding`
@@ -220,6 +223,7 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_providers_microsoft_entra.microsoftentraprovider`
   - `authentik_providers_microsoft_entra.microsoftentraprovidermapping`
   - `authentik_providers_ssf.ssfprovider`
+  - `authentik_reports.dataexport`
   - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_mtls.mutualtlsstage`
   - `authentik_stages_source.sourcestage`

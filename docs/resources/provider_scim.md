@@ -58,6 +58,9 @@ resource "authentik_provider_scim" "name" {
 - `filter_group` (String)
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
+- `service_provider_config_cache_timeout` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `hours=1`.
+- `sync_page_size` (Number) Defaults to `100`.
+- `sync_page_timeout` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=30`.
 - `token` (String, Sensitive)
 
 ### Read-Only

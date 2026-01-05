@@ -59,7 +59,7 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
   - `require_redirect`
   - `require_outpost`
  Defaults to `none`.
-- `background` (String) Optional URL to an image which will be used as the background during the flow.
+- `background` (String) Optional URL to an image which will be used as the background during the flow. Defaults to `/static/dist/assets/images/flow_background.jpg`.
 - `compatibility_mode` (Boolean) Defaults to `true`.
 - `denied_action` (String) Defaults to `message_continue`.
 - `layout` (String) Allowed values:

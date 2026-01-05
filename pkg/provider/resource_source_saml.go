@@ -51,6 +51,11 @@ func resourceSourceSAML() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"promoted": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"policy_engine_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -181,6 +186,7 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
 		Enabled:           api.PtrBool(d.Get("enabled").(bool)),
+		Promoted:          api.PtrBool(d.Get("promoted").(bool)),
 		UserPathTemplate:  api.PtrString(d.Get("user_path_template").(string)),
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
@@ -240,6 +246,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "promoted", res.Promoted)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
 	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)

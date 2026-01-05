@@ -89,6 +89,18 @@ func resourceProviderGoogleWorkspace() *schema.Resource {
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
 			},
+			"sync_page_timeout": {
+				Type:             schema.TypeString,
+				Default:          "minutes=30",
+				Optional:         true,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+			},
+			"sync_page_size": {
+				Type:     schema.TypeInt,
+				Default:  100,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -105,6 +117,8 @@ func resourceProviderGoogleWorkspaceSchemaToProvider(d *schema.ResourceData) (*a
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
 		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
 		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
+		SyncPageTimeout:            helpers.GetP[string](d, "sync_page_timeout"),
+		SyncPageSize:               helpers.GetIntP(d, "sync_page_size"),
 	}
 
 	credentials, err := helpers.GetJSON[map[string]interface{}](d, ("credentials"))
@@ -156,6 +170,8 @@ func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.Resource
 		helpers.CastSlice[string](d, "property_mappings_group"),
 		res.PropertyMappingsGroup,
 	))
+	helpers.SetWrapper(d, "sync_page_timeout", res.SyncPageTimeout)
+	helpers.SetWrapper(d, "sync_page_size", res.SyncPageSize)
 	return helpers.SetJSON(d, "credentials", res.Credentials)
 }
 
