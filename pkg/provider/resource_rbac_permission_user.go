@@ -53,10 +53,6 @@ func resourceRBACUserObjectPermissionRead(ctx context.Context, d *schema.Resourc
 	return diag.Diagnostics{}
 }
 
-func resourceRBACUserObjectPermissionUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return diag.Diagnostics{}
-}
-
 func resourceRBACUserObjectPermissionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	return diag.Diagnostics{}
 }

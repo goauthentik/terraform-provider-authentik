@@ -197,6 +197,8 @@ func setGroup(data *schema.ResourceData, group api.Group) diag.Diagnostics {
 			helpers.SetWrapper(data, key, value.([]int))
 		case "users_obj":
 			helpers.SetWrapper(data, key, value.([]map[string]interface{}))
+		case "parents":
+			helpers.SetWrapper(data, key, value.([]string))
 		default:
 			helpers.SetWrapper(data, key, value.(string))
 		}
