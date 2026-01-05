@@ -14,7 +14,6 @@ func resourceRBACUserObjectPermission() *schema.Resource {
 		Description:   "RBAC --- ",
 		CreateContext: resourceRBACUserObjectPermissionCreate,
 		ReadContext:   resourceRBACUserObjectPermissionRead,
-		UpdateContext: resourceRBACUserObjectPermissionUpdate,
 		DeleteContext: resourceRBACUserObjectPermissionDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
