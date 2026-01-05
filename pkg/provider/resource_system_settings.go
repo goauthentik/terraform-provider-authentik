@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -10,6 +11,20 @@ import (
 )
 
 const systemSettingsID = "system_settings"
+
+var defaultFlags string
+
+func init() {
+	flags := api.PatchedSettingsRequestFlags{
+		PoliciesBufferedAccessView: false,
+		FlowsRefreshOthers:         false,
+	}
+	f, err := json.Marshal(flags)
+	if err != nil {
+		panic(err)
+	}
+	defaultFlags = string(f)
+}
 
 func resourceSystemSettings() *schema.Resource {
 	return &schema.Resource{
@@ -91,7 +106,7 @@ func resourceSystemSettings() *schema.Resource {
 			"flags": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          `{"policies_buffered_access_view": false}`,
+				Default:          defaultFlags,
 				Description:      helpers.JSONDescription,
 				DiffSuppressFunc: helpers.DiffSuppressJSON,
 				ValidateDiagFunc: helpers.ValidateJSON,

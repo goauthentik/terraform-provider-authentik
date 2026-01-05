@@ -1,9 +1,6 @@
 package provider
 
 import (
-	"context"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
@@ -12,9 +9,9 @@ import (
 func resourceRBACUserObjectPermission() *schema.Resource {
 	return &schema.Resource{
 		Description:   "RBAC --- ",
-		CreateContext: resourceRBACUserObjectPermissionCreate,
-		ReadContext:   resourceRBACUserObjectPermissionRead,
-		DeleteContext: resourceRBACUserObjectPermissionDelete,
+		CreateContext: schema.NoopContext,
+		ReadContext:   schema.NoopContext,
+		Delete:        schema.RemoveFromState,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -43,16 +40,4 @@ func resourceRBACUserObjectPermission() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceRBACUserObjectPermissionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return diag.Diagnostics{}
-}
-
-func resourceRBACUserObjectPermissionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return diag.Diagnostics{}
-}
-
-func resourceRBACUserObjectPermissionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return diag.Diagnostics{}
 }

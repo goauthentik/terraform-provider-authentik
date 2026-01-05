@@ -41,7 +41,6 @@ data "authentik_rbac_permission" "admin" {
 resource "authentik_rbac_initial_permissions" "ip" {
   name = "%[1]s"
   role = authentik_rbac_role.group.id
-  mode = "role"
   permissions = [
     data.authentik_rbac_permission.admin.id,
   ]
