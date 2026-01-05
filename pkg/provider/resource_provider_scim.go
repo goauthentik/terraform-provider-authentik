@@ -95,6 +95,18 @@ func resourceProviderSCIM() *schema.Resource {
 				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 				Description:      helpers.RelativeDurationDescription,
 			},
+			"sync_page_timeout": {
+				Type:             schema.TypeString,
+				Default:          "minutes=30",
+				Optional:         true,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+			},
+			"sync_page_size": {
+				Type:     schema.TypeInt,
+				Default:  100,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -113,6 +125,8 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) (*api.SCIMProv
 		FilterGroup:                       *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
 		DryRun:                            api.PtrBool(d.Get("dry_run").(bool)),
 		ServiceProviderConfigCacheTimeout: helpers.GetP[string](d, "service_provider_config_cache_timeout"),
+		SyncPageTimeout:                   helpers.GetP[string](d, "sync_page_timeout"),
+		SyncPageSize:                      helpers.GetIntP(d, "sync_page_size"),
 	}
 
 	attr, err := helpers.GetJSON[map[string]interface{}](d, "auth_oauth_params")
@@ -166,6 +180,8 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "auth_mode", res.AuthMode)
 	helpers.SetWrapper(d, "auth_oauth", res.AuthOauth.Get())
 	helpers.SetWrapper(d, "service_provider_config_cache_timeout", res.ServiceProviderConfigCacheTimeout)
+	helpers.SetWrapper(d, "sync_page_timeout", res.SyncPageTimeout)
+	helpers.SetWrapper(d, "sync_page_size", res.SyncPageSize)
 	return helpers.SetJSON(d, "auth_oauth_params", res.AuthOauthParams)
 }
 
