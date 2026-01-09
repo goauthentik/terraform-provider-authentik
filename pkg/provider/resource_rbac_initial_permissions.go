@@ -29,12 +29,6 @@ func resourceRBACInitialPermissions() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"mode": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedInitialPermissionsModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedInitialPermissionsModeEnumEnumValues),
-			},
 			"permissions": {
 				Type:     schema.TypeList,
 				Required: true,
@@ -50,7 +44,6 @@ func resourceRBACInitialPermissionsSchemaToModel(d *schema.ResourceData) (*api.I
 	m := api.InitialPermissionsRequest{
 		Name:        d.Get("name").(string),
 		Role:        d.Get("role").(string),
-		Mode:        api.InitialPermissionsModeEnum(d.Get("mode").(string)),
 		Permissions: helpers.CastSliceInt32(d.Get("permissions").([]interface{})),
 	}
 	return &m, nil
@@ -88,7 +81,6 @@ func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceD
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "role", res.Role)
-	helpers.SetWrapper(d, "mode", res.Mode)
 	helpers.SetWrapper(d, "permissions", helpers.ListConsistentMerge(
 		helpers.CastSlice[int](d, "permissions"),
 		helpers.Slice32ToInt(res.Permissions),

@@ -51,6 +51,11 @@ func resourceSourceSAML() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"promoted": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"policy_engine_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -120,6 +125,16 @@ func resourceSourceSAML() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"signed_assertion": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"signed_response": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"digest_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -171,6 +186,7 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
 		Enabled:           api.PtrBool(d.Get("enabled").(bool)),
+		Promoted:          api.PtrBool(d.Get("promoted").(bool)),
 		UserPathTemplate:  api.PtrString(d.Get("user_path_template").(string)),
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
@@ -187,6 +203,8 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		SigningKp:                *api.NewNullableString(helpers.GetP[string](d, "signing_kp")),
 		EncryptionKp:             *api.NewNullableString(helpers.GetP[string](d, "encryption_kp")),
 		VerificationKp:           *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
+		SignedAssertion:          api.PtrBool(d.Get("signed_assertion").(bool)),
+		SignedResponse:           api.PtrBool(d.Get("signed_response").(bool)),
 		Issuer:                   api.PtrString(d.Get("issuer").(string)),
 		AllowIdpInitiated:        api.PtrBool(d.Get("allow_idp_initiated").(bool)),
 		TemporaryUserDeleteAfter: api.PtrString(d.Get("temporary_user_delete_after").(string)),
@@ -228,6 +246,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "promoted", res.Promoted)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
 	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
@@ -242,6 +261,8 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())
 	helpers.SetWrapper(d, "encryption_kp", res.EncryptionKp.Get())
 	helpers.SetWrapper(d, "verification_kp", res.VerificationKp.Get())
+	helpers.SetWrapper(d, "signed_assertion", res.SignedAssertion)
+	helpers.SetWrapper(d, "signed_response", res.SignedResponse)
 	helpers.SetWrapper(d, "digest_algorithm", res.DigestAlgorithm)
 	helpers.SetWrapper(d, "signature_algorithm", res.SignatureAlgorithm)
 	helpers.SetWrapper(d, "temporary_user_delete_after", res.TemporaryUserDeleteAfter)

@@ -18,7 +18,10 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "go version",
-
+	"containerEnv": {
+		"AUTHENTIK_URL": "http://server:9000",
+		"AUTHENTIK_TOKEN": "this-token-is-for-testing-dont-use"
+	},
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {

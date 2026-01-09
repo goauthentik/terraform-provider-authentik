@@ -53,6 +53,11 @@ resource "authentik_source_ldap" "name" {
 - `sni` (Boolean) Defaults to `false`.
 - `start_tls` (Boolean) Defaults to `true`.
 - `sync_groups` (Boolean) Defaults to `true`.
+- `sync_outgoing_trigger_mode` (String) Allowed values:
+  - `none`
+  - `immediate`
+  - `deferred_end`
+ Defaults to `deferred_end`.
 - `sync_parent_group` (String)
 - `sync_users` (Boolean) Defaults to `true`.
 - `sync_users_password` (Boolean) Defaults to `true`.

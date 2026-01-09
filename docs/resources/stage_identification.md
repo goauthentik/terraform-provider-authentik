@@ -63,6 +63,7 @@ resource "authentik_stage_identification" "name" {
 - `show_source_labels` (Boolean) Defaults to `false`.
 - `sources` (List of String)
 - `user_fields` (List of String)
+- `webauthn_stage` (String)
 
 ### Read-Only
 

@@ -16,9 +16,6 @@ description: |-
 
 ### Required
 
-- `mode` (String) Allowed values:
-  - `user`
-  - `role`
 - `name` (String)
 - `permissions` (List of Number)
 - `role` (String)

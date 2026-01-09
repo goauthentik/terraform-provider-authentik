@@ -23,11 +23,13 @@ func tr(resource func() *schema.Resource) *schema.Resource {
 		defer span.Finish()
 		return so.ReadContext(ctx, rd, m)
 	}
-	sc.UpdateContext = func(ctx context.Context, rd *schema.ResourceData, m interface{}) diag.Diagnostics {
-		span := sentry.StartSpan(ctx, "terraform.resource.update", sentry.WithTransactionName("terraform.resource"))
-		span.Description = "Resource update"
-		defer span.Finish()
-		return so.UpdateContext(ctx, rd, m)
+	if so.UpdateContext != nil {
+		sc.UpdateContext = func(ctx context.Context, rd *schema.ResourceData, m interface{}) diag.Diagnostics {
+			span := sentry.StartSpan(ctx, "terraform.resource.update", sentry.WithTransactionName("terraform.resource"))
+			span.Description = "Resource update"
+			defer span.Finish()
+			return so.UpdateContext(ctx, rd, m)
+		}
 	}
 	sc.DeleteContext = func(ctx context.Context, rd *schema.ResourceData, m interface{}) diag.Diagnostics {
 		span := sentry.StartSpan(ctx, "terraform.resource.delete", sentry.WithTransactionName("terraform.resource"))

@@ -2,9 +2,9 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -17,7 +17,7 @@ func resourceRBACRoleObjectPermission() *schema.Resource {
 		Description:   "RBAC --- ",
 		CreateContext: resourceRBACRoleObjectPermissionCreate,
 		ReadContext:   resourceRBACRoleObjectPermissionRead,
-		UpdateContext: resourceRBACRoleObjectPermissionUpdate,
+		// UpdateContext: resourceRBACRoleObjectPermissionUpdate,
 		DeleteContext: resourceRBACRoleObjectPermissionDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -43,6 +43,7 @@ func resourceRBACRoleObjectPermission() *schema.Resource {
 			"object_id": {
 				Type:     schema.TypeString,
 				Optional: true,
+				ForceNew: true,
 			},
 		},
 	}
@@ -87,52 +88,49 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 		return diag.FromErr(err)
 	}
 
-	_, modelSet := d.GetOk("model")
-	if !modelSet {
-		splitCodename := strings.Split(d.Get("permission").(string), ".")
-		res, hr, err := c.client.RbacApi.RbacPermissionsList(ctx).Codename(splitCodename[1]).Role(d.Get("role").(string)).Execute()
+	_, object := d.GetOk("object_id")
+	if object {
+		perms, hr, err := c.client.RbacApi.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		if len(res.Results) < 1 {
-			return diag.Errorf("Permission not found")
+		for _, perm := range perms.Results {
+			if perm.Id == int32(id) {
+				helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
+				helpers.SetWrapper(d, "object_id", perm.ObjectPk)
+				return diags
+			}
 		}
-		helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", res.Results[0].AppLabel, res.Results[0].Codename))
 	} else {
-		res, hr, err := c.client.RbacApi.RbacPermissionsRolesRetrieve(ctx, int32(id)).Execute()
+		perms, hr, err := c.client.RbacApi.RbacPermissionsList(ctx).
+			Role(d.Get("role").(string)).
+			Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		helpers.SetWrapper(d, "object_id", res.ObjectPk)
+		for _, perm := range perms.Results {
+			if fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename) == d.Get("permission").(string) {
+				helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
+				return diags
+			}
+		}
 	}
-	return diags
-}
-
-func resourceRBACRoleObjectPermissionUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*APIClient)
-	id, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	req := resourceRBACRoleObjectPermissionSchemaToProvider(d).ObjectPk
-	res, hr, err := c.client.RbacApi.RbacPermissionsRolesUpdate(ctx, int32(id)).ExtraRoleObjectPermissionRequest(api.ExtraRoleObjectPermissionRequest{
-		ObjectPk: *req,
-	}).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	d.SetId(strconv.Itoa(int(res.Id)))
-	return resourceRBACRoleObjectPermissionRead(ctx, d, m)
+	return diag.FromErr(errors.New("permission not found"))
 }
 
 func resourceRBACRoleObjectPermissionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*APIClient)
-	id, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
+	req := api.PatchedPermissionAssignRequest{
+		Permissions: []string{d.Get("permission").(string)},
 	}
-	hr, err := c.client.RbacApi.RbacPermissionsRolesDestroy(ctx, int32(id)).Execute()
+	if d.Get("model").(string) != "" {
+		req.Model = api.ModelEnum(d.Get("model").(string)).Ptr()
+	}
+	if d.Get("object_id").(string) != "" {
+		req.ObjectPk = api.PtrString(d.Get("object_id").(string))
+	}
+
+	hr, err := c.client.RbacApi.RbacPermissionsAssignedByRolesUnassignPartialUpdate(ctx, d.Get("role").(string)).PatchedPermissionAssignRequest(req).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

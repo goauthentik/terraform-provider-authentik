@@ -41,6 +41,10 @@ func resourceStageIdentification() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"webauthn_stage": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"case_insensitive_matching": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -99,6 +103,7 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 		Sources:                 helpers.CastSlice[string](d, "sources"),
 		PasswordStage:           *api.NewNullableString(api.PtrString(d.Get("password_stage").(string))),
 		CaptchaStage:            *api.NewNullableString(api.PtrString(d.Get("captcha_stage").(string))),
+		WebauthnStage:           *api.NewNullableString(api.PtrString(d.Get("webauthn_stage").(string))),
 		EnrollmentFlow:          *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 		RecoveryFlow:            *api.NewNullableString(helpers.GetP[string](d, "recovery_flow")),
 		PasswordlessFlow:        *api.NewNullableString(helpers.GetP[string](d, "passwordless_flow")),
@@ -139,6 +144,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	helpers.SetWrapper(d, "user_fields", res.UserFields)
 	helpers.SetWrapper(d, "password_stage", res.PasswordStage.Get())
 	helpers.SetWrapper(d, "captcha_stage", res.CaptchaStage.Get())
+	helpers.SetWrapper(d, "webauthn_stage", res.WebauthnStage.Get())
 	helpers.SetWrapper(d, "case_insensitive_matching", res.CaseInsensitiveMatching)
 	helpers.SetWrapper(d, "show_matched_user", res.ShowMatchedUser)
 	helpers.SetWrapper(d, "enable_remember_me", res.EnableRememberMe)

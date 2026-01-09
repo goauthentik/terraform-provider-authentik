@@ -31,9 +31,9 @@ func TestAccResourceBrand(t *testing.T) {
 }
 
 func testAccResourceBrand(name string) string {
+	// TODO: branding_logo should be optional
+	// TODO: branding_favicon should be optional
 	return fmt.Sprintf(`
-# TODO: branding_logo should be optional
-# TODO: branding_favicon should be optional
 resource "authentik_brand" "name" {
   domain = "%[1]s"
   branding_logo = "test"

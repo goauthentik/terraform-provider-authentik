@@ -91,6 +91,18 @@ func resourceProviderMicrosoftEntra() *schema.Resource {
 					api.OUTGOINGSYNCDELETEACTION_DO_NOTHING,
 				}),
 			},
+			"sync_page_timeout": {
+				Type:             schema.TypeString,
+				Default:          "minutes=30",
+				Optional:         true,
+				ValidateDiagFunc: helpers.ValidateRelativeDuration,
+				Description:      helpers.RelativeDurationDescription,
+			},
+			"sync_page_size": {
+				Type:     schema.TypeInt,
+				Default:  100,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -108,6 +120,8 @@ func resourceProviderMicrosoftEntraSchemaToProvider(d *schema.ResourceData) (*ap
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
 		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
 		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
+		SyncPageTimeout:            helpers.GetP[string](d, "sync_page_timeout"),
+		SyncPageSize:               helpers.GetIntP(d, "sync_page_size"),
 	}
 	return &r, nil
 }
@@ -158,6 +172,8 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 		helpers.CastSlice[string](d, "property_mappings_group"),
 		res.PropertyMappingsGroup,
 	))
+	helpers.SetWrapper(d, "sync_page_timeout", res.SyncPageTimeout)
+	helpers.SetWrapper(d, "sync_page_size", res.SyncPageSize)
 	return diags
 }
 
