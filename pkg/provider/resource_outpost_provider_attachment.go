@@ -93,7 +93,7 @@ func resourceOutpostProviderAttachmentRead(ctx context.Context, d *schema.Resour
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	providerIDInt, err := strconv.Atoi(parts[1])
+	providerIDInt, err := strconv.ParseInt(parts[1], 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
