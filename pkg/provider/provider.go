@@ -215,8 +215,26 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		config := api.NewConfiguration()
 		config.Debug = true
 		config.UserAgent = fmt.Sprintf("authentik-terraform@%s", version)
-		config.Host = akURL.Host
-		config.Scheme = akURL.Scheme
+
+		// Construct full server URL including path component and /api/v3 suffix
+		// This ensures subpath deployments (e.g., https://api.example.com/sso/) work correctly
+		// The OpenAPI client expects the server URL to include the /api/v3 path
+		path := akURL.Path
+		if !strings.HasSuffix(path, "/api/v3") {
+			path, err = url.JoinPath(path, "/api/v3")
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
+		}
+		akURL.Path = path
+
+		config.Servers = api.ServerConfigurations{
+			{
+				URL:         akURL.String(),
+				Description: "authentik API Server",
+			},
+		}
+
 		config.HTTPClient = &http.Client{
 			Transport: GetTLSTransport(insecure),
 		}
