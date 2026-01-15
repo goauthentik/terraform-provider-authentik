@@ -219,26 +219,19 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		// Construct full server URL including path component and /api/v3 suffix
 		// This ensures subpath deployments (e.g., https://api.example.com/sso/) work correctly
 		// The OpenAPI client expects the server URL to include the /api/v3 path
-		serverURL := fmt.Sprintf("%s://%s", akURL.Scheme, akURL.Host)
-		if akURL.Path != "" && akURL.Path != "/" {
-			// Preserve path component, removing trailing slash to avoid double slashes
-			path := strings.TrimSuffix(akURL.Path, "/")
-			serverURL += path
-
-			// Only append /api/v3 if it's not already in the path
-			// This handles backward compatibility when users explicitly provide the full API path
-			if !strings.HasSuffix(path, "/api/v3") {
-				serverURL += "/api/v3"
+		path := akURL.Path
+		if !strings.HasSuffix(path, "/api/v3") {
+			path, err = url.JoinPath(path, "/api/v3")
+			if err != nil {
+				return nil, diag.FromErr(err)
 			}
-		} else {
-			// Root deployment - always add /api/v3
-			serverURL += "/api/v3"
 		}
+		akURL.Path = path
 
 		config.Servers = api.ServerConfigurations{
 			{
-				URL:         serverURL,
-				Description: "Authentik API Server",
+				URL:         akURL.String(),
+				Description: "authentik API Server",
 			},
 		}
 
