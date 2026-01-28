@@ -102,16 +102,20 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 			}
 		}
 	} else {
-		perms, hr, err := c.client.RbacApi.RbacPermissionsList(ctx).
-			Role(d.Get("role").(string)).
-			Execute()
-		if err != nil {
-			return helpers.HTTPToDiag(d, hr, err)
-		}
-		for _, perm := range perms.Results {
-			if fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename) == d.Get("permission").(string) {
-				helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
-				return diags
+		req := c.client.RbacApi.RbacPermissionsList(ctx).Role(d.Get("role").(string))
+		for page := int32(1); true; page++ {
+			perms, hr, err := req.Page(page).Execute()
+			if err != nil {
+				return helpers.HTTPToDiag(d, hr, err)
+			}
+			for _, perm := range perms.Results {
+				if fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename) == d.Get("permission").(string) {
+					helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
+					return diags
+				}
+			}
+			if perms.Pagination.Next == 0 {
+				break
 			}
 		}
 	}
