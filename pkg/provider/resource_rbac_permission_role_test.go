@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -77,9 +78,9 @@ func TestAccRBACRoleObjectPermissionPagination(t *testing.T) {
 				Config: testAccRBACRoleObjectPermissionManyGlobal(rName),
 				Check: resource.ComposeTestCheckFunc(
 					// Check a permission likely on page 1
-					resource.TestCheckResourceAttr("authentik_rbac_permission_role.perms[\"authentik_core.add_user\"]", "permission", "authentik_core.add_user"),
+					resource.TestCheckResourceAttr("authentik_rbac_permission_role.perms-authentik_core_add_user", "permission", "authentik_core.add_user"),
 					// Check a permission likely on page 2 (beyond default page size of 20)
-					resource.TestCheckResourceAttr("authentik_rbac_permission_role.perms[\"authentik_providers_oauth2.view_oauth2provider\"]", "permission", "authentik_providers_oauth2.view_oauth2provider"),
+					resource.TestCheckResourceAttr("authentik_rbac_permission_role.perms-authentik_providers_oauth2_view_oauth2provider", "permission", "authentik_providers_oauth2.view_oauth2provider"),
 				),
 			},
 		},
@@ -87,42 +88,43 @@ func TestAccRBACRoleObjectPermissionPagination(t *testing.T) {
 }
 
 func testAccRBACRoleObjectPermissionManyGlobal(name string) string {
-	return fmt.Sprintf(`
+	// 21 permissions to ensure we exceed the default page size of 20
+	perms := []string{
+		"authentik_core.add_user",
+		"authentik_core.change_user",
+		"authentik_core.delete_user",
+		"authentik_core.view_user",
+		"authentik_core.add_group",
+		"authentik_core.change_group",
+		"authentik_core.delete_group",
+		"authentik_core.view_group",
+		"authentik_core.add_application",
+		"authentik_core.change_application",
+		"authentik_core.delete_application",
+		"authentik_core.view_application",
+		"authentik_core.add_token",
+		"authentik_core.change_token",
+		"authentik_core.delete_token",
+		"authentik_core.view_token",
+		"authentik_flows.add_flow",
+		"authentik_flows.change_flow",
+		"authentik_flows.delete_flow",
+		"authentik_flows.view_flow",
+		"authentik_providers_oauth2.view_oauth2provider",
+	}
+	mf := fmt.Sprintf(`
 resource "authentik_rbac_role" "role" {
   name = "%[1]s"
 }
 
-locals {
-  # 21 permissions to ensure we exceed the default page size of 20
-  permissions = [
-    "authentik_core.add_user",
-    "authentik_core.change_user",
-    "authentik_core.delete_user",
-    "authentik_core.view_user",
-    "authentik_core.add_group",
-    "authentik_core.change_group",
-    "authentik_core.delete_group",
-    "authentik_core.view_group",
-    "authentik_core.add_application",
-    "authentik_core.change_application",
-    "authentik_core.delete_application",
-    "authentik_core.view_application",
-    "authentik_core.add_token",
-    "authentik_core.change_token",
-    "authentik_core.delete_token",
-    "authentik_core.view_token",
-    "authentik_flows.add_flow",
-    "authentik_flows.change_flow",
-    "authentik_flows.delete_flow",
-    "authentik_flows.view_flow",
-    "authentik_providers_oauth2.view_oauth2provider",
-  ]
-}
-
-resource "authentik_rbac_permission_role" "perms" {
-  for_each   = toset(local.permissions)
-  role       = authentik_rbac_role.role.id
-  permission = each.value
-}
 `, name)
+	for _, perm := range perms {
+		mf = mf + fmt.Sprintf(`
+resource "authentik_rbac_permission_role" "perms-%s" {
+  role       = authentik_rbac_role.role.id
+  permission = "%s"
+}
+`, strings.ReplaceAll(perm, ".", "_"), perm)
+	}
+	return mf
 }
