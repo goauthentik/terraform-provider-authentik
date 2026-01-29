@@ -102,21 +102,17 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 			}
 		}
 	} else {
-		req := c.client.RbacApi.RbacPermissionsList(ctx).Role(d.Get("role").(string))
-		for page := int32(1); true; page++ {
-			perms, hr, err := req.Page(page).Execute()
-			if err != nil {
-				return helpers.HTTPToDiag(d, hr, err)
+		perms, hr, err := helpers.Paginator(c.client.RbacApi.RbacPermissionsList(ctx).Role(d.Get("role").(string)), helpers.PaginatorOptions{})
+		if err != nil {
+			return helpers.HTTPToDiag(d, hr, err)
+		}
+		for _, perm := range perms {
+			fqpn := fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename)
+			if fqpn != d.Get("permission").(string) {
+				continue
 			}
-			for _, perm := range perms.Results {
-				if fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename) == d.Get("permission").(string) {
-					helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
-					return diags
-				}
-			}
-			if perms.Pagination.Next == 0 {
-				break
-			}
+			helpers.SetWrapper(d, "permission", fqpn)
+			return diags
 		}
 	}
 	return diag.FromErr(errors.New("permission not found"))
