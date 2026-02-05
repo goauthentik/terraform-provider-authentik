@@ -90,11 +90,11 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 
 	_, object := d.GetOk("object_id")
 	if object {
-		perms, hr, err := c.client.RbacApi.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)).Execute()
+		perms, hr, err := helpers.Paginator(c.client.RbacApi.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)), helpers.PaginatorOptions{})
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		for _, perm := range perms.Results {
+		for _, perm := range perms {
 			if perm.Id == int32(id) {
 				helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
 				helpers.SetWrapper(d, "object_id", perm.ObjectPk)
@@ -102,17 +102,17 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 			}
 		}
 	} else {
-		perms, hr, err := c.client.RbacApi.RbacPermissionsList(ctx).
-			Role(d.Get("role").(string)).
-			Execute()
+		perms, hr, err := helpers.Paginator(c.client.RbacApi.RbacPermissionsList(ctx).Role(d.Get("role").(string)), helpers.PaginatorOptions{})
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		for _, perm := range perms.Results {
-			if fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename) == d.Get("permission").(string) {
-				helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
-				return diags
+		for _, perm := range perms {
+			fqpn := fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename)
+			if fqpn != d.Get("permission").(string) {
+				continue
 			}
+			helpers.SetWrapper(d, "permission", fqpn)
+			return diags
 		}
 	}
 	return diag.FromErr(errors.New("permission not found"))
