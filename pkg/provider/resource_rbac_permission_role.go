@@ -90,11 +90,11 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 
 	_, object := d.GetOk("object_id")
 	if object {
-		perms, hr, err := c.client.RbacApi.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)).Execute()
+		perms, hr, err := helpers.Paginator(c.client.RbacApi.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)), helpers.PaginatorOptions{})
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
-		for _, perm := range perms.Results {
+		for _, perm := range perms {
 			if perm.Id == int32(id) {
 				helpers.SetWrapper(d, "permission", fmt.Sprintf("%s.%s", perm.AppLabel, perm.Codename))
 				helpers.SetWrapper(d, "object_id", perm.ObjectPk)
