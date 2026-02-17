@@ -35,10 +35,10 @@ func StringInEnum[T ~string](items []T) schema.SchemaValidateDiagFunc {
 }
 
 func EnumToDescription[T ~string](allowed []T) string {
-	sb := strings.Builder{}
+	sb := &strings.Builder{}
 	sb.WriteString("Allowed values:\n")
 	for _, v := range allowed {
-		_, _ = sb.WriteString(fmt.Sprintf("  - `%s`\n", v))
+		fmt.Fprintf(sb, "  - `%s`\n", v)
 	}
 	return sb.String()
 }
