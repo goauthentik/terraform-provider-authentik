@@ -31,6 +31,10 @@ func resourceTaskSchedule() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"actor_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"crontab": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -58,12 +62,16 @@ func resourceTaskScheduleImport(ctx context.Context, d *schema.ResourceData, m i
 
 	parts := strings.Split(d.Get("app_model").(string), ".")
 
-	res, hr, err := c.client.TasksApi.
+	req := c.client.TasksApi.
 		TasksSchedulesList(ctx).
 		RelObjContentTypeAppLabel(parts[0]).
 		RelObjContentTypeModel(parts[1]).
-		RelObjId(d.Get("model_id").(string)).
-		Execute()
+		RelObjId(d.Get("model_id").(string))
+	if act, ok := d.GetOk("actor_name"); ok {
+		req = req.ActorName(act.(string))
+	}
+
+	res, hr, err := req.Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -100,6 +108,7 @@ func resourceTaskScheduleRead(ctx context.Context, d *schema.ResourceData, m int
 	helpers.SetWrapper(d, "model_id", res.RelObjId.Get())
 	helpers.SetWrapper(d, "crontab", res.Crontab)
 	helpers.SetWrapper(d, "paused", res.Paused)
+	helpers.SetWrapper(d, "actor_name", res.ActorName)
 	return diags
 }
 

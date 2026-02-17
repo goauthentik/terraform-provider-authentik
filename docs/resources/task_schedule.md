@@ -154,6 +154,7 @@ resource "authentik_task_schedule" "default" {
 
 ### Optional
 
+- `actor_name` (String)
 - `paused` (Boolean) Defaults to `false`.
 
 ### Read-Only
