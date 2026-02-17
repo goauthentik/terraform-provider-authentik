@@ -37,6 +37,7 @@ resource "authentik_provider_scim" "name" {
 resource "authentik_task_schedule" "default" {
   app_model = "authentik_providers_scim.scimprovider"
   model_id  = authentik_provider_scim.name.id
+  actor_name = "authentik.providers.scim.tasks.scim_sync"
 
   crontab = "6 */4 * * 2"
 }
