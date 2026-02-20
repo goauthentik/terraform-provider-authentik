@@ -1,4 +1,4 @@
-package provider
+package brand
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func dataSourceBrand() *schema.Resource {
+func DataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceBrandRead,
 		Description: "System --- Get brands by domain",

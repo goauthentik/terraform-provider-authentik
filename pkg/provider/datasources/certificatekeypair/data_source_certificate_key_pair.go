@@ -1,4 +1,4 @@
-package provider
+package certificatekeypair
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func dataSourceCertificateKeyPair() *schema.Resource {
+func DataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceCertificateKeyPairRead,
 		Description: "System --- Get certificate-key pairs by name",

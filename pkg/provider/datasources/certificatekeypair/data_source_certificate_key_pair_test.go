@@ -1,16 +1,17 @@
-package provider
+package certificatekeypair_test
 
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
+	"goauthentik.io/terraform-provider-authentik/pkg/provider"
 )
 
 func TestAccDataSourceCertificateKeyPair(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: ProviderFactories,
+		ProviderFactories: provider.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceCertificateKeyPairSimple,

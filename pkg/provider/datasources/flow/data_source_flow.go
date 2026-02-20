@@ -1,4 +1,4 @@
-package provider
+package flow
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func dataSourceFlow() *schema.Resource {
+func DataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceFlowRead,
 		Description: "Flows & Stages --- Get flows by Slug and/or designation",
