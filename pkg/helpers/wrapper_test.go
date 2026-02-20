@@ -27,6 +27,24 @@ func Test_GetP_Enum(t *testing.T) {
 	assert.Equal(t, api.NOTCONFIGUREDACTIONENUM_SKIP, *v)
 }
 
+func Test_GetIntP_CastsInt(t *testing.T) {
+	val := GetIntP(TestResource{
+		"foo": 123,
+	}, "foo")
+
+	assert.NotNil(t, val)
+	assert.Equal(t, int32(123), *val)
+}
+
+func Test_GetInt64P_CastsInt(t *testing.T) {
+	val := GetInt64P(TestResource{
+		"foo": 123,
+	}, "foo")
+
+	assert.NotNil(t, val)
+	assert.Equal(t, int64(123), *val)
+}
+
 func Test_CastSlice_New(t *testing.T) {
 	v := CastSlice[string](TestResource{
 		"foo": []any{
