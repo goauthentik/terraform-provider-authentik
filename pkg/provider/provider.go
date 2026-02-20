@@ -1,11 +1,9 @@
 package provider
 
 import (
-	"bytes"
 	"context"
 	"crypto/tls"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -277,44 +275,6 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			Client: apiClient,
 		}, diags
 	}
-}
-
-var ProviderFactories = map[string]func() (*schema.Provider, error){
-	"authentik": func() (*schema.Provider, error) {
-		return Provider("test", false), nil
-	},
-}
-
-var ProviderTestFactories = map[string]func() (*schema.Provider, error){
-	"authentik": func() (*schema.Provider, error) {
-		return Provider("test", true), nil
-	},
-}
-
-// TestingTransport Transport used for testing, always returns a 400 Response
-type TestingTransport struct {
-	inner http.RoundTripper
-}
-
-// NewTestingTransport Get a HTTP Transport that fails all requests
-func NewTestingTransport(inner http.RoundTripper) *TestingTransport {
-	return &TestingTransport{inner}
-}
-
-// RoundTrip HTTP Transport
-func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	body := "mock-failed-request"
-	return &http.Response{
-		Status:        "400 Bad Request",
-		StatusCode:    400,
-		Proto:         "HTTP/1.1",
-		ProtoMajor:    1,
-		ProtoMinor:    1,
-		Body:          io.NopCloser(bytes.NewBufferString(body)),
-		ContentLength: int64(len(body)),
-		Request:       r,
-		Header:        make(http.Header),
-	}, nil
 }
 
 // GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.

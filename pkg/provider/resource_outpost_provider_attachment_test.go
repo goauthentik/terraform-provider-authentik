@@ -11,7 +11,7 @@ import (
 func TestAccResourceOutpostProviderAttachment(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceOutpostProviderAttachmentConfig("test-outpost"),

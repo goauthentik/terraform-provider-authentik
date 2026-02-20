@@ -14,7 +14,7 @@ func TestAccResourceSourceSCIM(t *testing.T) {
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceSourceSCIM(rName, appName),

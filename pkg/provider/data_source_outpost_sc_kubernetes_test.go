@@ -11,7 +11,7 @@ import (
 func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceOutpostServiceConnectionKubernetesSimple,
@@ -29,7 +29,7 @@ func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 func TestAccDataSourceOutpostServiceConnectionsKubernetes_NotFound(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDataSourceOutpostServiceConnectionKubernetesNotFound,

@@ -8,21 +8,6 @@ import (
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-// providerFactories are used to instantiate a provider during acceptance testing.
-// The factory function will be invoked for every Terraform CLI command executed
-// to create a provider server to which the CLI can reattach.
-var providerFactories = map[string]func() (*schema.Provider, error){
-	"authentik": func() (*schema.Provider, error) {
-		return Provider("test", false), nil
-	},
-}
-
-var providerTestFactories = map[string]func() (*schema.Provider, error){
-	"authentik": func() (*schema.Provider, error) {
-		return Provider("test", true), nil
-	},
-}
-
 func TestProvider(t *testing.T) {
 	p := Provider("testing", false)
 	if err := p.InternalValidate(); err != nil {

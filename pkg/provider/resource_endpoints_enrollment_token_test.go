@@ -15,7 +15,7 @@ func TestAccResourceEndpointEnrollmenToken(t *testing.T) {
 	expires := time.Now().Add(30 * time.Minute).Format(time.RFC3339)
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceEndpointEnrollmenToken(rName, expires),

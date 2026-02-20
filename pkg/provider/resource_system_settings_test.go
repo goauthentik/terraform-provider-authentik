@@ -11,7 +11,7 @@ import (
 func TestAccResourceSystemSettings(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceSystemSettings("true"),

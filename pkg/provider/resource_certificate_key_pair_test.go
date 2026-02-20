@@ -73,7 +73,7 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 	}
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceCertificateKeyPairSimple(rName, cert, key),
@@ -93,7 +93,7 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 	})
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { helpers.TestAccPreCheck(t) },
-		ProviderFactories: providerTestFactories,
+		ProviderFactories: ProviderTestFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccResourceCertificateKeyPairSimple(rName, cert, key),
