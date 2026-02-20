@@ -15,6 +15,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 // GenerateSelfSignedCert Generate a self-signed TLS Certificate, to be used as fallback
@@ -71,7 +72,7 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 		t.Fatal(err)
 	}
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
+		PreCheck:          func() { helpers.TestAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
@@ -91,7 +92,7 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 		},
 	})
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
+		PreCheck:          func() { helpers.TestAccPreCheck(t) },
 		ProviderFactories: providerTestFactories,
 		Steps: []resource.TestStep{
 			{

@@ -1,11 +1,11 @@
 package provider
 
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stretchr/testify/assert"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 // providerFactories are used to instantiate a provider during acceptance testing.
@@ -27,17 +27,6 @@ func TestProvider(t *testing.T) {
 	p := Provider("testing", false)
 	if err := p.InternalValidate(); err != nil {
 		t.Fatalf("err: %[1]s", err)
-	}
-}
-
-func testAccPreCheck(t *testing.T) {
-	testEnvIsSet("AUTHENTIK_URL", t)
-	testEnvIsSet("AUTHENTIK_TOKEN", t)
-}
-
-func testEnvIsSet(k string, t *testing.T) {
-	if v := os.Getenv(k); v == "" {
-		t.Fatalf("%[1]s must be set for acceptance tests", k)
 	}
 }
 
@@ -94,7 +83,7 @@ func TestProviderConfigure_PathBasedURL(t *testing.T) {
 				"insecure": false,
 			}))
 			assert.Nil(t, diag)
-			ac := _ac.(*APIClient)
+			ac := _ac.(*helpers.APIClient)
 			assert.Equal(t, tc.expectedURL, ac.Client.GetConfig().Servers[0].URL, "Server URL should be constructed correctly")
 		})
 	}

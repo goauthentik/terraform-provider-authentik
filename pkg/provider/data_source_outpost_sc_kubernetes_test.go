@@ -5,11 +5,12 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
+		PreCheck:          func() { helpers.TestAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
@@ -27,7 +28,7 @@ func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 
 func TestAccDataSourceOutpostServiceConnectionsKubernetes_NotFound(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
+		PreCheck:          func() { helpers.TestAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{

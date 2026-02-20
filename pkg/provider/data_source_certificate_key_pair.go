@@ -67,9 +67,9 @@ func dataSourceCertificateKeyPair() *schema.Resource {
 
 func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	req := c.client.CryptoApi.CryptoCertificatekeypairsList(ctx)
+	req := c.Client.CryptoApi.CryptoCertificatekeypairsList(ctx)
 	if n, ok := d.GetOk("name"); ok {
 		req = req.Name(n.(string))
 	}
@@ -91,7 +91,7 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 	helpers.SetWrapper(d, "fingerprint256", f.FingerprintSha256.Get())
 
 	if d.Get("fetch_certificate").(bool) {
-		rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
+		rc, hr, err := c.Client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -99,7 +99,7 @@ func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceDat
 	}
 
 	if d.Get("fetch_key").(bool) {
-		rk, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
+		rk, hr, err := c.Client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
