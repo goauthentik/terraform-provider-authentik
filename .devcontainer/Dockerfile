@@ -1,1 +1,1 @@
-FROM mcr.microsoft.com/devcontainers/go:2-1.25-bookworm
+FROM mcr.microsoft.com/devcontainers/go:dev-1.26-bookworm
