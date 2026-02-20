@@ -65,6 +65,14 @@ func resourceUser() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"roles": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"attributes": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -86,6 +94,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 		Path:     new(d.Get("path").(string)),
 		Email:    helpers.GetP[string](d, "email"),
 		Groups:   helpers.CastSlice[string](d, "groups"),
+		Roles:    helpers.CastSlice[string](d, "roles"),
 	}
 	attr, err := helpers.GetJSON[map[string]any](d, ("attributes"))
 	m.Attributes = attr
@@ -158,6 +167,10 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m any) diag.D
 	helpers.SetWrapper(d, "groups", helpers.ListConsistentMerge(
 		helpers.CastSlice[string](d, "groups"),
 		res.Groups,
+	))
+	helpers.SetWrapper(d, "roles", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "roles"),
+		res.Roles,
 	))
 	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
