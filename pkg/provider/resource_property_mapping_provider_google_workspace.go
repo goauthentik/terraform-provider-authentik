@@ -41,7 +41,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d *schema.Re
 	return &r
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
@@ -55,7 +55,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d
 	return resourcePropertyMappingProviderGoogleWorkspaceRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -69,7 +69,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *
 	return diags
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
@@ -83,7 +83,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d
 	return resourcePropertyMappingProviderGoogleWorkspaceRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, d.Id()).Execute()
 	if err != nil {

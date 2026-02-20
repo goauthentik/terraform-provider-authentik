@@ -154,8 +154,8 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 	r := api.KerberosSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
+		Enabled:          new(d.Get("enabled").(bool)),
+		UserPathTemplate: new(d.Get("user_path_template").(string)),
 
 		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
@@ -164,23 +164,23 @@ func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.Kerberos
 		EnrollmentFlow:     *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
 		Realm:                               d.Get("realm").(string),
-		Krb5Conf:                            api.PtrString(d.Get("krb5_conf").(string)),
-		SyncUsers:                           api.PtrBool(d.Get("sync_users").(bool)),
-		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
-		SyncPrincipal:                       api.PtrString(d.Get("sync_principal").(string)),
-		SyncPassword:                        api.PtrString(d.Get("sync_password").(string)),
-		SyncKeytab:                          api.PtrString(d.Get("sync_keytab").(string)),
-		SyncCcache:                          api.PtrString(d.Get("sync_ccache").(string)),
-		SpnegoServerName:                    api.PtrString(d.Get("spnego_server_name").(string)),
-		SpnegoKeytab:                        api.PtrString(d.Get("spnego_keytab").(string)),
-		SpnegoCcache:                        api.PtrString(d.Get("spnego_ccache").(string)),
-		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
+		Krb5Conf:                            new(d.Get("krb5_conf").(string)),
+		SyncUsers:                           new(d.Get("sync_users").(bool)),
+		SyncUsersPassword:                   new(d.Get("sync_users_password").(bool)),
+		SyncPrincipal:                       new(d.Get("sync_principal").(string)),
+		SyncPassword:                        new(d.Get("sync_password").(string)),
+		SyncKeytab:                          new(d.Get("sync_keytab").(string)),
+		SyncCcache:                          new(d.Get("sync_ccache").(string)),
+		SpnegoServerName:                    new(d.Get("spnego_server_name").(string)),
+		SpnegoKeytab:                        new(d.Get("spnego_keytab").(string)),
+		SpnegoCcache:                        new(d.Get("spnego_ccache").(string)),
+		PasswordLoginUpdateInternalPassword: new(d.Get("password_login_update_internal_password").(bool)),
 		SyncOutgoingTriggerMode:             api.SyncOutgoingTriggerModeEnum(d.Get("sync_outgoing_trigger_mode").(string)).Ptr(),
 	}
 	return &r, nil
 }
 
-func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceSourceKerberosSchemaToSource(d)
@@ -197,7 +197,7 @@ func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceSourceKerberosRead(ctx, d, m)
 }
 
-func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesKerberosRetrieve(ctx, d.Id()).Execute()
@@ -229,7 +229,7 @@ func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app, diags := resourceSourceKerberosSchemaToSource(d)
 	if diags != nil {
@@ -245,7 +245,7 @@ func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceSourceKerberosRead(ctx, d, m)
 }
 
-func resourceSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesKerberosDestroy(ctx, d.Id()).Execute()
 	if err != nil {

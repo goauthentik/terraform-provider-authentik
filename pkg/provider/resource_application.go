@@ -85,7 +85,7 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
 		Provider:         *api.NewNullableInt32(helpers.GetIntP(d, ("protocol_provider"))),
-		OpenInNewTab:     api.PtrBool(d.Get("open_in_new_tab").(bool)),
+		OpenInNewTab:     new(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		Group:            helpers.GetP[string](d, "group"),
 		MetaIcon:         helpers.GetP[string](d, "meta_icon"),
@@ -95,13 +95,13 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 	}
 
 	m.BackchannelProviders = []int32{}
-	for _, bp := range d.Get("backchannel_providers").([]interface{}) {
+	for _, bp := range d.Get("backchannel_providers").([]any) {
 		m.BackchannelProviders = append(m.BackchannelProviders, int32(bp.(int)))
 	}
 	return &m
 }
 
-func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceApplicationSchemaToModel(d)
@@ -116,7 +116,7 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceApplicationRead(ctx, d, m)
 }
 
-func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -141,7 +141,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceApplicationSchemaToModel(d)
@@ -155,7 +155,7 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceApplicationRead(ctx, d, m)
 }
 
-func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -51,7 +51,7 @@ func resourcePropertyMappingProviderScopeSchemaToProvider(d *schema.ResourceData
 	return &r
 }
 
-func resourcePropertyMappingProviderScopeCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePropertyMappingProviderScopeSchemaToProvider(d)
@@ -65,7 +65,7 @@ func resourcePropertyMappingProviderScopeCreate(ctx context.Context, d *schema.R
 	return resourcePropertyMappingProviderScopeRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -81,7 +81,7 @@ func resourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.Res
 	return diags
 }
 
-func resourcePropertyMappingProviderScopeUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePropertyMappingProviderScopeSchemaToProvider(d)
@@ -95,7 +95,7 @@ func resourcePropertyMappingProviderScopeUpdate(ctx context.Context, d *schema.R
 	return resourcePropertyMappingProviderScopeRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderScopeDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderScopeDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScopeDestroy(ctx, d.Id()).Execute()
 	if err != nil {

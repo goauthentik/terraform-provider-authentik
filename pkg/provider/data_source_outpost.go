@@ -27,7 +27,7 @@ func dataSourceOutpost() *schema.Resource {
 	}
 }
 
-func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	if id, ok := d.GetOk("id"); ok {

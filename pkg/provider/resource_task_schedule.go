@@ -52,12 +52,12 @@ func resourceTaskSchedule() *schema.Resource {
 func resourceTaskScheduleSchemaToProvider(d *schema.ResourceData) api.PatchedScheduleRequest {
 	return api.PatchedScheduleRequest{
 		RelObjId: *api.NewNullableString(helpers.GetP[string](d, "model_id")),
-		Crontab:  api.PtrString(d.Get("crontab").(string)),
-		Paused:   api.PtrBool(d.Get("paused").(bool)),
+		Crontab:  new(d.Get("crontab").(string)),
+		Paused:   new(d.Get("paused").(bool)),
 	}
 }
 
-func resourceTaskScheduleImport(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTaskScheduleImport(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	parts := strings.Split(d.Get("app_model").(string), ".")
@@ -83,7 +83,7 @@ func resourceTaskScheduleImport(ctx context.Context, d *schema.ResourceData, m i
 	return nil
 }
 
-func resourceTaskScheduleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTaskScheduleCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	diag := resourceTaskScheduleImport(ctx, d, m)
 	if diag != nil {
 		return diag
@@ -96,7 +96,7 @@ func resourceTaskScheduleCreate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceTaskScheduleRead(ctx, d, m)
 }
 
-func resourceTaskScheduleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTaskScheduleRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -112,7 +112,7 @@ func resourceTaskScheduleRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func resourceTaskScheduleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTaskScheduleUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceTaskScheduleSchemaToProvider(d)
@@ -128,6 +128,6 @@ func resourceTaskScheduleUpdate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceTaskScheduleRead(ctx, d, m)
 }
 
-func resourceTaskScheduleDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTaskScheduleDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	return diag.Diagnostics{}
 }

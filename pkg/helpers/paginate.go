@@ -33,7 +33,7 @@ func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
 	req PaginatorRequest[Treq, Tres],
 	opts PaginatorOptions,
 ) ([]Tobj, *http.Response, error) {
-	var bfreq, cfreq interface{}
+	var bfreq, cfreq any
 	fetchOffset := func(page int32) (Tres, *http.Response, error) {
 		bfreq = req.Page(page)
 		cfreq = bfreq.(PaginatorRequest[Treq, Tres]).PageSize(int32(opts.PageSize))

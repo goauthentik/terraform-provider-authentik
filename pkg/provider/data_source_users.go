@@ -91,7 +91,7 @@ func dataSourceUsers() *schema.Resource {
 	}
 }
 
-func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	req := c.client.CoreApi.CoreUsersList(ctx)
@@ -129,7 +129,7 @@ func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interfac
 		}
 	}
 
-	users := make([]map[string]interface{}, 0)
+	users := make([]map[string]any, 0)
 	for page := int32(1); true; page++ {
 		req = req.Page(page)
 		res, hr, err := req.Execute()

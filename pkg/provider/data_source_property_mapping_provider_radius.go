@@ -50,7 +50,7 @@ func dataSourcePropertyMappingProviderRadius() *schema.Resource {
 	}
 }
 
-func dataSourcePropertyMappingProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourcePropertyMappingProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 

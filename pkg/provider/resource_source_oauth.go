@@ -179,9 +179,9 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 	r := api.OAuthSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		Promoted:         api.PtrBool(d.Get("promoted").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
+		Enabled:          new(d.Get("enabled").(bool)),
+		Promoted:         new(d.Get("promoted").(bool)),
+		UserPathTemplate: new(d.Get("user_path_template").(string)),
 
 		ProviderType:                api.ProviderTypeEnum(d.Get("provider_type").(string)),
 		ConsumerKey:                 d.Get("consumer_key").(string),
@@ -205,7 +205,7 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 		GroupPropertyMappings: helpers.CastSlice[string](d, "property_mappings_group"),
 	}
 
-	jwks, err := helpers.GetJSON[map[string]interface{}](d, ("oidc_jwks"))
+	jwks, err := helpers.GetJSON[map[string]any](d, ("oidc_jwks"))
 	r.OidcJwks = jwks
 	if err != nil {
 		return nil, err
@@ -213,7 +213,7 @@ func resourceSourceOAuthSchemaToSource(d *schema.ResourceData) (*api.OAuthSource
 	return &r, nil
 }
 
-func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceSourceOAuthSchemaToSource(d)
@@ -230,7 +230,7 @@ func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceSourceOAuthRead(ctx, d, m)
 }
 
-func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesOauthRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -272,7 +272,7 @@ func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m inte
 	return helpers.SetJSON(d, "oidc_jwks", res.OidcJwks)
 }
 
-func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app, diags := resourceSourceOAuthSchemaToSource(d)
 	if diags != nil {
@@ -288,7 +288,7 @@ func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceSourceOAuthRead(ctx, d, m)
 }
 
-func resourceSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesOauthDestroy(ctx, d.Id()).Execute()
 	if err != nil {

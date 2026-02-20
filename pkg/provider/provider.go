@@ -199,7 +199,7 @@ type APIClient struct {
 }
 
 func providerConfigure(version string, testing bool) schema.ConfigureContextFunc {
-	return func(c context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	return func(c context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
 		apiURL := d.Get("url").(string)
 		token := d.Get("token").(string)
 		insecure := d.Get("insecure").(bool)

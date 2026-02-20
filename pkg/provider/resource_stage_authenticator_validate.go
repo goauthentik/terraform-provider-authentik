@@ -74,7 +74,7 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorValidateStageRequest {
 	r := api.AuthenticatorValidateStageRequest{
 		Name:                       d.Get("name").(string),
-		LastAuthThreshold:          api.PtrString(d.Get("last_auth_threshold").(string)),
+		LastAuthThreshold:          new(d.Get("last_auth_threshold").(string)),
 		WebauthnAllowedDeviceTypes: helpers.CastSlice[string](d, "webauthn_allowed_device_types"),
 		NotConfiguredAction:        helpers.GetP[api.NotConfiguredActionEnum](d, "not_configured_action"),
 		ConfigurationStages:        helpers.CastSlice[string](d, "configuration_stages"),
@@ -82,14 +82,14 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)
-	for _, classesS := range d.Get("device_classes").([]interface{}) {
+	for _, classesS := range d.Get("device_classes").([]any) {
 		classes = append(classes, api.DeviceClassesEnum(classesS.(string)))
 	}
 	r.DeviceClasses = classes
 	return &r
 }
 
-func resourceStageAuthenticatorValidateCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorValidateCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageAuthenticatorValidateSchemaToProvider(d)
@@ -103,7 +103,7 @@ func resourceStageAuthenticatorValidateCreate(ctx context.Context, d *schema.Res
 	return resourceStageAuthenticatorValidateRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -128,7 +128,7 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	return diags
 }
 
-func resourceStageAuthenticatorValidateUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorValidateUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageAuthenticatorValidateSchemaToProvider(d)
@@ -142,7 +142,7 @@ func resourceStageAuthenticatorValidateUpdate(ctx context.Context, d *schema.Res
 	return resourceStageAuthenticatorValidateRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorValidateDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorValidateDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorValidateDestroy(ctx, d.Id()).Execute()
 	if err != nil {

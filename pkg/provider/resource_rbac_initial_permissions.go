@@ -44,12 +44,12 @@ func resourceRBACInitialPermissionsSchemaToModel(d *schema.ResourceData) (*api.I
 	m := api.InitialPermissionsRequest{
 		Name:        d.Get("name").(string),
 		Role:        d.Get("role").(string),
-		Permissions: helpers.CastSliceInt32(d.Get("permissions").([]interface{})),
+		Permissions: helpers.CastSliceInt32(d.Get("permissions").([]any)),
 	}
 	return &m, nil
 }
 
-func resourceRBACInitialPermissionsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACInitialPermissionsCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceRBACInitialPermissionsSchemaToModel(d)
@@ -66,7 +66,7 @@ func resourceRBACInitialPermissionsCreate(ctx context.Context, d *schema.Resourc
 	return resourceRBACInitialPermissionsRead(ctx, d, m)
 }
 
-func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -88,7 +88,7 @@ func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceD
 	return diags
 }
 
-func resourceRBACInitialPermissionsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACInitialPermissionsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -108,7 +108,7 @@ func resourceRBACInitialPermissionsUpdate(ctx context.Context, d *schema.Resourc
 	return resourceRBACInitialPermissionsRead(ctx, d, m)
 }
 
-func resourceRBACInitialPermissionsDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACInitialPermissionsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

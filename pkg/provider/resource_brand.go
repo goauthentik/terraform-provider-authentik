@@ -105,7 +105,7 @@ func resourceBrand() *schema.Resource {
 func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag.Diagnostics) {
 	m := api.BrandRequest{
 		Domain:                        d.Get("domain").(string),
-		Default:                       api.PtrBool(d.Get("default").(bool)),
+		Default:                       new(d.Get("default").(bool)),
 		BrandingTitle:                 helpers.GetP[string](d, "branding_title"),
 		BrandingLogo:                  helpers.GetP[string](d, "branding_logo"),
 		BrandingFavicon:               helpers.GetP[string](d, "branding_favicon"),
@@ -122,12 +122,12 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 		DefaultApplication:            *api.NewNullableString(helpers.GetP[string](d, "default_application")),
 	}
 
-	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
+	attr, err := helpers.GetJSON[map[string]any](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }
 
-func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	mo, diags := resourceBrandSchemaToModel(d)
@@ -144,7 +144,7 @@ func resourceBrandCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	return resourceBrandRead(ctx, d, m)
 }
 
-func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.CoreApi.CoreBrandsRetrieve(ctx, d.Id()).Execute()
@@ -173,7 +173,7 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m interface{
 	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
-func resourceBrandUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	obj, diags := resourceBrandSchemaToModel(d)
@@ -190,7 +190,7 @@ func resourceBrandUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	return resourceBrandRead(ctx, d, m)
 }
 
-func resourceBrandDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBrandDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreBrandsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

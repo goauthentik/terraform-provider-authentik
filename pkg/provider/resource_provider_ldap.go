@@ -79,19 +79,19 @@ func resourceProviderLDAPSchemaToProvider(d *schema.ResourceData) *api.LDAPProvi
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("bind_flow").(string),
 		InvalidationFlow:  d.Get("unbind_flow").(string),
-		BaseDn:            api.PtrString(d.Get("base_dn").(string)),
-		UidStartNumber:    api.PtrInt32(int32(d.Get("uid_start_number").(int))),
-		GidStartNumber:    api.PtrInt32(int32(d.Get("gid_start_number").(int))),
+		BaseDn:            new(d.Get("base_dn").(string)),
+		UidStartNumber:    new(int32(d.Get("uid_start_number").(int))),
+		GidStartNumber:    new(int32(d.Get("gid_start_number").(int))),
 		SearchMode:        api.LDAPAPIAccessMode(d.Get("search_mode").(string)).Ptr(),
 		BindMode:          api.LDAPAPIAccessMode(d.Get("bind_mode").(string)).Ptr(),
-		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
+		MfaSupport:        new(d.Get("mfa_support").(bool)),
 		Certificate:       *api.NewNullableString(helpers.GetP[string](d, "certificate")),
 		TlsServerName:     helpers.GetP[string](d, "tls_server_name"),
 	}
 	return &r
 }
 
-func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceProviderLDAPSchemaToProvider(d)
@@ -105,7 +105,7 @@ func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceProviderLDAPRead(ctx, d, m)
 }
 
-func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -131,7 +131,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -148,7 +148,7 @@ func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceProviderLDAPRead(ctx, d, m)
 }
 
-func resourceProviderLDAPDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderLDAPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

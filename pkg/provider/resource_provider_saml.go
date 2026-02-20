@@ -195,17 +195,17 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		AuthorizationFlow:           d.Get("authorization_flow").(string),
 		InvalidationFlow:            d.Get("invalidation_flow").(string),
 		AcsUrl:                      d.Get("acs_url").(string),
-		Audience:                    api.PtrString(d.Get("audience").(string)),
-		Issuer:                      api.PtrString(d.Get("issuer").(string)),
-		AssertionValidNotBefore:     api.PtrString(d.Get("assertion_valid_not_before").(string)),
-		AssertionValidNotOnOrAfter:  api.PtrString(d.Get("assertion_valid_not_on_or_after").(string)),
-		SessionValidNotOnOrAfter:    api.PtrString(d.Get("session_valid_not_on_or_after").(string)),
+		Audience:                    new(d.Get("audience").(string)),
+		Issuer:                      new(d.Get("issuer").(string)),
+		AssertionValidNotBefore:     new(d.Get("assertion_valid_not_before").(string)),
+		AssertionValidNotOnOrAfter:  new(d.Get("assertion_valid_not_on_or_after").(string)),
+		SessionValidNotOnOrAfter:    new(d.Get("session_valid_not_on_or_after").(string)),
 		DigestAlgorithm:             api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:          api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
 		SpBinding:                   api.SAMLBindingsEnum(d.Get("sp_binding").(string)).Ptr(),
 		PropertyMappings:            helpers.CastSlice[string](d, "property_mappings"),
-		SignAssertion:               api.PtrBool(d.Get("sign_assertion").(bool)),
-		SignResponse:                api.PtrBool(d.Get("sign_response").(bool)),
+		SignAssertion:               new(d.Get("sign_assertion").(bool)),
+		SignResponse:                new(d.Get("sign_response").(bool)),
 		AuthenticationFlow:          *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		NameIdMapping:               *api.NewNullableString(helpers.GetP[string](d, "name_id_mapping")),
 		AuthnContextClassRefMapping: *api.NewNullableString(helpers.GetP[string](d, "authn_context_class_ref_mapping")),
@@ -221,7 +221,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 	return &r
 }
 
-func resourceProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceProviderSAMLSchemaToProvider(d)
@@ -235,7 +235,7 @@ func resourceProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceProviderSAMLRead(ctx, d, m)
 }
 
-func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -286,7 +286,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func resourceProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -303,7 +303,7 @@ func resourceProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceProviderSAMLRead(ctx, d, m)
 }
 
-func resourceProviderSAMLDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSAMLDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

@@ -7,14 +7,14 @@ import (
 	"goauthentik.io/api/v3"
 )
 
-type TestResource map[string]interface{}
+type TestResource map[string]any
 
-func (tr TestResource) GetOk(key string) (interface{}, bool) {
+func (tr TestResource) GetOk(key string) (any, bool) {
 	v, ok := tr[key]
 	return v, ok
 }
 
-func (tr TestResource) Set(k string, v interface{}) error {
+func (tr TestResource) Set(k string, v any) error {
 	tr[k] = v
 	return nil
 }
@@ -29,7 +29,7 @@ func Test_GetP_Enum(t *testing.T) {
 
 func Test_CastSlice_New(t *testing.T) {
 	v := CastSlice[string](TestResource{
-		"foo": []interface{}{
+		"foo": []any{
 			"foo",
 			"bar",
 		},

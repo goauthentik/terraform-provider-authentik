@@ -46,14 +46,14 @@ func resourcePolicyUniquePassword() *schema.Resource {
 func resourcePolicyUniquePasswordSchemaToProvider(d *schema.ResourceData) *api.UniquePasswordPolicyRequest {
 	r := api.UniquePasswordPolicyRequest{
 		Name:                   d.Get("name").(string),
-		ExecutionLogging:       api.PtrBool(d.Get("execution_logging").(bool)),
-		PasswordField:          api.PtrString(d.Get("password_field").(string)),
-		NumHistoricalPasswords: api.PtrInt32(int32(d.Get("num_historical_passwords").(int))),
+		ExecutionLogging:       new(d.Get("execution_logging").(bool)),
+		PasswordField:          new(d.Get("password_field").(string)),
+		NumHistoricalPasswords: new(int32(d.Get("num_historical_passwords").(int))),
 	}
 	return &r
 }
 
-func resourcePolicyUniquePasswordCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyUniquePasswordCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyUniquePasswordSchemaToProvider(d)
@@ -67,7 +67,7 @@ func resourcePolicyUniquePasswordCreate(ctx context.Context, d *schema.ResourceD
 	return resourcePolicyUniquePasswordRead(ctx, d, m)
 }
 
-func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -83,7 +83,7 @@ func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceDat
 	return diags
 }
 
-func resourcePolicyUniquePasswordUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyUniquePasswordUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyUniquePasswordSchemaToProvider(d)
@@ -97,7 +97,7 @@ func resourcePolicyUniquePasswordUpdate(ctx context.Context, d *schema.ResourceD
 	return resourcePolicyUniquePasswordRead(ctx, d, m)
 }
 
-func resourcePolicyUniquePasswordDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyUniquePasswordDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesUniquePasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {

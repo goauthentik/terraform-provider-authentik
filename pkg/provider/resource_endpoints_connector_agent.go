@@ -110,13 +110,13 @@ func resourceEndpointsConnectorAgentSchemaToProvider(d *schema.ResourceData) (*a
 		ChallengeKey:                 *api.NewNullableString(helpers.GetP[string](d, "challenge_key")),
 		ChallengeIdleTimeout:         helpers.GetP[string](d, "challenge_idle_timeout"),
 		ChallengeTriggerCheckIn:      helpers.GetP[bool](d, "challenge_trigger_check_in"),
-		JwtFederationProviders:       helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]interface{})),
+		JwtFederationProviders:       helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]any)),
 	}
 
 	return &r, nil
 }
 
-func resourceEndpointsConnectorAgentCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsConnectorAgentCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceEndpointsConnectorAgentSchemaToProvider(d)
@@ -133,7 +133,7 @@ func resourceEndpointsConnectorAgentCreate(ctx context.Context, d *schema.Resour
 	return resourceEndpointsConnectorAgentRead(ctx, d, m)
 }
 
-func resourceEndpointsConnectorAgentRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsConnectorAgentRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -162,7 +162,7 @@ func resourceEndpointsConnectorAgentRead(ctx context.Context, d *schema.Resource
 	return diags
 }
 
-func resourceEndpointsConnectorAgentUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsConnectorAgentUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceEndpointsConnectorAgentSchemaToProvider(d)
@@ -179,7 +179,7 @@ func resourceEndpointsConnectorAgentUpdate(ctx context.Context, d *schema.Resour
 	return resourceEndpointsConnectorAgentRead(ctx, d, m)
 }
 
-func resourceEndpointsConnectorAgentDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsConnectorAgentDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.EndpointsApi.EndpointsAgentsConnectorsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

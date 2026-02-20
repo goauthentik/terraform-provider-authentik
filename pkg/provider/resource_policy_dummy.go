@@ -51,15 +51,15 @@ func resourcePolicyDummy() *schema.Resource {
 func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolicyRequest {
 	r := api.DummyPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
-		Result:           api.PtrBool(d.Get("result").(bool)),
+		ExecutionLogging: new(d.Get("execution_logging").(bool)),
+		Result:           new(d.Get("result").(bool)),
 		WaitMin:          helpers.GetIntP(d, "wait_min"),
 		WaitMax:          helpers.GetIntP(d, "wait_max"),
 	}
 	return &r
 }
 
-func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyDummySchemaToProvider(d)
@@ -73,7 +73,7 @@ func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourcePolicyDummyRead(ctx, d, m)
 }
 
-func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -90,7 +90,7 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyDummySchemaToProvider(d)
@@ -104,7 +104,7 @@ func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourcePolicyDummyRead(ctx, d, m)
 }
 
-func resourcePolicyDummyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyDummyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesDummyDestroy(ctx, d.Id()).Execute()
 	if err != nil {

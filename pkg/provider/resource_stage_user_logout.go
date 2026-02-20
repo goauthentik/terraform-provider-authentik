@@ -35,7 +35,7 @@ func resourceStageUserLogoutSchemaToProvider(d *schema.ResourceData) *api.UserLo
 	return &r
 }
 
-func resourceStageUserLogoutCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLogoutCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageUserLogoutSchemaToProvider(d)
@@ -49,7 +49,7 @@ func resourceStageUserLogoutCreate(ctx context.Context, d *schema.ResourceData, 
 	return resourceStageUserLogoutRead(ctx, d, m)
 }
 
-func resourceStageUserLogoutRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLogoutRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -62,7 +62,7 @@ func resourceStageUserLogoutRead(ctx context.Context, d *schema.ResourceData, m 
 	return diags
 }
 
-func resourceStageUserLogoutUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLogoutUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageUserLogoutSchemaToProvider(d)
@@ -76,7 +76,7 @@ func resourceStageUserLogoutUpdate(ctx context.Context, d *schema.ResourceData, 
 	return resourceStageUserLogoutRead(ctx, d, m)
 }
 
-func resourceStageUserLogoutDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLogoutDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserLogoutDestroy(ctx, d.Id()).Execute()
 	if err != nil {

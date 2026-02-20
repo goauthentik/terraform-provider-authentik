@@ -112,21 +112,21 @@ func resourceProviderGoogleWorkspaceSchemaToProvider(d *schema.ResourceData) (*a
 		DefaultGroupEmailDomain:    d.Get("default_group_email_domain").(string),
 		PropertyMappings:           helpers.CastSlice[string](d, "property_mappings"),
 		PropertyMappingsGroup:      helpers.CastSlice[string](d, "property_mappings_group"),
-		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
+		ExcludeUsersServiceAccount: new(d.Get("exclude_users_service_account").(bool)),
 		UserDeleteAction:           api.OutgoingSyncDeleteAction(d.Get("user_delete_action").(string)).Ptr(),
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
 		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
-		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
+		DryRun:                     new(d.Get("dry_run").(bool)),
 		SyncPageTimeout:            helpers.GetP[string](d, "sync_page_timeout"),
 		SyncPageSize:               helpers.GetIntP(d, "sync_page_size"),
 	}
 
-	credentials, err := helpers.GetJSON[map[string]interface{}](d, ("credentials"))
+	credentials, err := helpers.GetJSON[map[string]any](d, ("credentials"))
 	r.Credentials = credentials
 	return &r, err
 }
 
-func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceProviderGoogleWorkspaceSchemaToProvider(d)
@@ -143,7 +143,7 @@ func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.Resour
 	return resourceProviderGoogleWorkspaceRead(ctx, d, m)
 }
 
-func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -175,7 +175,7 @@ func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.Resource
 	return helpers.SetJSON(d, "credentials", res.Credentials)
 }
 
-func resourceProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -195,7 +195,7 @@ func resourceProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.Resour
 	return resourceProviderGoogleWorkspaceRead(ctx, d, m)
 }
 
-func resourceProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

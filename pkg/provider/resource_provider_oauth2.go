@@ -168,12 +168,12 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		AuthorizationFlow:      d.Get("authorization_flow").(string),
 		AuthenticationFlow:     *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		InvalidationFlow:       d.Get("invalidation_flow").(string),
-		AccessCodeValidity:     api.PtrString(d.Get("access_code_validity").(string)),
-		AccessTokenValidity:    api.PtrString(d.Get("access_token_validity").(string)),
-		RefreshTokenValidity:   api.PtrString(d.Get("refresh_token_validity").(string)),
+		AccessCodeValidity:     new(d.Get("access_code_validity").(string)),
+		AccessTokenValidity:    new(d.Get("access_token_validity").(string)),
+		RefreshTokenValidity:   new(d.Get("refresh_token_validity").(string)),
 		RefreshTokenThreshold:  helpers.GetP[string](d, "refresh_token_threshold"),
-		IncludeClaimsInIdToken: api.PtrBool(d.Get("include_claims_in_id_token").(bool)),
-		ClientId:               api.PtrString(d.Get("client_id").(string)),
+		IncludeClaimsInIdToken: new(d.Get("include_claims_in_id_token").(bool)),
+		ClientId:               new(d.Get("client_id").(string)),
 		ClientSecret:           helpers.GetP[string](d, "client_secret"),
 		IssuerMode:             api.IssuerModeEnum(d.Get("issuer_mode").(string)).Ptr(),
 		SubMode:                api.SubModeEnum(d.Get("sub_mode").(string)).Ptr(),
@@ -185,16 +185,16 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 
 		SigningKey:             *api.NewNullableString(helpers.GetP[string](d, "signing_key")),
 		EncryptionKey:          *api.NewNullableString(helpers.GetP[string](d, "encryption_key")),
-		RedirectUris:           listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]interface{})),
-		JwtFederationProviders: helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]interface{})),
+		RedirectUris:           listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]any)),
+		JwtFederationProviders: helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]any)),
 	}
 	return &r
 }
 
-func listToRedirectURIsRequest(raw []interface{}) []api.RedirectURIRequest {
+func listToRedirectURIsRequest(raw []any) []api.RedirectURIRequest {
 	rus := []api.RedirectURIRequest{}
 	for _, rr := range raw {
-		rd := rr.(map[string]interface{})
+		rd := rr.(map[string]any)
 		rus = append(rus, api.RedirectURIRequest{
 			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
 			Url:          rd["url"].(string),
@@ -203,10 +203,10 @@ func listToRedirectURIsRequest(raw []interface{}) []api.RedirectURIRequest {
 	return rus
 }
 
-func listToRedirectURIs(raw []interface{}) []api.RedirectURI {
+func listToRedirectURIs(raw []any) []api.RedirectURI {
 	rus := []api.RedirectURI{}
 	for _, rr := range raw {
-		rd := rr.(map[string]interface{})
+		rd := rr.(map[string]any)
 		rus = append(rus, api.RedirectURI{
 			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
 			Url:          rd["url"].(string),
@@ -215,10 +215,10 @@ func listToRedirectURIs(raw []interface{}) []api.RedirectURI {
 	return rus
 }
 
-func redirectURIsToList(raw []api.RedirectURI) []map[string]interface{} {
-	rus := []map[string]interface{}{}
+func redirectURIsToList(raw []api.RedirectURI) []map[string]any {
+	rus := []map[string]any{}
 	for _, rr := range raw {
-		rus = append(rus, map[string]interface{}{
+		rus = append(rus, map[string]any{
 			"matching_mode": string(rr.MatchingMode),
 			"url":           rr.Url,
 		})
@@ -226,7 +226,7 @@ func redirectURIsToList(raw []api.RedirectURI) []map[string]interface{} {
 	return rus
 }
 
-func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceProviderOAuth2SchemaToProvider(d)
@@ -240,7 +240,7 @@ func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m
 	return resourceProviderOAuth2Read(ctx, d, m)
 }
 
-func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -269,7 +269,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	))
 	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(
 		helpers.ListConsistentMerge(
-			listToRedirectURIs(d.Get("allowed_redirect_uris").([]interface{})),
+			listToRedirectURIs(d.Get("allowed_redirect_uris").([]any)),
 			res.RedirectUris,
 		),
 	))
@@ -291,7 +291,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -308,7 +308,7 @@ func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m
 	return resourceProviderOAuth2Read(ctx, d, m)
 }
 
-func resourceProviderOAuth2Delete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderOAuth2Delete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

@@ -76,13 +76,13 @@ func dataSourceGroups() *schema.Resource {
 	}
 }
 
-func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	req := c.client.CoreApi.CoreGroupsList(ctx)
 
 	for key, _schema := range dataSourceGroups().Schema {
-		var v interface{}
+		var v any
 		if _schema.Type == schema.TypeBool && _schema.Default != nil {
 			v = d.Get(key)
 			if v == nil {
@@ -119,7 +119,7 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 		}
 	}
 
-	groups := make([]map[string]interface{}, 0)
+	groups := make([]map[string]any, 0)
 	for page := int32(1); true; page++ {
 		req = req.Page(page)
 		res, hr, err := req.Execute()

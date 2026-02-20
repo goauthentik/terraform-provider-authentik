@@ -72,17 +72,17 @@ func resourceStageCaptchaSchemaToProvider(d *schema.ResourceData) *api.CaptchaSt
 		Name:                d.Get("name").(string),
 		PublicKey:           d.Get("public_key").(string),
 		PrivateKey:          d.Get("private_key").(string),
-		ErrorOnInvalidScore: api.PtrBool(d.Get("error_on_invalid_score").(bool)),
-		ScoreMinThreshold:   api.PtrFloat64(d.Get("score_min_threshold").(float64)),
-		ScoreMaxThreshold:   api.PtrFloat64(d.Get("score_max_threshold").(float64)),
-		Interactive:         api.PtrBool(d.Get("interactive").(bool)),
+		ErrorOnInvalidScore: new(d.Get("error_on_invalid_score").(bool)),
+		ScoreMinThreshold:   new(d.Get("score_min_threshold").(float64)),
+		ScoreMaxThreshold:   new(d.Get("score_max_threshold").(float64)),
+		Interactive:         new(d.Get("interactive").(bool)),
 		JsUrl:               helpers.GetP[string](d, "js_url"),
 		ApiUrl:              helpers.GetP[string](d, "api_url"),
 	}
 	return &r
 }
 
-func resourceStageCaptchaCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageCaptchaCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageCaptchaSchemaToProvider(d)
@@ -96,7 +96,7 @@ func resourceStageCaptchaCreate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceStageCaptchaRead(ctx, d, m)
 }
 
-func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -116,7 +116,7 @@ func resourceStageCaptchaRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func resourceStageCaptchaUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageCaptchaUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageCaptchaSchemaToProvider(d)
@@ -130,7 +130,7 @@ func resourceStageCaptchaUpdate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceStageCaptchaRead(ctx, d, m)
 }
 
-func resourceStageCaptchaDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageCaptchaDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesCaptchaDestroy(ctx, d.Id()).Execute()
 	if err != nil {

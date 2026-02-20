@@ -57,12 +57,12 @@ func resourceRBACRoleObjectPermissionSchemaToProvider(d *schema.ResourceData) *a
 		r.Model = api.ModelEnum(d.Get("model").(string)).Ptr()
 	}
 	if d.Get("object_id").(string) != "" {
-		r.ObjectPk = api.PtrString(d.Get("object_id").(string))
+		r.ObjectPk = new(d.Get("object_id").(string))
 	}
 	return &r
 }
 
-func resourceRBACRoleObjectPermissionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACRoleObjectPermissionCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceRBACRoleObjectPermissionSchemaToProvider(d)
@@ -80,7 +80,7 @@ func resourceRBACRoleObjectPermissionCreate(ctx context.Context, d *schema.Resou
 	return resourceRBACRoleObjectPermissionRead(ctx, d, m)
 }
 
-func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -118,7 +118,7 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 	return diag.FromErr(errors.New("permission not found"))
 }
 
-func resourceRBACRoleObjectPermissionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACRoleObjectPermissionDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	req := api.PatchedPermissionAssignRequest{
 		Permissions: []string{d.Get("permission").(string)},
@@ -127,7 +127,7 @@ func resourceRBACRoleObjectPermissionDelete(ctx context.Context, d *schema.Resou
 		req.Model = api.ModelEnum(d.Get("model").(string)).Ptr()
 	}
 	if d.Get("object_id").(string) != "" {
-		req.ObjectPk = api.PtrString(d.Get("object_id").(string))
+		req.ObjectPk = new(d.Get("object_id").(string))
 	}
 
 	hr, err := c.client.RbacApi.RbacPermissionsAssignedByRolesUnassignPartialUpdate(ctx, d.Get("role").(string)).PatchedPermissionAssignRequest(req).Execute()

@@ -77,8 +77,8 @@ func resourceSourceSCIMSchemaToSource(d *schema.ResourceData) *api.SCIMSourceReq
 	r := api.SCIMSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
+		Enabled:          new(d.Get("enabled").(bool)),
+		UserPathTemplate: new(d.Get("user_path_template").(string)),
 
 		UserPropertyMappings:  helpers.CastSlice[string](d, "property_mappings"),
 		GroupPropertyMappings: helpers.CastSlice[string](d, "property_mappings_group"),
@@ -86,7 +86,7 @@ func resourceSourceSCIMSchemaToSource(d *schema.ResourceData) *api.SCIMSourceReq
 	return &r
 }
 
-func resourceSourceSCIMCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSCIMCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceSourceSCIMSchemaToSource(d)
@@ -100,7 +100,7 @@ func resourceSourceSCIMCreate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourceSCIMRead(ctx, d, m)
 }
 
-func resourceSourceSCIMRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSCIMRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesScimRetrieve(ctx, d.Id()).Execute()
@@ -131,7 +131,7 @@ func resourceSourceSCIMRead(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceSourceSCIMUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSCIMUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app := resourceSourceSCIMSchemaToSource(d)
 
@@ -144,7 +144,7 @@ func resourceSourceSCIMUpdate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourceSCIMRead(ctx, d, m)
 }
 
-func resourceSourceSCIMDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSCIMDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesScimDestroy(ctx, d.Id()).Execute()
 	if err != nil {

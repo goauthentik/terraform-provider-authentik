@@ -35,7 +35,7 @@ func resourceEndpointsDeviceAccessGroupSchemaToModel(d *schema.ResourceData) (*a
 	return &m, nil
 }
 
-func resourceEndpointsDeviceAccessGroupCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsDeviceAccessGroupCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceEndpointsDeviceAccessGroupSchemaToModel(d)
@@ -52,7 +52,7 @@ func resourceEndpointsDeviceAccessGroupCreate(ctx context.Context, d *schema.Res
 	return resourceEndpointsDeviceAccessGroupRead(ctx, d, m)
 }
 
-func resourceEndpointsDeviceAccessGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsDeviceAccessGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -65,7 +65,7 @@ func resourceEndpointsDeviceAccessGroupRead(ctx context.Context, d *schema.Resou
 	return diags
 }
 
-func resourceEndpointsDeviceAccessGroupUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsDeviceAccessGroupUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceEndpointsDeviceAccessGroupSchemaToModel(d)
@@ -81,7 +81,7 @@ func resourceEndpointsDeviceAccessGroupUpdate(ctx context.Context, d *schema.Res
 	return resourceEndpointsDeviceAccessGroupRead(ctx, d, m)
 }
 
-func resourceEndpointsDeviceAccessGroupDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsDeviceAccessGroupDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

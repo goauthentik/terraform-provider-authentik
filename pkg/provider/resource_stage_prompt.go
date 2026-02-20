@@ -51,7 +51,7 @@ func resourceStagePromptSchemaToProvider(d *schema.ResourceData) *api.PromptStag
 	return &r
 }
 
-func resourceStagePromptCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStagePromptSchemaToProvider(d)
@@ -65,7 +65,7 @@ func resourceStagePromptCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceStagePromptRead(ctx, d, m)
 }
 
-func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -82,7 +82,7 @@ func resourceStagePromptRead(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourceStagePromptUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStagePromptSchemaToProvider(d)
@@ -96,7 +96,7 @@ func resourceStagePromptUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceStagePromptRead(ctx, d, m)
 }
 
-func resourceStagePromptDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPromptStagesDestroy(ctx, d.Id()).Execute()
 	if err != nil {

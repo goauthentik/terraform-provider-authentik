@@ -50,14 +50,14 @@ func resourceServiceConnectionDockerSchemaToModel(d *schema.ResourceData) *api.D
 	m := api.DockerServiceConnectionRequest{
 		Name:              d.Get("name").(string),
 		Url:               d.Get("url").(string),
-		Local:             api.PtrBool(d.Get("local").(bool)),
+		Local:             new(d.Get("local").(bool)),
 		TlsVerification:   *api.NewNullableString(helpers.GetP[string](d, "tls_verification")),
 		TlsAuthentication: *api.NewNullableString(helpers.GetP[string](d, "tls_authentication")),
 	}
 	return &m
 }
 
-func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceServiceConnectionDockerSchemaToModel(d)
@@ -71,7 +71,7 @@ func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.Resour
 	return resourceServiceConnectionDockerRead(ctx, d, m)
 }
 
-func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -88,7 +88,7 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 	return diags
 }
 
-func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceServiceConnectionDockerSchemaToModel(d)
@@ -102,7 +102,7 @@ func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.Resour
 	return resourceServiceConnectionDockerRead(ctx, d, m)
 }
 
-func resourceServiceConnectionDockerDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionDockerDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -35,7 +35,7 @@ func resourceRBACRoleSchemaToModel(d *schema.ResourceData) (*api.RoleRequest, di
 	return &m, nil
 }
 
-func resourceRBACRoleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACRoleCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceRBACRoleSchemaToModel(d)
@@ -52,7 +52,7 @@ func resourceRBACRoleCreate(ctx context.Context, d *schema.ResourceData, m inter
 	return resourceRBACRoleRead(ctx, d, m)
 }
 
-func resourceRBACRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACRoleRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -65,7 +65,7 @@ func resourceRBACRoleRead(ctx context.Context, d *schema.ResourceData, m interfa
 	return diags
 }
 
-func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceRBACRoleSchemaToModel(d)
@@ -81,7 +81,7 @@ func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	return resourceRBACRoleRead(ctx, d, m)
 }
 
-func resourceRBACRoleDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRBACRoleDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.RbacApi.RbacRolesDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -96,7 +96,7 @@ func resourceStageAuthenticatorSmsSchemaToProvider(d *schema.ResourceData) *api.
 	return &r
 }
 
-func resourceStageAuthenticatorSmsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorSmsCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageAuthenticatorSmsSchemaToProvider(d)
@@ -110,7 +110,7 @@ func resourceStageAuthenticatorSmsCreate(ctx context.Context, d *schema.Resource
 	return resourceStageAuthenticatorSmsRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -133,7 +133,7 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 	return diags
 }
 
-func resourceStageAuthenticatorSmsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorSmsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageAuthenticatorSmsSchemaToProvider(d)
@@ -147,7 +147,7 @@ func resourceStageAuthenticatorSmsUpdate(ctx context.Context, d *schema.Resource
 	return resourceStageAuthenticatorSmsRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorSmsDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorSmsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorSmsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

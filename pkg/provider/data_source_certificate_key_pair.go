@@ -65,7 +65,7 @@ func dataSourceCertificateKeyPair() *schema.Resource {
 	}
 }
 
-func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 

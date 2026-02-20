@@ -54,7 +54,7 @@ func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentSt
 	return &r
 }
 
-func resourceStageConsentCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageConsentCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageConsentSchemaToProvider(d)
@@ -68,7 +68,7 @@ func resourceStageConsentCreate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceStageConsentRead(ctx, d, m)
 }
 
-func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -83,7 +83,7 @@ func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageConsentSchemaToProvider(d)
@@ -97,7 +97,7 @@ func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceStageConsentRead(ctx, d, m)
 }
 
-func resourceStageConsentDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageConsentDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesConsentDestroy(ctx, d.Id()).Execute()
 	if err != nil {

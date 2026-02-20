@@ -67,7 +67,7 @@ func resourceStageMutualTLSSchemaToProvider(d *schema.ResourceData) *api.MutualT
 	return &r
 }
 
-func resourceStageMutualTLSCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageMutualTLSCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageMutualTLSSchemaToProvider(d)
@@ -81,7 +81,7 @@ func resourceStageMutualTLSCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageMutualTLSRead(ctx, d, m)
 }
 
-func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -101,7 +101,7 @@ func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceStageMutualTLSUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageMutualTLSUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageMutualTLSSchemaToProvider(d)
@@ -115,7 +115,7 @@ func resourceStageMutualTLSUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageMutualTLSRead(ctx, d, m)
 }
 
-func resourceStageMutualTLSDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageMutualTLSDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesMtlsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

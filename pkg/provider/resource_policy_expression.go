@@ -41,13 +41,13 @@ func resourcePolicyExpression() *schema.Resource {
 func resourcePolicyExpressionSchemaToProvider(d *schema.ResourceData) *api.ExpressionPolicyRequest {
 	r := api.ExpressionPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		ExecutionLogging: new(d.Get("execution_logging").(bool)),
 		Expression:       d.Get("expression").(string),
 	}
 	return &r
 }
 
-func resourcePolicyExpressionCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpressionCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyExpressionSchemaToProvider(d)
@@ -61,7 +61,7 @@ func resourcePolicyExpressionCreate(ctx context.Context, d *schema.ResourceData,
 	return resourcePolicyExpressionRead(ctx, d, m)
 }
 
-func resourcePolicyExpressionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpressionRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -76,7 +76,7 @@ func resourcePolicyExpressionRead(ctx context.Context, d *schema.ResourceData, m
 	return diags
 }
 
-func resourcePolicyExpressionUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpressionUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyExpressionSchemaToProvider(d)
@@ -90,7 +90,7 @@ func resourcePolicyExpressionUpdate(ctx context.Context, d *schema.ResourceData,
 	return resourcePolicyExpressionRead(ctx, d, m)
 }
 
-func resourcePolicyExpressionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpressionDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesExpressionDestroy(ctx, d.Id()).Execute()
 	if err != nil {

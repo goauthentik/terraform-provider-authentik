@@ -110,8 +110,8 @@ func dataSourceGroup() *schema.Resource {
 	}
 }
 
-func mapFromGroupMember(member api.PartialUser) (map[string]interface{}, error) {
-	m := map[string]interface{}{
+func mapFromGroupMember(member api.PartialUser) (map[string]any, error) {
+	m := map[string]any{
 		"pk":         int(member.GetPk()),
 		"username":   member.GetUsername(),
 		"name":       member.GetName(),
@@ -137,15 +137,15 @@ func mapFromGroupMember(member api.PartialUser) (map[string]interface{}, error) 
 	return m, nil
 }
 
-func mapFromGroup(group api.Group) (map[string]interface{}, error) {
-	m := map[string]interface{}{
+func mapFromGroup(group api.Group) (map[string]any, error) {
+	m := map[string]any{
 		"pk":           group.GetPk(),
 		"num_pk":       int(group.GetNumPk()),
 		"name":         group.GetName(),
 		"is_superuser": group.GetIsSuperuser(),
 		"users":        []int{},
 		"attributes":   "",
-		"users_obj":    []map[string]interface{}{},
+		"users_obj":    []map[string]any{},
 	}
 
 	b, err := json.Marshal(group.GetAttributes())
@@ -166,7 +166,7 @@ func mapFromGroup(group api.Group) (map[string]interface{}, error) {
 	}
 	m["parents"] = parents
 
-	users_obj := make([]map[string]interface{}, len(group.GetUsersObj()))
+	users_obj := make([]map[string]any, len(group.GetUsersObj()))
 	for i, member := range group.GetUsersObj() {
 		memberMap, err := mapFromGroupMember(member)
 		if err != nil {
@@ -196,7 +196,7 @@ func setGroup(data *schema.ResourceData, group api.Group) diag.Diagnostics {
 		case "users":
 			helpers.SetWrapper(data, key, value.([]int))
 		case "users_obj":
-			helpers.SetWrapper(data, key, value.([]map[string]interface{}))
+			helpers.SetWrapper(data, key, value.([]map[string]any))
 		case "parents":
 			helpers.SetWrapper(data, key, value.([]string))
 		default:
@@ -239,7 +239,7 @@ func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *A
 	return setGroup(d, res.Results[0])
 }
 
-func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	includeUsers := true
 	if i := d.Get("include_users"); i != nil {

@@ -41,7 +41,7 @@ func resourcePropertyMappingNotificationSchemaToProvider(d *schema.ResourceData)
 	return &r
 }
 
-func resourcePropertyMappingNotificationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePropertyMappingNotificationSchemaToProvider(d)
@@ -55,7 +55,7 @@ func resourcePropertyMappingNotificationCreate(ctx context.Context, d *schema.Re
 	return resourcePropertyMappingNotificationRead(ctx, d, m)
 }
 
-func resourcePropertyMappingNotificationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -69,7 +69,7 @@ func resourcePropertyMappingNotificationRead(ctx context.Context, d *schema.Reso
 	return diags
 }
 
-func resourcePropertyMappingNotificationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePropertyMappingNotificationSchemaToProvider(d)
@@ -83,7 +83,7 @@ func resourcePropertyMappingNotificationUpdate(ctx context.Context, d *schema.Re
 	return resourcePropertyMappingNotificationRead(ctx, d, m)
 }
 
-func resourcePropertyMappingNotificationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingNotificationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsNotificationDestroy(ctx, d.Id()).Execute()
 	if err != nil {

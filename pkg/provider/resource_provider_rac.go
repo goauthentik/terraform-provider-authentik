@@ -65,15 +65,15 @@ func resourceProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACProvid
 		Name:               d.Get("name").(string),
 		AuthorizationFlow:  d.Get("authorization_flow").(string),
 		PropertyMappings:   helpers.CastSlice[string](d, "property_mappings"),
-		ConnectionExpiry:   api.PtrString(d.Get("connection_expiry").(string)),
+		ConnectionExpiry:   new(d.Get("connection_expiry").(string)),
 		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 	}
-	attr, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
+	attr, err := helpers.GetJSON[map[string]any](d, ("settings"))
 	r.Settings = attr
 	return &r, err
 }
 
-func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceProviderRACSchemaToProvider(d)
@@ -90,7 +90,7 @@ func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceProviderRACRead(ctx, d, m)
 }
 
-func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -112,7 +112,7 @@ func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m inte
 	return helpers.SetJSON(d, "settings", res.Settings)
 }
 
-func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -132,7 +132,7 @@ func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceProviderRACRead(ctx, d, m)
 }
 
-func resourceProviderRACDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRACDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

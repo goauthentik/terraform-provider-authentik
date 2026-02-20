@@ -115,18 +115,18 @@ func resourceProviderMicrosoftEntraSchemaToProvider(d *schema.ResourceData) (*ap
 		TenantId:                   d.Get("tenant_id").(string),
 		PropertyMappings:           helpers.CastSlice[string](d, "property_mappings"),
 		PropertyMappingsGroup:      helpers.CastSlice[string](d, "property_mappings_group"),
-		ExcludeUsersServiceAccount: api.PtrBool(d.Get("exclude_users_service_account").(bool)),
+		ExcludeUsersServiceAccount: new(d.Get("exclude_users_service_account").(bool)),
 		UserDeleteAction:           api.OutgoingSyncDeleteAction(d.Get("user_delete_action").(string)).Ptr(),
 		GroupDeleteAction:          api.OutgoingSyncDeleteAction(d.Get("group_delete_action").(string)).Ptr(),
 		FilterGroup:                *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
-		DryRun:                     api.PtrBool(d.Get("dry_run").(bool)),
+		DryRun:                     new(d.Get("dry_run").(bool)),
 		SyncPageTimeout:            helpers.GetP[string](d, "sync_page_timeout"),
 		SyncPageSize:               helpers.GetIntP(d, "sync_page_size"),
 	}
 	return &r, nil
 }
 
-func resourceProviderMicrosoftEntraCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderMicrosoftEntraCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceProviderMicrosoftEntraSchemaToProvider(d)
@@ -143,7 +143,7 @@ func resourceProviderMicrosoftEntraCreate(ctx context.Context, d *schema.Resourc
 	return resourceProviderMicrosoftEntraRead(ctx, d, m)
 }
 
-func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -177,7 +177,7 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 	return diags
 }
 
-func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -197,7 +197,7 @@ func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.Resourc
 	return resourceProviderMicrosoftEntraRead(ctx, d, m)
 }
 
-func resourceProviderMicrosoftEntraDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderMicrosoftEntraDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

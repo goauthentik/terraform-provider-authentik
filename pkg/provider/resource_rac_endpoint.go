@@ -72,15 +72,15 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 		Host:               d.Get("host").(string),
 		AuthMode:           api.ENDPOINTAUTHMODEENUM_PROMPT,
 		PropertyMappings:   helpers.CastSlice[string](d, "property_mappings"),
-		MaximumConnections: api.PtrInt32(int32(d.Get("maximum_connections").(int))),
+		MaximumConnections: new(int32(d.Get("maximum_connections").(int))),
 	}
 
-	attr, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
+	attr, err := helpers.GetJSON[map[string]any](d, ("settings"))
 	r.Settings = attr
 	return &r, err
 }
 
-func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceRACEndpointSchemaToProvider(d)
@@ -97,7 +97,7 @@ func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceRACEndpointRead(ctx, d, m)
 }
 
-func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	res, hr, err := c.client.RacApi.RacEndpointsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
@@ -116,7 +116,7 @@ func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m inte
 	return helpers.SetJSON(d, "settings", res.Settings)
 }
 
-func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app, diags := resourceRACEndpointSchemaToProvider(d)
 	if diags != nil {
@@ -132,7 +132,7 @@ func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceRACEndpointRead(ctx, d, m)
 }
 
-func resourceRACEndpointDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceRACEndpointDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.RacApi.RacEndpointsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

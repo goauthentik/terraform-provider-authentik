@@ -45,14 +45,14 @@ func resourcePolicyExpiry() *schema.Resource {
 func resourcePolicyExpirySchemaToProvider(d *schema.ResourceData) *api.PasswordExpiryPolicyRequest {
 	r := api.PasswordExpiryPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		ExecutionLogging: new(d.Get("execution_logging").(bool)),
 		Days:             int32(d.Get("days").(int)),
-		DenyOnly:         api.PtrBool(d.Get("deny_only").(bool)),
+		DenyOnly:         new(d.Get("deny_only").(bool)),
 	}
 	return &r
 }
 
-func resourcePolicyExpiryCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpiryCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyExpirySchemaToProvider(d)
@@ -66,7 +66,7 @@ func resourcePolicyExpiryCreate(ctx context.Context, d *schema.ResourceData, m i
 	return resourcePolicyExpiryRead(ctx, d, m)
 }
 
-func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -82,7 +82,7 @@ func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m int
 	return diags
 }
 
-func resourcePolicyExpiryUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpiryUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyExpirySchemaToProvider(d)
@@ -96,7 +96,7 @@ func resourcePolicyExpiryUpdate(ctx context.Context, d *schema.ResourceData, m i
 	return resourcePolicyExpiryRead(ctx, d, m)
 }
 
-func resourcePolicyExpiryDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyExpiryDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -50,15 +50,15 @@ func resourceStageAuthenticatorStatic() *schema.Resource {
 func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorStaticStageRequest {
 	r := api.AuthenticatorStaticStageRequest{
 		Name:          d.Get("name").(string),
-		TokenCount:    api.PtrInt32(int32(d.Get("token_count").(int))),
-		TokenLength:   api.PtrInt32(int32(d.Get("token_length").(int))),
+		TokenCount:    new(int32(d.Get("token_count").(int))),
+		TokenLength:   new(int32(d.Get("token_length").(int))),
 		FriendlyName:  helpers.GetP[string](d, "friendly_name"),
 		ConfigureFlow: *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 	}
 	return &r
 }
 
-func resourceStageAuthenticatorStaticCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorStaticCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageAuthenticatorStaticSchemaToProvider(d)
@@ -72,7 +72,7 @@ func resourceStageAuthenticatorStaticCreate(ctx context.Context, d *schema.Resou
 	return resourceStageAuthenticatorStaticRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -89,7 +89,7 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 	return diags
 }
 
-func resourceStageAuthenticatorStaticUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorStaticUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageAuthenticatorStaticSchemaToProvider(d)
@@ -103,7 +103,7 @@ func resourceStageAuthenticatorStaticUpdate(ctx context.Context, d *schema.Resou
 	return resourceStageAuthenticatorStaticRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorStaticDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorStaticDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorStaticDestroy(ctx, d.Id()).Execute()
 	if err != nil {

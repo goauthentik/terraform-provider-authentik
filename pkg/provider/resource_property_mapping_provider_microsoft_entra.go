@@ -41,7 +41,7 @@ func resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d *schema.Res
 	return &r
 }
 
-func resourcePropertyMappingProviderMicrosoftEntraCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d)
@@ -55,7 +55,7 @@ func resourcePropertyMappingProviderMicrosoftEntraCreate(ctx context.Context, d 
 	return resourcePropertyMappingProviderMicrosoftEntraRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -69,7 +69,7 @@ func resourcePropertyMappingProviderMicrosoftEntraRead(ctx context.Context, d *s
 	return diags
 }
 
-func resourcePropertyMappingProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d)
@@ -83,7 +83,7 @@ func resourcePropertyMappingProviderMicrosoftEntraUpdate(ctx context.Context, d 
 	return resourcePropertyMappingProviderMicrosoftEntraRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderMicrosoftEntraDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderMicrosoftEntraDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraDestroy(ctx, d.Id()).Execute()
 	if err != nil {

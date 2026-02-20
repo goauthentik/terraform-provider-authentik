@@ -164,7 +164,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		RefreshTokenValidity: helpers.GetP[string](d, "refresh_token_validity"),
 	}
 
-	providers := d.Get("jwt_federation_providers").([]interface{})
+	providers := d.Get("jwt_federation_providers").([]any)
 	r.JwtFederationProviders = make([]int32, len(providers))
 	for i, prov := range providers {
 		r.JwtFederationProviders[i] = int32(prov.(int))
@@ -173,7 +173,7 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 	return &r
 }
 
-func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceProviderProxySchemaToProvider(d)
@@ -187,7 +187,7 @@ func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m 
 	return resourceProviderProxyRead(ctx, d, m)
 }
 
-func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -236,7 +236,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m in
 	return diags
 }
 
-func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -253,7 +253,7 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 	return resourceProviderProxyRead(ctx, d, m)
 }
 
-func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

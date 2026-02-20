@@ -73,7 +73,7 @@ func resourceStageAuthenticatorDuoSchemaToProvider(d *schema.ResourceData) *api.
 	return &r
 }
 
-func resourceStageAuthenticatorDuoCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorDuoCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageAuthenticatorDuoSchemaToProvider(d)
@@ -87,7 +87,7 @@ func resourceStageAuthenticatorDuoCreate(ctx context.Context, d *schema.Resource
 	return resourceStageAuthenticatorDuoRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -105,7 +105,7 @@ func resourceStageAuthenticatorDuoRead(ctx context.Context, d *schema.ResourceDa
 	return diags
 }
 
-func resourceStageAuthenticatorDuoUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorDuoUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageAuthenticatorDuoSchemaToProvider(d)
@@ -119,7 +119,7 @@ func resourceStageAuthenticatorDuoUpdate(ctx context.Context, d *schema.Resource
 	return resourceStageAuthenticatorDuoRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorDuoDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorDuoDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorDuoDestroy(ctx, d.Id()).Execute()
 	if err != nil {

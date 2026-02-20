@@ -46,12 +46,12 @@ func resourceApplicationEntitlementSchemaToModel(d *schema.ResourceData) (*api.A
 		App:  d.Get("application").(string),
 	}
 
-	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
+	attr, err := helpers.GetJSON[map[string]any](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }
 
-func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceApplicationEntitlementSchemaToModel(d)
@@ -68,7 +68,7 @@ func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.Resourc
 	return resourceApplicationEntitlementRead(ctx, d, m)
 }
 
-func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsRetrieve(ctx, d.Id()).Execute()
@@ -82,7 +82,7 @@ func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceD
 	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
-func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceApplicationEntitlementSchemaToModel(d)
@@ -99,7 +99,7 @@ func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.Resourc
 	return resourceApplicationEntitlementRead(ctx, d, m)
 }
 
-func resourceApplicationEntitlementDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceApplicationEntitlementDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreApplicationEntitlementsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

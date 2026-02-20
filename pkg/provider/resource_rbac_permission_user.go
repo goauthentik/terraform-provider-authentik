@@ -14,7 +14,7 @@ func resourceRBACUserObjectPermission() *schema.Resource {
 		Description:   "RBAC --- ",
 		CreateContext: schema.NoopContext,
 		ReadContext:   schema.NoopContext,
-		DeleteContext: func(ctx context.Context, rd *schema.ResourceData, i interface{}) diag.Diagnostics {
+		DeleteContext: func(ctx context.Context, rd *schema.ResourceData, i any) diag.Diagnostics {
 			rd.SetId("")
 			return nil
 		},

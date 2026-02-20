@@ -82,10 +82,10 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 		FieldKey:               d.Get("field_key").(string),
 		Label:                  d.Get("label").(string),
 		Type:                   api.PromptTypeEnum(d.Get("type").(string)),
-		Required:               api.PtrBool(d.Get("required").(bool)),
-		PlaceholderExpression:  api.PtrBool(d.Get("placeholder_expression").(bool)),
-		InitialValueExpression: api.PtrBool(d.Get("initial_value_expression").(bool)),
-		SubText:                api.PtrString(d.Get("sub_text").(string)),
+		Required:               new(d.Get("required").(bool)),
+		PlaceholderExpression:  new(d.Get("placeholder_expression").(bool)),
+		InitialValueExpression: new(d.Get("initial_value_expression").(bool)),
+		SubText:                new(d.Get("sub_text").(string)),
 		Placeholder:            helpers.GetP[string](d, "placeholder"),
 		InitialValue:           helpers.GetP[string](d, "initial_value"),
 		Order:                  helpers.GetIntP(d, "order"),
@@ -93,7 +93,7 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 	return &r
 }
 
-func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStagePromptFieldSchemaToProvider(d)
@@ -107,7 +107,7 @@ func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData,
 	return resourceStagePromptFieldRead(ctx, d, m)
 }
 
-func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -130,7 +130,7 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 	return diags
 }
 
-func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStagePromptFieldSchemaToProvider(d)
@@ -144,7 +144,7 @@ func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData,
 	return resourceStagePromptFieldRead(ctx, d, m)
 }
 
-func resourceStagePromptFieldDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePromptFieldDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPromptPromptsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

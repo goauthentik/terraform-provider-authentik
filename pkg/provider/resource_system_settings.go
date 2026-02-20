@@ -127,20 +127,20 @@ func resourceSystemSettings() *schema.Resource {
 
 func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) (*api.SettingsRequest, diag.Diagnostics) {
 	r := api.SettingsRequest{
-		Avatars:                   api.PtrString(d.Get("avatars").(string)),
-		DefaultUserChangeName:     api.PtrBool(d.Get("default_user_change_name").(bool)),
-		DefaultUserChangeEmail:    api.PtrBool(d.Get("default_user_change_email").(bool)),
-		DefaultUserChangeUsername: api.PtrBool(d.Get("default_user_change_username").(bool)),
-		EventRetention:            api.PtrString(d.Get("event_retention").(string)),
+		Avatars:                   new(d.Get("avatars").(string)),
+		DefaultUserChangeName:     new(d.Get("default_user_change_name").(bool)),
+		DefaultUserChangeEmail:    new(d.Get("default_user_change_email").(bool)),
+		DefaultUserChangeUsername: new(d.Get("default_user_change_username").(bool)),
+		EventRetention:            new(d.Get("event_retention").(string)),
 		FooterLinks:               d.Get("footer_links"),
-		GdprCompliance:            api.PtrBool(d.Get("gdpr_compliance").(bool)),
-		Impersonation:             api.PtrBool(d.Get("impersonation").(bool)),
-		DefaultTokenDuration:      api.PtrString(d.Get("default_token_duration").(string)),
-		DefaultTokenLength:        api.PtrInt32(int32(d.Get("default_token_length").(int))),
-		ReputationLowerLimit:      api.PtrInt32(int32(d.Get("reputation_lower_limit").(int))),
-		ReputationUpperLimit:      api.PtrInt32(int32(d.Get("reputation_upper_limit").(int))),
-		PaginationDefaultPageSize: api.PtrInt32(int32(d.Get("pagination_default_page_size").(int))),
-		PaginationMaxPageSize:     api.PtrInt32(int32(d.Get("pagination_max_page_size").(int))),
+		GdprCompliance:            new(d.Get("gdpr_compliance").(bool)),
+		Impersonation:             new(d.Get("impersonation").(bool)),
+		DefaultTokenDuration:      new(d.Get("default_token_duration").(string)),
+		DefaultTokenLength:        new(int32(d.Get("default_token_length").(int))),
+		ReputationLowerLimit:      new(int32(d.Get("reputation_lower_limit").(int))),
+		ReputationUpperLimit:      new(int32(d.Get("reputation_upper_limit").(int))),
+		PaginationDefaultPageSize: new(int32(d.Get("pagination_default_page_size").(int))),
+		PaginationMaxPageSize:     new(int32(d.Get("pagination_max_page_size").(int))),
 	}
 
 	flags, err := helpers.GetJSON[api.PatchedSettingsRequestFlags](d, ("flags"))
@@ -148,7 +148,7 @@ func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) (*api.Settin
 	return &r, err
 }
 
-func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diag := resourceSystemSettingsSchemaToProvider(d)
@@ -165,7 +165,7 @@ func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceSystemSettingsRead(ctx, d, m)
 }
 
-func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.AdminApi.AdminSettingsRetrieve(ctx).Execute()
@@ -190,7 +190,7 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m i
 	return helpers.SetJSON(d, "flags", res.Flags)
 }
 
-func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diag := resourceSystemSettingsSchemaToProvider(d)

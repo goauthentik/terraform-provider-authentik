@@ -52,14 +52,14 @@ func resourceStageRedirectSchemaToProvider(d *schema.ResourceData) *api.Redirect
 	r := api.RedirectStageRequest{
 		Name:         d.Get("name").(string),
 		Mode:         api.RedirectStageModeEnum(d.Get("mode").(string)),
-		KeepContext:  api.PtrBool(d.Get("keep_context").(bool)),
+		KeepContext:  new(d.Get("keep_context").(bool)),
 		TargetStatic: helpers.GetP[string](d, "target_static"),
 		TargetFlow:   *api.NewNullableString(helpers.GetP[string](d, "target_flow")),
 	}
 	return &r
 }
 
-func resourceStageRedirectCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageRedirectCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageRedirectSchemaToProvider(d)
@@ -73,7 +73,7 @@ func resourceStageRedirectCreate(ctx context.Context, d *schema.ResourceData, m 
 	return resourceStageRedirectRead(ctx, d, m)
 }
 
-func resourceStageRedirectRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageRedirectRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -90,7 +90,7 @@ func resourceStageRedirectRead(ctx context.Context, d *schema.ResourceData, m in
 	return diags
 }
 
-func resourceStageRedirectUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageRedirectUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageRedirectSchemaToProvider(d)
@@ -104,7 +104,7 @@ func resourceStageRedirectUpdate(ctx context.Context, d *schema.ResourceData, m 
 	return resourceStageRedirectRead(ctx, d, m)
 }
 
-func resourceStageRedirectDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageRedirectDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesRedirectDestroy(ctx, d.Id()).Execute()
 	if err != nil {

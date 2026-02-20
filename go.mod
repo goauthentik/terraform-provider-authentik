@@ -1,6 +1,6 @@
 module goauthentik.io/terraform-provider-authentik
 
-go 1.25
+go 1.26
 
 require (
 	github.com/getsentry/sentry-go v0.42.0

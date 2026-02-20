@@ -82,12 +82,12 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 		Name:     d.Get("name").(string),
 		Username: d.Get("username").(string),
 		Type:     api.UserTypeEnum(d.Get("type").(string)).Ptr(),
-		IsActive: api.PtrBool(d.Get("is_active").(bool)),
-		Path:     api.PtrString(d.Get("path").(string)),
+		IsActive: new(d.Get("is_active").(bool)),
+		Path:     new(d.Get("path").(string)),
 		Email:    helpers.GetP[string](d, "email"),
 		Groups:   helpers.CastSlice[string](d, "groups"),
 	}
-	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
+	attr, err := helpers.GetJSON[map[string]any](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }
@@ -114,7 +114,7 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 	return nil
 }
 
-func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceUserSchemaToModel(d)
@@ -136,7 +136,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	return resourceUserRead(ctx, d, m)
 }
 
-func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceUserRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -162,7 +162,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
-func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceUserSchemaToModel(d)
@@ -187,7 +187,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	return resourceUserRead(ctx, d, m)
 }
 
-func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

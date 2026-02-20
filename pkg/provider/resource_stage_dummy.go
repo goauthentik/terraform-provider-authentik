@@ -35,7 +35,7 @@ func resourceStageDummySchemaToProvider(d *schema.ResourceData) *api.DummyStageR
 	return &r
 }
 
-func resourceStageDummyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageDummyCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageDummySchemaToProvider(d)
@@ -49,7 +49,7 @@ func resourceStageDummyCreate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceStageDummyRead(ctx, d, m)
 }
 
-func resourceStageDummyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageDummyRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -62,7 +62,7 @@ func resourceStageDummyRead(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageDummySchemaToProvider(d)
@@ -76,7 +76,7 @@ func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceStageDummyRead(ctx, d, m)
 }
 
-func resourceStageDummyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageDummyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesDummyDestroy(ctx, d.Id()).Execute()
 	if err != nil {

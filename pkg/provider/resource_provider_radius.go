@@ -68,16 +68,16 @@ func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusP
 		Name:              d.Get("name").(string),
 		AuthorizationFlow: d.Get("authorization_flow").(string),
 		InvalidationFlow:  d.Get("invalidation_flow").(string),
-		ClientNetworks:    api.PtrString(d.Get("client_networks").(string)),
-		SharedSecret:      api.PtrString(d.Get("shared_secret").(string)),
-		MfaSupport:        api.PtrBool(d.Get("mfa_support").(bool)),
+		ClientNetworks:    new(d.Get("client_networks").(string)),
+		SharedSecret:      new(d.Get("shared_secret").(string)),
+		MfaSupport:        new(d.Get("mfa_support").(bool)),
 		PropertyMappings:  helpers.CastSlice[string](d, "property_mappings"),
 		Certificate:       *api.NewNullableString(helpers.GetP[string](d, "certificate")),
 	}
 	return &r
 }
 
-func resourceProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceProviderRadiusSchemaToProvider(d)
@@ -91,7 +91,7 @@ func resourceProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceProviderRadiusRead(ctx, d, m)
 }
 
-func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -117,7 +117,7 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -134,7 +134,7 @@ func resourceProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceProviderRadiusRead(ctx, d, m)
 }
 
-func resourceProviderRadiusDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderRadiusDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

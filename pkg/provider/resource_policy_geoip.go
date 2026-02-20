@@ -80,14 +80,14 @@ func resourcePolicyGeoIP() *schema.Resource {
 func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolicyRequest {
 	r := api.GeoIPPolicyRequest{
 		Name:                  d.Get("name").(string),
-		ExecutionLogging:      api.PtrBool(d.Get("execution_logging").(bool)),
+		ExecutionLogging:      new(d.Get("execution_logging").(bool)),
 		CheckHistoryDistance:  helpers.GetP[bool](d, "check_history_distance"),
 		HistoryMaxDistanceKm:  helpers.GetInt64P(d, "history_max_distance_km"),
 		DistanceToleranceKm:   helpers.GetIntP(d, "distance_tolerance_km"),
 		HistoryLoginCount:     helpers.GetIntP(d, "history_login_count"),
 		CheckImpossibleTravel: helpers.GetP[bool](d, "check_impossible_travel"),
 		ImpossibleToleranceKm: helpers.GetIntP(d, "impossible_tolerance_km"),
-		Asns:                  helpers.CastSliceInt32(d.Get("asns").([]interface{})),
+		Asns:                  helpers.CastSliceInt32(d.Get("asns").([]any)),
 	}
 
 	r.Countries = make([]api.CountryCodeEnum, 0)
@@ -97,7 +97,7 @@ func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolic
 	return &r
 }
 
-func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyGeoIPSchemaToProvider(d)
@@ -111,7 +111,7 @@ func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourcePolicyGeoIPRead(ctx, d, m)
 }
 
-func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -139,7 +139,7 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyGeoIPSchemaToProvider(d)
@@ -153,7 +153,7 @@ func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourcePolicyGeoIPRead(ctx, d, m)
 }
 
-func resourcePolicyGeoIPDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyGeoIPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesGeoipDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -67,8 +67,8 @@ func resourceStageUserWrite() *schema.Resource {
 func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWriteStageRequest {
 	r := api.UserWriteStageRequest{
 		Name:                  d.Get("name").(string),
-		CreateUsersAsInactive: api.PtrBool(d.Get("create_users_as_inactive").(bool)),
-		UserPathTemplate:      api.PtrString(d.Get("user_path_template").(string)),
+		CreateUsersAsInactive: new(d.Get("create_users_as_inactive").(bool)),
+		UserPathTemplate:      new(d.Get("user_path_template").(string)),
 		UserCreationMode:      api.UserCreationModeEnum(d.Get("user_creation_mode").(string)).Ptr(),
 		UserType:              api.UserTypeEnum(d.Get("user_type").(string)).Ptr(),
 		CreateUsersGroup:      *api.NewNullableString(helpers.GetP[string](d, "create_users_group")),
@@ -76,7 +76,7 @@ func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWri
 	return &r
 }
 
-func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageUserWriteSchemaToProvider(d)
@@ -90,7 +90,7 @@ func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageUserWriteRead(ctx, d, m)
 }
 
-func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -108,7 +108,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageUserWriteSchemaToProvider(d)
@@ -122,7 +122,7 @@ func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageUserWriteRead(ctx, d, m)
 }
 
-func resourceStageUserWriteDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserWriteDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserWriteDestroy(ctx, d.Id()).Execute()
 	if err != nil {

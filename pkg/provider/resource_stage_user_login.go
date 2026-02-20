@@ -71,17 +71,17 @@ func resourceStageUserLogin() *schema.Resource {
 func resourceStageUserLoginSchemaToProvider(d *schema.ResourceData) *api.UserLoginStageRequest {
 	r := api.UserLoginStageRequest{
 		Name:                   d.Get("name").(string),
-		SessionDuration:        api.PtrString(d.Get("session_duration").(string)),
-		TerminateOtherSessions: api.PtrBool(d.Get("terminate_other_sessions").(bool)),
-		RememberMeOffset:       api.PtrString(d.Get("remember_me_offset").(string)),
+		SessionDuration:        new(d.Get("session_duration").(string)),
+		TerminateOtherSessions: new(d.Get("terminate_other_sessions").(bool)),
+		RememberMeOffset:       new(d.Get("remember_me_offset").(string)),
 		NetworkBinding:         api.NetworkBindingEnum(d.Get("network_binding").(string)).Ptr(),
 		GeoipBinding:           api.GeoipBindingEnum(d.Get("geoip_binding").(string)).Ptr(),
-		RememberDevice:         api.PtrString(d.Get("remember_device").(string)),
+		RememberDevice:         new(d.Get("remember_device").(string)),
 	}
 	return &r
 }
 
-func resourceStageUserLoginCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLoginCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageUserLoginSchemaToProvider(d)
@@ -95,7 +95,7 @@ func resourceStageUserLoginCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageUserLoginRead(ctx, d, m)
 }
 
-func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -112,7 +112,7 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceStageUserLoginUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLoginUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageUserLoginSchemaToProvider(d)
@@ -126,7 +126,7 @@ func resourceStageUserLoginUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageUserLoginRead(ctx, d, m)
 }
 
-func resourceStageUserLoginDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageUserLoginDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesUserLoginDestroy(ctx, d.Id()).Execute()
 	if err != nil {

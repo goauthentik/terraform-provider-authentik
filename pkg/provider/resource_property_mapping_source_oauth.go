@@ -41,7 +41,7 @@ func resourcePropertyMappingSourceOAuthSchemaToProvider(d *schema.ResourceData) 
 	return &r
 }
 
-func resourcePropertyMappingSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePropertyMappingSourceOAuthSchemaToProvider(d)
@@ -55,7 +55,7 @@ func resourcePropertyMappingSourceOAuthCreate(ctx context.Context, d *schema.Res
 	return resourcePropertyMappingSourceOAuthRead(ctx, d, m)
 }
 
-func resourcePropertyMappingSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -69,7 +69,7 @@ func resourcePropertyMappingSourceOAuthRead(ctx context.Context, d *schema.Resou
 	return diags
 }
 
-func resourcePropertyMappingSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePropertyMappingSourceOAuthSchemaToProvider(d)
@@ -83,7 +83,7 @@ func resourcePropertyMappingSourceOAuthUpdate(ctx context.Context, d *schema.Res
 	return resourcePropertyMappingSourceOAuthRead(ctx, d, m)
 }
 
-func resourcePropertyMappingSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthDestroy(ctx, d.Id()).Execute()
 	if err != nil {

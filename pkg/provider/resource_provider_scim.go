@@ -120,21 +120,21 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) (*api.SCIMProv
 		Token:                             helpers.GetP[string](d, "token"),
 		PropertyMappings:                  helpers.CastSlice[string](d, "property_mappings"),
 		PropertyMappingsGroup:             helpers.CastSlice[string](d, "property_mappings_group"),
-		ExcludeUsersServiceAccount:        api.PtrBool(d.Get("exclude_users_service_account").(bool)),
+		ExcludeUsersServiceAccount:        new(d.Get("exclude_users_service_account").(bool)),
 		CompatibilityMode:                 api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
 		FilterGroup:                       *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
-		DryRun:                            api.PtrBool(d.Get("dry_run").(bool)),
+		DryRun:                            new(d.Get("dry_run").(bool)),
 		ServiceProviderConfigCacheTimeout: helpers.GetP[string](d, "service_provider_config_cache_timeout"),
 		SyncPageTimeout:                   helpers.GetP[string](d, "sync_page_timeout"),
 		SyncPageSize:                      helpers.GetIntP(d, "sync_page_size"),
 	}
 
-	attr, err := helpers.GetJSON[map[string]interface{}](d, "auth_oauth_params")
+	attr, err := helpers.GetJSON[map[string]any](d, "auth_oauth_params")
 	r.AuthOauthParams = attr
 	return &r, err
 }
 
-func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceProviderSCIMSchemaToProvider(d)
@@ -151,7 +151,7 @@ func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceProviderSCIMRead(ctx, d, m)
 }
 
-func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -185,7 +185,7 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m int
 	return helpers.SetJSON(d, "auth_oauth_params", res.AuthOauthParams)
 }
 
-func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -205,7 +205,7 @@ func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m i
 	return resourceProviderSCIMRead(ctx, d, m)
 }
 
-func resourceProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

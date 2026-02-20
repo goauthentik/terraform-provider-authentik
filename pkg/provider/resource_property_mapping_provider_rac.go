@@ -47,12 +47,12 @@ func resourcePropertyMappingProviderRACSchemaToProvider(d *schema.ResourceData) 
 		Expression: helpers.GetP[string](d, "expression"),
 	}
 
-	settings, err := helpers.GetJSON[map[string]interface{}](d, ("settings"))
+	settings, err := helpers.GetJSON[map[string]any](d, ("settings"))
 	r.StaticSettings = settings
 	return &r, err
 }
 
-func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourcePropertyMappingProviderRACSchemaToProvider(d)
@@ -69,7 +69,7 @@ func resourcePropertyMappingProviderRACCreate(ctx context.Context, d *schema.Res
 	return resourcePropertyMappingProviderRACRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacRetrieve(ctx, d.Id()).Execute()
@@ -82,7 +82,7 @@ func resourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Resou
 	return helpers.SetJSON(d, "settings", res.StaticSettings)
 }
 
-func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourcePropertyMappingProviderRACSchemaToProvider(d)
@@ -99,7 +99,7 @@ func resourcePropertyMappingProviderRACUpdate(ctx context.Context, d *schema.Res
 	return resourcePropertyMappingProviderRACRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderRACDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderRACDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderRacDestroy(ctx, d.Id()).Execute()
 	if err != nil {

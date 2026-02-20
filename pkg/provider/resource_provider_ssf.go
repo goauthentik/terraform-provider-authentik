@@ -52,9 +52,9 @@ func resourceProviderSSFSchemaToProvider(d *schema.ResourceData) (*api.SSFProvid
 	r := api.SSFProviderRequest{
 		Name:           d.Get("name").(string),
 		SigningKey:     d.Get("signing_key").(string),
-		EventRetention: api.PtrString(d.Get("event_retention").(string)),
+		EventRetention: new(d.Get("event_retention").(string)),
 	}
-	providers := d.Get("jwt_federation_providers").([]interface{})
+	providers := d.Get("jwt_federation_providers").([]any)
 	r.OidcAuthProviders = make([]int32, len(providers))
 	for i, prov := range providers {
 		r.OidcAuthProviders[i] = int32(prov.(int))
@@ -62,7 +62,7 @@ func resourceProviderSSFSchemaToProvider(d *schema.ResourceData) (*api.SSFProvid
 	return &r, nil
 }
 
-func resourceProviderSSFCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSSFCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r, diags := resourceProviderSSFSchemaToProvider(d)
@@ -79,7 +79,7 @@ func resourceProviderSSFCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceProviderSSFRead(ctx, d, m)
 }
 
-func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
@@ -95,7 +95,7 @@ func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourceProviderSSFUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSSFUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
@@ -115,7 +115,7 @@ func resourceProviderSSFUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceProviderSSFRead(ctx, d, m)
 }
 
-func resourceProviderSSFDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceProviderSSFDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {

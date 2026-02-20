@@ -41,7 +41,7 @@ func resourcePropertyMappingSourcePlexSchemaToProvider(d *schema.ResourceData) *
 	return &r
 }
 
-func resourcePropertyMappingSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePropertyMappingSourcePlexSchemaToProvider(d)
@@ -55,7 +55,7 @@ func resourcePropertyMappingSourcePlexCreate(ctx context.Context, d *schema.Reso
 	return resourcePropertyMappingSourcePlexRead(ctx, d, m)
 }
 
-func resourcePropertyMappingSourcePlexRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourcePlexRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -69,7 +69,7 @@ func resourcePropertyMappingSourcePlexRead(ctx context.Context, d *schema.Resour
 	return diags
 }
 
-func resourcePropertyMappingSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePropertyMappingSourcePlexSchemaToProvider(d)
@@ -83,7 +83,7 @@ func resourcePropertyMappingSourcePlexUpdate(ctx context.Context, d *schema.Reso
 	return resourcePropertyMappingSourcePlexRead(ctx, d, m)
 }
 
-func resourcePropertyMappingSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {

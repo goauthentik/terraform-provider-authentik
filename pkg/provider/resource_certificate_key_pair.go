@@ -46,7 +46,7 @@ func resourceCertificateKeyPairSchemaToModel(d *schema.ResourceData) *api.Certif
 	return &app
 }
 
-func resourceCertificateKeyPairCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceCertificateKeyPairCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceCertificateKeyPairSchemaToModel(d)
@@ -60,7 +60,7 @@ func resourceCertificateKeyPairCreate(ctx context.Context, d *schema.ResourceDat
 	return resourceCertificateKeyPairRead(ctx, d, m)
 }
 
-func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -85,7 +85,7 @@ func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData,
 	return diags
 }
 
-func resourceCertificateKeyPairUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceCertificateKeyPairUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceCertificateKeyPairSchemaToModel(d)
@@ -99,7 +99,7 @@ func resourceCertificateKeyPairUpdate(ctx context.Context, d *schema.ResourceDat
 	return resourceCertificateKeyPairRead(ctx, d, m)
 }
 
-func resourceCertificateKeyPairDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceCertificateKeyPairDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.CryptoApi.CryptoCertificatekeypairsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

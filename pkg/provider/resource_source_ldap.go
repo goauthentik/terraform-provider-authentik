@@ -169,31 +169,31 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 	r := api.LDAPSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
+		Enabled:          new(d.Get("enabled").(bool)),
+		UserPathTemplate: new(d.Get("user_path_template").(string)),
 
 		BaseDn:       d.Get("base_dn").(string),
 		ServerUri:    d.Get("server_uri").(string),
-		BindCn:       api.PtrString(d.Get("bind_cn").(string)),
-		BindPassword: api.PtrString(d.Get("bind_password").(string)),
-		StartTls:     api.PtrBool(d.Get("start_tls").(bool)),
-		Sni:          api.PtrBool(d.Get("sni").(bool)),
+		BindCn:       new(d.Get("bind_cn").(string)),
+		BindPassword: new(d.Get("bind_password").(string)),
+		StartTls:     new(d.Get("start_tls").(bool)),
+		Sni:          new(d.Get("sni").(bool)),
 
-		AdditionalUserDn:        api.PtrString(d.Get("additional_user_dn").(string)),
-		AdditionalGroupDn:       api.PtrString(d.Get("additional_group_dn").(string)),
-		UserObjectFilter:        api.PtrString(d.Get("user_object_filter").(string)),
-		UserMembershipAttribute: api.PtrString(d.Get("user_membership_attribute").(string)),
-		GroupObjectFilter:       api.PtrString(d.Get("group_object_filter").(string)),
-		GroupMembershipField:    api.PtrString(d.Get("group_membership_field").(string)),
-		ObjectUniquenessField:   api.PtrString(d.Get("object_uniqueness_field").(string)),
+		AdditionalUserDn:        new(d.Get("additional_user_dn").(string)),
+		AdditionalGroupDn:       new(d.Get("additional_group_dn").(string)),
+		UserObjectFilter:        new(d.Get("user_object_filter").(string)),
+		UserMembershipAttribute: new(d.Get("user_membership_attribute").(string)),
+		GroupObjectFilter:       new(d.Get("group_object_filter").(string)),
+		GroupMembershipField:    new(d.Get("group_membership_field").(string)),
+		ObjectUniquenessField:   new(d.Get("object_uniqueness_field").(string)),
 
-		SyncUsers:                           api.PtrBool(d.Get("sync_users").(bool)),
-		SyncUsersPassword:                   api.PtrBool(d.Get("sync_users_password").(bool)),
-		SyncGroups:                          api.PtrBool(d.Get("sync_groups").(bool)),
+		SyncUsers:                           new(d.Get("sync_users").(bool)),
+		SyncUsersPassword:                   new(d.Get("sync_users_password").(bool)),
+		SyncGroups:                          new(d.Get("sync_groups").(bool)),
 		SyncParentGroup:                     *api.NewNullableString(helpers.GetP[string](d, "sync_parent_group")),
-		PasswordLoginUpdateInternalPassword: api.PtrBool(d.Get("password_login_update_internal_password").(bool)),
-		DeleteNotFoundObjects:               api.PtrBool(d.Get("delete_not_found_objects").(bool)),
-		LookupGroupsFromUser:                api.PtrBool(d.Get("lookup_groups_from_user").(bool)),
+		PasswordLoginUpdateInternalPassword: new(d.Get("password_login_update_internal_password").(bool)),
+		DeleteNotFoundObjects:               new(d.Get("delete_not_found_objects").(bool)),
+		LookupGroupsFromUser:                new(d.Get("lookup_groups_from_user").(bool)),
 		UserPropertyMappings:                helpers.CastSlice[string](d, "property_mappings"),
 		GroupPropertyMappings:               helpers.CastSlice[string](d, "property_mappings_group"),
 		SyncOutgoingTriggerMode:             api.SyncOutgoingTriggerModeEnum(d.Get("sync_outgoing_trigger_mode").(string)).Ptr(),
@@ -201,7 +201,7 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 	return &r
 }
 
-func resourceSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceSourceLDAPSchemaToSource(d)
@@ -215,7 +215,7 @@ func resourceSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourceLDAPRead(ctx, d, m)
 }
 
-func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesLdapRetrieve(ctx, d.Id()).Execute()
@@ -261,7 +261,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app := resourceSourceLDAPSchemaToSource(d)
 
@@ -274,7 +274,7 @@ func resourceSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourceLDAPRead(ctx, d, m)
 }
 
-func resourceSourceLDAPDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceLDAPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {

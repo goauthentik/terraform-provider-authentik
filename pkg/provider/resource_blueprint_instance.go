@@ -52,17 +52,17 @@ func resourceBlueprintInstance() *schema.Resource {
 func resourceBlueprintInstanceSchemaToModel(d *schema.ResourceData) (*api.BlueprintInstanceRequest, diag.Diagnostics) {
 	m := api.BlueprintInstanceRequest{
 		Name:    d.Get("name").(string),
-		Enabled: api.PtrBool(d.Get("enabled").(bool)),
+		Enabled: new(d.Get("enabled").(bool)),
 		Path:    helpers.GetP[string](d, "path"),
 		Content: helpers.GetP[string](d, "content"),
 	}
 
-	context, err := helpers.GetJSON[map[string]interface{}](d, ("context"))
+	context, err := helpers.GetJSON[map[string]any](d, ("context"))
 	m.Context = context
 	return &m, err
 }
 
-func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceBlueprintInstanceSchemaToModel(d)
@@ -80,7 +80,7 @@ func resourceBlueprintInstanceCreate(ctx context.Context, d *schema.ResourceData
 	return resourceBlueprintInstanceRead(ctx, d, m)
 }
 
-func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.ManagedApi.ManagedBlueprintsRetrieve(ctx, d.Id()).Execute()
@@ -95,7 +95,7 @@ func resourceBlueprintInstanceRead(ctx context.Context, d *schema.ResourceData, 
 	return helpers.SetJSON(d, "context", res.Context)
 }
 
-func resourceBlueprintInstanceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBlueprintInstanceUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceBlueprintInstanceSchemaToModel(d)
@@ -112,7 +112,7 @@ func resourceBlueprintInstanceUpdate(ctx context.Context, d *schema.ResourceData
 	return resourceBlueprintInstanceRead(ctx, d, m)
 }
 
-func resourceBlueprintInstanceDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceBlueprintInstanceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.ManagedApi.ManagedBlueprintsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

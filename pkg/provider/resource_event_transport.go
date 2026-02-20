@@ -64,7 +64,7 @@ func resourceEventTransport() *schema.Resource {
 func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.NotificationTransportRequest, diag.Diagnostics) {
 	m := api.NotificationTransportRequest{
 		Name:                  d.Get("name").(string),
-		SendOnce:              api.PtrBool(d.Get("send_once").(bool)),
+		SendOnce:              new(d.Get("send_once").(bool)),
 		Mode:                  api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
 		WebhookUrl:            helpers.GetP[string](d, "webhook_url"),
 		WebhookMappingBody:    *api.NewNullableString(helpers.GetP[string](d, "webhook_mapping_body")),
@@ -75,7 +75,7 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.Notificat
 	return &m, nil
 }
 
-func resourceEventTransportCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventTransportCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceEventTransportSchemaToModel(d)
@@ -92,7 +92,7 @@ func resourceEventTransportCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceEventTransportRead(ctx, d, m)
 }
 
-func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -112,7 +112,7 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceEventTransportUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventTransportUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceEventTransportSchemaToModel(d)
@@ -128,7 +128,7 @@ func resourceEventTransportUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceEventTransportRead(ctx, d, m)
 }
 
-func resourceEventTransportDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventTransportDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.EventsApi.EventsTransportsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

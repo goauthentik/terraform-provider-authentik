@@ -107,9 +107,9 @@ func resourceStageEmail() *schema.Resource {
 func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageRequest {
 	r := api.EmailStageRequest{
 		Name:                  d.Get("name").(string),
-		UseGlobalSettings:     api.PtrBool(d.Get("use_global_settings").(bool)),
-		UseSsl:                api.PtrBool(d.Get("use_ssl").(bool)),
-		UseTls:                api.PtrBool(d.Get("use_tls").(bool)),
+		UseGlobalSettings:     new(d.Get("use_global_settings").(bool)),
+		UseSsl:                new(d.Get("use_ssl").(bool)),
+		UseTls:                new(d.Get("use_tls").(bool)),
 		Host:                  helpers.GetP[string](d, "host"),
 		Username:              helpers.GetP[string](d, "username"),
 		Password:              helpers.GetP[string](d, "password"),
@@ -126,7 +126,7 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageR
 	return &r
 }
 
-func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageEmailSchemaToProvider(d)
@@ -140,7 +140,7 @@ func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceStageEmailRead(ctx, d, m)
 }
 
-func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -167,7 +167,7 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageEmailSchemaToProvider(d)
@@ -181,7 +181,7 @@ func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceStageEmailRead(ctx, d, m)
 }
 
-func resourceStageEmailDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEmailDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {

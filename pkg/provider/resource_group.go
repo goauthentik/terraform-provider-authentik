@@ -66,17 +66,17 @@ func resourceGroup() *schema.Resource {
 func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag.Diagnostics) {
 	m := api.GroupRequest{
 		Name:        d.Get("name").(string),
-		IsSuperuser: api.PtrBool(d.Get("is_superuser").(bool)),
+		IsSuperuser: new(d.Get("is_superuser").(bool)),
 		Parents:     helpers.CastSlice[string](d, "parents"),
-		Users:       helpers.CastSliceInt32(d.Get("users").([]interface{})),
+		Users:       helpers.CastSliceInt32(d.Get("users").([]any)),
 		Roles:       helpers.CastSlice[string](d, "roles"),
 	}
-	attr, err := helpers.GetJSON[map[string]interface{}](d, ("attributes"))
+	attr, err := helpers.GetJSON[map[string]any](d, ("attributes"))
 	m.Attributes = attr
 	return &m, err
 }
 
-func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceGroupSchemaToModel(d)
@@ -93,7 +93,7 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	return resourceGroupRead(ctx, d, m)
 }
 
-func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.CoreApi.CoreGroupsRetrieve(ctx, d.Id()).IncludeUsers(false).Execute()
@@ -118,7 +118,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 	return helpers.SetJSON(d, "attributes", res.Attributes)
 }
 
-func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceGroupSchemaToModel(d)
@@ -134,7 +134,7 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	return resourceGroupRead(ctx, d, m)
 }
 
-func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreGroupsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

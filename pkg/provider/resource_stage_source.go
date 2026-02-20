@@ -43,12 +43,12 @@ func resourceStageSourceSchemaToProvider(d *schema.ResourceData) *api.SourceStag
 	r := api.SourceStageRequest{
 		Name:          d.Get("name").(string),
 		Source:        d.Get("source").(string),
-		ResumeTimeout: api.PtrString(d.Get("resume_timeout").(string)),
+		ResumeTimeout: new(d.Get("resume_timeout").(string)),
 	}
 	return &r
 }
 
-func resourceStageSourceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageSourceCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageSourceSchemaToProvider(d)
@@ -62,7 +62,7 @@ func resourceStageSourceCreate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceStageSourceRead(ctx, d, m)
 }
 
-func resourceStageSourceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageSourceRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -77,7 +77,7 @@ func resourceStageSourceRead(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourceStageSourceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageSourceUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageSourceSchemaToProvider(d)
@@ -91,7 +91,7 @@ func resourceStageSourceUpdate(ctx context.Context, d *schema.ResourceData, m in
 	return resourceStageSourceRead(ctx, d, m)
 }
 
-func resourceStageSourceDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageSourceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesSourceDestroy(ctx, d.Id()).Execute()
 	if err != nil {

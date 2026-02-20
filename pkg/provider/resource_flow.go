@@ -88,7 +88,7 @@ func resourceFlowSchemaToModel(d *schema.ResourceData) *api.FlowRequest {
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
 		Title:             d.Get("title").(string),
-		CompatibilityMode: api.PtrBool(d.Get("compatibility_mode").(bool)),
+		CompatibilityMode: new(d.Get("compatibility_mode").(bool)),
 		Designation:       api.FlowDesignationEnum(d.Get("designation").(string)),
 		Authentication:    api.AuthenticationEnum(d.Get("authentication").(string)).Ptr(),
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
@@ -99,7 +99,7 @@ func resourceFlowSchemaToModel(d *schema.ResourceData) *api.FlowRequest {
 	return &m
 }
 
-func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceFlowSchemaToModel(d)
@@ -114,7 +114,7 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m interface
 	return resourceFlowRead(ctx, d, m)
 }
 
-func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -137,7 +137,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	return diags
 }
 
-func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceFlowSchemaToModel(d)
@@ -152,7 +152,7 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	return resourceFlowRead(ctx, d, m)
 }
 
-func resourceFlowDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.FlowsApi.FlowsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {

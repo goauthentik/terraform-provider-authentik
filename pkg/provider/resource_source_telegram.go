@@ -106,8 +106,8 @@ func resourceSourceTelegramSchemaToSource(d *schema.ResourceData) *api.TelegramS
 	r := api.TelegramSourceRequest{
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
-		Enabled:          api.PtrBool(d.Get("enabled").(bool)),
-		UserPathTemplate: api.PtrString(d.Get("user_path_template").(string)),
+		Enabled:          new(d.Get("enabled").(bool)),
+		UserPathTemplate: new(d.Get("user_path_template").(string)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 
@@ -124,7 +124,7 @@ func resourceSourceTelegramSchemaToSource(d *schema.ResourceData) *api.TelegramS
 	return &r
 }
 
-func resourceSourceTelegramCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceTelegramCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceSourceTelegramSchemaToSource(d)
@@ -138,7 +138,7 @@ func resourceSourceTelegramCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceSourceTelegramRead(ctx, d, m)
 }
 
-func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesTelegramRetrieve(ctx, d.Id()).Execute()
@@ -171,7 +171,7 @@ func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceSourceTelegramUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceTelegramUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app := resourceSourceTelegramSchemaToSource(d)
 
@@ -184,7 +184,7 @@ func resourceSourceTelegramUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceSourceTelegramRead(ctx, d, m)
 }
 
-func resourceSourceTelegramDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceTelegramDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesTelegramDestroy(ctx, d.Id()).Execute()
 	if err != nil {

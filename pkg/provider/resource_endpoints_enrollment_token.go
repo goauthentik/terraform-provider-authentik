@@ -66,7 +66,7 @@ func resourceEndpointsEnrollmentToken() *schema.Resource {
 func resourceEndpointsEnrollmentTokenSchemaToModel(d *schema.ResourceData) (*api.EnrollmentTokenRequest, diag.Diagnostics) {
 	m := api.EnrollmentTokenRequest{
 		Name:        d.Get("name").(string),
-		Expiring:    api.PtrBool(d.Get("expiring").(bool)),
+		Expiring:    new(d.Get("expiring").(bool)),
 		DeviceGroup: *api.NewNullableString(helpers.GetP[string](d, "device_access_group")),
 		Connector:   d.Get("connector").(string),
 	}
@@ -81,7 +81,7 @@ func resourceEndpointsEnrollmentTokenSchemaToModel(d *schema.ResourceData) (*api
 	return &m, nil
 }
 
-func resourceEndpointsEnrollmentTokenCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsEnrollmentTokenCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceEndpointsEnrollmentTokenSchemaToModel(d)
@@ -98,7 +98,7 @@ func resourceEndpointsEnrollmentTokenCreate(ctx context.Context, d *schema.Resou
 	return resourceEndpointsEnrollmentTokenRead(ctx, d, m)
 }
 
-func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -123,7 +123,7 @@ func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.Resourc
 	return diags
 }
 
-func resourceEndpointsEnrollmentTokenUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsEnrollmentTokenUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceEndpointsEnrollmentTokenSchemaToModel(d)
@@ -139,7 +139,7 @@ func resourceEndpointsEnrollmentTokenUpdate(ctx context.Context, d *schema.Resou
 	return resourceEndpointsEnrollmentTokenRead(ctx, d, m)
 }
 
-func resourceEndpointsEnrollmentTokenDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEndpointsEnrollmentTokenDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {

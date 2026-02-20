@@ -5,15 +5,14 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"goauthentik.io/api/v3"
 )
 
 type ResourceData interface {
-	Set(key string, value interface{}) error
-	GetOk(key string) (interface{}, bool)
+	Set(key string, value any) error
+	GetOk(key string) (any, bool)
 }
 
-func SetWrapper(d ResourceData, key string, data interface{}) {
+func SetWrapper(d ResourceData, key string, data any) {
 	err := d.Set(key, data)
 	if err != nil {
 		panic(err)
@@ -48,7 +47,7 @@ func GetIntP(d ResourceData, key string) *int32 {
 		return nil
 	}
 	if tt, ok := rv.(int); ok {
-		return api.PtrInt32(int32(tt))
+		return new(int32(tt))
 	}
 	return nil
 }
@@ -60,7 +59,7 @@ func GetInt64P(d ResourceData, key string) *int64 {
 		return nil
 	}
 	if tt, ok := rv.(int); ok {
-		return api.PtrInt64(int64(tt))
+		return new(int64(tt))
 	}
 	return nil
 }

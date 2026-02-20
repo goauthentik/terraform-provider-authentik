@@ -88,8 +88,8 @@ func dataSourceUser() *schema.Resource {
 	}
 }
 
-func mapFromUser(user api.User) (map[string]interface{}, error) {
-	m := map[string]interface{}{
+func mapFromUser(user api.User) (map[string]any, error) {
+	m := map[string]any{
 		"pk":           int(user.Pk),
 		"username":     user.GetUsername(),
 		"name":         user.GetName(),
@@ -177,7 +177,7 @@ func dataSourceUserReadByUsername(ctx context.Context, d *schema.ResourceData, c
 	return setUser(d, res.Results[0])
 }
 
-func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	if n, ok := d.GetOk("pk"); ok {

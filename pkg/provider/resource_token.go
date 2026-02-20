@@ -73,8 +73,8 @@ func resourceToken() *schema.Resource {
 func resourceTokenSchemaToModel(d *schema.ResourceData) (*api.TokenRequest, diag.Diagnostics) {
 	m := api.TokenRequest{
 		Identifier:  d.Get("identifier").(string),
-		User:        api.PtrInt32(int32(d.Get("user").(int))),
-		Expiring:    api.PtrBool(d.Get("expiring").(bool)),
+		User:        new(int32(d.Get("user").(int))),
+		Expiring:    new(d.Get("expiring").(bool)),
 		Description: helpers.GetP[string](d, "description"),
 	}
 
@@ -90,7 +90,7 @@ func resourceTokenSchemaToModel(d *schema.ResourceData) (*api.TokenRequest, diag
 	return &m, nil
 }
 
-func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceTokenSchemaToModel(d)
@@ -107,7 +107,7 @@ func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	return resourceTokenRead(ctx, d, m)
 }
 
-func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -133,7 +133,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m interface{
 	return diags
 }
 
-func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceTokenSchemaToModel(d)
@@ -149,7 +149,7 @@ func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	return resourceTokenRead(ctx, d, m)
 }
 
-func resourceTokenDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceTokenDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.CoreApi.CoreTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -48,7 +48,7 @@ func resourceStageEndpointsSchemaToProvider(d *schema.ResourceData) *api.Endpoin
 	return &r
 }
 
-func resourceStageEndpointsCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEndpointsCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageEndpointsSchemaToProvider(d)
@@ -62,7 +62,7 @@ func resourceStageEndpointsCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageEndpointsRead(ctx, d, m)
 }
 
-func resourceStageEndpointsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEndpointsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -77,7 +77,7 @@ func resourceStageEndpointsRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourceStageEndpointsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEndpointsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageEndpointsSchemaToProvider(d)
@@ -91,7 +91,7 @@ func resourceStageEndpointsUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourceStageEndpointsRead(ctx, d, m)
 }
 
-func resourceStageEndpointsDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageEndpointsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesEndpointsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

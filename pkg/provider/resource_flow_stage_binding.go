@@ -67,15 +67,15 @@ func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData) *api.FlowStag
 		Target:                d.Get("target").(string),
 		Stage:                 d.Get("stage").(string),
 		Order:                 int32(d.Get("order").(int)),
-		EvaluateOnPlan:        api.PtrBool(d.Get("evaluate_on_plan").(bool)),
-		ReEvaluatePolicies:    api.PtrBool(d.Get("re_evaluate_policies").(bool)),
+		EvaluateOnPlan:        new(d.Get("evaluate_on_plan").(bool)),
+		ReEvaluatePolicies:    new(d.Get("re_evaluate_policies").(bool)),
 		PolicyEngineMode:      api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		InvalidResponseAction: api.InvalidResponseActionEnum(d.Get("invalid_response_action").(string)).Ptr(),
 	}
 	return &m
 }
 
-func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceFlowStageBindingSchemaToModel(d)
@@ -89,7 +89,7 @@ func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData,
 	return resourceFlowStageBindingRead(ctx, d, m)
 }
 
-func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -108,7 +108,7 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 	return diags
 }
 
-func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceFlowStageBindingSchemaToModel(d)
@@ -122,7 +122,7 @@ func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData,
 	return resourceFlowStageBindingRead(ctx, d, m)
 }
 
-func resourceFlowStageBindingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceFlowStageBindingDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.FlowsApi.FlowsBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

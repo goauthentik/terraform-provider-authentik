@@ -99,9 +99,9 @@ func resourceStageAuthenticatorEmail() *schema.Resource {
 func resourceStageAuthenticatorEmailSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorEmailStageRequest {
 	r := api.AuthenticatorEmailStageRequest{
 		Name:              d.Get("name").(string),
-		UseGlobalSettings: api.PtrBool(d.Get("use_global_settings").(bool)),
-		UseSsl:            api.PtrBool(d.Get("use_ssl").(bool)),
-		UseTls:            api.PtrBool(d.Get("use_tls").(bool)),
+		UseGlobalSettings: new(d.Get("use_global_settings").(bool)),
+		UseSsl:            new(d.Get("use_ssl").(bool)),
+		UseTls:            new(d.Get("use_tls").(bool)),
 		FriendlyName:      helpers.GetP[string](d, "friendly_name"),
 		ConfigureFlow:     *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 
@@ -121,7 +121,7 @@ func resourceStageAuthenticatorEmailSchemaToProvider(d *schema.ResourceData) *ap
 	return &r
 }
 
-func resourceStageAuthenticatorEmailCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorEmailCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageAuthenticatorEmailSchemaToProvider(d)
@@ -135,7 +135,7 @@ func resourceStageAuthenticatorEmailCreate(ctx context.Context, d *schema.Resour
 	return resourceStageAuthenticatorEmailRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -161,7 +161,7 @@ func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.Resource
 	return diags
 }
 
-func resourceStageAuthenticatorEmailUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorEmailUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageAuthenticatorEmailSchemaToProvider(d)
@@ -175,7 +175,7 @@ func resourceStageAuthenticatorEmailUpdate(ctx context.Context, d *schema.Resour
 	return resourceStageAuthenticatorEmailRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorEmailDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorEmailDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {

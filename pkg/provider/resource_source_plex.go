@@ -107,24 +107,24 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 	r := api.PlexSourceRequest{
 		Name:               d.Get("name").(string),
 		Slug:               d.Get("slug").(string),
-		Enabled:            api.PtrBool(d.Get("enabled").(bool)),
-		Promoted:           api.PtrBool(d.Get("promoted").(bool)),
-		UserPathTemplate:   api.PtrString(d.Get("user_path_template").(string)),
+		Enabled:            new(d.Get("enabled").(bool)),
+		Promoted:           new(d.Get("promoted").(bool)),
+		UserPathTemplate:   new(d.Get("user_path_template").(string)),
 		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
 		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		EnrollmentFlow:     *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 
-		ClientId:       api.PtrString(d.Get("client_id").(string)),
-		AllowFriends:   api.PtrBool(d.Get("allow_friends").(bool)),
+		ClientId:       new(d.Get("client_id").(string)),
+		AllowFriends:   new(d.Get("allow_friends").(bool)),
 		PlexToken:      d.Get("plex_token").(string),
 		AllowedServers: helpers.CastSlice[string](d, "allowed_servers"),
 	}
 	return &r
 }
 
-func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceSourcePlexSchemaToSource(d)
@@ -138,7 +138,7 @@ func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourcePlexRead(ctx, d, m)
 }
 
-func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesPlexRetrieve(ctx, d.Id()).Execute()
@@ -169,7 +169,7 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app := resourceSourcePlexSchemaToSource(d)
 
@@ -182,7 +182,7 @@ func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourcePlexRead(ctx, d, m)
 }
 
-func resourceSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesPlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {

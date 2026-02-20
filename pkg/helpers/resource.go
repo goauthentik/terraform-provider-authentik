@@ -43,7 +43,7 @@ func EnumToDescription[T ~string](allowed []T) string {
 	return sb.String()
 }
 
-func ValidateRelativeDuration(i interface{}, p cty.Path) diag.Diagnostics {
+func ValidateRelativeDuration(i any, p cty.Path) diag.Diagnostics {
 	validKV := []string{
 		"microseconds",
 		"milliseconds",
@@ -53,13 +53,13 @@ func ValidateRelativeDuration(i interface{}, p cty.Path) diag.Diagnostics {
 		"days",
 		"weeks",
 	}
-	return validation.ToDiagFunc(func(i interface{}, s string) (warnings []string, errors []error) {
+	return validation.ToDiagFunc(func(i any, s string) (warnings []string, errors []error) {
 		v, ok := i.(string)
 		if !ok {
 			errors = append(errors, fmt.Errorf("expected type of %s to be string", s))
 			return warnings, errors
 		}
-		for _, el := range strings.Split(v, ";") {
+		for el := range strings.SplitSeq(v, ";") {
 			p := strings.Split(el, "=")
 			if len(p) < 2 {
 				errors = append(errors, fmt.Errorf("%s has incorrect amount of elements", el))
@@ -79,14 +79,14 @@ func ValidateRelativeDuration(i interface{}, p cty.Path) diag.Diagnostics {
 	})(i, p)
 }
 
-func ValidateJSON(i interface{}, p cty.Path) diag.Diagnostics {
-	return validation.ToDiagFunc(func(i interface{}, s string) (warnings []string, errors []error) {
+func ValidateJSON(i any, p cty.Path) diag.Diagnostics {
+	return validation.ToDiagFunc(func(i any, s string) (warnings []string, errors []error) {
 		v, ok := i.(string)
 		if !ok {
 			errors = append(errors, fmt.Errorf("expected type of %s to be string", s))
 			return warnings, errors
 		}
-		var j interface{}
+		var j any
 		err := json.Unmarshal([]byte(v), &j)
 		if err != nil {
 			errors = append(errors, err)
@@ -103,7 +103,7 @@ func DiffSuppressExpression(k, old, new string, d *schema.ResourceData) bool {
 
 // DiffSuppressJSON Diff suppression for JSON objects
 func DiffSuppressJSON(k, old, new string, d *schema.ResourceData) bool {
-	var j, j2 interface{}
+	var j, j2 any
 	if err := json.Unmarshal([]byte(old), &j); err != nil {
 		return false
 	}

@@ -74,10 +74,10 @@ func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) *api.PolicyBindi
 	m := api.PolicyBindingRequest{
 		Target:        d.Get("target").(string),
 		Order:         int32(d.Get("order").(int)),
-		Negate:        api.PtrBool(d.Get("negate").(bool)),
-		Enabled:       api.PtrBool(d.Get("enabled").(bool)),
-		Timeout:       api.PtrInt32(int32(d.Get("timeout").(int))),
-		FailureResult: api.PtrBool(d.Get("failure_result").(bool)),
+		Negate:        new(d.Get("negate").(bool)),
+		Enabled:       new(d.Get("enabled").(bool)),
+		Timeout:       new(int32(d.Get("timeout").(int))),
+		FailureResult: new(d.Get("failure_result").(bool)),
 		Policy:        *api.NewNullableString(helpers.GetP[string](d, "policy")),
 		User:          *api.NewNullableInt32(helpers.GetIntP(d, ("user"))),
 		Group:         *api.NewNullableString(helpers.GetP[string](d, "group")),
@@ -85,7 +85,7 @@ func resourcePolicyBindingSchemaToModel(d *schema.ResourceData) *api.PolicyBindi
 	return &m
 }
 
-func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyBindingSchemaToModel(d)
@@ -99,7 +99,7 @@ func resourcePolicyBindingCreate(ctx context.Context, d *schema.ResourceData, m 
 	return resourcePolicyBindingRead(ctx, d, m)
 }
 
-func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -120,7 +120,7 @@ func resourcePolicyBindingRead(ctx context.Context, d *schema.ResourceData, m in
 	return diags
 }
 
-func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyBindingSchemaToModel(d)
@@ -134,7 +134,7 @@ func resourcePolicyBindingUpdate(ctx context.Context, d *schema.ResourceData, m 
 	return resourcePolicyBindingRead(ctx, d, m)
 }
 
-func resourcePolicyBindingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyBindingDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {

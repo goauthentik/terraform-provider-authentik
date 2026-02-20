@@ -50,16 +50,16 @@ func resourceServiceConnectionKubernetes() *schema.Resource {
 func resourceServiceConnectionKubernetesSchemaToModel(d *schema.ResourceData) (*api.KubernetesServiceConnectionRequest, diag.Diagnostics) {
 	m := api.KubernetesServiceConnectionRequest{
 		Name:      d.Get("name").(string),
-		VerifySsl: api.PtrBool(d.Get("verify_ssl").(bool)),
-		Local:     api.PtrBool(d.Get("local").(bool)),
+		VerifySsl: new(d.Get("verify_ssl").(bool)),
+		Local:     new(d.Get("local").(bool)),
 	}
 
-	attr, err := helpers.GetJSON[map[string]interface{}](d, ("kubeconfig"))
+	attr, err := helpers.GetJSON[map[string]any](d, ("kubeconfig"))
 	m.Kubeconfig = attr
 	return &m, err
 }
 
-func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceServiceConnectionKubernetesSchemaToModel(d)
@@ -76,7 +76,7 @@ func resourceServiceConnectionKubernetesCreate(ctx context.Context, d *schema.Re
 	return resourceServiceConnectionKubernetesRead(ctx, d, m)
 }
 
-func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesRetrieve(ctx, d.Id()).Execute()
@@ -90,7 +90,7 @@ func resourceServiceConnectionKubernetesRead(ctx context.Context, d *schema.Reso
 	return helpers.SetJSON(d, "kubeconfig", res.Kubeconfig)
 }
 
-func resourceServiceConnectionKubernetesUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionKubernetesUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceServiceConnectionKubernetesSchemaToModel(d)
@@ -107,7 +107,7 @@ func resourceServiceConnectionKubernetesUpdate(ctx context.Context, d *schema.Re
 	return resourceServiceConnectionKubernetesRead(ctx, d, m)
 }
 
-func resourceServiceConnectionKubernetesDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceServiceConnectionKubernetesDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesDestroy(ctx, d.Id()).Execute()
 	if err != nil {

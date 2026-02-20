@@ -56,14 +56,14 @@ func resourcePolicyEventMatcher() *schema.Resource {
 func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.EventMatcherPolicyRequest {
 	r := api.EventMatcherPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		ExecutionLogging: new(d.Get("execution_logging").(bool)),
 	}
 
 	if a, ok := d.Get("action").(string); ok && a != "" {
 		r.Action.Set(api.EventActions(a).Ptr())
 	}
 	if p, ok := d.Get("client_ip").(string); ok && p != "" {
-		r.ClientIp.Set(api.PtrString(p))
+		r.ClientIp.Set(new(p))
 	}
 	if a, ok := d.Get("app").(string); ok && a != "" {
 		r.App.Set(api.AppEnum(a).Ptr())
@@ -74,7 +74,7 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.Eve
 	return &r
 }
 
-func resourcePolicyEventMatcherCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyEventMatcherCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyEventMatcherSchemaToProvider(d)
@@ -88,7 +88,7 @@ func resourcePolicyEventMatcherCreate(ctx context.Context, d *schema.ResourceDat
 	return resourcePolicyEventMatcherRead(ctx, d, m)
 }
 
-func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -114,7 +114,7 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 	return diags
 }
 
-func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyEventMatcherSchemaToProvider(d)
@@ -128,7 +128,7 @@ func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceDat
 	return resourcePolicyEventMatcherRead(ctx, d, m)
 }
 
-func resourcePolicyEventMatcherDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyEventMatcherDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesEventMatcherDestroy(ctx, d.Id()).Execute()
 	if err != nil {

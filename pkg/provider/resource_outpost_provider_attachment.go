@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -39,7 +40,7 @@ func resourceOutpostProviderAttachment() *schema.Resource {
 	}
 }
 
-func resourceOutpostProviderAttachmentCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceOutpostProviderAttachmentCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	outpostID := d.Get("outpost").(string)
@@ -52,12 +53,10 @@ func resourceOutpostProviderAttachmentCreate(ctx context.Context, d *schema.Reso
 	}
 
 	// Check if provider is already attached
-	for _, p := range outpost.Providers {
-		if p == providerID {
-			// Already attached, just set ID
-			d.SetId(fmt.Sprintf("%s:%d", outpostID, providerID))
-			return resourceOutpostProviderAttachmentRead(ctx, d, m)
-		}
+	if slices.Contains(outpost.Providers, providerID) {
+		// Already attached, just set ID
+		d.SetId(fmt.Sprintf("%s:%d", outpostID, providerID))
+		return resourceOutpostProviderAttachmentRead(ctx, d, m)
 	}
 
 	// Add provider
@@ -77,7 +76,7 @@ func resourceOutpostProviderAttachmentCreate(ctx context.Context, d *schema.Reso
 	return resourceOutpostProviderAttachmentRead(ctx, d, m)
 }
 
-func resourceOutpostProviderAttachmentRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceOutpostProviderAttachmentRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	// Parse ID
@@ -97,13 +96,7 @@ func resourceOutpostProviderAttachmentRead(ctx context.Context, d *schema.Resour
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	found := false
-	for _, p := range outpost.Providers {
-		if p == int32(providerIDInt) {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(outpost.Providers, int32(providerIDInt))
 
 	if !found {
 		d.SetId("")
@@ -116,7 +109,7 @@ func resourceOutpostProviderAttachmentRead(ctx context.Context, d *schema.Resour
 	return nil
 }
 
-func resourceOutpostProviderAttachmentDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceOutpostProviderAttachmentDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	outpostID := d.Get("outpost").(string)

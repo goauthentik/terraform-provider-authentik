@@ -85,7 +85,7 @@ func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) 
 	return &r
 }
 
-func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
@@ -99,7 +99,7 @@ func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.Res
 	return resourceStageAuthenticatorWebAuthnRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -122,7 +122,7 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 	return diags
 }
 
-func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
@@ -136,7 +136,7 @@ func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.Res
 	return resourceStageAuthenticatorWebAuthnRead(ctx, d, m)
 }
 
-func resourceStageAuthenticatorWebAuthnDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageAuthenticatorWebAuthnDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -54,20 +54,20 @@ func resourceStagePassword() *schema.Resource {
 func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordStageRequest {
 	r := api.PasswordStageRequest{
 		Name:                       d.Get("name").(string),
-		AllowShowPassword:          api.PtrBool(d.Get("allow_show_password").(bool)),
+		AllowShowPassword:          new(d.Get("allow_show_password").(bool)),
 		ConfigureFlow:              *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
 		FailedAttemptsBeforeCancel: helpers.GetIntP(d, "failed_attempts_before_cancel"),
 	}
 
 	backend := make([]api.BackendsEnum, 0)
-	for _, backendS := range d.Get("backends").([]interface{}) {
+	for _, backendS := range d.Get("backends").([]any) {
 		backend = append(backend, api.BackendsEnum(backendS.(string)))
 	}
 	r.Backends = backend
 	return &r
 }
 
-func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStagePasswordSchemaToProvider(d)
@@ -81,7 +81,7 @@ func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m 
 	return resourceStagePasswordRead(ctx, d, m)
 }
 
-func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -98,7 +98,7 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m in
 	return diags
 }
 
-func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStagePasswordSchemaToProvider(d)
@@ -112,7 +112,7 @@ func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m 
 	return resourceStagePasswordRead(ctx, d, m)
 }
 
-func resourceStagePasswordDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStagePasswordDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {

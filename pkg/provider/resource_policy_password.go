@@ -99,7 +99,7 @@ func resourcePolicyPassword() *schema.Resource {
 func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.PasswordPolicyRequest {
 	r := api.PasswordPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
+		ExecutionLogging: new(d.Get("execution_logging").(bool)),
 		PasswordField:    helpers.GetP[string](d, "password_field"),
 
 		CheckStaticRules:    helpers.GetP[bool](d, "check_static_rules"),
@@ -121,7 +121,7 @@ func resourcePolicyPasswordSchemaToProvider(d *schema.ResourceData) *api.Passwor
 	return &r
 }
 
-func resourcePolicyPasswordCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyPasswordCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyPasswordSchemaToProvider(d)
@@ -135,7 +135,7 @@ func resourcePolicyPasswordCreate(ctx context.Context, d *schema.ResourceData, m
 	return resourcePolicyPasswordRead(ctx, d, m)
 }
 
-func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -157,7 +157,7 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func resourcePolicyPasswordUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyPasswordUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyPasswordSchemaToProvider(d)
@@ -171,7 +171,7 @@ func resourcePolicyPasswordUpdate(ctx context.Context, d *schema.ResourceData, m
 	return resourcePolicyPasswordRead(ctx, d, m)
 }
 
-func resourcePolicyPasswordDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyPasswordDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {

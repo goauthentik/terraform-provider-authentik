@@ -41,7 +41,7 @@ func resourcePropertyMappingProviderSCIMSchemaToProvider(d *schema.ResourceData)
 	return &r
 }
 
-func resourcePropertyMappingProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePropertyMappingProviderSCIMSchemaToProvider(d)
@@ -55,7 +55,7 @@ func resourcePropertyMappingProviderSCIMCreate(ctx context.Context, d *schema.Re
 	return resourcePropertyMappingProviderSCIMRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -69,7 +69,7 @@ func resourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.Reso
 	return diags
 }
 
-func resourcePropertyMappingProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePropertyMappingProviderSCIMSchemaToProvider(d)
@@ -83,7 +83,7 @@ func resourcePropertyMappingProviderSCIMUpdate(ctx context.Context, d *schema.Re
 	return resourcePropertyMappingProviderSCIMRead(ctx, d, m)
 }
 
-func resourcePropertyMappingProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePropertyMappingProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScimDestroy(ctx, d.Id()).Execute()
 	if err != nil {

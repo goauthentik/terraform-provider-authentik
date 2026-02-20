@@ -9,7 +9,7 @@ import (
 
 func Test_CastSlice(t *testing.T) {
 	v := CastSlice[string](TestResource{
-		"foo": []interface{}{"bar", "baz"},
+		"foo": []any{"bar", "baz"},
 	}, "foo")
 	assert.NotNil(t, v)
 	assert.Equal(t, []string{"bar", "baz"}, v)
@@ -23,7 +23,7 @@ func Test_CastSliceString(t *testing.T) {
 }
 
 func Test_CastSliceInt32(t *testing.T) {
-	v := CastSliceInt32([]interface{}{
+	v := CastSliceInt32([]any{
 		1, 2, 3,
 	})
 	assert.Equal(t, []int32{1, 2, 3}, v)

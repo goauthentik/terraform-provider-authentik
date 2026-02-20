@@ -51,15 +51,15 @@ func resourcePolicyReputation() *schema.Resource {
 func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.ReputationPolicyRequest {
 	r := api.ReputationPolicyRequest{
 		Name:             d.Get("name").(string),
-		ExecutionLogging: api.PtrBool(d.Get("execution_logging").(bool)),
-		CheckIp:          api.PtrBool(d.Get("check_ip").(bool)),
-		CheckUsername:    api.PtrBool(d.Get("check_username").(bool)),
+		ExecutionLogging: new(d.Get("execution_logging").(bool)),
+		CheckIp:          new(d.Get("check_ip").(bool)),
+		CheckUsername:    new(d.Get("check_username").(bool)),
 		Threshold:        helpers.GetIntP(d, "threshold"),
 	}
 	return &r
 }
 
-func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourcePolicyReputationSchemaToProvider(d)
@@ -73,7 +73,7 @@ func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData,
 	return resourcePolicyReputationRead(ctx, d, m)
 }
 
-func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -90,7 +90,7 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 	return diags
 }
 
-func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourcePolicyReputationSchemaToProvider(d)
@@ -104,7 +104,7 @@ func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData,
 	return resourcePolicyReputationRead(ctx, d, m)
 }
 
-func resourcePolicyReputationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourcePolicyReputationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.PoliciesApi.PoliciesReputationDestroy(ctx, d.Id()).Execute()
 	if err != nil {

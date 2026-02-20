@@ -57,14 +57,14 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRu
 	m := api.NotificationRuleRequest{
 		Name:                 d.Get("name").(string),
 		Severity:             api.SeverityEnum(d.Get("severity").(string)).Ptr(),
-		DestinationEventUser: api.PtrBool(d.Get("destination_event_user").(bool)),
+		DestinationEventUser: new(d.Get("destination_event_user").(bool)),
 		DestinationGroup:     *api.NewNullableString(helpers.GetP[string](d, ("destination_group"))),
 		Transports:           helpers.CastSlice[string](d, "transports"),
 	}
 	return &m, nil
 }
 
-func resourceEventRuleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventRuleCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceEventRuleSchemaToModel(d)
@@ -81,7 +81,7 @@ func resourceEventRuleCreate(ctx context.Context, d *schema.ResourceData, m inte
 	return resourceEventRuleRead(ctx, d, m)
 }
 
-func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -101,7 +101,7 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m interf
 	return diags
 }
 
-func resourceEventRuleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventRuleUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceEventRuleSchemaToModel(d)
@@ -117,7 +117,7 @@ func resourceEventRuleUpdate(ctx context.Context, d *schema.ResourceData, m inte
 	return resourceEventRuleRead(ctx, d, m)
 }
 
-func resourceEventRuleDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceEventRuleDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.EventsApi.EventsRulesDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -59,11 +59,11 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 		Name:              d.Get("name").(string),
 		Type:              api.OutpostTypeEnum(d.Get("type").(string)),
 		ServiceConnection: *api.NewNullableString(helpers.GetP[string](d, "service_connection")),
-		Providers:         helpers.CastSliceInt32(d.Get("protocol_providers").([]interface{})),
+		Providers:         helpers.CastSliceInt32(d.Get("protocol_providers").([]any)),
 	}
 
 	if l, ok := d.Get("config").(string); ok && l != "" {
-		attr, err := helpers.GetJSON[map[string]interface{}](d, ("config"))
+		attr, err := helpers.GetJSON[map[string]any](d, ("config"))
 		m.Config = attr
 		return &m, err
 	} else {
@@ -76,7 +76,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 	return &m, nil
 }
 
-func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, diags := resourceOutpostSchemaToModel(d, c)
@@ -93,7 +93,7 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m interf
 	return resourceOutpostRead(ctx, d, m)
 }
 
-func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
@@ -111,7 +111,7 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m interfac
 	return helpers.SetJSON(d, "config", res.Config)
 }
 
-func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app, di := resourceOutpostSchemaToModel(d, c)
@@ -128,7 +128,7 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	return resourceOutpostRead(ctx, d, m)
 }
 
-func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsApi.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {

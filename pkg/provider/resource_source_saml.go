@@ -185,9 +185,9 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	r := api.SAMLSourceRequest{
 		Name:              d.Get("name").(string),
 		Slug:              d.Get("slug").(string),
-		Enabled:           api.PtrBool(d.Get("enabled").(bool)),
-		Promoted:          api.PtrBool(d.Get("promoted").(bool)),
-		UserPathTemplate:  api.PtrString(d.Get("user_path_template").(string)),
+		Enabled:           new(d.Get("enabled").(bool)),
+		Promoted:          new(d.Get("promoted").(bool)),
+		UserPathTemplate:  new(d.Get("user_path_template").(string)),
 		PolicyEngineMode:  api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode:  api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
 		GroupMatchingMode: api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
@@ -203,11 +203,11 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		SigningKp:                *api.NewNullableString(helpers.GetP[string](d, "signing_kp")),
 		EncryptionKp:             *api.NewNullableString(helpers.GetP[string](d, "encryption_kp")),
 		VerificationKp:           *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
-		SignedAssertion:          api.PtrBool(d.Get("signed_assertion").(bool)),
-		SignedResponse:           api.PtrBool(d.Get("signed_response").(bool)),
-		Issuer:                   api.PtrString(d.Get("issuer").(string)),
-		AllowIdpInitiated:        api.PtrBool(d.Get("allow_idp_initiated").(bool)),
-		TemporaryUserDeleteAfter: api.PtrString(d.Get("temporary_user_delete_after").(string)),
+		SignedAssertion:          new(d.Get("signed_assertion").(bool)),
+		SignedResponse:           new(d.Get("signed_response").(bool)),
+		Issuer:                   new(d.Get("issuer").(string)),
+		AllowIdpInitiated:        new(d.Get("allow_idp_initiated").(bool)),
+		TemporaryUserDeleteAfter: new(d.Get("temporary_user_delete_after").(string)),
 		BindingType:              api.BindingTypeEnum(d.Get("binding_type").(string)).Ptr(),
 		DigestAlgorithm:          api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
 		SignatureAlgorithm:       api.SignatureAlgorithmEnum(d.Get("signature_algorithm").(string)).Ptr(),
@@ -216,7 +216,7 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 	return &r
 }
 
-func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceSourceSAMLSchemaToSource(d)
@@ -230,7 +230,7 @@ func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourceSAMLRead(ctx, d, m)
 }
 
-func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 	res, hr, err := c.client.SourcesApi.SourcesSamlRetrieve(ctx, d.Id()).Execute()
@@ -283,7 +283,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m inter
 	return diags
 }
 
-func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	app := resourceSourceSAMLSchemaToSource(d)
 
@@ -296,7 +296,7 @@ func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceSourceSAMLRead(ctx, d, m)
 }
 
-func resourceSourceSAMLDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceSourceSAMLDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.SourcesApi.SourcesSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {

@@ -36,12 +36,12 @@ func resourceStageInvitation() *schema.Resource {
 func resourceStageInvitationSchemaToProvider(d *schema.ResourceData) *api.InvitationStageRequest {
 	r := api.InvitationStageRequest{
 		Name:                          d.Get("name").(string),
-		ContinueFlowWithoutInvitation: api.PtrBool(d.Get("continue_flow_without_invitation").(bool)),
+		ContinueFlowWithoutInvitation: new(d.Get("continue_flow_without_invitation").(bool)),
 	}
 	return &r
 }
 
-func resourceStageInvitationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageInvitationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageInvitationSchemaToProvider(d)
@@ -55,7 +55,7 @@ func resourceStageInvitationCreate(ctx context.Context, d *schema.ResourceData, 
 	return resourceStageInvitationRead(ctx, d, m)
 }
 
-func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -69,7 +69,7 @@ func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m 
 	return diags
 }
 
-func resourceStageInvitationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageInvitationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageInvitationSchemaToProvider(d)
@@ -83,7 +83,7 @@ func resourceStageInvitationUpdate(ctx context.Context, d *schema.ResourceData, 
 	return resourceStageInvitationRead(ctx, d, m)
 }
 
-func resourceStageInvitationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageInvitationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesInvitationStagesDestroy(ctx, d.Id()).Execute()
 	if err != nil {

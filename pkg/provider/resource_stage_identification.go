@@ -95,29 +95,29 @@ func resourceStageIdentification() *schema.Resource {
 func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.IdentificationStageRequest {
 	r := api.IdentificationStageRequest{
 		Name:                    d.Get("name").(string),
-		PretendUserExists:       api.PtrBool(d.Get("pretend_user_exists").(bool)),
-		ShowMatchedUser:         api.PtrBool(d.Get("show_matched_user").(bool)),
-		EnableRememberMe:        api.PtrBool(d.Get("enable_remember_me").(bool)),
-		ShowSourceLabels:        api.PtrBool(d.Get("show_source_labels").(bool)),
-		CaseInsensitiveMatching: api.PtrBool(d.Get("case_insensitive_matching").(bool)),
+		PretendUserExists:       new(d.Get("pretend_user_exists").(bool)),
+		ShowMatchedUser:         new(d.Get("show_matched_user").(bool)),
+		EnableRememberMe:        new(d.Get("enable_remember_me").(bool)),
+		ShowSourceLabels:        new(d.Get("show_source_labels").(bool)),
+		CaseInsensitiveMatching: new(d.Get("case_insensitive_matching").(bool)),
 		Sources:                 helpers.CastSlice[string](d, "sources"),
-		PasswordStage:           *api.NewNullableString(api.PtrString(d.Get("password_stage").(string))),
-		CaptchaStage:            *api.NewNullableString(api.PtrString(d.Get("captcha_stage").(string))),
-		WebauthnStage:           *api.NewNullableString(api.PtrString(d.Get("webauthn_stage").(string))),
+		PasswordStage:           *api.NewNullableString(new(d.Get("password_stage").(string))),
+		CaptchaStage:            *api.NewNullableString(new(d.Get("captcha_stage").(string))),
+		WebauthnStage:           *api.NewNullableString(new(d.Get("webauthn_stage").(string))),
 		EnrollmentFlow:          *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
 		RecoveryFlow:            *api.NewNullableString(helpers.GetP[string](d, "recovery_flow")),
 		PasswordlessFlow:        *api.NewNullableString(helpers.GetP[string](d, "passwordless_flow")),
 	}
 
 	userFields := make([]api.UserFieldsEnum, 0)
-	for _, userFieldsS := range d.Get("user_fields").([]interface{}) {
+	for _, userFieldsS := range d.Get("user_fields").([]any) {
 		userFields = append(userFields, api.UserFieldsEnum(userFieldsS.(string)))
 	}
 	r.UserFields = userFields
 	return &r
 }
 
-func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	r := resourceStageIdentificationSchemaToProvider(d)
@@ -131,7 +131,7 @@ func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceDa
 	return resourceStageIdentificationRead(ctx, d, m)
 }
 
-func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
@@ -160,7 +160,7 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 	return diags
 }
 
-func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
 	app := resourceStageIdentificationSchemaToProvider(d)
@@ -174,7 +174,7 @@ func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceDa
 	return resourceStageIdentificationRead(ctx, d, m)
 }
 
-func resourceStageIdentificationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceStageIdentificationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 	hr, err := c.client.StagesApi.StagesIdentificationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
