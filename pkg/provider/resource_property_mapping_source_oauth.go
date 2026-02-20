@@ -42,11 +42,11 @@ func resourcePropertyMappingSourceOAuthSchemaToProvider(d *schema.ResourceData) 
 }
 
 func resourcePropertyMappingSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePropertyMappingSourceOAuthSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthCreate(ctx).OAuthSourcePropertyMappingRequest(*r).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceOauthCreate(ctx).OAuthSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -57,9 +57,9 @@ func resourcePropertyMappingSourceOAuthCreate(ctx context.Context, d *schema.Res
 
 func resourcePropertyMappingSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceOauthRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,11 +70,11 @@ func resourcePropertyMappingSourceOAuthRead(ctx context.Context, d *schema.Resou
 }
 
 func resourcePropertyMappingSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePropertyMappingSourceOAuthSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthUpdate(ctx, d.Id()).OAuthSourcePropertyMappingRequest(*app).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceOauthUpdate(ctx, d.Id()).OAuthSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,8 +84,8 @@ func resourcePropertyMappingSourceOAuthUpdate(ctx context.Context, d *schema.Res
 }
 
 func resourcePropertyMappingSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceOauthDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceOauthDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

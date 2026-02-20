@@ -193,11 +193,6 @@ func Provider(version string, testing bool) *schema.Provider {
 	}
 }
 
-// APIClient Hold the API Client and any relevant configuration
-type APIClient struct {
-	client *api.APIClient
-}
-
 func providerConfigure(version string, testing bool) schema.ConfigureContextFunc {
 	return func(c context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
 		apiURL := d.Get("url").(string)
@@ -278,10 +273,22 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			}
 		}
 
-		return &APIClient{
-			client: apiClient,
+		return &helpers.APIClient{
+			Client: apiClient,
 		}, diags
 	}
+}
+
+var ProviderFactories = map[string]func() (*schema.Provider, error){
+	"authentik": func() (*schema.Provider, error) {
+		return Provider("test", false), nil
+	},
+}
+
+var ProviderTestFactories = map[string]func() (*schema.Provider, error){
+	"authentik": func() (*schema.Provider, error) {
+		return Provider("test", true), nil
+	},
 }
 
 // TestingTransport Transport used for testing, always returns a 400 Response

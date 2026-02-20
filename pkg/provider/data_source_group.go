@@ -206,8 +206,8 @@ func setGroup(data *schema.ResourceData, group api.Group) diag.Diagnostics {
 	return diag.Diagnostics{}
 }
 
-func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *APIClient, pk string, includeUsers bool) diag.Diagnostics {
-	req := c.client.CoreApi.CoreGroupsRetrieve(ctx, pk)
+func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *helpers.APIClient, pk string, includeUsers bool) diag.Diagnostics {
+	req := c.Client.CoreApi.CoreGroupsRetrieve(ctx, pk)
 	req = req.IncludeUsers(includeUsers)
 
 	res, hr, err := req.Execute()
@@ -218,8 +218,8 @@ func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *API
 	return setGroup(d, *res)
 }
 
-func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *APIClient, name string, includeUsers bool) diag.Diagnostics {
-	req := c.client.CoreApi.CoreGroupsList(ctx)
+func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *helpers.APIClient, name string, includeUsers bool) diag.Diagnostics {
+	req := c.Client.CoreApi.CoreGroupsList(ctx)
 	req = req.IncludeUsers(includeUsers)
 	req = req.Name(name)
 
@@ -240,7 +240,7 @@ func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *A
 }
 
 func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	includeUsers := true
 	if i := d.Get("include_users"); i != nil {
 		includeUsers = i.(bool)

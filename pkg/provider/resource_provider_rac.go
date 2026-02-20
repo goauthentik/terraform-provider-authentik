@@ -74,14 +74,14 @@ func resourceProviderRACSchemaToProvider(d *schema.ResourceData) (*api.RACProvid
 }
 
 func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diags := resourceProviderRACSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersRacCreate(ctx).RACProviderRequest(*r).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersRacCreate(ctx).RACProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -91,12 +91,12 @@ func resourceProviderRACCreate(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersRacRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersRacRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -113,7 +113,7 @@ func resourceProviderRACRead(ctx context.Context, d *schema.ResourceData, m any)
 }
 
 func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
@@ -123,7 +123,7 @@ func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersRacUpdate(ctx, int32(id)).RACProviderRequest(*app).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersRacUpdate(ctx, int32(id)).RACProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -133,12 +133,12 @@ func resourceProviderRACUpdate(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourceProviderRACDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersRacDestroy(ctx, int32(id)).Execute()
+	hr, err := c.Client.ProvidersApi.ProvidersRacDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

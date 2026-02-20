@@ -68,11 +68,11 @@ func resourceStagePasswordSchemaToProvider(d *schema.ResourceData) *api.Password
 }
 
 func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStagePasswordSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesPasswordCreate(ctx).PasswordStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesPasswordCreate(ctx).PasswordStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -83,9 +83,9 @@ func resourceStagePasswordCreate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesPasswordRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesPasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -99,11 +99,11 @@ func resourceStagePasswordRead(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStagePasswordSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesPasswordUpdate(ctx, d.Id()).PasswordStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesPasswordUpdate(ctx, d.Id()).PasswordStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -113,8 +113,8 @@ func resourceStagePasswordUpdate(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceStagePasswordDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesPasswordDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

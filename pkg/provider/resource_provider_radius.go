@@ -78,11 +78,11 @@ func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusP
 }
 
 func resourceProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceProviderRadiusSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersRadiusCreate(ctx).RadiusProviderRequest(*r).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersRadiusCreate(ctx).RadiusProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -93,12 +93,12 @@ func resourceProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersRadiusRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersRadiusRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -118,14 +118,14 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	app := resourceProviderRadiusSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersRadiusUpdate(ctx, int32(id)).RadiusProviderRequest(*app).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersRadiusUpdate(ctx, int32(id)).RadiusProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -135,12 +135,12 @@ func resourceProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceProviderRadiusDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersRadiusDestroy(ctx, int32(id)).Execute()
+	hr, err := c.Client.ProvidersApi.ProvidersRadiusDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -92,7 +92,7 @@ func resourceUserSchemaToModel(d *schema.ResourceData) (*api.UserRequest, diag.D
 	return &m, err
 }
 
-func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.Context) diag.Diagnostics {
+func resourceUserSetPassword(d *schema.ResourceData, c *helpers.APIClient, ctx context.Context) diag.Diagnostics {
 	password, ok := d.Get("password").(string)
 	if !ok || password == "" {
 		return nil
@@ -104,7 +104,7 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.CoreApi.CoreUsersSetPasswordCreate(ctx, int32(uid)).UserPasswordSetRequest(api.UserPasswordSetRequest{
+	hr, err := c.Client.CoreApi.CoreUsersSetPasswordCreate(ctx, int32(uid)).UserPasswordSetRequest(api.UserPasswordSetRequest{
 		Password: password,
 	}).Execute()
 	if err != nil {
@@ -115,14 +115,14 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 }
 
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceUserSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreUsersCreate(ctx).UserRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreUsersCreate(ctx).UserRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -137,14 +137,14 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m any) diag
 }
 
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	res, hr, err := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.Client.CoreApi.CoreUsersRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -163,7 +163,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m any) diag.D
 }
 
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, di := resourceUserSchemaToModel(d)
 	if di != nil {
@@ -173,7 +173,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m any) diag
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.CoreApi.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -188,12 +188,12 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m any) diag
 }
 
 func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.CoreApi.CoreUsersDestroy(ctx, int32(id)).Execute()
+	hr, err := c.Client.CoreApi.CoreUsersDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

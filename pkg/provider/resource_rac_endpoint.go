@@ -81,14 +81,14 @@ func resourceRACEndpointSchemaToProvider(d *schema.ResourceData) (*api.EndpointR
 }
 
 func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diags := resourceRACEndpointSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.RacApi.RacEndpointsCreate(ctx).EndpointRequest(*r).Execute()
+	res, hr, err := c.Client.RacApi.RacEndpointsCreate(ctx).EndpointRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -98,8 +98,8 @@ func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	res, hr, err := c.client.RacApi.RacEndpointsRetrieve(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	res, hr, err := c.Client.RacApi.RacEndpointsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -117,13 +117,13 @@ func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m any)
 }
 
 func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	app, diags := resourceRACEndpointSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.RacApi.RacEndpointsUpdate(ctx, d.Id()).EndpointRequest(*app).Execute()
+	res, hr, err := c.Client.RacApi.RacEndpointsUpdate(ctx, d.Id()).EndpointRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -133,8 +133,8 @@ func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourceRACEndpointDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.RacApi.RacEndpointsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.RacApi.RacEndpointsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

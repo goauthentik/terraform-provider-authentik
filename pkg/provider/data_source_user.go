@@ -146,8 +146,8 @@ func setUser(data *schema.ResourceData, user api.User) diag.Diagnostics {
 	return diag.Diagnostics{}
 }
 
-func dataSourceUserReadByPk(ctx context.Context, d *schema.ResourceData, c *APIClient, pk int) diag.Diagnostics {
-	req := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(pk))
+func dataSourceUserReadByPk(ctx context.Context, d *schema.ResourceData, c *helpers.APIClient, pk int) diag.Diagnostics {
+	req := c.Client.CoreApi.CoreUsersRetrieve(ctx, int32(pk))
 
 	res, hr, err := req.Execute()
 	if err != nil {
@@ -157,8 +157,8 @@ func dataSourceUserReadByPk(ctx context.Context, d *schema.ResourceData, c *APIC
 	return setUser(d, *res)
 }
 
-func dataSourceUserReadByUsername(ctx context.Context, d *schema.ResourceData, c *APIClient, username string) diag.Diagnostics {
-	req := c.client.CoreApi.CoreUsersList(ctx)
+func dataSourceUserReadByUsername(ctx context.Context, d *schema.ResourceData, c *helpers.APIClient, username string) diag.Diagnostics {
+	req := c.Client.CoreApi.CoreUsersList(ctx)
 	req = req.Username(username)
 
 	res, hr, err := req.Execute()
@@ -178,7 +178,7 @@ func dataSourceUserReadByUsername(ctx context.Context, d *schema.ResourceData, c
 }
 
 func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	if n, ok := d.GetOk("pk"); ok {
 		return dataSourceUserReadByPk(ctx, d, c, n.(int))

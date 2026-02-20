@@ -52,9 +52,9 @@ func dataSourcePropertyMappingSourceLDAP() *schema.Resource {
 
 func dataSourcePropertyMappingSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsSourceLdapList(ctx)
+	req := c.Client.PropertymappingsApi.PropertymappingsSourceLdapList(ctx)
 
 	if _, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(helpers.CastSlice[string](d, "managed_list"))

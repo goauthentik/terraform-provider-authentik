@@ -37,9 +37,9 @@ func dataSourceSource() *schema.Resource {
 
 func dataSourceSourceRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	req := c.client.SourcesApi.SourcesAllList(ctx)
+	req := c.Client.SourcesApi.SourcesAllList(ctx)
 	if s, ok := d.GetOk("slug"); ok {
 		req = req.Slug(s.(string))
 	}

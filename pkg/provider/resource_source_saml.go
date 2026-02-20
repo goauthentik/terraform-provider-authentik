@@ -217,11 +217,11 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 }
 
 func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceSourceSAMLSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -232,8 +232,8 @@ func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesSamlRetrieve(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	res, hr, err := c.Client.SourcesApi.SourcesSamlRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -275,7 +275,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) 
 		res.GroupPropertyMappings,
 	))
 
-	meta, hr, err := c.client.SourcesApi.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
+	meta, hr, err := c.Client.SourcesApi.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -284,10 +284,10 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) 
 }
 
 func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	app := resourceSourceSAMLSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -297,8 +297,8 @@ func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m any
 }
 
 func resourceSourceSAMLDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesSamlDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.SourcesApi.SourcesSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

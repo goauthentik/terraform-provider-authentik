@@ -127,11 +127,11 @@ func resourceStageEmailSchemaToProvider(d *schema.ResourceData) *api.EmailStageR
 }
 
 func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageEmailSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEmailCreate(ctx).EmailStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesEmailCreate(ctx).EmailStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -142,9 +142,9 @@ func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesEmailRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesEmailRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -168,11 +168,11 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m any) 
 }
 
 func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageEmailSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEmailUpdate(ctx, d.Id()).EmailStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesEmailUpdate(ctx, d.Id()).EmailStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -182,8 +182,8 @@ func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m any
 }
 
 func resourceStageEmailDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesEmailDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -42,11 +42,11 @@ func resourcePropertyMappingSourcePlexSchemaToProvider(d *schema.ResourceData) *
 }
 
 func resourcePropertyMappingSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePropertyMappingSourcePlexSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexCreate(ctx).PlexSourcePropertyMappingRequest(*r).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourcePlexCreate(ctx).PlexSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -57,9 +57,9 @@ func resourcePropertyMappingSourcePlexCreate(ctx context.Context, d *schema.Reso
 
 func resourcePropertyMappingSourcePlexRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourcePlexRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,11 +70,11 @@ func resourcePropertyMappingSourcePlexRead(ctx context.Context, d *schema.Resour
 }
 
 func resourcePropertyMappingSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePropertyMappingSourcePlexSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexUpdate(ctx, d.Id()).PlexSourcePropertyMappingRequest(*app).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourcePlexUpdate(ctx, d.Id()).PlexSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,8 +84,8 @@ func resourcePropertyMappingSourcePlexUpdate(ctx context.Context, d *schema.Reso
 }
 
 func resourcePropertyMappingSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsSourcePlexDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PropertymappingsApi.PropertymappingsSourcePlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

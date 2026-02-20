@@ -38,11 +38,11 @@ func dataSourceProviderSAMLMetadata() *schema.Resource {
 
 func dataSourceProviderSAMLMetadataRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	id, ok := d.GetOk("provider_id")
 	if !ok {
-		req := c.client.ProvidersApi.ProvidersSamlList(ctx)
+		req := c.Client.ProvidersApi.ProvidersSamlList(ctx)
 		if m, ok := d.Get("name").(string); ok {
 			req = req.Name(m)
 		}
@@ -58,7 +58,7 @@ func dataSourceProviderSAMLMetadataRead(ctx context.Context, d *schema.ResourceD
 	finalId := int32(id.(int))
 	d.SetId(strconv.FormatInt(int64(finalId), 10))
 
-	meta, hr, err := c.client.ProvidersApi.ProvidersSamlMetadataRetrieve(ctx, finalId).Execute()
+	meta, hr, err := c.Client.ProvidersApi.ProvidersSamlMetadataRetrieve(ctx, finalId).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

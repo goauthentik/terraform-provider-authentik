@@ -28,10 +28,10 @@ func dataSourceOutpost() *schema.Resource {
 }
 
 func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	if id, ok := d.GetOk("id"); ok {
-		res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, id.(string)).Execute()
+		res, hr, err := c.Client.OutpostsApi.OutpostsInstancesRetrieve(ctx, id.(string)).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -41,7 +41,7 @@ func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) d
 	}
 
 	if name, ok := d.GetOk("name"); ok {
-		res, hr, err := c.client.OutpostsApi.OutpostsInstancesList(ctx).NameIexact(name.(string)).Execute()
+		res, hr, err := c.Client.OutpostsApi.OutpostsInstancesList(ctx).NameIexact(name.(string)).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}

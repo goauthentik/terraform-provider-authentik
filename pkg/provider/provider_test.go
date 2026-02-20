@@ -95,7 +95,7 @@ func TestProviderConfigure_PathBasedURL(t *testing.T) {
 			}))
 			assert.Nil(t, diag)
 			ac := _ac.(*APIClient)
-			assert.Equal(t, tc.expectedURL, ac.client.GetConfig().Servers[0].URL, "Server URL should be constructed correctly")
+			assert.Equal(t, tc.expectedURL, ac.Client.GetConfig().Servers[0].URL, "Server URL should be constructed correctly")
 		})
 	}
 }

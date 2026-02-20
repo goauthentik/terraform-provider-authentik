@@ -49,11 +49,11 @@ func resourceStageEndpointsSchemaToProvider(d *schema.ResourceData) *api.Endpoin
 }
 
 func resourceStageEndpointsCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageEndpointsSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEndpointsCreate(ctx).EndpointStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesEndpointsCreate(ctx).EndpointStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -64,9 +64,9 @@ func resourceStageEndpointsCreate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceStageEndpointsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesEndpointsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesEndpointsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -78,11 +78,11 @@ func resourceStageEndpointsRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceStageEndpointsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageEndpointsSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEndpointsUpdate(ctx, d.Id()).EndpointStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesEndpointsUpdate(ctx, d.Id()).EndpointStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -92,8 +92,8 @@ func resourceStageEndpointsUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceStageEndpointsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesEndpointsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesEndpointsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -42,11 +42,11 @@ func resourcePropertyMappingSourceKerberosSchemaToProvider(d *schema.ResourceDat
 }
 
 func resourcePropertyMappingSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePropertyMappingSourceKerberosSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosCreate(ctx).KerberosSourcePropertyMappingRequest(*r).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceKerberosCreate(ctx).KerberosSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -57,9 +57,9 @@ func resourcePropertyMappingSourceKerberosCreate(ctx context.Context, d *schema.
 
 func resourcePropertyMappingSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceKerberosRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,11 +70,11 @@ func resourcePropertyMappingSourceKerberosRead(ctx context.Context, d *schema.Re
 }
 
 func resourcePropertyMappingSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePropertyMappingSourceKerberosSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosUpdate(ctx, d.Id()).KerberosSourcePropertyMappingRequest(*app).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceKerberosUpdate(ctx, d.Id()).KerberosSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,8 +84,8 @@ func resourcePropertyMappingSourceKerberosUpdate(ctx context.Context, d *schema.
 }
 
 func resourcePropertyMappingSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceKerberosDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

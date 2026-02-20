@@ -32,9 +32,9 @@ func dataSourceRBACPermission() *schema.Resource {
 
 func dataSourceRBACPermissionRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	req := c.client.RbacApi.RbacPermissionsList(ctx)
+	req := c.Client.RbacApi.RbacPermissionsList(ctx)
 	if codename, ok := d.GetOk("codename"); ok {
 		req = req.Codename(codename.(string))
 	}

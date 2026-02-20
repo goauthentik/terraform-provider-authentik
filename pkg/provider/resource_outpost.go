@@ -54,7 +54,7 @@ func resourceOutpost() *schema.Resource {
 	}
 }
 
-func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.OutpostRequest, diag.Diagnostics) {
+func resourceOutpostSchemaToModel(d *schema.ResourceData, c *helpers.APIClient) (*api.OutpostRequest, diag.Diagnostics) {
 	m := api.OutpostRequest{
 		Name:              d.Get("name").(string),
 		Type:              api.OutpostTypeEnum(d.Get("type").(string)),
@@ -67,7 +67,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 		m.Config = attr
 		return &m, err
 	} else {
-		defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
+		defaultConfig, hr, err := c.Client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
 		if err != nil {
 			return nil, helpers.HTTPToDiag(d, hr, err)
 		}
@@ -77,14 +77,14 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 }
 
 func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceOutpostSchemaToModel(d, c)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.OutpostsApi.OutpostsInstancesCreate(ctx).OutpostRequest(*app).Execute()
+	res, hr, err := c.Client.OutpostsApi.OutpostsInstancesCreate(ctx).OutpostRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -94,9 +94,9 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m any) d
 }
 
 func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -112,14 +112,14 @@ func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) dia
 }
 
 func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, di := resourceOutpostSchemaToModel(d, c)
 	if di != nil {
 		return di
 	}
 
-	res, hr, err := c.client.OutpostsApi.OutpostsInstancesUpdate(ctx, d.Id()).OutpostRequest(*app).Execute()
+	res, hr, err := c.Client.OutpostsApi.OutpostsInstancesUpdate(ctx, d.Id()).OutpostRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -129,8 +129,8 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m any) d
 }
 
 func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.OutpostsApi.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.OutpostsApi.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

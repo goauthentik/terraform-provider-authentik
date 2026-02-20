@@ -36,11 +36,11 @@ func resourceStageDummySchemaToProvider(d *schema.ResourceData) *api.DummyStageR
 }
 
 func resourceStageDummyCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageDummySchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesDummyCreate(ctx).DummyStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesDummyCreate(ctx).DummyStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -51,9 +51,9 @@ func resourceStageDummyCreate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceStageDummyRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesDummyRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesDummyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -63,11 +63,11 @@ func resourceStageDummyRead(ctx context.Context, d *schema.ResourceData, m any) 
 }
 
 func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageDummySchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesDummyUpdate(ctx, d.Id()).DummyStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesDummyUpdate(ctx, d.Id()).DummyStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -77,8 +77,8 @@ func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m any
 }
 
 func resourceStageDummyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesDummyDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesDummyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

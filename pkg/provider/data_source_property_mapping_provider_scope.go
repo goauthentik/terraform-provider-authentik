@@ -61,9 +61,9 @@ func dataSourcePropertyMappingProviderScope() *schema.Resource {
 
 func dataSourcePropertyMappingProviderScopeRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsProviderScopeList(ctx)
+	req := c.Client.PropertymappingsApi.PropertymappingsProviderScopeList(ctx)
 
 	if _, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(helpers.CastSlice[string](d, "managed_list"))

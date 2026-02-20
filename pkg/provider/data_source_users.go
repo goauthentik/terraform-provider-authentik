@@ -92,9 +92,9 @@ func dataSourceUsers() *schema.Resource {
 }
 
 func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	req := c.client.CoreApi.CoreUsersList(ctx)
+	req := c.Client.CoreApi.CoreUsersList(ctx)
 
 	for key := range dataSourceUsers().Schema {
 		if v, ok := d.GetOk(key); ok {
