@@ -69,7 +69,7 @@ jobs:
         with:
           version: ${{ matrix.authentik_version }}
           sentry_env: goauthentik-terraform-ci
-      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+      - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
