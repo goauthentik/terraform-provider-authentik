@@ -53,11 +53,11 @@ func resourceEnterpriseLicenseSchemaToProvider(d *schema.ResourceData) *api.Lice
 }
 
 func resourceEnterpriseLicenseCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceEnterpriseLicenseSchemaToProvider(d)
 
-	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseCreate(ctx).LicenseRequest(*r).Execute()
+	res, hr, err := c.Client.EnterpriseApi.EnterpriseLicenseCreate(ctx).LicenseRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -68,9 +68,9 @@ func resourceEnterpriseLicenseCreate(ctx context.Context, d *schema.ResourceData
 
 func resourceEnterpriseLicenseRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.EnterpriseApi.EnterpriseLicenseRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,11 +84,11 @@ func resourceEnterpriseLicenseRead(ctx context.Context, d *schema.ResourceData, 
 }
 
 func resourceEnterpriseLicenseUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceEnterpriseLicenseSchemaToProvider(d)
 
-	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseUpdate(ctx, d.Id()).LicenseRequest(*app).Execute()
+	res, hr, err := c.Client.EnterpriseApi.EnterpriseLicenseUpdate(ctx, d.Id()).LicenseRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -98,8 +98,8 @@ func resourceEnterpriseLicenseUpdate(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceEnterpriseLicenseDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.EnterpriseApi.EnterpriseLicenseDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.EnterpriseApi.EnterpriseLicenseDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

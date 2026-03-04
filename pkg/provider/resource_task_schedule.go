@@ -58,11 +58,11 @@ func resourceTaskScheduleSchemaToProvider(d *schema.ResourceData) api.PatchedSch
 }
 
 func resourceTaskScheduleImport(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	parts := strings.Split(d.Get("app_model").(string), ".")
 
-	req := c.client.TasksApi.
+	req := c.Client.TasksApi.
 		TasksSchedulesList(ctx).
 		RelObjContentTypeAppLabel(parts[0]).
 		RelObjContentTypeModel(parts[1]).
@@ -98,9 +98,9 @@ func resourceTaskScheduleCreate(ctx context.Context, d *schema.ResourceData, m a
 
 func resourceTaskScheduleRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.TasksApi.TasksSchedulesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.TasksApi.TasksSchedulesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -113,11 +113,11 @@ func resourceTaskScheduleRead(ctx context.Context, d *schema.ResourceData, m any
 }
 
 func resourceTaskScheduleUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceTaskScheduleSchemaToProvider(d)
 
-	res, hr, err := c.client.TasksApi.TasksSchedulesPartialUpdate(ctx, d.Id()).
+	res, hr, err := c.Client.TasksApi.TasksSchedulesPartialUpdate(ctx, d.Id()).
 		PatchedScheduleRequest(app).
 		Execute()
 	if err != nil {

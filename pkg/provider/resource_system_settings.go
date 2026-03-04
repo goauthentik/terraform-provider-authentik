@@ -149,14 +149,14 @@ func resourceSystemSettingsSchemaToProvider(d *schema.ResourceData) (*api.Settin
 }
 
 func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diag := resourceSystemSettingsSchemaToProvider(d)
 	if diag != nil {
 		return diag
 	}
 
-	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
+	_, hr, err := c.Client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -166,9 +166,9 @@ func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.AdminApi.AdminSettingsRetrieve(ctx).Execute()
+	res, hr, err := c.Client.AdminApi.AdminSettingsRetrieve(ctx).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -191,14 +191,14 @@ func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diag := resourceSystemSettingsSchemaToProvider(d)
 	if diag != nil {
 		return diag
 	}
 
-	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
+	_, hr, err := c.Client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

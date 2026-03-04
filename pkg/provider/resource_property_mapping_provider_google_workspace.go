@@ -42,11 +42,11 @@ func resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d *schema.Re
 }
 
 func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderMappingRequest(*r).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -57,9 +57,9 @@ func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d
 
 func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,11 +70,11 @@ func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *
 }
 
 func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceUpdate(ctx, d.Id()).GoogleWorkspaceProviderMappingRequest(*app).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceUpdate(ctx, d.Id()).GoogleWorkspaceProviderMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,8 +84,8 @@ func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d
 }
 
 func resourcePropertyMappingProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

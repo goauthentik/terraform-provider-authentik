@@ -42,11 +42,11 @@ func resourceStageInvitationSchemaToProvider(d *schema.ResourceData) *api.Invita
 }
 
 func resourceStageInvitationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageInvitationSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesInvitationStagesCreate(ctx).InvitationStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesInvitationStagesCreate(ctx).InvitationStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -57,9 +57,9 @@ func resourceStageInvitationCreate(ctx context.Context, d *schema.ResourceData, 
 
 func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesInvitationStagesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesInvitationStagesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,11 +70,11 @@ func resourceStageInvitationRead(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceStageInvitationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageInvitationSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesInvitationStagesUpdate(ctx, d.Id()).InvitationStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesInvitationStagesUpdate(ctx, d.Id()).InvitationStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,8 +84,8 @@ func resourceStageInvitationUpdate(ctx context.Context, d *schema.ResourceData, 
 }
 
 func resourceStageInvitationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesInvitationStagesDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesInvitationStagesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

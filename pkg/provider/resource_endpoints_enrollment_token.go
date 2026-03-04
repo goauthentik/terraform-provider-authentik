@@ -82,14 +82,14 @@ func resourceEndpointsEnrollmentTokenSchemaToModel(d *schema.ResourceData) (*api
 }
 
 func resourceEndpointsEnrollmentTokenCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceEndpointsEnrollmentTokenSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensCreate(ctx).EnrollmentTokenRequest(*app).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsAgentsEnrollmentTokensCreate(ctx).EnrollmentTokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -100,9 +100,9 @@ func resourceEndpointsEnrollmentTokenCreate(ctx context.Context, d *schema.Resou
 
 func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsAgentsEnrollmentTokensRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -114,7 +114,7 @@ func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.Resourc
 		helpers.SetWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
 	}
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
-		res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensViewKeyRetrieve(ctx, d.Id()).Execute()
+		res, hr, err := c.Client.EndpointsApi.EndpointsAgentsEnrollmentTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -124,13 +124,13 @@ func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.Resourc
 }
 
 func resourceEndpointsEnrollmentTokenUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, di := resourceEndpointsEnrollmentTokenSchemaToModel(d)
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensUpdate(ctx, d.Id()).EnrollmentTokenRequest(*app).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsAgentsEnrollmentTokensUpdate(ctx, d.Id()).EnrollmentTokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -140,8 +140,8 @@ func resourceEndpointsEnrollmentTokenUpdate(ctx context.Context, d *schema.Resou
 }
 
 func resourceEndpointsEnrollmentTokenDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.EndpointsApi.EndpointsAgentsEnrollmentTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

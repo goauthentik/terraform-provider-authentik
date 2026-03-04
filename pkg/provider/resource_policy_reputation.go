@@ -60,11 +60,11 @@ func resourcePolicyReputationSchemaToProvider(d *schema.ResourceData) *api.Reput
 }
 
 func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePolicyReputationSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesReputationCreate(ctx).ReputationPolicyRequest(*r).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesReputationCreate(ctx).ReputationPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -75,9 +75,9 @@ func resourcePolicyReputationCreate(ctx context.Context, d *schema.ResourceData,
 
 func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesReputationRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesReputationRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -91,11 +91,11 @@ func resourcePolicyReputationRead(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePolicyReputationSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesReputationUpdate(ctx, d.Id()).ReputationPolicyRequest(*app).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesReputationUpdate(ctx, d.Id()).ReputationPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -105,8 +105,8 @@ func resourcePolicyReputationUpdate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourcePolicyReputationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesReputationDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PoliciesApi.PoliciesReputationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

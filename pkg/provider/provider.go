@@ -1,11 +1,9 @@
 package provider
 
 import (
-	"bytes"
 	"context"
 	"crypto/tls"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -166,36 +164,9 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_token":                             tr(resourceToken),
 			"authentik_user":                              tr(resourceUser),
 		},
-		DataSourcesMap: map[string]*schema.Resource{
-			"authentik_brand":                            td(dataSourceBrand),
-			"authentik_certificate_key_pair":             td(dataSourceCertificateKeyPair),
-			"authentik_flow":                             td(dataSourceFlow),
-			"authentik_group":                            td(dataSourceGroup),
-			"authentik_groups":                           td(dataSourceGroups),
-			"authentik_outpost":                          td(dataSourceOutpost),
-			"authentik_property_mapping_provider_rac":    td(dataSourcePropertyMappingProviderRAC),
-			"authentik_property_mapping_provider_radius": td(dataSourcePropertyMappingProviderRadius),
-			"authentik_property_mapping_provider_saml":   td(dataSourcePropertyMappingProviderSAML),
-			"authentik_property_mapping_provider_scim":   td(dataSourcePropertyMappingProviderSCIM),
-			"authentik_property_mapping_provider_scope":  td(dataSourcePropertyMappingProviderScope),
-			"authentik_property_mapping_source_ldap":     td(dataSourcePropertyMappingSourceLDAP),
-			"authentik_provider_oauth2_config":           td(dataSourceProviderOAuth2Config),
-			"authentik_provider_saml_metadata":           td(dataSourceProviderSAMLMetadata),
-			"authentik_rbac_permission":                  td(dataSourceRBACPermission),
-			"authentik_service_connection_kubernetes":    td(dataOutpostServiceConnectionsKubernetes),
-			"authentik_source":                           td(dataSourceSource),
-			"authentik_stage":                            td(dataSourceStage),
-			"authentik_user":                             td(dataSourceUser),
-			"authentik_users":                            td(dataSourceUsers),
-			"authentik_webauthn_device_type":             td(dataSourceWebAuthnDeviceType),
-		},
+		DataSourcesMap:       GetDatasources(),
 		ConfigureContextFunc: providerConfigure(version, testing),
 	}
-}
-
-// APIClient Hold the API Client and any relevant configuration
-type APIClient struct {
-	client *api.APIClient
 }
 
 func providerConfigure(version string, testing bool) schema.ConfigureContextFunc {
@@ -278,36 +249,10 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			}
 		}
 
-		return &APIClient{
-			client: apiClient,
+		return &helpers.APIClient{
+			Client: apiClient,
 		}, diags
 	}
-}
-
-// TestingTransport Transport used for testing, always returns a 400 Response
-type TestingTransport struct {
-	inner http.RoundTripper
-}
-
-// NewTestingTransport Get a HTTP Transport that fails all requests
-func NewTestingTransport(inner http.RoundTripper) *TestingTransport {
-	return &TestingTransport{inner}
-}
-
-// RoundTrip HTTP Transport
-func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	body := "mock-failed-request"
-	return &http.Response{
-		Status:        "400 Bad Request",
-		StatusCode:    400,
-		Proto:         "HTTP/1.1",
-		ProtoMajor:    1,
-		ProtoMinor:    1,
-		Body:          io.NopCloser(bytes.NewBufferString(body)),
-		ContentLength: int64(len(body)),
-		Request:       r,
-		Header:        make(http.Header),
-	}, nil
 }
 
 // GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.

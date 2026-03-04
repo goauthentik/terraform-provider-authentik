@@ -125,11 +125,11 @@ func resourceSourcePlexSchemaToSource(d *schema.ResourceData) *api.PlexSourceReq
 }
 
 func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceSourcePlexSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesPlexCreate(ctx).PlexSourceRequest(*r).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesPlexCreate(ctx).PlexSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -140,8 +140,8 @@ func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesPlexRetrieve(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	res, hr, err := c.Client.SourcesApi.SourcesPlexRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -170,10 +170,10 @@ func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m any) 
 }
 
 func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	app := resourceSourcePlexSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesPlexUpdate(ctx, d.Id()).PlexSourceRequest(*app).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesPlexUpdate(ctx, d.Id()).PlexSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -183,8 +183,8 @@ func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m any
 }
 
 func resourceSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesPlexDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.SourcesApi.SourcesPlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

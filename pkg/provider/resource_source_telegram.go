@@ -125,11 +125,11 @@ func resourceSourceTelegramSchemaToSource(d *schema.ResourceData) *api.TelegramS
 }
 
 func resourceSourceTelegramCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceSourceTelegramSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesTelegramCreate(ctx).TelegramSourceRequest(*r).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesTelegramCreate(ctx).TelegramSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -140,8 +140,8 @@ func resourceSourceTelegramCreate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesTelegramRetrieve(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	res, hr, err := c.Client.SourcesApi.SourcesTelegramRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -172,10 +172,10 @@ func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceSourceTelegramUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	app := resourceSourceTelegramSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesTelegramUpdate(ctx, d.Id()).TelegramSourceRequest(*app).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesTelegramUpdate(ctx, d.Id()).TelegramSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -185,8 +185,8 @@ func resourceSourceTelegramUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceSourceTelegramDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesTelegramDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.SourcesApi.SourcesTelegramDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

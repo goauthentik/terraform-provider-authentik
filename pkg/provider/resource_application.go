@@ -102,11 +102,11 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 }
 
 func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceApplicationSchemaToModel(d)
 
-	res, hr, err := c.client.CoreApi.CoreApplicationsCreate(ctx).ApplicationRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreApplicationsCreate(ctx).ApplicationRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -118,9 +118,9 @@ func resourceApplicationCreate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.CoreApi.CoreApplicationsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.CoreApi.CoreApplicationsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -142,11 +142,11 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m any)
 }
 
 func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceApplicationSchemaToModel(d)
 
-	res, hr, err := c.client.CoreApi.CoreApplicationsUpdate(ctx, d.Id()).ApplicationRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreApplicationsUpdate(ctx, d.Id()).ApplicationRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -156,8 +156,8 @@ func resourceApplicationUpdate(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourceApplicationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.CoreApi.CoreApplicationsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.CoreApi.CoreApplicationsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

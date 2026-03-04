@@ -36,14 +36,14 @@ func resourceEndpointsDeviceAccessGroupSchemaToModel(d *schema.ResourceData) (*a
 }
 
 func resourceEndpointsDeviceAccessGroupCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceEndpointsDeviceAccessGroupSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsCreate(ctx).DeviceAccessGroupRequest(*app).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsDeviceAccessGroupsCreate(ctx).DeviceAccessGroupRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -54,9 +54,9 @@ func resourceEndpointsDeviceAccessGroupCreate(ctx context.Context, d *schema.Res
 
 func resourceEndpointsDeviceAccessGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsDeviceAccessGroupsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -66,13 +66,13 @@ func resourceEndpointsDeviceAccessGroupRead(ctx context.Context, d *schema.Resou
 }
 
 func resourceEndpointsDeviceAccessGroupUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, di := resourceEndpointsDeviceAccessGroupSchemaToModel(d)
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsUpdate(ctx, d.Id()).DeviceAccessGroupRequest(*app).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsDeviceAccessGroupsUpdate(ctx, d.Id()).DeviceAccessGroupRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -82,8 +82,8 @@ func resourceEndpointsDeviceAccessGroupUpdate(ctx context.Context, d *schema.Res
 }
 
 func resourceEndpointsDeviceAccessGroupDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.EndpointsApi.EndpointsDeviceAccessGroupsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
