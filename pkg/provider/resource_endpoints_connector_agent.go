@@ -88,7 +88,7 @@ func resourceEndpointsConnectorAgent() *schema.Resource {
 			"jwt_federation_providers": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
+					Type: schema.TypeInt,
 				},
 				Optional: true,
 			},

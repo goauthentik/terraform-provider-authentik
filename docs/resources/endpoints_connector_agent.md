@@ -27,7 +27,7 @@ description: |-
 - `challenge_key` (String)
 - `challenge_trigger_check_in` (Boolean) Defaults to `true`.
 - `enabled` (Boolean) Defaults to `true`.
-- `jwt_federation_providers` (List of String)
+- `jwt_federation_providers` (List of Number)
 - `nss_gid_offset` (Number) Defaults to `4000`.
 - `nss_uid_offset` (Number) Defaults to `2000`.
 - `refresh_interval` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=30`.
