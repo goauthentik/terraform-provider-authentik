@@ -17,7 +17,7 @@ func TestAccResourceApplication(t *testing.T) {
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceApplicationSimple(rName, "icon", "https://example.com"),
+				Config: testAccResourceApplicationSimple(rName, "icon", "https://example.com", "testgroup"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_application.name", "name", rName),
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", rName),
@@ -26,12 +26,13 @@ func TestAccResourceApplication(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_icon", "http://localhost/icon"),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_description", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_publisher", ""),
+					resource.TestCheckResourceAttr("authentik_application.name", "group", "testgroup"),
 					resource.TestCheckResourceAttr("authentik_application.name", "policy_engine_mode", string(api.POLICYENGINEMODE_ANY)),
 				),
 			},
 			// Verify that updating the app will remove the icon and launch url
 			{
-				Config: testAccResourceApplicationSimple(rName, "", ""),
+				Config: testAccResourceApplicationSimple(rName, "", "", ""),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_application.name", "name", rName),
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", rName),
@@ -40,11 +41,12 @@ func TestAccResourceApplication(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_icon", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_description", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_publisher", ""),
+					resource.TestCheckResourceAttr("authentik_application.name", "group", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "policy_engine_mode", string(api.POLICYENGINEMODE_ANY)),
 				),
 			},
 			{
-				Config: testAccResourceApplicationSimple(rName+"test", "icon", ""),
+				Config: testAccResourceApplicationSimple(rName+"test", "icon", "", ""),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_application.name", "name", rName+"test"),
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", rName+"test"),
@@ -56,14 +58,14 @@ func TestAccResourceApplication(t *testing.T) {
 				),
 			},
 			{
-				Config:      testAccResourceApplicationSimple(rName+"test+", "icon", ""),
+				Config:      testAccResourceApplicationSimple(rName+"test+", "icon", "", ""),
 				ExpectError: regexp.MustCompile("consisting of letters, numbers, underscores or hyphens"),
 			},
 		},
 	})
 }
 
-func testAccResourceApplicationSimple(name string, icon string, launchUrl string) string {
+func testAccResourceApplicationSimple(name string, icon string, launchUrl string, group string) string {
 	return fmt.Sprintf(`
 data "authentik_flow" "default-authentication-flow" {
   slug = "default-authentication-flow"
@@ -92,6 +94,7 @@ resource "authentik_application" "name" {
   meta_icon = "http://localhost/%[2]s"
   meta_launch_url = "%[3]s"
   backchannel_providers = [authentik_provider_ldap.name.id]
+  group = "%[4]s" 
 }
-`, name, icon, launchUrl)
+`, name, icon, launchUrl, group)
 }

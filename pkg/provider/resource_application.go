@@ -87,7 +87,7 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		Provider:         *api.NewNullableInt32(helpers.GetIntP(d, ("protocol_provider"))),
 		OpenInNewTab:     new(d.Get("open_in_new_tab").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		Group:            helpers.GetP[string](d, "group"),
+		Group:            helpers.GetStringP(d, "group"),
 		MetaIcon:         helpers.GetStringP(d, "meta_icon"),
 		MetaLaunchUrl:    helpers.GetStringP(d, "meta_launch_url"),
 		MetaDescription:  helpers.GetP[string](d, "meta_description"),
