@@ -36,11 +36,11 @@ func resourceStageUserLogoutSchemaToProvider(d *schema.ResourceData) *api.UserLo
 }
 
 func resourceStageUserLogoutCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageUserLogoutSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserLogoutCreate(ctx).UserLogoutStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserLogoutCreate(ctx).UserLogoutStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -51,9 +51,9 @@ func resourceStageUserLogoutCreate(ctx context.Context, d *schema.ResourceData, 
 
 func resourceStageUserLogoutRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesUserLogoutRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserLogoutRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -63,11 +63,11 @@ func resourceStageUserLogoutRead(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceStageUserLogoutUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageUserLogoutSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserLogoutUpdate(ctx, d.Id()).UserLogoutStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserLogoutUpdate(ctx, d.Id()).UserLogoutStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -77,8 +77,8 @@ func resourceStageUserLogoutUpdate(ctx context.Context, d *schema.ResourceData, 
 }
 
 func resourceStageUserLogoutDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesUserLogoutDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesUserLogoutDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

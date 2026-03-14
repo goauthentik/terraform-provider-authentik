@@ -135,14 +135,14 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) (*api.SCIMProv
 }
 
 func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diags := resourceProviderSCIMSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersScimCreate(ctx).SCIMProviderRequest(*r).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersScimCreate(ctx).SCIMProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -152,12 +152,12 @@ func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersScimRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersScimRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -186,7 +186,7 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any
 }
 
 func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
@@ -196,7 +196,7 @@ func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m a
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersScimUpdate(ctx, int32(id)).SCIMProviderRequest(*app).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersScimUpdate(ctx, int32(id)).SCIMProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -206,12 +206,12 @@ func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersScimDestroy(ctx, int32(id)).Execute()
+	hr, err := c.Client.ProvidersApi.ProvidersScimDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

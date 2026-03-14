@@ -118,11 +118,11 @@ func resourceStageIdentificationSchemaToProvider(d *schema.ResourceData) *api.Id
 }
 
 func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageIdentificationSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesIdentificationCreate(ctx).IdentificationStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesIdentificationCreate(ctx).IdentificationStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -133,9 +133,9 @@ func resourceStageIdentificationCreate(ctx context.Context, d *schema.ResourceDa
 
 func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesIdentificationRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesIdentificationRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -161,11 +161,11 @@ func resourceStageIdentificationRead(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageIdentificationSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesIdentificationUpdate(ctx, d.Id()).IdentificationStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesIdentificationUpdate(ctx, d.Id()).IdentificationStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -175,8 +175,8 @@ func resourceStageIdentificationUpdate(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceStageIdentificationDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesIdentificationDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesIdentificationDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

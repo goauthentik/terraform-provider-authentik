@@ -77,11 +77,11 @@ func resourceStageUserWriteSchemaToProvider(d *schema.ResourceData) *api.UserWri
 }
 
 func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageUserWriteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -92,9 +92,9 @@ func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesUserWriteRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserWriteRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -109,11 +109,11 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageUserWriteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -123,8 +123,8 @@ func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceStageUserWriteDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesUserWriteDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesUserWriteDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

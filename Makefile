@@ -13,7 +13,7 @@ default: gen
 # Run acceptance tests
 .PHONY: test
 test:
-	TF_ACC=1 go test $(TESTARGS) ./...
+	TF_ACC=1 go test $(TESTARGS) $(shell go list ./... | xargs | sed 's/ /,/g')
 	go tool cover -html coverage.txt -o coverage.html
 
 build:

@@ -36,14 +36,14 @@ func resourceRBACRoleSchemaToModel(d *schema.ResourceData) (*api.RoleRequest, di
 }
 
 func resourceRBACRoleCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceRBACRoleSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.RbacApi.RbacRolesCreate(ctx).RoleRequest(*app).Execute()
+	res, hr, err := c.Client.RbacApi.RbacRolesCreate(ctx).RoleRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -54,9 +54,9 @@ func resourceRBACRoleCreate(ctx context.Context, d *schema.ResourceData, m any) 
 
 func resourceRBACRoleRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.RbacApi.RbacRolesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.RbacApi.RbacRolesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -66,13 +66,13 @@ func resourceRBACRoleRead(ctx context.Context, d *schema.ResourceData, m any) di
 }
 
 func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, di := resourceRBACRoleSchemaToModel(d)
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.RbacApi.RbacRolesUpdate(ctx, d.Id()).RoleRequest(*app).Execute()
+	res, hr, err := c.Client.RbacApi.RbacRolesUpdate(ctx, d.Id()).RoleRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -82,8 +82,8 @@ func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m any) 
 }
 
 func resourceRBACRoleDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.RbacApi.RbacRolesDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.RbacApi.RbacRolesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

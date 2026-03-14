@@ -55,11 +55,11 @@ func resourceStageAuthenticatorTOTPSchemaToProvider(d *schema.ResourceData) *api
 }
 
 func resourceStageAuthenticatorTOTPCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageAuthenticatorTOTPSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpCreate(ctx).AuthenticatorTOTPStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorTotpCreate(ctx).AuthenticatorTOTPStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,9 +70,9 @@ func resourceStageAuthenticatorTOTPCreate(ctx context.Context, d *schema.Resourc
 
 func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorTotpRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -85,11 +85,11 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceStageAuthenticatorTOTPUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageAuthenticatorTOTPSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpUpdate(ctx, d.Id()).AuthenticatorTOTPStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorTotpUpdate(ctx, d.Id()).AuthenticatorTOTPStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -99,8 +99,8 @@ func resourceStageAuthenticatorTOTPUpdate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceStageAuthenticatorTOTPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorTotpDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesAuthenticatorTotpDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

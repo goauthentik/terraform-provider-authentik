@@ -174,11 +174,11 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 }
 
 func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceProviderProxySchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -189,12 +189,12 @@ func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersProxyRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersProxyRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -237,14 +237,14 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	app := resourceProviderProxySchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -254,12 +254,12 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersProxyDestroy(ctx, int32(id)).Execute()
+	hr, err := c.Client.ProvidersApi.ProvidersProxyDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

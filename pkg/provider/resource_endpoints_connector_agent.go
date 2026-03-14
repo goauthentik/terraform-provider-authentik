@@ -117,14 +117,14 @@ func resourceEndpointsConnectorAgentSchemaToProvider(d *schema.ResourceData) (*a
 }
 
 func resourceEndpointsConnectorAgentCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diags := resourceEndpointsConnectorAgentSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsConnectorsCreate(ctx).AgentConnectorRequest(*r).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsAgentsConnectorsCreate(ctx).AgentConnectorRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -135,9 +135,9 @@ func resourceEndpointsConnectorAgentCreate(ctx context.Context, d *schema.Resour
 
 func resourceEndpointsConnectorAgentRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsConnectorsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsAgentsConnectorsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -163,14 +163,14 @@ func resourceEndpointsConnectorAgentRead(ctx context.Context, d *schema.Resource
 }
 
 func resourceEndpointsConnectorAgentUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceEndpointsConnectorAgentSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsConnectorsUpdate(ctx, d.Id()).AgentConnectorRequest(*app).Execute()
+	res, hr, err := c.Client.EndpointsApi.EndpointsAgentsConnectorsUpdate(ctx, d.Id()).AgentConnectorRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -180,8 +180,8 @@ func resourceEndpointsConnectorAgentUpdate(ctx context.Context, d *schema.Resour
 }
 
 func resourceEndpointsConnectorAgentDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.EndpointsApi.EndpointsAgentsConnectorsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.EndpointsApi.EndpointsAgentsConnectorsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

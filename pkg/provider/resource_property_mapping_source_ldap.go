@@ -42,11 +42,11 @@ func resourcePropertyMappingSourceLDAPSchemaToProvider(d *schema.ResourceData) *
 }
 
 func resourcePropertyMappingSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePropertyMappingSourceLDAPSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapCreate(ctx).LDAPSourcePropertyMappingRequest(*r).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceLdapCreate(ctx).LDAPSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -57,9 +57,9 @@ func resourcePropertyMappingSourceLDAPCreate(ctx context.Context, d *schema.Reso
 
 func resourcePropertyMappingSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceLdapRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,11 +70,11 @@ func resourcePropertyMappingSourceLDAPRead(ctx context.Context, d *schema.Resour
 }
 
 func resourcePropertyMappingSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePropertyMappingSourceLDAPSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapUpdate(ctx, d.Id()).LDAPSourcePropertyMappingRequest(*app).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceLdapUpdate(ctx, d.Id()).LDAPSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,8 +84,8 @@ func resourcePropertyMappingSourceLDAPUpdate(ctx context.Context, d *schema.Reso
 }
 
 func resourcePropertyMappingSourceLDAPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceLdapDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PropertymappingsApi.PropertymappingsSourceLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
