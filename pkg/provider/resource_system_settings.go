@@ -16,8 +16,9 @@ var defaultFlags string
 
 func init() {
 	flags := api.PatchedSettingsRequestFlags{
-		PoliciesBufferedAccessView: false,
-		FlowsRefreshOthers:         false,
+		PoliciesBufferedAccessView:         false,
+		FlowsRefreshOthers:                 false,
+		EnterpriseAuditIncludeExpandedDiff: false,
 	}
 	f, err := json.Marshal(flags)
 	if err != nil {
