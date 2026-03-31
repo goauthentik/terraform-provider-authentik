@@ -84,9 +84,12 @@ func resourceProviderSCIM() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"filter_group": {
-				Type:     schema.TypeString,
+			"group_filters": {
+				Type:     schema.TypeList,
 				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"service_provider_config_cache_timeout": {
 				Type:             schema.TypeString,
