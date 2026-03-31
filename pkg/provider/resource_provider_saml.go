@@ -117,14 +117,14 @@ func resourceProviderSAML() *schema.Resource {
 			"digest_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.DIGESTALGORITHMENUM__2001_04_XMLENCSHA256,
+				Default:          api.DIGESTALGORITHMENUM_HTTP___WWW_W3_ORG_2001_04_XMLENCSHA256,
 				Description:      helpers.EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
 			},
 			"signature_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.SIGNATUREALGORITHMENUM__2001_04_XMLDSIG_MORERSA_SHA256,
+				Default:          api.SIGNATUREALGORITHMENUM_HTTP___WWW_W3_ORG_2001_04_XMLDSIG_MORERSA_SHA256,
 				Description:      helpers.EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
 			},
@@ -181,9 +181,9 @@ func resourceProviderSAML() *schema.Resource {
 			"logout_method": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.SAMLPROVIDERLOGOUTMETHODENUM_FRONTCHANNEL_IFRAME,
-				Description:      helpers.EnumToDescription(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLProviderLogoutMethodEnumEnumValues),
+				Default:          api.SAMLLOGOUTMETHODS_FRONTCHANNEL_IFRAME,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLLogoutMethodsEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLLogoutMethodsEnumValues),
 			},
 		},
 	}
@@ -216,7 +216,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SlsUrl:                      helpers.GetP[string](d, "sls_url"),
 		SignLogoutRequest:           helpers.GetP[bool](d, "sign_logout_request"),
 		SlsBinding:                  helpers.CastString[api.SAMLBindingsEnum](helpers.GetP[string](d, "sls_binding")),
-		LogoutMethod:                helpers.CastString[api.SAMLProviderLogoutMethodEnum](helpers.GetP[string](d, "logout_method")),
+		LogoutMethod:                helpers.CastString[api.SAMLLogoutMethods](helpers.GetP[string](d, "logout_method")),
 	}
 	return &r
 }
@@ -226,7 +226,7 @@ func resourceProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m a
 
 	r := resourceProviderSAMLSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersSamlCreate(ctx).SAMLProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSamlCreate(ctx).SAMLProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -242,7 +242,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m any
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersSamlRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSamlRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -294,7 +294,7 @@ func resourceProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m a
 	}
 	app := resourceProviderSAMLSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersSamlUpdate(ctx, int32(id)).SAMLProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSamlUpdate(ctx, int32(id)).SAMLProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -309,7 +309,7 @@ func resourceProviderSAMLDelete(ctx context.Context, d *schema.ResourceData, m a
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersSamlDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersSamlDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

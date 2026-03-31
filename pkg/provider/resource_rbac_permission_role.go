@@ -69,7 +69,7 @@ func resourceRBACRoleObjectPermissionCreate(ctx context.Context, d *schema.Resou
 
 	role := d.Get("role").(string)
 
-	res, hr, err := c.client.RbacApi.RbacPermissionsAssignedByRolesAssign(ctx, role).PermissionAssignRequest(*r).Execute()
+	res, hr, err := c.client.RbacAPI.RbacPermissionsAssignedByRolesAssign(ctx, role).PermissionAssignRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -90,7 +90,7 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 
 	_, object := d.GetOk("object_id")
 	if object {
-		perms, hr, err := helpers.Paginator(c.client.RbacApi.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)), helpers.PaginatorOptions{})
+		perms, hr, err := helpers.Paginator(c.client.RbacAPI.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)), helpers.PaginatorOptions{})
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -102,7 +102,7 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 			}
 		}
 	} else {
-		perms, hr, err := helpers.Paginator(c.client.RbacApi.RbacPermissionsList(ctx).Role(d.Get("role").(string)), helpers.PaginatorOptions{})
+		perms, hr, err := helpers.Paginator(c.client.RbacAPI.RbacPermissionsList(ctx).Role(d.Get("role").(string)), helpers.PaginatorOptions{})
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -130,7 +130,7 @@ func resourceRBACRoleObjectPermissionDelete(ctx context.Context, d *schema.Resou
 		req.ObjectPk = new(d.Get("object_id").(string))
 	}
 
-	hr, err := c.client.RbacApi.RbacPermissionsAssignedByRolesUnassignPartialUpdate(ctx, d.Get("role").(string)).PatchedPermissionAssignRequest(req).Execute()
+	hr, err := c.client.RbacAPI.RbacPermissionsAssignedByRolesUnassignPartialUpdate(ctx, d.Get("role").(string)).PatchedPermissionAssignRequest(req).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

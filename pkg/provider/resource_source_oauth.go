@@ -221,7 +221,7 @@ func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.SourcesApi.SourcesOauthCreate(ctx).OAuthSourceRequest(*r).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesOauthCreate(ctx).OAuthSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -232,7 +232,7 @@ func resourceSourceOAuthCreate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourceSourceOAuthRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesOauthRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesOauthRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -279,7 +279,7 @@ func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.SourcesApi.SourcesOauthUpdate(ctx, d.Id()).OAuthSourceRequest(*app).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesOauthUpdate(ctx, d.Id()).OAuthSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -290,7 +290,7 @@ func resourceSourceOAuthUpdate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourceSourceOAuthDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesOauthDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.SourcesAPI.SourcesOauthDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

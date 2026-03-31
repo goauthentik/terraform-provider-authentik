@@ -44,7 +44,7 @@ func dataSourceFlowRead(ctx context.Context, d *schema.ResourceData, m any) diag
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.FlowsApi.FlowsInstancesList(ctx)
+	req := c.client.FlowsAPI.FlowsInstancesList(ctx)
 	if s, ok := d.GetOk("slug"); ok {
 		req = req.Slug(s.(string))
 	}

@@ -41,7 +41,7 @@ func dataOutpostServiceConnectionsKubernetesRead(ctx context.Context, d *schema.
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.OutpostsApi.OutpostsServiceConnectionsKubernetesList(ctx)
+	req := c.client.OutpostsAPI.OutpostsServiceConnectionsKubernetesList(ctx)
 	if s, ok := d.GetOk("name"); ok {
 		req = req.Name(s.(string))
 	}

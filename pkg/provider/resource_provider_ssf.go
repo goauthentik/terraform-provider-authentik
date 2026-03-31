@@ -70,7 +70,7 @@ func resourceProviderSSFCreate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersSsfCreate(ctx).SSFProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSsfCreate(ctx).SSFProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -86,7 +86,7 @@ func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m any)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersSsfRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSsfRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -106,7 +106,7 @@ func resourceProviderSSFUpdate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersSsfUpdate(ctx, int32(id)).SSFProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSsfUpdate(ctx, int32(id)).SSFProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -121,7 +121,7 @@ func resourceProviderSSFDelete(ctx context.Context, d *schema.ResourceData, m an
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersSsfDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersSsfDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

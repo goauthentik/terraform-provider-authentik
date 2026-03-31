@@ -253,7 +253,7 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		}
 		apiClient := api.NewAPIClient(config)
 
-		rootConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+		rootConfig, _, err := apiClient.RootAPI.RootConfigRetrieve(context.Background()).Execute()
 		if err == nil && rootConfig.ErrorReporting.Enabled {
 			dsn := ""
 			// Customisable Sentry DSN was added in 2022.11, so only use that DSN when its set

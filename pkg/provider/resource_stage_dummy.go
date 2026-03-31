@@ -40,7 +40,7 @@ func resourceStageDummyCreate(ctx context.Context, d *schema.ResourceData, m any
 
 	r := resourceStageDummySchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesDummyCreate(ctx).DummyStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesDummyCreate(ctx).DummyStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -53,7 +53,7 @@ func resourceStageDummyRead(ctx context.Context, d *schema.ResourceData, m any) 
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesDummyRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesDummyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -67,7 +67,7 @@ func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m any
 
 	app := resourceStageDummySchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesDummyUpdate(ctx, d.Id()).DummyStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesDummyUpdate(ctx, d.Id()).DummyStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -78,7 +78,7 @@ func resourceStageDummyUpdate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceStageDummyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesDummyDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesDummyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

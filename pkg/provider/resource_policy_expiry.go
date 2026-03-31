@@ -57,7 +57,7 @@ func resourcePolicyExpiryCreate(ctx context.Context, d *schema.ResourceData, m a
 
 	r := resourcePolicyExpirySchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryCreate(ctx).PasswordExpiryPolicyRequest(*r).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesPasswordExpiryCreate(ctx).PasswordExpiryPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,7 +70,7 @@ func resourcePolicyExpiryRead(ctx context.Context, d *schema.ResourceData, m any
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesPasswordExpiryRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -87,7 +87,7 @@ func resourcePolicyExpiryUpdate(ctx context.Context, d *schema.ResourceData, m a
 
 	app := resourcePolicyExpirySchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryUpdate(ctx, d.Id()).PasswordExpiryPolicyRequest(*app).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesPasswordExpiryUpdate(ctx, d.Id()).PasswordExpiryPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -98,7 +98,7 @@ func resourcePolicyExpiryUpdate(ctx context.Context, d *schema.ResourceData, m a
 
 func resourcePolicyExpiryDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesPasswordExpiryDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PoliciesAPI.PoliciesPasswordExpiryDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -102,7 +102,7 @@ func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m an
 
 	r := resourcePolicyGeoIPSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesGeoipCreate(ctx).GeoIPPolicyRequest(*r).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesGeoipCreate(ctx).GeoIPPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -115,7 +115,7 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m any)
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesGeoipRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesGeoipRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -144,7 +144,7 @@ func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m an
 
 	app := resourcePolicyGeoIPSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesGeoipUpdate(ctx, d.Id()).GeoIPPolicyRequest(*app).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesGeoipUpdate(ctx, d.Id()).GeoIPPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -155,7 +155,7 @@ func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourcePolicyGeoIPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesGeoipDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PoliciesAPI.PoliciesGeoipDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

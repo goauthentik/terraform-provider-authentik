@@ -104,7 +104,7 @@ func resourceFlowCreate(ctx context.Context, d *schema.ResourceData, m any) diag
 
 	app := resourceFlowSchemaToModel(d)
 
-	res, hr, err := c.client.FlowsApi.FlowsInstancesCreate(ctx).FlowRequest(*app).Execute()
+	res, hr, err := c.client.FlowsAPI.FlowsInstancesCreate(ctx).FlowRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -118,7 +118,7 @@ func resourceFlowRead(ctx context.Context, d *schema.ResourceData, m any) diag.D
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.FlowsApi.FlowsInstancesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.FlowsAPI.FlowsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -142,7 +142,7 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m any) diag
 
 	app := resourceFlowSchemaToModel(d)
 
-	res, hr, err := c.client.FlowsApi.FlowsInstancesUpdate(ctx, d.Id()).FlowRequest(*app).Execute()
+	res, hr, err := c.client.FlowsAPI.FlowsInstancesUpdate(ctx, d.Id()).FlowRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -154,7 +154,7 @@ func resourceFlowUpdate(ctx context.Context, d *schema.ResourceData, m any) diag
 
 func resourceFlowDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.FlowsApi.FlowsInstancesDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.FlowsAPI.FlowsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

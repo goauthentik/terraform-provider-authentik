@@ -31,7 +31,7 @@ func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) d
 	c := m.(*APIClient)
 
 	if id, ok := d.GetOk("id"); ok {
-		res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, id.(string)).Execute()
+		res, hr, err := c.client.OutpostsAPI.OutpostsInstancesRetrieve(ctx, id.(string)).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -41,7 +41,7 @@ func dataSourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) d
 	}
 
 	if name, ok := d.GetOk("name"); ok {
-		res, hr, err := c.client.OutpostsApi.OutpostsInstancesList(ctx).NameIexact(name.(string)).Execute()
+		res, hr, err := c.client.OutpostsAPI.OutpostsInstancesList(ctx).NameIexact(name.(string)).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}

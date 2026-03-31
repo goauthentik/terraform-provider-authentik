@@ -134,7 +134,7 @@ func resourceProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.Resour
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -149,7 +149,7 @@ func resourceProviderGoogleWorkspaceRead(ctx context.Context, d *schema.Resource
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersGoogleWorkspaceRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -186,7 +186,7 @@ func resourceProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.Resour
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceUpdate(ctx, int32(id)).GoogleWorkspaceProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersGoogleWorkspaceUpdate(ctx, int32(id)).GoogleWorkspaceProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -201,7 +201,7 @@ func resourceProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.Resour
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersGoogleWorkspaceDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersGoogleWorkspaceDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

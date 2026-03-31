@@ -30,7 +30,7 @@ func dataSourceWebAuthnDeviceTypeRead(ctx context.Context, d *schema.ResourceDat
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.StagesApi.StagesAuthenticatorWebauthnDeviceTypesList(ctx)
+	req := c.client.StagesAPI.StagesAuthenticatorWebauthnDeviceTypesList(ctx)
 	if s, ok := d.GetOk("description"); ok {
 		req = req.Description(s.(string))
 	}

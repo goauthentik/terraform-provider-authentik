@@ -94,7 +94,7 @@ func resourceStageAuthenticatorValidateCreate(ctx context.Context, d *schema.Res
 
 	r := resourceStageAuthenticatorValidateSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateCreate(ctx).AuthenticatorValidateStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorValidateCreate(ctx).AuthenticatorValidateStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -107,7 +107,7 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorValidateRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -133,7 +133,7 @@ func resourceStageAuthenticatorValidateUpdate(ctx context.Context, d *schema.Res
 
 	app := resourceStageAuthenticatorValidateSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorValidateUpdate(ctx, d.Id()).AuthenticatorValidateStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorValidateUpdate(ctx, d.Id()).AuthenticatorValidateStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -144,7 +144,7 @@ func resourceStageAuthenticatorValidateUpdate(ctx context.Context, d *schema.Res
 
 func resourceStageAuthenticatorValidateDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorValidateDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesAuthenticatorValidateDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

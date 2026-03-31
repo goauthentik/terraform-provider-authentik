@@ -126,7 +126,7 @@ func resourcePolicyPasswordCreate(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourcePolicyPasswordSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesPasswordCreate(ctx).PasswordPolicyRequest(*r).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesPasswordCreate(ctx).PasswordPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -139,7 +139,7 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m a
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesPasswordRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesPasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -162,7 +162,7 @@ func resourcePolicyPasswordUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	app := resourcePolicyPasswordSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesPasswordUpdate(ctx, d.Id()).PasswordPolicyRequest(*app).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesPasswordUpdate(ctx, d.Id()).PasswordPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -173,7 +173,7 @@ func resourcePolicyPasswordUpdate(ctx context.Context, d *schema.ResourceData, m
 
 func resourcePolicyPasswordDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesPasswordDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PoliciesAPI.PoliciesPasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

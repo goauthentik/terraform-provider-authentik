@@ -65,7 +65,7 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 
 	id, ok := d.GetOk("provider_id")
 	if !ok {
-		req := c.client.ProvidersApi.ProvidersOauth2List(ctx)
+		req := c.client.ProvidersAPI.ProvidersOauth2List(ctx)
 		if m, ok := d.Get("name").(string); ok {
 			req = req.Name(m)
 		}
@@ -81,7 +81,7 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 	finalId := int32(id.(int))
 	d.SetId(strconv.FormatInt(int64(finalId), 10))
 
-	meta, hr, err := c.client.ProvidersApi.ProvidersOauth2SetupUrlsRetrieve(ctx, finalId).Execute()
+	meta, hr, err := c.client.ProvidersAPI.ProvidersOauth2SetupUrlsRetrieve(ctx, finalId).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
