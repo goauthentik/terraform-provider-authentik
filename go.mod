@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.40.0
 	github.com/stretchr/testify v1.11.1
-	goauthentik.io/api/v3 v3.2026020.6
+	goauthentik.io/api/v3 v3.2026020.2-rc2
 )
 
 require (
@@ -95,5 +95,3 @@ tool (
 	github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 	github.com/jstemmer/go-junit-report/v2
 )
-
-replace goauthentik.io/api/v3 => github.com/goauthentik/client-go/v3 v3.2026020.17-0.20260303202232-a7cdbb4fb385
