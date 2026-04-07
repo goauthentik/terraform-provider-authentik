@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccResourceEndpointEnrollmenToken(t *testing.T) {
+func TestAccResourceEndpointEnrollmentToken(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	expires := time.Now().Add(30 * time.Minute).Format(time.RFC3339)
 	resource.UnitTest(t, resource.TestCase{
@@ -17,7 +17,7 @@ func TestAccResourceEndpointEnrollmenToken(t *testing.T) {
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceEndpointEnrollmenToken(rName, expires),
+				Config: testAccResourceEndpointEnrollmentToken(rName, expires),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_endpoints_connector_agent_enrollment_token.token", "name", rName),
 					resource.TestCheckResourceAttrSet("authentik_endpoints_connector_agent_enrollment_token.token", "key"),
@@ -27,7 +27,7 @@ func TestAccResourceEndpointEnrollmenToken(t *testing.T) {
 	})
 }
 
-func testAccResourceEndpointEnrollmenToken(name string, time string) string {
+func testAccResourceEndpointEnrollmentToken(name string, time string) string {
 	return fmt.Sprintf(`
 resource "authentik_endpoints_connector_agent" "agent" {
   name = "%[1]s"

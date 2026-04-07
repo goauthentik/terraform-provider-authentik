@@ -120,6 +120,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_provider_saml":                              tr(resourceProviderSAML),
 			"authentik_provider_scim":                              tr(resourceProviderSCIM),
 			"authentik_provider_ssf":                               tr(resourceProviderSSF),
+			"authentik_provider_ws_federation":                     tr(resourceProviderWSFederation),
 			"authentik_rac_endpoint":                               tr(resourceRACEndpoint),
 			"authentik_rbac_initial_permissions":                   tr(resourceRBACInitialPermissions),
 			"authentik_rbac_permission_role":                       tr(resourceRBACRoleObjectPermission),
