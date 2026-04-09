@@ -90,7 +90,9 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 
 	_, object := d.GetOk("object_id")
 	if object {
-		perms, hr, err := helpers.Paginator(c.client.RbacAPI.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)), helpers.PaginatorOptions{})
+		perms, hr, err := helpers.Paginator(c.client.RbacAPI.RbacPermissionsRolesList(ctx).Uuid(d.Get("role").(string)), helpers.PaginatorOptions{
+			PageSize: 50,
+		})
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -102,7 +104,9 @@ func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.Resourc
 			}
 		}
 	} else {
-		perms, hr, err := helpers.Paginator(c.client.RbacAPI.RbacPermissionsList(ctx).Role(d.Get("role").(string)), helpers.PaginatorOptions{})
+		perms, hr, err := helpers.Paginator(c.client.RbacAPI.RbacPermissionsList(ctx).Role(d.Get("role").(string)), helpers.PaginatorOptions{
+			PageSize: 50,
+		})
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
