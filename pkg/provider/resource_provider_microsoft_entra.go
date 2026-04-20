@@ -127,14 +127,14 @@ func resourceProviderMicrosoftEntraSchemaToProvider(d *schema.ResourceData) (*ap
 }
 
 func resourceProviderMicrosoftEntraCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diags := resourceProviderMicrosoftEntraSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraCreate(ctx).MicrosoftEntraProviderRequest(*r).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersMicrosoftEntraCreate(ctx).MicrosoftEntraProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -145,12 +145,12 @@ func resourceProviderMicrosoftEntraCreate(ctx context.Context, d *schema.Resourc
 
 func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersMicrosoftEntraRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -178,7 +178,7 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
@@ -188,7 +188,7 @@ func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.Resourc
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraUpdate(ctx, int32(id)).MicrosoftEntraProviderRequest(*app).Execute()
+	res, hr, err := c.Client.ProvidersApi.ProvidersMicrosoftEntraUpdate(ctx, int32(id)).MicrosoftEntraProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -198,12 +198,12 @@ func resourceProviderMicrosoftEntraUpdate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceProviderMicrosoftEntraDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	id, err := strconv.ParseInt(d.Id(), 10, 32)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersMicrosoftEntraDestroy(ctx, int32(id)).Execute()
+	hr, err := c.Client.ProvidersApi.ProvidersMicrosoftEntraDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

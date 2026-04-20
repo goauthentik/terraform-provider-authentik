@@ -65,14 +65,14 @@ func resourceEventRuleSchemaToModel(d *schema.ResourceData) (*api.NotificationRu
 }
 
 func resourceEventRuleCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceEventRuleSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.EventsApi.EventsRulesCreate(ctx).NotificationRuleRequest(*app).Execute()
+	res, hr, err := c.Client.EventsApi.EventsRulesCreate(ctx).NotificationRuleRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -83,9 +83,9 @@ func resourceEventRuleCreate(ctx context.Context, d *schema.ResourceData, m any)
 
 func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.EventsApi.EventsRulesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.EventsApi.EventsRulesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -102,13 +102,13 @@ func resourceEventRuleRead(ctx context.Context, d *schema.ResourceData, m any) d
 }
 
 func resourceEventRuleUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, di := resourceEventRuleSchemaToModel(d)
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.EventsApi.EventsRulesUpdate(ctx, d.Id()).NotificationRuleRequest(*app).Execute()
+	res, hr, err := c.Client.EventsApi.EventsRulesUpdate(ctx, d.Id()).NotificationRuleRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -118,8 +118,8 @@ func resourceEventRuleUpdate(ctx context.Context, d *schema.ResourceData, m any)
 }
 
 func resourceEventRuleDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.EventsApi.EventsRulesDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.EventsApi.EventsRulesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

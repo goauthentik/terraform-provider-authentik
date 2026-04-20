@@ -60,11 +60,11 @@ func resourcePolicyDummySchemaToProvider(d *schema.ResourceData) *api.DummyPolic
 }
 
 func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePolicyDummySchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesDummyCreate(ctx).DummyPolicyRequest(*r).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesDummyCreate(ctx).DummyPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -75,9 +75,9 @@ func resourcePolicyDummyCreate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesDummyRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesDummyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -91,11 +91,11 @@ func resourcePolicyDummyRead(ctx context.Context, d *schema.ResourceData, m any)
 }
 
 func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePolicyDummySchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesDummyUpdate(ctx, d.Id()).DummyPolicyRequest(*app).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesDummyUpdate(ctx, d.Id()).DummyPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -105,8 +105,8 @@ func resourcePolicyDummyUpdate(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourcePolicyDummyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesDummyDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PoliciesApi.PoliciesDummyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

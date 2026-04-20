@@ -54,11 +54,11 @@ func resourcePolicyUniquePasswordSchemaToProvider(d *schema.ResourceData) *api.U
 }
 
 func resourcePolicyUniquePasswordCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePolicyUniquePasswordSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesUniquePasswordCreate(ctx).UniquePasswordPolicyRequest(*r).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesUniquePasswordCreate(ctx).UniquePasswordPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -69,9 +69,9 @@ func resourcePolicyUniquePasswordCreate(ctx context.Context, d *schema.ResourceD
 
 func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesUniquePasswordRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesUniquePasswordRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,11 +84,11 @@ func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceDat
 }
 
 func resourcePolicyUniquePasswordUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePolicyUniquePasswordSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesUniquePasswordUpdate(ctx, d.Id()).UniquePasswordPolicyRequest(*app).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesUniquePasswordUpdate(ctx, d.Id()).UniquePasswordPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -98,8 +98,8 @@ func resourcePolicyUniquePasswordUpdate(ctx context.Context, d *schema.ResourceD
 }
 
 func resourcePolicyUniquePasswordDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesUniquePasswordDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PoliciesApi.PoliciesUniquePasswordDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

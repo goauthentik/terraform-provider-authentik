@@ -52,14 +52,14 @@ func resourceApplicationEntitlementSchemaToModel(d *schema.ResourceData) (*api.A
 }
 
 func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceApplicationEntitlementSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsCreate(ctx).ApplicationEntitlementRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreApplicationEntitlementsCreate(ctx).ApplicationEntitlementRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -69,9 +69,9 @@ func resourceApplicationEntitlementCreate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.CoreApi.CoreApplicationEntitlementsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -83,14 +83,14 @@ func resourceApplicationEntitlementRead(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceApplicationEntitlementSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreApplicationEntitlementsUpdate(ctx, d.Id()).ApplicationEntitlementRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreApplicationEntitlementsUpdate(ctx, d.Id()).ApplicationEntitlementRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -100,8 +100,8 @@ func resourceApplicationEntitlementUpdate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceApplicationEntitlementDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.CoreApi.CoreApplicationEntitlementsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.CoreApi.CoreApplicationEntitlementsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

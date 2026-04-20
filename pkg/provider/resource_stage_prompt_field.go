@@ -94,11 +94,11 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 }
 
 func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStagePromptFieldSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesPromptPromptsCreate(ctx).PromptRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesPromptPromptsCreate(ctx).PromptRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -109,9 +109,9 @@ func resourceStagePromptFieldCreate(ctx context.Context, d *schema.ResourceData,
 
 func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesPromptPromptsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesPromptPromptsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -131,11 +131,11 @@ func resourceStagePromptFieldRead(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStagePromptFieldSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesPromptPromptsUpdate(ctx, d.Id()).PromptRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesPromptPromptsUpdate(ctx, d.Id()).PromptRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -145,8 +145,8 @@ func resourceStagePromptFieldUpdate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourceStagePromptFieldDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesPromptPromptsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesPromptPromptsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

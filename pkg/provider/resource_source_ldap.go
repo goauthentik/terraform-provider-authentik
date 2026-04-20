@@ -202,11 +202,11 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 }
 
 func resourceSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceSourceLDAPSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesLdapCreate(ctx).LDAPSourceRequest(*r).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesLdapCreate(ctx).LDAPSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -217,8 +217,8 @@ func resourceSourceLDAPCreate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesLdapRetrieve(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	res, hr, err := c.Client.SourcesApi.SourcesLdapRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -262,10 +262,10 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m any) 
 }
 
 func resourceSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 	app := resourceSourceLDAPSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesLdapUpdate(ctx, d.Id()).LDAPSourceRequest(*app).Execute()
+	res, hr, err := c.Client.SourcesApi.SourcesLdapUpdate(ctx, d.Id()).LDAPSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -275,8 +275,8 @@ func resourceSourceLDAPUpdate(ctx context.Context, d *schema.ResourceData, m any
 }
 
 func resourceSourceLDAPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesLdapDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.SourcesApi.SourcesLdapDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

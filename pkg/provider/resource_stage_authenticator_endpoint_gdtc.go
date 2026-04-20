@@ -52,14 +52,14 @@ func resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d *schema.ResourceDa
 }
 
 func resourceStageAuthenticatorEndpointGDTCCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diags := resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcCreate(ctx).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorEndpointGdtcCreate(ctx).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -69,9 +69,9 @@ func resourceStageAuthenticatorEndpointGDTCCreate(ctx context.Context, d *schema
 }
 
 func resourceStageAuthenticatorEndpointGDTCRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorEndpointGdtcRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -81,14 +81,14 @@ func resourceStageAuthenticatorEndpointGDTCRead(ctx context.Context, d *schema.R
 }
 
 func resourceStageAuthenticatorEndpointGDTCUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r, diags := resourceStageAuthenticatorEndpointGDTCSchemaToProvider(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcUpdate(ctx, d.Id()).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorEndpointGdtcUpdate(ctx, d.Id()).AuthenticatorEndpointGDTCStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -98,8 +98,8 @@ func resourceStageAuthenticatorEndpointGDTCUpdate(ctx context.Context, d *schema
 }
 
 func resourceStageAuthenticatorEndpointGDTCDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorEndpointGdtcDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesAuthenticatorEndpointGdtcDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

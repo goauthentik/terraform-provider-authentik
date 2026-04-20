@@ -42,11 +42,11 @@ func resourcePropertyMappingProviderSCIMSchemaToProvider(d *schema.ResourceData)
 }
 
 func resourcePropertyMappingProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePropertyMappingProviderSCIMSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScimCreate(ctx).SCIMMappingRequest(*r).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderScimCreate(ctx).SCIMMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -57,9 +57,9 @@ func resourcePropertyMappingProviderSCIMCreate(ctx context.Context, d *schema.Re
 
 func resourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScimRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderScimRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,11 +70,11 @@ func resourcePropertyMappingProviderSCIMRead(ctx context.Context, d *schema.Reso
 }
 
 func resourcePropertyMappingProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePropertyMappingProviderSCIMSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScimUpdate(ctx, d.Id()).SCIMMappingRequest(*app).Execute()
+	res, hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderScimUpdate(ctx, d.Id()).SCIMMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,8 +84,8 @@ func resourcePropertyMappingProviderSCIMUpdate(ctx context.Context, d *schema.Re
 }
 
 func resourcePropertyMappingProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderScimDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PropertymappingsApi.PropertymappingsProviderScimDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

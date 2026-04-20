@@ -36,11 +36,11 @@ func resourceStageUserDeleteSchemaToProvider(d *schema.ResourceData) *api.UserDe
 }
 
 func resourceStageUserDeleteCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageUserDeleteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserDeleteCreate(ctx).UserDeleteStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserDeleteCreate(ctx).UserDeleteStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -51,9 +51,9 @@ func resourceStageUserDeleteCreate(ctx context.Context, d *schema.ResourceData, 
 
 func resourceStageUserDeleteRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesUserDeleteRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserDeleteRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -63,11 +63,11 @@ func resourceStageUserDeleteRead(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceStageUserDeleteUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageUserDeleteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserDeleteUpdate(ctx, d.Id()).UserDeleteStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesUserDeleteUpdate(ctx, d.Id()).UserDeleteStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -77,8 +77,8 @@ func resourceStageUserDeleteUpdate(ctx context.Context, d *schema.ResourceData, 
 }
 
 func resourceStageUserDeleteDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesUserDeleteDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesUserDeleteDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

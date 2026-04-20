@@ -76,11 +76,11 @@ func resourceFlowStageBindingSchemaToModel(d *schema.ResourceData) *api.FlowStag
 }
 
 func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceFlowStageBindingSchemaToModel(d)
 
-	res, hr, err := c.client.FlowsApi.FlowsBindingsCreate(ctx).FlowStageBindingRequest(*app).Execute()
+	res, hr, err := c.Client.FlowsApi.FlowsBindingsCreate(ctx).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -91,9 +91,9 @@ func resourceFlowStageBindingCreate(ctx context.Context, d *schema.ResourceData,
 
 func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.FlowsApi.FlowsBindingsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.FlowsApi.FlowsBindingsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -109,11 +109,11 @@ func resourceFlowStageBindingRead(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceFlowStageBindingSchemaToModel(d)
 
-	res, hr, err := c.client.FlowsApi.FlowsBindingsUpdate(ctx, d.Id()).FlowStageBindingRequest(*app).Execute()
+	res, hr, err := c.Client.FlowsApi.FlowsBindingsUpdate(ctx, d.Id()).FlowStageBindingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -123,8 +123,8 @@ func resourceFlowStageBindingUpdate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourceFlowStageBindingDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.FlowsApi.FlowsBindingsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.FlowsApi.FlowsBindingsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -68,11 +68,11 @@ func resourceStageMutualTLSSchemaToProvider(d *schema.ResourceData) *api.MutualT
 }
 
 func resourceStageMutualTLSCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageMutualTLSSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesMtlsCreate(ctx).MutualTLSStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesMtlsCreate(ctx).MutualTLSStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -83,9 +83,9 @@ func resourceStageMutualTLSCreate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesMtlsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesMtlsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -102,11 +102,11 @@ func resourceStageMutualTLSRead(ctx context.Context, d *schema.ResourceData, m a
 }
 
 func resourceStageMutualTLSUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageMutualTLSSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesMtlsUpdate(ctx, d.Id()).MutualTLSStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesMtlsUpdate(ctx, d.Id()).MutualTLSStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -116,8 +116,8 @@ func resourceStageMutualTLSUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceStageMutualTLSDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesMtlsDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesMtlsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

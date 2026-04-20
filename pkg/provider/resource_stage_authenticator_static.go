@@ -59,11 +59,11 @@ func resourceStageAuthenticatorStaticSchemaToProvider(d *schema.ResourceData) *a
 }
 
 func resourceStageAuthenticatorStaticCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourceStageAuthenticatorStaticSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticCreate(ctx).AuthenticatorStaticStageRequest(*r).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorStaticCreate(ctx).AuthenticatorStaticStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -74,9 +74,9 @@ func resourceStageAuthenticatorStaticCreate(ctx context.Context, d *schema.Resou
 
 func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorStaticRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -90,11 +90,11 @@ func resourceStageAuthenticatorStaticRead(ctx context.Context, d *schema.Resourc
 }
 
 func resourceStageAuthenticatorStaticUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourceStageAuthenticatorStaticSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorStaticUpdate(ctx, d.Id()).AuthenticatorStaticStageRequest(*app).Execute()
+	res, hr, err := c.Client.StagesApi.StagesAuthenticatorStaticUpdate(ctx, d.Id()).AuthenticatorStaticStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -104,8 +104,8 @@ func resourceStageAuthenticatorStaticUpdate(ctx context.Context, d *schema.Resou
 }
 
 func resourceStageAuthenticatorStaticDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorStaticDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.StagesApi.StagesAuthenticatorStaticDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

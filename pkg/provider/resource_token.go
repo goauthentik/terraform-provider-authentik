@@ -91,14 +91,14 @@ func resourceTokenSchemaToModel(d *schema.ResourceData) (*api.TokenRequest, diag
 }
 
 func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, diags := resourceTokenSchemaToModel(d)
 	if diags != nil {
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreTokensCreate(ctx).TokenRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreTokensCreate(ctx).TokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -109,9 +109,9 @@ func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m any) dia
 
 func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.CoreApi.CoreTokensRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.CoreApi.CoreTokensRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -124,7 +124,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 		helpers.SetWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
 	}
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
-		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
+		res, hr, err := c.Client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -134,13 +134,13 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 }
 
 func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app, di := resourceTokenSchemaToModel(d)
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.CoreApi.CoreTokensUpdate(ctx, d.Id()).TokenRequest(*app).Execute()
+	res, hr, err := c.Client.CoreApi.CoreTokensUpdate(ctx, d.Id()).TokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -150,8 +150,8 @@ func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m any) dia
 }
 
 func resourceTokenDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.CoreApi.CoreTokensDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.CoreApi.CoreTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

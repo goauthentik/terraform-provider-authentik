@@ -98,11 +98,11 @@ func resourcePolicyGeoIPSchemaToProvider(d *schema.ResourceData) *api.GeoIPPolic
 }
 
 func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	r := resourcePolicyGeoIPSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesGeoipCreate(ctx).GeoIPPolicyRequest(*r).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesGeoipCreate(ctx).GeoIPPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -113,9 +113,9 @@ func resourcePolicyGeoIPCreate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesGeoipRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesGeoipRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -140,11 +140,11 @@ func resourcePolicyGeoIPRead(ctx context.Context, d *schema.ResourceData, m any)
 }
 
 func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+	c := m.(*helpers.APIClient)
 
 	app := resourcePolicyGeoIPSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesGeoipUpdate(ctx, d.Id()).GeoIPPolicyRequest(*app).Execute()
+	res, hr, err := c.Client.PoliciesApi.PoliciesGeoipUpdate(ctx, d.Id()).GeoIPPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -154,8 +154,8 @@ func resourcePolicyGeoIPUpdate(ctx context.Context, d *schema.ResourceData, m an
 }
 
 func resourcePolicyGeoIPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesGeoipDestroy(ctx, d.Id()).Execute()
+	c := m.(*helpers.APIClient)
+	hr, err := c.Client.PoliciesApi.PoliciesGeoipDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
