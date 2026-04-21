@@ -101,7 +101,7 @@ func resourceStageAuthenticatorSmsCreate(ctx context.Context, d *schema.Resource
 
 	r := resourceStageAuthenticatorSmsSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsCreate(ctx).AuthenticatorSMSStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorSmsCreate(ctx).AuthenticatorSMSStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -114,7 +114,7 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorSmsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -138,7 +138,7 @@ func resourceStageAuthenticatorSmsUpdate(ctx context.Context, d *schema.Resource
 
 	app := resourceStageAuthenticatorSmsSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorSmsUpdate(ctx, d.Id()).AuthenticatorSMSStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorSmsUpdate(ctx, d.Id()).AuthenticatorSMSStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -149,7 +149,7 @@ func resourceStageAuthenticatorSmsUpdate(ctx context.Context, d *schema.Resource
 
 func resourceStageAuthenticatorSmsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorSmsDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesAuthenticatorSmsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

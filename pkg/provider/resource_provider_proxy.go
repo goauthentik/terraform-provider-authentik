@@ -178,7 +178,7 @@ func resourceProviderProxyCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	r := resourceProviderProxySchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersProxyCreate(ctx).ProxyProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -194,7 +194,7 @@ func resourceProviderProxyRead(ctx context.Context, d *schema.ResourceData, m an
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersProxyRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersProxyRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -244,7 +244,7 @@ func resourceProviderProxyUpdate(ctx context.Context, d *schema.ResourceData, m 
 	}
 	app := resourceProviderProxySchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersProxyUpdate(ctx, int32(id)).ProxyProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -259,7 +259,7 @@ func resourceProviderProxyDelete(ctx context.Context, d *schema.ResourceData, m 
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersProxyDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersProxyDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -16,8 +16,9 @@ var defaultFlags string
 
 func init() {
 	flags := api.PatchedSettingsRequestFlags{
-		PoliciesBufferedAccessView: false,
-		FlowsRefreshOthers:         false,
+		PoliciesBufferedAccessView:         false,
+		FlowsRefreshOthers:                 false,
+		EnterpriseAuditIncludeExpandedDiff: false,
 	}
 	f, err := json.Marshal(flags)
 	if err != nil {
@@ -156,7 +157,7 @@ func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m
 		return diag
 	}
 
-	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
+	_, hr, err := c.client.AdminAPI.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -168,7 +169,7 @@ func resourceSystemSettingsCreate(ctx context.Context, d *schema.ResourceData, m
 func resourceSystemSettingsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.AdminApi.AdminSettingsRetrieve(ctx).Execute()
+	res, hr, err := c.client.AdminAPI.AdminSettingsRetrieve(ctx).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -198,7 +199,7 @@ func resourceSystemSettingsUpdate(ctx context.Context, d *schema.ResourceData, m
 		return diag
 	}
 
-	_, hr, err := c.client.AdminApi.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
+	_, hr, err := c.client.AdminAPI.AdminSettingsUpdate(ctx).SettingsRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

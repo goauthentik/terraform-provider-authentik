@@ -203,11 +203,26 @@ func listToRedirectURIsRequest(raw []any) []api.RedirectURIRequest {
 	return rus
 }
 
-func listToRedirectURIs(raw []any) []api.RedirectURI {
-	rus := []api.RedirectURI{}
+type CustomRedirectURI struct {
+	MatchingMode         api.MatchingModeEnum `json:"matching_mode"`
+	Url                  string               `json:"url"`
+}
+func castRedirectURIs(raw []api.RedirectURI) []CustomRedirectURI {
+    rus := make([]CustomRedirectURI, len(raw))
+    for i, r := range raw {
+        rus[i] = CustomRedirectURI{
+	    MatchingMode: r.MatchingMode,
+	    Url: r.Url,
+        }
+    }
+    return rus
+}
+
+func listToRedirectURIs(raw []any) []CustomRedirectURI {
+	rus := []CustomRedirectURI{}
 	for _, rr := range raw {
 		rd := rr.(map[string]any)
-		rus = append(rus, api.RedirectURI{
+		rus = append(rus, CustomRedirectURI{
 			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
 			Url:          rd["url"].(string),
 		})
@@ -215,7 +230,7 @@ func listToRedirectURIs(raw []any) []api.RedirectURI {
 	return rus
 }
 
-func redirectURIsToList(raw []api.RedirectURI) []map[string]any {
+func redirectURIsToList(raw []CustomRedirectURI) []map[string]any {
 	rus := []map[string]any{}
 	for _, rr := range raw {
 		rus = append(rus, map[string]any{
@@ -231,7 +246,7 @@ func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourceProviderOAuth2SchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Create(ctx).OAuth2ProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersOauth2Create(ctx).OAuth2ProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -247,7 +262,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m a
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Retrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersOauth2Retrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -270,7 +285,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(
 		helpers.ListConsistentMerge(
 			listToRedirectURIs(d.Get("allowed_redirect_uris").([]any)),
-			res.RedirectUris,
+			castRedirectURIs(res.RedirectUris),
 		),
 	))
 	helpers.SetWrapper(d, "signing_key", res.SigningKey.Get())
@@ -299,7 +314,7 @@ func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m
 	}
 	app := resourceProviderOAuth2SchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Update(ctx, int32(id)).OAuth2ProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersOauth2Update(ctx, int32(id)).OAuth2ProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -314,7 +329,7 @@ func resourceProviderOAuth2Delete(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersOauth2Destroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersOauth2Destroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

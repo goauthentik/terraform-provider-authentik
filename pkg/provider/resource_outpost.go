@@ -67,7 +67,7 @@ func resourceOutpostSchemaToModel(d *schema.ResourceData, c *APIClient) (*api.Ou
 		m.Config = attr
 		return &m, err
 	} else {
-		defaultConfig, hr, err := c.client.OutpostsApi.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
+		defaultConfig, hr, err := c.client.OutpostsAPI.OutpostsInstancesDefaultSettingsRetrieve(context.Background()).Execute()
 		if err != nil {
 			return nil, helpers.HTTPToDiag(d, hr, err)
 		}
@@ -84,7 +84,7 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m any) d
 		return diags
 	}
 
-	res, hr, err := c.client.OutpostsApi.OutpostsInstancesCreate(ctx).OutpostRequest(*app).Execute()
+	res, hr, err := c.client.OutpostsAPI.OutpostsInstancesCreate(ctx).OutpostRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -96,7 +96,7 @@ func resourceOutpostCreate(ctx context.Context, d *schema.ResourceData, m any) d
 func resourceOutpostRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.OutpostsAPI.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -119,7 +119,7 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m any) d
 		return di
 	}
 
-	res, hr, err := c.client.OutpostsApi.OutpostsInstancesUpdate(ctx, d.Id()).OutpostRequest(*app).Execute()
+	res, hr, err := c.client.OutpostsAPI.OutpostsInstancesUpdate(ctx, d.Id()).OutpostRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -130,7 +130,7 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m any) d
 
 func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.OutpostsApi.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.OutpostsAPI.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

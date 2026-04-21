@@ -81,7 +81,7 @@ func resourceStageUserWriteCreate(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourceStageUserWriteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserWriteCreate(ctx).UserWriteStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -94,7 +94,7 @@ func resourceStageUserWriteRead(ctx context.Context, d *schema.ResourceData, m a
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesUserWriteRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserWriteRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -113,7 +113,7 @@ func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	app := resourceStageUserWriteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserWriteUpdate(ctx, d.Id()).UserWriteStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -124,7 +124,7 @@ func resourceStageUserWriteUpdate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceStageUserWriteDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesUserWriteDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesUserWriteDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

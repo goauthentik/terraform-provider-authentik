@@ -79,7 +79,7 @@ func resourcePolicyEventMatcherCreate(ctx context.Context, d *schema.ResourceDat
 
 	r := resourcePolicyEventMatcherSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherCreate(ctx).EventMatcherPolicyRequest(*r).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesEventMatcherCreate(ctx).EventMatcherPolicyRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -92,7 +92,7 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesEventMatcherRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -119,7 +119,7 @@ func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceDat
 
 	app := resourcePolicyEventMatcherSchemaToProvider(d)
 
-	res, hr, err := c.client.PoliciesApi.PoliciesEventMatcherUpdate(ctx, d.Id()).EventMatcherPolicyRequest(*app).Execute()
+	res, hr, err := c.client.PoliciesAPI.PoliciesEventMatcherUpdate(ctx, d.Id()).EventMatcherPolicyRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -130,7 +130,7 @@ func resourcePolicyEventMatcherUpdate(ctx context.Context, d *schema.ResourceDat
 
 func resourcePolicyEventMatcherDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PoliciesApi.PoliciesEventMatcherDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PoliciesAPI.PoliciesEventMatcherDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

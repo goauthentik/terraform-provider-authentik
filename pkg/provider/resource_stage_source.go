@@ -53,7 +53,7 @@ func resourceStageSourceCreate(ctx context.Context, d *schema.ResourceData, m an
 
 	r := resourceStageSourceSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesSourceCreate(ctx).SourceStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesSourceCreate(ctx).SourceStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -66,7 +66,7 @@ func resourceStageSourceRead(ctx context.Context, d *schema.ResourceData, m any)
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesSourceRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesSourceRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -82,7 +82,7 @@ func resourceStageSourceUpdate(ctx context.Context, d *schema.ResourceData, m an
 
 	app := resourceStageSourceSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesSourceUpdate(ctx, d.Id()).SourceStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesSourceUpdate(ctx, d.Id()).SourceStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -93,7 +93,7 @@ func resourceStageSourceUpdate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourceStageSourceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesSourceDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesSourceDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -62,7 +62,7 @@ func resourceServiceConnectionDockerCreate(ctx context.Context, d *schema.Resour
 
 	app := resourceServiceConnectionDockerSchemaToModel(d)
 
-	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerCreate(ctx).DockerServiceConnectionRequest(*app).Execute()
+	res, hr, err := c.client.OutpostsAPI.OutpostsServiceConnectionsDockerCreate(ctx).DockerServiceConnectionRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -75,7 +75,7 @@ func resourceServiceConnectionDockerRead(ctx context.Context, d *schema.Resource
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.OutpostsAPI.OutpostsServiceConnectionsDockerRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -93,7 +93,7 @@ func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.Resour
 
 	app := resourceServiceConnectionDockerSchemaToModel(d)
 
-	res, hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerUpdate(ctx, d.Id()).DockerServiceConnectionRequest(*app).Execute()
+	res, hr, err := c.client.OutpostsAPI.OutpostsServiceConnectionsDockerUpdate(ctx, d.Id()).DockerServiceConnectionRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -104,7 +104,7 @@ func resourceServiceConnectionDockerUpdate(ctx context.Context, d *schema.Resour
 
 func resourceServiceConnectionDockerDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.OutpostsApi.OutpostsServiceConnectionsDockerDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.OutpostsAPI.OutpostsServiceConnectionsDockerDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

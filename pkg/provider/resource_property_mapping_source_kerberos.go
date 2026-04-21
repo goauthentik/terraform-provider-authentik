@@ -46,7 +46,7 @@ func resourcePropertyMappingSourceKerberosCreate(ctx context.Context, d *schema.
 
 	r := resourcePropertyMappingSourceKerberosSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosCreate(ctx).KerberosSourcePropertyMappingRequest(*r).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsSourceKerberosCreate(ctx).KerberosSourcePropertyMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -59,7 +59,7 @@ func resourcePropertyMappingSourceKerberosRead(ctx context.Context, d *schema.Re
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsSourceKerberosRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -74,7 +74,7 @@ func resourcePropertyMappingSourceKerberosUpdate(ctx context.Context, d *schema.
 
 	app := resourcePropertyMappingSourceKerberosSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosUpdate(ctx, d.Id()).KerberosSourcePropertyMappingRequest(*app).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsSourceKerberosUpdate(ctx, d.Id()).KerberosSourcePropertyMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -85,7 +85,7 @@ func resourcePropertyMappingSourceKerberosUpdate(ctx context.Context, d *schema.
 
 func resourcePropertyMappingSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsSourceKerberosDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PropertymappingsAPI.PropertymappingsSourceKerberosDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

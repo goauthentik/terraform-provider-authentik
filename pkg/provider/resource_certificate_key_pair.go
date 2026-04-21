@@ -51,7 +51,7 @@ func resourceCertificateKeyPairCreate(ctx context.Context, d *schema.ResourceDat
 
 	app := resourceCertificateKeyPairSchemaToModel(d)
 
-	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsCreate(ctx).CertificateKeyPairRequest(*app).Execute()
+	res, hr, err := c.client.CryptoAPI.CryptoCertificatekeypairsCreate(ctx).CertificateKeyPairRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -64,20 +64,20 @@ func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData,
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.CryptoAPI.CryptoCertificatekeypairsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	helpers.SetWrapper(d, "name", res.Name)
 
-	rc, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
+	rc, hr, err := c.client.CryptoAPI.CryptoCertificatekeypairsViewCertificateRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 	helpers.SetWrapper(d, "certificate_data", rc.Data+"\n")
 
-	rk, _, err := c.client.CryptoApi.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
+	rk, _, err := c.client.CryptoAPI.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
 	if err == nil {
 		helpers.SetWrapper(d, "key_data", rk.Data+"\n")
 	}
@@ -90,7 +90,7 @@ func resourceCertificateKeyPairUpdate(ctx context.Context, d *schema.ResourceDat
 
 	app := resourceCertificateKeyPairSchemaToModel(d)
 
-	res, hr, err := c.client.CryptoApi.CryptoCertificatekeypairsUpdate(ctx, d.Id()).CertificateKeyPairRequest(*app).Execute()
+	res, hr, err := c.client.CryptoAPI.CryptoCertificatekeypairsUpdate(ctx, d.Id()).CertificateKeyPairRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -101,7 +101,7 @@ func resourceCertificateKeyPairUpdate(ctx context.Context, d *schema.ResourceDat
 
 func resourceCertificateKeyPairDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.CryptoApi.CryptoCertificatekeypairsDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.CryptoAPI.CryptoCertificatekeypairsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

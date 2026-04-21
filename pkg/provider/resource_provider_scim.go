@@ -84,9 +84,12 @@ func resourceProviderSCIM() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"filter_group": {
-				Type:     schema.TypeString,
+			"group_filters": {
+				Type:     schema.TypeList,
 				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"service_provider_config_cache_timeout": {
 				Type:             schema.TypeString,
@@ -122,7 +125,7 @@ func resourceProviderSCIMSchemaToProvider(d *schema.ResourceData) (*api.SCIMProv
 		PropertyMappingsGroup:             helpers.CastSlice[string](d, "property_mappings_group"),
 		ExcludeUsersServiceAccount:        new(d.Get("exclude_users_service_account").(bool)),
 		CompatibilityMode:                 api.CompatibilityModeEnum(d.Get("compatibility_mode").(string)).Ptr(),
-		FilterGroup:                       *api.NewNullableString(helpers.GetP[string](d, "filter_group")),
+		GroupFilters:                      helpers.CastSlice[string](d, "group_filters"),
 		DryRun:                            new(d.Get("dry_run").(bool)),
 		ServiceProviderConfigCacheTimeout: helpers.GetP[string](d, "service_provider_config_cache_timeout"),
 		SyncPageTimeout:                   helpers.GetP[string](d, "sync_page_timeout"),
@@ -142,7 +145,7 @@ func resourceProviderSCIMCreate(ctx context.Context, d *schema.ResourceData, m a
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersScimCreate(ctx).SCIMProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersScimCreate(ctx).SCIMProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -157,7 +160,7 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersScimRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersScimRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -174,7 +177,10 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any
 		res.PropertyMappingsGroup,
 	))
 	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
-	helpers.SetWrapper(d, "filter_group", res.FilterGroup.Get())
+	helpers.SetWrapper(d, "group_filters", helpers.ListConsistentMerge(
+		helpers.CastSlice[string](d, "group_filters"),
+		res.GroupFilters,
+	))
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
 	helpers.SetWrapper(d, "compatibility_mode", res.CompatibilityMode)
 	helpers.SetWrapper(d, "auth_mode", res.AuthMode)
@@ -196,7 +202,7 @@ func resourceProviderSCIMUpdate(ctx context.Context, d *schema.ResourceData, m a
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersScimUpdate(ctx, int32(id)).SCIMProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersScimUpdate(ctx, int32(id)).SCIMProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -211,7 +217,7 @@ func resourceProviderSCIMDelete(ctx context.Context, d *schema.ResourceData, m a
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersScimDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersScimDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

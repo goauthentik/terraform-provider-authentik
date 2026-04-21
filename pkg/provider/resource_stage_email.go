@@ -131,7 +131,7 @@ func resourceStageEmailCreate(ctx context.Context, d *schema.ResourceData, m any
 
 	r := resourceStageEmailSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEmailCreate(ctx).EmailStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesEmailCreate(ctx).EmailStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -144,7 +144,7 @@ func resourceStageEmailRead(ctx context.Context, d *schema.ResourceData, m any) 
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesEmailRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesEmailRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -172,7 +172,7 @@ func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m any
 
 	app := resourceStageEmailSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEmailUpdate(ctx, d.Id()).EmailStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesEmailUpdate(ctx, d.Id()).EmailStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -183,7 +183,7 @@ func resourceStageEmailUpdate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceStageEmailDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesEmailDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

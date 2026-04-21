@@ -102,7 +102,7 @@ func resourceSourceSAML() *schema.Resource {
 			"name_id_policy": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.SAMLNAMEIDPOLICYENUM__2_0NAMEID_FORMATPERSISTENT,
+				Default:          api.SAMLNAMEIDPOLICYENUM_URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT,
 				Description:      helpers.EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
 			},
@@ -138,14 +138,14 @@ func resourceSourceSAML() *schema.Resource {
 			"digest_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.DIGESTALGORITHMENUM__2001_04_XMLENCSHA256,
+				Default:          api.DIGESTALGORITHMENUM_HTTP___WWW_W3_ORG_2001_04_XMLENCSHA256,
 				Description:      helpers.EnumToDescription(api.AllowedDigestAlgorithmEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedDigestAlgorithmEnumEnumValues),
 			},
 			"signature_algorithm": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.SIGNATUREALGORITHMENUM__2001_04_XMLDSIG_MORERSA_SHA256,
+				Default:          api.SIGNATUREALGORITHMENUM_HTTP___WWW_W3_ORG_2001_04_XMLDSIG_MORERSA_SHA256,
 				Description:      helpers.EnumToDescription(api.AllowedSignatureAlgorithmEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSignatureAlgorithmEnumEnumValues),
 			},
@@ -221,7 +221,7 @@ func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m any
 
 	r := resourceSourceSAMLSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesSamlCreate(ctx).SAMLSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -233,7 +233,7 @@ func resourceSourceSAMLCreate(ctx context.Context, d *schema.ResourceData, m any
 func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesSamlRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesSamlRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -275,7 +275,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) 
 		res.GroupPropertyMappings,
 	))
 
-	meta, hr, err := c.client.SourcesApi.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
+	meta, hr, err := c.client.SourcesAPI.SourcesSamlMetadataRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -287,7 +287,7 @@ func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m any
 	c := m.(*APIClient)
 	app := resourceSourceSAMLSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesSamlUpdate(ctx, d.Id()).SAMLSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -298,7 +298,7 @@ func resourceSourceSAMLUpdate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceSourceSAMLDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesSamlDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.SourcesAPI.SourcesSamlDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

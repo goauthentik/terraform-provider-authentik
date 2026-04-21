@@ -47,7 +47,7 @@ func resourceOutpostProviderAttachmentCreate(ctx context.Context, d *schema.Reso
 	providerID := int32(d.Get("protocol_provider").(int))
 
 	// Get current outpost
-	outpost, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, outpostID).Execute()
+	outpost, hr, err := c.client.OutpostsAPI.OutpostsInstancesRetrieve(ctx, outpostID).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -67,7 +67,7 @@ func resourceOutpostProviderAttachmentCreate(ctx context.Context, d *schema.Reso
 		Providers: outpost.Providers,
 	}
 
-	_, hr, err = c.client.OutpostsApi.OutpostsInstancesPartialUpdate(ctx, outpostID).PatchedOutpostRequest(req).Execute()
+	_, hr, err = c.client.OutpostsAPI.OutpostsInstancesPartialUpdate(ctx, outpostID).PatchedOutpostRequest(req).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -87,7 +87,7 @@ func resourceOutpostProviderAttachmentRead(ctx context.Context, d *schema.Resour
 	outpostID := parts[0]
 	// providerID is parts[1] but we need to check if it exists in the outpost
 
-	outpost, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, outpostID).Execute()
+	outpost, hr, err := c.client.OutpostsAPI.OutpostsInstancesRetrieve(ctx, outpostID).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -116,7 +116,7 @@ func resourceOutpostProviderAttachmentDelete(ctx context.Context, d *schema.Reso
 	providerID := int32(d.Get("protocol_provider").(int))
 
 	// Get current outpost
-	outpost, hr, err := c.client.OutpostsApi.OutpostsInstancesRetrieve(ctx, outpostID).Execute()
+	outpost, hr, err := c.client.OutpostsAPI.OutpostsInstancesRetrieve(ctx, outpostID).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -134,7 +134,7 @@ func resourceOutpostProviderAttachmentDelete(ctx context.Context, d *schema.Reso
 		Providers: newProviders,
 	}
 
-	_, hr, err = c.client.OutpostsApi.OutpostsInstancesPartialUpdate(ctx, outpostID).PatchedOutpostRequest(req).Execute()
+	_, hr, err = c.client.OutpostsAPI.OutpostsInstancesPartialUpdate(ctx, outpostID).PatchedOutpostRequest(req).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
