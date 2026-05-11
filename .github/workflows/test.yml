@@ -92,7 +92,7 @@ jobs:
         run: |
           docker logs ${{ steps.setup.outputs.worker_container_id }}
       - if: ${{ always() }}
-        uses: test-summary/action@001f872f7d3bfc266130826cdd8c4b9ca30b15c3 # v2
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2
         with:
           paths: junit.xml
           show: "fail"
