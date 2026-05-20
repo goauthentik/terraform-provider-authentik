@@ -51,6 +51,16 @@ func resourceProviderOAuth2() *schema.Resource {
 				Description:      helpers.EnumToDescription(api.AllowedClientTypeEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedClientTypeEnumEnumValues),
 			},
+			"grant_types": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					Description:      helpers.EnumToDescription(api.AllowedGrantTypesEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGrantTypesEnumEnumValues),
+				},
+			},
 			"client_id": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -188,6 +198,12 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		RedirectUris:           listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]any)),
 		JwtFederationProviders: helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]any)),
 	}
+
+	grantTypes := make([]api.GrantTypesEnum, 0)
+	for _, gt := range d.Get("grant_types").([]any) {
+		grantTypes = append(grantTypes, api.GrantTypesEnum(gt.(string)))
+	}
+	r.GrantTypes = grantTypes
 	return &r
 }
 
@@ -204,18 +220,19 @@ func listToRedirectURIsRequest(raw []any) []api.RedirectURIRequest {
 }
 
 type CustomRedirectURI struct {
-	MatchingMode         api.MatchingModeEnum `json:"matching_mode"`
-	Url                  string               `json:"url"`
+	MatchingMode api.MatchingModeEnum `json:"matching_mode"`
+	Url          string               `json:"url"`
 }
+
 func castRedirectURIs(raw []api.RedirectURI) []CustomRedirectURI {
-    rus := make([]CustomRedirectURI, len(raw))
-    for i, r := range raw {
-        rus[i] = CustomRedirectURI{
-	    MatchingMode: r.MatchingMode,
-	    Url: r.Url,
-        }
-    }
-    return rus
+	rus := make([]CustomRedirectURI, len(raw))
+	for i, r := range raw {
+		rus[i] = CustomRedirectURI{
+			MatchingMode: r.MatchingMode,
+			Url:          r.Url,
+		}
+	}
+	return rus
 }
 
 func listToRedirectURIs(raw []any) []CustomRedirectURI {
@@ -274,6 +291,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "client_id", res.ClientId)
 	helpers.SetWrapper(d, "client_secret", res.ClientSecret)
 	helpers.SetWrapper(d, "client_type", res.ClientType)
+	helpers.SetWrapper(d, "grant_types", res.GrantTypes)
 	helpers.SetWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	helpers.SetWrapper(d, "issuer_mode", res.IssuerMode)
 	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)

@@ -75,6 +75,10 @@ func resourceBrand() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"flow_lockdown": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"web_certificate": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -117,6 +121,7 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 		FlowUnenrollment:              *api.NewNullableString(helpers.GetP[string](d, "flow_unenrollment")),
 		FlowUserSettings:              *api.NewNullableString(helpers.GetP[string](d, "flow_user_settings")),
 		FlowDeviceCode:                *api.NewNullableString(helpers.GetP[string](d, "flow_device_code")),
+		FlowLockdown:                  *api.NewNullableString(helpers.GetP[string](d, "flow_lockdown")),
 		WebCertificate:                *api.NewNullableString(helpers.GetP[string](d, "web_certificate")),
 		ClientCertificates:            helpers.CastSlice[string](d, "client_certificates"),
 		DefaultApplication:            *api.NewNullableString(helpers.GetP[string](d, "default_application")),
@@ -164,6 +169,7 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 	helpers.SetWrapper(d, "flow_unenrollment", res.FlowUnenrollment.Get())
 	helpers.SetWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
 	helpers.SetWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
+	helpers.SetWrapper(d, "flow_lockdown", res.FlowLockdown.Get())
 	helpers.SetWrapper(d, "web_certificate", res.WebCertificate.Get())
 	helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(
 		helpers.CastSlice[string](d, "client_certificates"),

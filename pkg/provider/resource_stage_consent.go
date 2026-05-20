@@ -27,9 +27,9 @@ func resourceStageConsent() *schema.Resource {
 			"mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE,
-				Description:      helpers.EnumToDescription(api.AllowedConsentStageModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
+				Default:          api.CONSENTMODEENUM_ALWAYS_REQUIRE,
+				Description:      helpers.EnumToDescription(api.AllowedConsentModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedConsentModeEnumEnumValues),
 			},
 			"consent_expire_in": {
 				Type:             schema.TypeString,
@@ -49,7 +49,7 @@ func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentSt
 	}
 
 	if m, mSet := d.GetOk("mode"); mSet {
-		r.Mode = api.ConsentStageModeEnum(m.(string)).Ptr()
+		r.Mode = api.ConsentModeEnum(m.(string)).Ptr()
 	}
 	return &r
 }
