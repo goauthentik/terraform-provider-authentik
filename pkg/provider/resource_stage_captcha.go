@@ -46,12 +46,12 @@ func resourceStageCaptcha() *schema.Resource {
 			"score_min_threshold": {
 				Type:     schema.TypeFloat,
 				Optional: true,
-				Default:  1,
+				Default:  0.5,
 			},
 			"score_max_threshold": {
 				Type:     schema.TypeFloat,
 				Optional: true,
-				Default:  0.5,
+				Default:  1,
 			},
 			"error_on_invalid_score": {
 				Type:     schema.TypeBool,
