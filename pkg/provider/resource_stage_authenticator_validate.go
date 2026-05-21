@@ -67,6 +67,35 @@ func resourceStageAuthenticatorValidate() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"webauthn_hints": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					Description:      helpers.EnumToDescription(api.AllowedWebAuthnHintEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedWebAuthnHintEnumEnumValues),
+				},
+			},
+			"email_otp_throttling_factor": {
+				Type:     schema.TypeFloat,
+				Optional: true,
+				Default:  1,
+			},
+			"sms_otp_throttling_factor": {
+				Type:     schema.TypeFloat,
+				Optional: true,
+				Default:  1,
+			},
+			"totp_otp_throttling_factor": {
+				Type:     schema.TypeFloat,
+				Optional: true,
+				Default:  1,
+			},
+			"static_otp_throttling_factor": {
+				Type:     schema.TypeFloat,
+				Optional: true,
+				Default:  1,
+			},
 		},
 	}
 }
@@ -79,6 +108,10 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		NotConfiguredAction:        helpers.CastString[api.NotConfiguredActionEnum](helpers.GetP[string](d, "not_configured_action")),
 		ConfigurationStages:        helpers.CastSlice[string](d, "configuration_stages"),
 		WebauthnUserVerification:   helpers.CastString[api.UserVerificationEnum](helpers.GetP[string](d, "webauthn_user_verification")),
+		EmailOtpThrottlingFactor:   new(d.Get("email_otp_throttling_factor").(float64)),
+		SmsOtpThrottlingFactor:     new(d.Get("sms_otp_throttling_factor").(float64)),
+		TotpOtpThrottlingFactor:    new(d.Get("totp_otp_throttling_factor").(float64)),
+		StaticOtpThrottlingFactor:  new(d.Get("static_otp_throttling_factor").(float64)),
 	}
 
 	classes := make([]api.DeviceClassesEnum, 0)
@@ -86,6 +119,12 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		classes = append(classes, api.DeviceClassesEnum(classesS.(string)))
 	}
 	r.DeviceClasses = classes
+
+	hints := make([]api.WebAuthnHintEnum, 0)
+	for _, hintS := range d.Get("webauthn_hints").([]any) {
+		hints = append(hints, api.WebAuthnHintEnum(hintS.(string)))
+	}
+	r.WebauthnHints = hints
 	return &r
 }
 
@@ -125,6 +164,11 @@ func resourceStageAuthenticatorValidateRead(ctx context.Context, d *schema.Resou
 		helpers.CastSlice[string](d, "webauthn_allowed_device_types"),
 		res.WebauthnAllowedDeviceTypes,
 	))
+	helpers.SetWrapper(d, "webauthn_hints", res.WebauthnHints)
+	helpers.SetWrapper(d, "email_otp_throttling_factor", res.EmailOtpThrottlingFactor)
+	helpers.SetWrapper(d, "sms_otp_throttling_factor", res.SmsOtpThrottlingFactor)
+	helpers.SetWrapper(d, "totp_otp_throttling_factor", res.TotpOtpThrottlingFactor)
+	helpers.SetWrapper(d, "static_otp_throttling_factor", res.StaticOtpThrottlingFactor)
 	return diags
 }
 

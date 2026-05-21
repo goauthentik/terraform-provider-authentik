@@ -75,7 +75,6 @@ description: |-
   - `CO`
   - `KM`
   - `CG`
-  - `CD`
   - `CK`
   - `CR`
   - `CI`
@@ -84,6 +83,7 @@ description: |-
   - `CW`
   - `CY`
   - `CZ`
+  - `CD`
   - `DK`
   - `DJ`
   - `DM`
@@ -122,7 +122,6 @@ description: |-
   - `GY`
   - `HT`
   - `HM`
-  - `VA`
   - `HN`
   - `HK`
   - `HU`
@@ -264,6 +263,7 @@ description: |-
   - `UY`
   - `UZ`
   - `VU`
+  - `VA`
   - `VE`
   - `VN`
   - `VG`

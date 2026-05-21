@@ -44,15 +44,21 @@ func resourceProviderSSF() *schema.Resource {
 				Description:      helpers.RelativeDurationDescription,
 				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
+			"push_verify_certificates": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
 
 func resourceProviderSSFSchemaToProvider(d *schema.ResourceData) (*api.SSFProviderRequest, diag.Diagnostics) {
 	r := api.SSFProviderRequest{
-		Name:           d.Get("name").(string),
-		SigningKey:     d.Get("signing_key").(string),
-		EventRetention: new(d.Get("event_retention").(string)),
+		Name:                   d.Get("name").(string),
+		SigningKey:             d.Get("signing_key").(string),
+		EventRetention:         new(d.Get("event_retention").(string)),
+		PushVerifyCertificates: new(d.Get("push_verify_certificates").(bool)),
 	}
 	providers := d.Get("jwt_federation_providers").([]any)
 	r.OidcAuthProviders = make([]int32, len(providers))
@@ -92,6 +98,7 @@ func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m any)
 	}
 
 	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "push_verify_certificates", res.PushVerifyCertificates)
 	return diags
 }
 
