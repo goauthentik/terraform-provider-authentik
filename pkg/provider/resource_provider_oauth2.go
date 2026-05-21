@@ -199,11 +199,15 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		JwtFederationProviders: helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]any)),
 	}
 
-	grantTypes := make([]api.GrantTypesEnum, 0)
-	for _, gt := range d.Get("grant_types").([]any) {
-		grantTypes = append(grantTypes, api.GrantTypesEnum(gt.(string)))
+	// Only send grant_types when explicitly set; the API rejects an empty list and
+	// otherwise derives the value from the provider configuration server-side.
+	if raw := d.Get("grant_types").([]any); len(raw) > 0 {
+		grantTypes := make([]api.GrantTypesEnum, 0, len(raw))
+		for _, gt := range raw {
+			grantTypes = append(grantTypes, api.GrantTypesEnum(gt.(string)))
+		}
+		r.GrantTypes = grantTypes
 	}
-	r.GrantTypes = grantTypes
 	return &r
 }
 
