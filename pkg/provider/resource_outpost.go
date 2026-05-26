@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -132,7 +133,15 @@ func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m any) d
 	c := m.(*APIClient)
 	hr, err := c.client.OutpostsAPI.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
+		if hr != nil && hr.StatusCode == http.StatusMethodNotAllowed {
+			_, retrieveHR, retrieveErr := c.client.OutpostsAPI.OutpostsInstancesRetrieve(ctx, d.Id()).Execute()
+			if retrieveErr != nil && retrieveHR != nil && retrieveHR.StatusCode == http.StatusNotFound {
+				d.SetId("")
+				return diag.Diagnostics{}
+			}
+		}
 		return helpers.HTTPToDiag(d, hr, err)
 	}
+	d.SetId("")
 	return diag.Diagnostics{}
 }

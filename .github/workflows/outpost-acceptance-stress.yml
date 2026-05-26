@@ -1,0 +1,58 @@
+name: outpost acceptance stress
+
+on:
+  push:
+    branches:
+      - sdko/fix-test
+  pull_request:
+    branches:
+      - update-2026.5
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  outpost:
+    name: TestAccResourceOutpost x10
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: goauthentik/action-setup-authentik@9640994d98397fb40b525e6795c29d407ad201fa # v2.0
+        id: setup
+        with:
+          version: beta
+          sentry_env: goauthentik-terraform-ci
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: latest
+          terraform_wrapper: false
+      - name: Stress outpost acceptance test
+        timeout-minutes: 20
+        env:
+          AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
+          AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
+          TF_ACC: "1"
+        run: |
+          go test -v -p 1 -race -cover -coverprofile=coverage.txt -covermode=atomic -timeout 20m ./pkg/provider -run '^TestAccResourceOutpost$' -count=10 2>&1 | tee test-output
+      - if: ${{ always() }}
+        run: |
+          go tool github.com/jstemmer/go-junit-report/v2 -in test-output -set-exit-code -iocopy -out junit.xml
+      - name: authentik Server logs
+        if: ${{ always() }}
+        run: |
+          docker logs ${{ steps.setup.outputs.server_container_id }}
+      - name: authentik Worker logs
+        if: ${{ always() }}
+        run: |
+          docker logs ${{ steps.setup.outputs.worker_container_id }}
+      - if: ${{ always() }}
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2
+        with:
+          paths: junit.xml
+          show: "fail"
