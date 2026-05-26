@@ -65,6 +65,7 @@ jobs:
           FROM ghcr.io/goauthentik/dev-server:gh-next
           COPY authentik/outposts/models.py /authentik/outposts/models.py
           COPY authentik/outposts/signals.py /authentik/outposts/signals.py
+          COPY authentik/tasks/schedules/models.py /authentik/tasks/schedules/models.py
           EOF
           docker build \
             --pull \
