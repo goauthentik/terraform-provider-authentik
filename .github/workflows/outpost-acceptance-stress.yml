@@ -59,16 +59,18 @@ jobs:
             echo "AUTHENTIK_BOOTSTRAP_PASSWORD=${bootstrap_password}"
             echo "COMPOSE_PROJECT_NAME=authentik"
           } >> "${GITHUB_ENV}"
-      - name: Build authentik from source branch
-        working-directory: authentik-source
+      - name: Build authentik test image from source branch
         run: |
-          docker buildx build \
-            --load \
-            --build-arg GIT_BUILD_HASH="$(git rev-parse --short HEAD)" \
-            --build-arg VERSION="sdko-fix-outpost-delete-405" \
+          cat > /tmp/authentik-source-test.Dockerfile <<'EOF'
+          FROM ghcr.io/goauthentik/dev-server:gh-next
+          COPY authentik/outposts/models.py /authentik/outposts/models.py
+          COPY authentik/outposts/signals.py /authentik/outposts/signals.py
+          EOF
+          docker build \
+            --pull \
             --tag ghcr.io/goauthentik/server:sdko-fix-outpost-delete-405 \
-            --file lifecycle/container/Dockerfile \
-            .
+            --file /tmp/authentik-source-test.Dockerfile \
+            authentik-source
       - name: Start authentik from source branch
         run: |
           export COMPOSE_PROJECT_NAME=authentik
