@@ -43,14 +43,15 @@ jobs:
       - if: ${{ always() }}
         run: |
           go tool github.com/jstemmer/go-junit-report/v2 -in test-output -set-exit-code -iocopy -out junit.xml
-      - name: authentik Server logs
+      - name: authentik container logs
         if: ${{ always() }}
         run: |
-          docker logs ${{ steps.setup.outputs.server_container_id }}
-      - name: authentik Worker logs
-        if: ${{ always() }}
-        run: |
-          docker logs ${{ steps.setup.outputs.worker_container_id }}
+          docker ps -a
+          for container in $(docker ps -aq); do
+            echo "::group::docker logs ${container}"
+            docker logs --timestamps "${container}"
+            echo "::endgroup::"
+          done
       - if: ${{ always() }}
         uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2
         with:
