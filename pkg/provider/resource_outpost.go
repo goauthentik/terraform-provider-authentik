@@ -2,18 +2,11 @@ package provider
 
 import (
 	"context"
-	"net/http"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
-)
-
-var (
-	resourceOutpostDeleteRetryTimeout  = 10 * time.Second
-	resourceOutpostDeleteRetryInterval = 250 * time.Millisecond
 )
 
 func resourceOutpost() *schema.Resource {
@@ -137,47 +130,9 @@ func resourceOutpostUpdate(ctx context.Context, d *schema.ResourceData, m any) d
 
 func resourceOutpostDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	id := d.Id()
-	hr, err := c.client.OutpostsAPI.OutpostsInstancesDestroy(ctx, id).Execute()
+	hr, err := c.client.OutpostsAPI.OutpostsInstancesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
-		if hr != nil && hr.StatusCode == http.StatusMethodNotAllowed {
-			if resourceOutpostDeletedAfterMethodNotAllowed(ctx, c, id) {
-				d.SetId("")
-				return diag.Diagnostics{}
-			}
-		}
 		return helpers.HTTPToDiag(d, hr, err)
 	}
-	d.SetId("")
 	return diag.Diagnostics{}
-}
-
-func resourceOutpostDeletedAfterMethodNotAllowed(ctx context.Context, c *APIClient, id string) bool {
-	if resourceOutpostRetrieveNotFound(ctx, c, id) {
-		return true
-	}
-
-	timeout := time.NewTimer(resourceOutpostDeleteRetryTimeout)
-	defer timeout.Stop()
-
-	ticker := time.NewTicker(resourceOutpostDeleteRetryInterval)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return false
-		case <-timeout.C:
-			return false
-		case <-ticker.C:
-			if resourceOutpostRetrieveNotFound(ctx, c, id) {
-				return true
-			}
-		}
-	}
-}
-
-func resourceOutpostRetrieveNotFound(ctx context.Context, c *APIClient, id string) bool {
-	_, hr, err := c.client.OutpostsAPI.OutpostsInstancesRetrieve(ctx, id).Execute()
-	return err != nil && hr != nil && hr.StatusCode == http.StatusNotFound
 }
