@@ -48,6 +48,9 @@ resource "authentik_stage_prompt_field" "field" {
   - `separator`
   - `hidden`
   - `static`
+  - `alert_info`
+  - `alert_warning`
+  - `alert_danger`
   - `ak-locale`
 
 ### Optional

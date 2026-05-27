@@ -49,6 +49,10 @@ func resourcePolicyEventMatcher() *schema.Resource {
 				Description:      helpers.EnumToDescription(api.AllowedModelEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedModelEnumEnumValues),
 			},
+			"query": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -70,6 +74,9 @@ func resourcePolicyEventMatcherSchemaToProvider(d *schema.ResourceData) *api.Eve
 	}
 	if m, ok := d.Get("model").(string); ok && m != "" {
 		r.Model.Set(api.ModelEnum(m).Ptr())
+	}
+	if q, ok := d.Get("query").(string); ok && q != "" {
+		r.Query.Set(new(q))
 	}
 	return &r
 }
@@ -110,6 +117,9 @@ func resourcePolicyEventMatcherRead(ctx context.Context, d *schema.ResourceData,
 	}
 	if res.HasModel() {
 		helpers.SetWrapper(d, "model", res.Model.Get())
+	}
+	if res.HasQuery() {
+		helpers.SetWrapper(d, "query", res.Query.Get())
 	}
 	return diags
 }

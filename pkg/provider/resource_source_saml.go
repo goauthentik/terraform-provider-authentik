@@ -99,6 +99,11 @@ func resourceSourceSAML() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"force_authn": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"name_id_policy": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -207,6 +212,7 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		SignedResponse:           new(d.Get("signed_response").(bool)),
 		Issuer:                   new(d.Get("issuer").(string)),
 		AllowIdpInitiated:        new(d.Get("allow_idp_initiated").(bool)),
+		ForceAuthn:               new(d.Get("force_authn").(bool)),
 		TemporaryUserDeleteAfter: new(d.Get("temporary_user_delete_after").(string)),
 		BindingType:              api.BindingTypeEnum(d.Get("binding_type").(string)).Ptr(),
 		DigestAlgorithm:          api.DigestAlgorithmEnum(d.Get("digest_algorithm").(string)).Ptr(),
@@ -256,6 +262,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) 
 	helpers.SetWrapper(d, "sso_url", res.SsoUrl)
 	helpers.SetWrapper(d, "slo_url", res.SloUrl.Get())
 	helpers.SetWrapper(d, "allow_idp_initiated", res.AllowIdpInitiated)
+	helpers.SetWrapper(d, "force_authn", res.ForceAuthn)
 	helpers.SetWrapper(d, "name_id_policy", res.NameIdPolicy)
 	helpers.SetWrapper(d, "binding_type", res.BindingType)
 	helpers.SetWrapper(d, "signing_kp", res.SigningKp.Get())

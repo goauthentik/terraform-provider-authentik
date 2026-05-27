@@ -76,6 +76,11 @@ func resourceApplication() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"meta_hide": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -86,6 +91,7 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		Slug:             d.Get("slug").(string),
 		Provider:         *api.NewNullableInt32(helpers.GetIntP(d, ("protocol_provider"))),
 		OpenInNewTab:     new(d.Get("open_in_new_tab").(bool)),
+		MetaHide:         new(d.Get("meta_hide").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		Group:            helpers.GetP[string](d, "group"),
 		MetaIcon:         helpers.GetP[string](d, "meta_icon"),
@@ -131,6 +137,7 @@ func resourceApplicationRead(ctx context.Context, d *schema.ResourceData, m any)
 	helpers.SetWrapper(d, "group", res.Group)
 	helpers.SetWrapper(d, "slug", res.Slug)
 	helpers.SetWrapper(d, "open_in_new_tab", res.OpenInNewTab)
+	helpers.SetWrapper(d, "meta_hide", res.MetaHide)
 	helpers.SetWrapper(d, "protocol_provider", res.Provider.Get())
 	helpers.SetWrapper(d, "meta_launch_url", res.MetaLaunchUrl)
 	helpers.SetWrapper(d, "meta_icon", res.MetaIcon)

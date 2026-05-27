@@ -16,7 +16,8 @@ var defaultFlags string
 
 func init() {
 	flags := api.PatchedSettingsRequestFlags{
-		PoliciesBufferedAccessView:         false,
+		CoreDefaultAppAccess:               false,
+		FlowsContinuousLogin:               false,
 		FlowsRefreshOthers:                 false,
 		EnterpriseAuditIncludeExpandedDiff: false,
 	}

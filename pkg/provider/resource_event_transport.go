@@ -27,10 +27,14 @@ func resourceEventTransport() *schema.Resource {
 			"mode": {
 				Type:             schema.TypeString,
 				Required:         true,
-				Description:      helpers.EnumToDescription(api.AllowedNotificationTransportModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedNotificationTransportModeEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedTransportModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedTransportModeEnumEnumValues),
 			},
 			"webhook_url": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"webhook_ca": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -65,8 +69,9 @@ func resourceEventTransportSchemaToModel(d *schema.ResourceData) (*api.Notificat
 	m := api.NotificationTransportRequest{
 		Name:                  d.Get("name").(string),
 		SendOnce:              new(d.Get("send_once").(bool)),
-		Mode:                  api.NotificationTransportModeEnum(d.Get("mode").(string)).Ptr(),
+		Mode:                  api.TransportModeEnum(d.Get("mode").(string)).Ptr(),
 		WebhookUrl:            helpers.GetP[string](d, "webhook_url"),
+		WebhookCa:             *api.NewNullableString(helpers.GetP[string](d, "webhook_ca")),
 		WebhookMappingBody:    *api.NewNullableString(helpers.GetP[string](d, "webhook_mapping_body")),
 		WebhookMappingHeaders: *api.NewNullableString(helpers.GetP[string](d, "webhook_mapping_headers")),
 		EmailTemplate:         helpers.GetP[string](d, "email_template"),
@@ -105,6 +110,7 @@ func resourceEventTransportRead(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "mode", res.Mode)
 	helpers.SetWrapper(d, "send_once", res.SendOnce)
 	helpers.SetWrapper(d, "webhook_url", res.WebhookUrl)
+	helpers.SetWrapper(d, "webhook_ca", res.WebhookCa.Get())
 	helpers.SetWrapper(d, "webhook_mapping_body", res.WebhookMappingBody.Get())
 	helpers.SetWrapper(d, "webhook_mapping_headers", res.WebhookMappingHeaders.Get())
 	helpers.SetWrapper(d, "email_template", res.EmailTemplate)

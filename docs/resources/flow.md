@@ -58,6 +58,7 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
   - `require_superuser`
   - `require_redirect`
   - `require_outpost`
+  - `require_token`
  Defaults to `none`.
 - `background` (String) Optional URL to an image which will be used as the background during the flow. Defaults to `/static/dist/assets/images/flow_background.jpg`.
 - `compatibility_mode` (Boolean) Defaults to `true`.
@@ -68,6 +69,8 @@ resource "authentik_flow_stage_binding" "dummy-flow" {
   - `content_right`
   - `sidebar_left`
   - `sidebar_right`
+  - `sidebar_left_frame_background`
+  - `sidebar_right_frame_background`
  Defaults to `stacked`.
 - `policy_engine_mode` (String) Allowed values:
   - `all`
