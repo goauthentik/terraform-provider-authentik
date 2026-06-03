@@ -211,30 +211,45 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	return &r
 }
 
+func redirectURITypeFromMap(rd map[string]any) *api.RedirectURITypeEnum {
+	v, ok := rd["redirect_uri_type"].(string)
+	if !ok || v == "" {
+		return nil
+	}
+	t := api.RedirectURITypeEnum(v)
+	return &t
+}
+
 func listToRedirectURIsRequest(raw []any) []api.RedirectURIRequest {
 	rus := []api.RedirectURIRequest{}
 	for _, rr := range raw {
 		rd := rr.(map[string]any)
 		rus = append(rus, api.RedirectURIRequest{
-			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
-			Url:          rd["url"].(string),
+			MatchingMode:    api.MatchingModeEnum(rd["matching_mode"].(string)),
+			Url:             rd["url"].(string),
+			RedirectUriType: redirectURITypeFromMap(rd),
 		})
 	}
 	return rus
 }
 
 type CustomRedirectURI struct {
-	MatchingMode api.MatchingModeEnum `json:"matching_mode"`
-	Url          string               `json:"url"`
+	MatchingMode    api.MatchingModeEnum    `json:"matching_mode"`
+	Url             string                  `json:"url"`
+	RedirectUriType api.RedirectURITypeEnum `json:"redirect_uri_type,omitempty"`
 }
 
 func castRedirectURIs(raw []api.RedirectURI) []CustomRedirectURI {
 	rus := make([]CustomRedirectURI, len(raw))
 	for i, r := range raw {
-		rus[i] = CustomRedirectURI{
+		c := CustomRedirectURI{
 			MatchingMode: r.MatchingMode,
 			Url:          r.Url,
 		}
+		if r.RedirectUriType != nil {
+			c.RedirectUriType = *r.RedirectUriType
+		}
+		rus[i] = c
 	}
 	return rus
 }
@@ -243,10 +258,14 @@ func listToRedirectURIs(raw []any) []CustomRedirectURI {
 	rus := []CustomRedirectURI{}
 	for _, rr := range raw {
 		rd := rr.(map[string]any)
-		rus = append(rus, CustomRedirectURI{
+		c := CustomRedirectURI{
 			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
 			Url:          rd["url"].(string),
-		})
+		}
+		if t := redirectURITypeFromMap(rd); t != nil {
+			c.RedirectUriType = *t
+		}
+		rus = append(rus, c)
 	}
 	return rus
 }
@@ -254,10 +273,14 @@ func listToRedirectURIs(raw []any) []CustomRedirectURI {
 func redirectURIsToList(raw []CustomRedirectURI) []map[string]any {
 	rus := []map[string]any{}
 	for _, rr := range raw {
-		rus = append(rus, map[string]any{
+		entry := map[string]any{
 			"matching_mode": string(rr.MatchingMode),
 			"url":           rr.Url,
-		})
+		}
+		if rr.RedirectUriType != "" {
+			entry["redirect_uri_type"] = string(rr.RedirectUriType)
+		}
+		rus = append(rus, entry)
 	}
 	return rus
 }
