@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - version-*
   pull_request:
   schedule:
     - cron: "0 13 * * *"
