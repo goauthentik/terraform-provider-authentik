@@ -154,6 +154,15 @@ func resourcePolicyPasswordRead(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "amount_digits", res.AmountDigits)
 	helpers.SetWrapper(d, "length_min", res.LengthMin)
 	helpers.SetWrapper(d, "symbol_charset", res.SymbolCharset)
+
+	helpers.SetWrapper(d, "check_static_rules", res.CheckStaticRules)
+
+	helpers.SetWrapper(d, "check_have_i_been_pwned", res.CheckHaveIBeenPwned)
+	helpers.SetWrapper(d, "hibp_allowed_count", res.HibpAllowedCount)
+
+	helpers.SetWrapper(d, "check_zxcvbn", res.CheckZxcvbn)
+	helpers.SetWrapper(d, "zxcvbn_score_threshold", res.ZxcvbnScoreThreshold)
+
 	return diags
 }
 
