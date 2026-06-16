@@ -20,7 +20,7 @@ func TestAccDataSourceOAuth2ProviderConfig(t *testing.T) {
 				Config: testAccDataSourceOAuth2ProviderConfigSimple(rName, clientId, appName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "name", rName),
-					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "client_id", rName),
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "client_id", clientId),
 					resource.TestCheckResourceAttr("authentik_application.name", "name", appName),
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", appName),
 					resource.TestCheckResourceAttrSet("data.authentik_provider_oauth2_config.name", "issuer_url"),
