@@ -23,6 +23,7 @@ Get OAuth2 provider config
 
 - `authorize_url` (String) Generated.
 - `id` (String) The ID of this resource.
+- `client_id` (String) Generated.
 - `issuer_url` (String) Generated.
 - `jwks_url` (String) Generated.
 - `logout_url` (String) Generated.
