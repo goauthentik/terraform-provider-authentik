@@ -158,6 +158,7 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 	}
 
 	helpers.SetWrapper(d, "domain", res.Domain)
+	helpers.SetWrapper(d, "default", res.Default)
 	helpers.SetWrapper(d, "branding_title", res.BrandingTitle)
 	helpers.SetWrapper(d, "branding_logo", res.BrandingLogo)
 	helpers.SetWrapper(d, "branding_favicon", res.BrandingFavicon)
