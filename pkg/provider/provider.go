@@ -170,6 +170,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_user":                              tr(resourceUser),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
+			"authentik_application_entitlement":          td(dataSourceApplicationEntitlement),
 			"authentik_brand":                            td(dataSourceBrand),
 			"authentik_certificate_key_pair":             td(dataSourceCertificateKeyPair),
 			"authentik_flow":                             td(dataSourceFlow),
