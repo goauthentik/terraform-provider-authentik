@@ -191,6 +191,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_service_connection_kubernetes":    td(dataOutpostServiceConnectionsKubernetes),
 			"authentik_source":                           td(dataSourceSource),
 			"authentik_stage":                            td(dataSourceStage),
+			"authentik_stage_prompt_field":               td(dataSourceStagePromptField),
 			"authentik_user":                             td(dataSourceUser),
 			"authentik_users":                            td(dataSourceUsers),
 			"authentik_webauthn_device_type":             td(dataSourceWebAuthnDeviceType),
