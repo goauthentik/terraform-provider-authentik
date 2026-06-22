@@ -112,7 +112,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 		helpers.Slice32ToInt(res.Users),
 	))
 	helpers.SetWrapper(d, "roles", helpers.ListConsistentMerge(
-		helpers.CastSlice[string](d, "role"),
+		helpers.CastSlice[string](d, "roles"),
 		res.Roles,
 	))
 	return helpers.SetJSON(d, "attributes", res.Attributes)
