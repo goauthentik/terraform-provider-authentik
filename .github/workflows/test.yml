@@ -71,6 +71,8 @@ jobs:
           version: ${{ matrix.authentik_version }}
           sentry_env: goauthentik-terraform-ci
           enterprise_license: true
+          enterprise_license_users_internal: 100
+          enterprise_license_users_external: 100
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: ${{ matrix.terraform }}
