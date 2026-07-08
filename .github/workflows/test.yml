@@ -65,11 +65,12 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      - uses: goauthentik/action-setup-authentik@9640994d98397fb40b525e6795c29d407ad201fa # v2.0
+      - uses: goauthentik/action-setup-authentik@9b0996a6bb09a217fa6f8145d4e0a0865a5df516 # v2.1
         id: setup
         with:
           version: ${{ matrix.authentik_version }}
           sentry_env: goauthentik-terraform-ci
+          enterprise_license: true
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: ${{ matrix.terraform }}
