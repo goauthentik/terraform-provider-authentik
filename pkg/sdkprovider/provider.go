@@ -1,18 +1,12 @@
 package sdkprovider
 
 import (
-	"bytes"
 	"context"
-	"crypto/tls"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api "goauthentik.io/api/v3"
@@ -218,9 +212,6 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			insecure, _ = strconv.ParseBool(os.Getenv("AUTHENTIK_INSECURE"))
 		}
 
-		// Warning or errors can be collected in a slice type
-		var diags diag.Diagnostics
-
 		if apiURL == "" {
 			return nil, diag.Errorf("no authentik URL configured, set `url` or the AUTHENTIK_URL environment variable")
 		}
@@ -228,136 +219,27 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 			return nil, diag.Errorf("no authentik token configured, set `token` or the AUTHENTIK_TOKEN environment variable")
 		}
 
-		akURL, err := url.Parse(apiURL)
+		headers := map[string]string{}
+		if _headers, ok := d.GetOk("headers"); ok {
+			for headerName, headerValue := range _headers.(map[string]any) {
+				headers[headerName] = headerValue.(string)
+			}
+		}
+
+		apiClient, err := helpers.NewAPIClient(c, helpers.ClientOptions{
+			URL:      apiURL,
+			Token:    token,
+			Insecure: insecure,
+			Headers:  headers,
+			Version:  version,
+			Testing:  testing,
+		})
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
 
-		config := api.NewConfiguration()
-		config.Debug = true
-		config.UserAgent = fmt.Sprintf("authentik-terraform@%s", version)
-
-		// Construct full server URL including path component and /api/v3 suffix
-		// This ensures subpath deployments (e.g., https://api.example.com/sso/) work correctly
-		// The OpenAPI client expects the server URL to include the /api/v3 path
-		path := akURL.Path
-		if !strings.HasSuffix(path, "/api/v3") {
-			path, err = url.JoinPath(path, "/api/v3")
-			if err != nil {
-				return nil, diag.FromErr(err)
-			}
-		}
-		akURL.Path = path
-
-		config.Servers = api.ServerConfigurations{
-			{
-				URL:         akURL.String(),
-				Description: "authentik API Server",
-			},
-		}
-
-		config.HTTPClient = &http.Client{
-			Transport: GetTLSTransport(insecure),
-		}
-		if testing {
-			config.HTTPClient = &http.Client{
-				Transport: NewTestingTransport(config.HTTPClient.Transport),
-			}
-		}
-
-		config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
-		if _headers, ok := d.GetOk("headers"); ok {
-			headers := _headers.(map[string]any)
-			for headerName, headerValue := range headers {
-				config.AddDefaultHeader(headerName, headerValue.(string))
-			}
-		}
-		apiClient := api.NewAPIClient(config)
-
-		rootConfig, _, err := apiClient.RootAPI.RootConfigRetrieve(context.Background()).Execute()
-		if err == nil && rootConfig.ErrorReporting.Enabled {
-			dsn := ""
-			// Customisable Sentry DSN was added in 2022.11, so only use that DSN when its set
-			if rootConfig.ErrorReporting.SentryDsn != "" {
-				dsn = rootConfig.ErrorReporting.SentryDsn
-			}
-			if envDsn, found := os.LookupEnv("SENTRY_DSN"); found {
-				dsn = envDsn
-			}
-			err := sentry.Init(sentry.ClientOptions{
-				Dsn:              dsn,
-				EnableTracing:    true,
-				Environment:      rootConfig.ErrorReporting.Environment,
-				TracesSampleRate: float64(rootConfig.ErrorReporting.TracesSampleRate),
-				Release:          fmt.Sprintf("terraform-provider-authentik@%s", version),
-			})
-			if err != nil {
-				fmt.Printf("Error during sentry init: %v\n", err)
-			} else {
-				config.HTTPClient.Transport = NewTracingTransport(context.Background(), config.HTTPClient.Transport)
-				apiClient = api.NewAPIClient(config)
-			}
-		}
-
 		return &APIClient{
 			client: apiClient,
-		}, diags
+		}, nil
 	}
-}
-
-// TestingTransport Transport used for testing, always returns a 400 Response
-type TestingTransport struct {
-	inner http.RoundTripper
-}
-
-// NewTestingTransport Get a HTTP Transport that fails all requests
-func NewTestingTransport(inner http.RoundTripper) *TestingTransport {
-	return &TestingTransport{inner}
-}
-
-// RoundTrip HTTP Transport
-func (tt *TestingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	body := "mock-failed-request"
-	return &http.Response{
-		Status:        "400 Bad Request",
-		StatusCode:    400,
-		Proto:         "HTTP/1.1",
-		ProtoMajor:    1,
-		ProtoMinor:    1,
-		Body:          io.NopCloser(bytes.NewBufferString(body)),
-		ContentLength: int64(len(body)),
-		Request:       r,
-		Header:        make(http.Header),
-	}, nil
-}
-
-// GetTLSTransport Get a TLS transport instance, that skips verification if configured via environment variables.
-func GetTLSTransport(insecure bool) http.RoundTripper {
-	transport := &http.Transport{
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: insecure,
-		},
-		Proxy: http.ProxyFromEnvironment,
-	}
-	return transport
-}
-
-type tracingTransport struct {
-	inner http.RoundTripper
-	ctx   context.Context
-}
-
-func NewTracingTransport(ctx context.Context, inner http.RoundTripper) *tracingTransport {
-	return &tracingTransport{inner, ctx}
-}
-
-func (tt *tracingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	span := sentry.StartSpan(tt.ctx, "authentik.go.http_request")
-	r.Header.Set("sentry-trace", span.ToSentryTrace())
-	span.Description = fmt.Sprintf("%s %s", r.Method, r.URL.String())
-	span.SetTag("url", r.URL.String())
-	span.SetTag("method", r.Method)
-	defer span.Finish()
-	res, err := tt.inner.RoundTrip(r.WithContext(span.Context()))
-	return res, err
 }

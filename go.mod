@@ -5,8 +5,10 @@ go 1.26
 require (
 	github.com/getsentry/sentry-go v0.48.0
 	github.com/hashicorp/go-cty v1.5.0
+	github.com/hashicorp/terraform-plugin-framework v1.19.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.40.1
 	github.com/hashicorp/terraform-plugin-testing v1.16.0
+	github.com/mitchellh/go-testing-interface v1.14.1
 	github.com/stretchr/testify v1.11.1
 	goauthentik.io/api/v3 v3.2026050.0-rc2
 )
@@ -57,7 +59,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
-	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
