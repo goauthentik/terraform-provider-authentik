@@ -129,7 +129,7 @@ func resourceSourceTelegramCreate(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourceSourceTelegramSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesTelegramCreate(ctx).TelegramSourceRequest(*r).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesTelegramCreate(ctx).TelegramSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -141,7 +141,7 @@ func resourceSourceTelegramCreate(ctx context.Context, d *schema.ResourceData, m
 func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesTelegramRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesTelegramRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -175,7 +175,7 @@ func resourceSourceTelegramUpdate(ctx context.Context, d *schema.ResourceData, m
 	c := m.(*APIClient)
 	app := resourceSourceTelegramSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesTelegramUpdate(ctx, d.Id()).TelegramSourceRequest(*app).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesTelegramUpdate(ctx, d.Id()).TelegramSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -186,7 +186,7 @@ func resourceSourceTelegramUpdate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceSourceTelegramDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesTelegramDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.SourcesAPI.SourcesTelegramDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

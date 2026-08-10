@@ -79,6 +79,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_endpoints_connector_agent":                  tr(resourceEndpointsConnectorAgent),
 			"authentik_endpoints_connector_agent_enrollment_token": tr(resourceEndpointsEnrollmentToken),
 			"authentik_endpoints_device_access_group":              tr(resourceEndpointsDeviceAccessGroup),
+			"authentik_endpoints_google_chrome_connector":          tr(resourceEndpointsGoogleChromeConnector),
 			"authentik_enterprise_license":                         tr(resourceEnterpriseLicense),
 			"authentik_event_rule":                                 tr(resourceEventRule),
 			"authentik_event_transport":                            tr(resourceEventTransport),
@@ -120,6 +121,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_provider_saml":                              tr(resourceProviderSAML),
 			"authentik_provider_scim":                              tr(resourceProviderSCIM),
 			"authentik_provider_ssf":                               tr(resourceProviderSSF),
+			"authentik_provider_ws_federation":                     tr(resourceProviderWSFederation),
 			"authentik_rac_endpoint":                               tr(resourceRACEndpoint),
 			"authentik_rbac_initial_permissions":                   tr(resourceRBACInitialPermissions),
 			"authentik_rbac_permission_role":                       tr(resourceRBACRoleObjectPermission),
@@ -135,6 +137,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_source_saml":                       tr(resourceSourceSAML),
 			"authentik_source_scim":                       tr(resourceSourceSCIM),
 			"authentik_source_telegram":                   tr(resourceSourceTelegram),
+			"authentik_stage_account_lockdown":            tr(resourceStageAccountLockdown),
 			"authentik_stage_authenticator_duo":           tr(resourceStageAuthenticatorDuo),
 			"authentik_stage_authenticator_email":         tr(resourceStageAuthenticatorEmail),
 			"authentik_stage_authenticator_endpoint_gdtc": tr(resourceStageAuthenticatorEndpointGDTC),
@@ -167,12 +170,15 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_user":                              tr(resourceUser),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
+			"authentik_application_entitlement":          td(dataSourceApplicationEntitlement),
 			"authentik_brand":                            td(dataSourceBrand),
 			"authentik_certificate_key_pair":             td(dataSourceCertificateKeyPair),
 			"authentik_flow":                             td(dataSourceFlow),
 			"authentik_group":                            td(dataSourceGroup),
 			"authentik_groups":                           td(dataSourceGroups),
 			"authentik_outpost":                          td(dataSourceOutpost),
+			"authentik_policy_binding":                   td(dataSourcePolicyBinding),
+			"authentik_policy_expression":                td(dataSourcePolicyExpression),
 			"authentik_property_mapping_provider_rac":    td(dataSourcePropertyMappingProviderRAC),
 			"authentik_property_mapping_provider_radius": td(dataSourcePropertyMappingProviderRadius),
 			"authentik_property_mapping_provider_saml":   td(dataSourcePropertyMappingProviderSAML),
@@ -185,6 +191,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_service_connection_kubernetes":    td(dataOutpostServiceConnectionsKubernetes),
 			"authentik_source":                           td(dataSourceSource),
 			"authentik_stage":                            td(dataSourceStage),
+			"authentik_stage_prompt_field":               td(dataSourceStagePromptField),
 			"authentik_user":                             td(dataSourceUser),
 			"authentik_users":                            td(dataSourceUsers),
 			"authentik_webauthn_device_type":             td(dataSourceWebAuthnDeviceType),
@@ -253,7 +260,7 @@ func providerConfigure(version string, testing bool) schema.ConfigureContextFunc
 		}
 		apiClient := api.NewAPIClient(config)
 
-		rootConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+		rootConfig, _, err := apiClient.RootAPI.RootConfigRetrieve(context.Background()).Execute()
 		if err == nil && rootConfig.ErrorReporting.Enabled {
 			dsn := ""
 			// Customisable Sentry DSN was added in 2022.11, so only use that DSN when its set

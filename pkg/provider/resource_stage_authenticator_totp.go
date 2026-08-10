@@ -59,7 +59,7 @@ func resourceStageAuthenticatorTOTPCreate(ctx context.Context, d *schema.Resourc
 
 	r := resourceStageAuthenticatorTOTPSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpCreate(ctx).AuthenticatorTOTPStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorTotpCreate(ctx).AuthenticatorTOTPStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -72,7 +72,7 @@ func resourceStageAuthenticatorTOTPRead(ctx context.Context, d *schema.ResourceD
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorTotpRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -89,7 +89,7 @@ func resourceStageAuthenticatorTOTPUpdate(ctx context.Context, d *schema.Resourc
 
 	app := resourceStageAuthenticatorTOTPSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorTotpUpdate(ctx, d.Id()).AuthenticatorTOTPStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorTotpUpdate(ctx, d.Id()).AuthenticatorTOTPStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -100,7 +100,7 @@ func resourceStageAuthenticatorTOTPUpdate(ctx context.Context, d *schema.Resourc
 
 func resourceStageAuthenticatorTOTPDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorTotpDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesAuthenticatorTotpDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

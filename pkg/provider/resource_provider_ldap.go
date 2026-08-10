@@ -96,7 +96,7 @@ func resourceProviderLDAPCreate(ctx context.Context, d *schema.ResourceData, m a
 
 	r := resourceProviderLDAPSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersLdapCreate(ctx).LDAPProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersLdapCreate(ctx).LDAPProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -112,7 +112,7 @@ func resourceProviderLDAPRead(ctx context.Context, d *schema.ResourceData, m any
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersLdapRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersLdapRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -139,7 +139,7 @@ func resourceProviderLDAPUpdate(ctx context.Context, d *schema.ResourceData, m a
 	}
 	app := resourceProviderLDAPSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersLdapUpdate(ctx, int32(id)).LDAPProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersLdapUpdate(ctx, int32(id)).LDAPProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -154,7 +154,7 @@ func resourceProviderLDAPDelete(ctx context.Context, d *schema.ResourceData, m a
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersLdapDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersLdapDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

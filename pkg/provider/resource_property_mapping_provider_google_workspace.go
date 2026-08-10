@@ -46,7 +46,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d
 
 	r := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderMappingRequest(*r).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -59,7 +59,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -74,7 +74,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d
 
 	app := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceUpdate(ctx, d.Id()).GoogleWorkspaceProviderMappingRequest(*app).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceUpdate(ctx, d.Id()).GoogleWorkspaceProviderMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -85,7 +85,7 @@ func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d
 
 func resourcePropertyMappingProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -44,15 +44,21 @@ func resourceProviderSSF() *schema.Resource {
 				Description:      helpers.RelativeDurationDescription,
 				ValidateDiagFunc: helpers.ValidateRelativeDuration,
 			},
+			"push_verify_certificates": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
 
 func resourceProviderSSFSchemaToProvider(d *schema.ResourceData) (*api.SSFProviderRequest, diag.Diagnostics) {
 	r := api.SSFProviderRequest{
-		Name:           d.Get("name").(string),
-		SigningKey:     d.Get("signing_key").(string),
-		EventRetention: new(d.Get("event_retention").(string)),
+		Name:                   d.Get("name").(string),
+		SigningKey:             d.Get("signing_key").(string),
+		EventRetention:         new(d.Get("event_retention").(string)),
+		PushVerifyCertificates: new(d.Get("push_verify_certificates").(bool)),
 	}
 	providers := d.Get("jwt_federation_providers").([]any)
 	r.OidcAuthProviders = make([]int32, len(providers))
@@ -70,7 +76,7 @@ func resourceProviderSSFCreate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersSsfCreate(ctx).SSFProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSsfCreate(ctx).SSFProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -86,12 +92,13 @@ func resourceProviderSSFRead(ctx context.Context, d *schema.ResourceData, m any)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersSsfRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSsfRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
 	helpers.SetWrapper(d, "name", res.Name)
+	helpers.SetWrapper(d, "push_verify_certificates", res.PushVerifyCertificates)
 	return diags
 }
 
@@ -106,7 +113,7 @@ func resourceProviderSSFUpdate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.ProvidersApi.ProvidersSsfUpdate(ctx, int32(id)).SSFProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersSsfUpdate(ctx, int32(id)).SSFProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -121,7 +128,7 @@ func resourceProviderSSFDelete(ctx context.Context, d *schema.ResourceData, m an
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersSsfDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersSsfDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

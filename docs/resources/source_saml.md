@@ -64,6 +64,7 @@ resource "authentik_source_saml" "name" {
 - `enabled` (Boolean) Defaults to `true`.
 - `encryption_kp` (String)
 - `enrollment_flow` (String)
+- `force_authn` (Boolean) Defaults to `false`.
 - `group_matching_mode` (String) Allowed values:
   - `identifier`
   - `name_link`

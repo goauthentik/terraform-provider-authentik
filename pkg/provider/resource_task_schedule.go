@@ -62,7 +62,7 @@ func resourceTaskScheduleImport(ctx context.Context, d *schema.ResourceData, m a
 
 	parts := strings.Split(d.Get("app_model").(string), ".")
 
-	req := c.client.TasksApi.
+	req := c.client.TasksAPI.
 		TasksSchedulesList(ctx).
 		RelObjContentTypeAppLabel(parts[0]).
 		RelObjContentTypeModel(parts[1]).
@@ -100,7 +100,7 @@ func resourceTaskScheduleRead(ctx context.Context, d *schema.ResourceData, m any
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.TasksApi.TasksSchedulesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.TasksAPI.TasksSchedulesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -117,7 +117,7 @@ func resourceTaskScheduleUpdate(ctx context.Context, d *schema.ResourceData, m a
 
 	app := resourceTaskScheduleSchemaToProvider(d)
 
-	res, hr, err := c.client.TasksApi.TasksSchedulesPartialUpdate(ctx, d.Id()).
+	res, hr, err := c.client.TasksAPI.TasksSchedulesPartialUpdate(ctx, d.Id()).
 		PatchedScheduleRequest(app).
 		Execute()
 	if err != nil {

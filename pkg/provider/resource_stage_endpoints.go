@@ -53,7 +53,7 @@ func resourceStageEndpointsCreate(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourceStageEndpointsSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEndpointsCreate(ctx).EndpointStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesEndpointsCreate(ctx).EndpointStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -66,7 +66,7 @@ func resourceStageEndpointsRead(ctx context.Context, d *schema.ResourceData, m a
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesEndpointsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesEndpointsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -82,7 +82,7 @@ func resourceStageEndpointsUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	app := resourceStageEndpointsSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesEndpointsUpdate(ctx, d.Id()).EndpointStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesEndpointsUpdate(ctx, d.Id()).EndpointStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -93,7 +93,7 @@ func resourceStageEndpointsUpdate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceStageEndpointsDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesEndpointsDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesEndpointsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

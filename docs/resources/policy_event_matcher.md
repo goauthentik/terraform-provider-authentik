@@ -98,14 +98,18 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik.blueprints`
   - `authentik.enterprise.audit`
   - `authentik.enterprise.endpoints.connectors.agent`
+  - `authentik.enterprise.endpoints.connectors.fleet`
+  - `authentik.enterprise.endpoints.connectors.google_chrome`
+  - `authentik.enterprise.lifecycle`
   - `authentik.enterprise.policies.unique_password`
   - `authentik.enterprise.providers.google_workspace`
   - `authentik.enterprise.providers.microsoft_entra`
   - `authentik.enterprise.providers.radius`
   - `authentik.enterprise.providers.scim`
   - `authentik.enterprise.providers.ssf`
+  - `authentik.enterprise.providers.ws_federation`
   - `authentik.enterprise.reports`
-  - `authentik.enterprise.search`
+  - `authentik.enterprise.stages.account_lockdown`
   - `authentik.enterprise.stages.authenticator_endpoint_gdtc`
   - `authentik.enterprise.stages.mtls`
   - `authentik.enterprise.stages.source`
@@ -217,16 +221,24 @@ resource "authentik_policy_event_matcher" "name" {
   - `authentik_tasks_schedules.schedule`
   - `authentik_brands.brand`
   - `authentik_blueprints.blueprintinstance`
+  - `authentik_endpoints_connectors_fleet.fleetconnector`
+  - `authentik_endpoints_connectors_google_chrome.googlechromeconnector`
+  - `authentik_lifecycle.lifecyclerule`
+  - `authentik_lifecycle.lifecycleiteration`
+  - `authentik_lifecycle.review`
   - `authentik_policies_unique_password.uniquepasswordpolicy`
   - `authentik_providers_google_workspace.googleworkspaceprovider`
   - `authentik_providers_google_workspace.googleworkspaceprovidermapping`
   - `authentik_providers_microsoft_entra.microsoftentraprovider`
   - `authentik_providers_microsoft_entra.microsoftentraprovidermapping`
   - `authentik_providers_ssf.ssfprovider`
+  - `authentik_providers_ws_federation.wsfederationprovider`
   - `authentik_reports.dataexport`
+  - `authentik_stages_account_lockdown.accountlockdownstage`
   - `authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage`
   - `authentik_stages_mtls.mutualtlsstage`
   - `authentik_stages_source.sourcestage`
+- `query` (String)
 
 ### Read-Only
 

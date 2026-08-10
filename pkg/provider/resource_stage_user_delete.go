@@ -40,7 +40,7 @@ func resourceStageUserDeleteCreate(ctx context.Context, d *schema.ResourceData, 
 
 	r := resourceStageUserDeleteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserDeleteCreate(ctx).UserDeleteStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserDeleteCreate(ctx).UserDeleteStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -53,7 +53,7 @@ func resourceStageUserDeleteRead(ctx context.Context, d *schema.ResourceData, m 
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesUserDeleteRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserDeleteRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -67,7 +67,7 @@ func resourceStageUserDeleteUpdate(ctx context.Context, d *schema.ResourceData, 
 
 	app := resourceStageUserDeleteSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserDeleteUpdate(ctx, d.Id()).UserDeleteStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserDeleteUpdate(ctx, d.Id()).UserDeleteStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -78,7 +78,7 @@ func resourceStageUserDeleteUpdate(ctx context.Context, d *schema.ResourceData, 
 
 func resourceStageUserDeleteDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesUserDeleteDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesUserDeleteDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

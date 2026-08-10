@@ -51,6 +51,16 @@ func resourceProviderOAuth2() *schema.Resource {
 				Description:      helpers.EnumToDescription(api.AllowedClientTypeEnumEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedClientTypeEnumEnumValues),
 			},
+			"grant_types": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					Description:      helpers.EnumToDescription(api.AllowedGrantTypesEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGrantTypesEnumEnumValues),
+				},
+			},
 			"client_id": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -188,7 +198,26 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		RedirectUris:           listToRedirectURIsRequest(d.Get("allowed_redirect_uris").([]any)),
 		JwtFederationProviders: helpers.CastSliceInt32(d.Get("jwt_federation_providers").([]any)),
 	}
+
+	// Only send grant_types when explicitly set; the API rejects an empty list and
+	// otherwise derives the value from the provider configuration server-side.
+	if raw := d.Get("grant_types").([]any); len(raw) > 0 {
+		grantTypes := make([]api.GrantTypesEnum, 0, len(raw))
+		for _, gt := range raw {
+			grantTypes = append(grantTypes, api.GrantTypesEnum(gt.(string)))
+		}
+		r.GrantTypes = grantTypes
+	}
 	return &r
+}
+
+func redirectURITypeFromMap(rd map[string]any) *api.RedirectURITypeEnum {
+	v, ok := rd["redirect_uri_type"].(string)
+	if !ok || v == "" {
+		return nil
+	}
+	t := api.RedirectURITypeEnum(v)
+	return &t
 }
 
 func listToRedirectURIsRequest(raw []any) []api.RedirectURIRequest {
@@ -196,32 +225,62 @@ func listToRedirectURIsRequest(raw []any) []api.RedirectURIRequest {
 	for _, rr := range raw {
 		rd := rr.(map[string]any)
 		rus = append(rus, api.RedirectURIRequest{
-			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
-			Url:          rd["url"].(string),
+			MatchingMode:    api.MatchingModeEnum(rd["matching_mode"].(string)),
+			Url:             rd["url"].(string),
+			RedirectUriType: redirectURITypeFromMap(rd),
 		})
 	}
 	return rus
 }
 
-func listToRedirectURIs(raw []any) []api.RedirectURI {
-	rus := []api.RedirectURI{}
+type CustomRedirectURI struct {
+	MatchingMode    api.MatchingModeEnum    `json:"matching_mode"`
+	Url             string                  `json:"url"`
+	RedirectUriType api.RedirectURITypeEnum `json:"redirect_uri_type,omitempty"`
+}
+
+func castRedirectURIs(raw []api.RedirectURI) []CustomRedirectURI {
+	rus := make([]CustomRedirectURI, len(raw))
+	for i, r := range raw {
+		c := CustomRedirectURI{
+			MatchingMode: r.MatchingMode,
+			Url:          r.Url,
+		}
+		if r.RedirectUriType != nil {
+			c.RedirectUriType = *r.RedirectUriType
+		}
+		rus[i] = c
+	}
+	return rus
+}
+
+func listToRedirectURIs(raw []any) []CustomRedirectURI {
+	rus := []CustomRedirectURI{}
 	for _, rr := range raw {
 		rd := rr.(map[string]any)
-		rus = append(rus, api.RedirectURI{
+		c := CustomRedirectURI{
 			MatchingMode: api.MatchingModeEnum(rd["matching_mode"].(string)),
 			Url:          rd["url"].(string),
-		})
+		}
+		if t := redirectURITypeFromMap(rd); t != nil {
+			c.RedirectUriType = *t
+		}
+		rus = append(rus, c)
 	}
 	return rus
 }
 
-func redirectURIsToList(raw []api.RedirectURI) []map[string]any {
+func redirectURIsToList(raw []CustomRedirectURI) []map[string]any {
 	rus := []map[string]any{}
 	for _, rr := range raw {
-		rus = append(rus, map[string]any{
+		entry := map[string]any{
 			"matching_mode": string(rr.MatchingMode),
 			"url":           rr.Url,
-		})
+		}
+		if rr.RedirectUriType != "" {
+			entry["redirect_uri_type"] = string(rr.RedirectUriType)
+		}
+		rus = append(rus, entry)
 	}
 	return rus
 }
@@ -231,7 +290,7 @@ func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourceProviderOAuth2SchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Create(ctx).OAuth2ProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersOauth2Create(ctx).OAuth2ProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -247,7 +306,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m a
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Retrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersOauth2Retrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -259,6 +318,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "client_id", res.ClientId)
 	helpers.SetWrapper(d, "client_secret", res.ClientSecret)
 	helpers.SetWrapper(d, "client_type", res.ClientType)
+	helpers.SetWrapper(d, "grant_types", res.GrantTypes)
 	helpers.SetWrapper(d, "include_claims_in_id_token", res.IncludeClaimsInIdToken)
 	helpers.SetWrapper(d, "issuer_mode", res.IssuerMode)
 	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
@@ -270,7 +330,7 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(
 		helpers.ListConsistentMerge(
 			listToRedirectURIs(d.Get("allowed_redirect_uris").([]any)),
-			res.RedirectUris,
+			castRedirectURIs(res.RedirectUris),
 		),
 	))
 	helpers.SetWrapper(d, "signing_key", res.SigningKey.Get())
@@ -299,7 +359,7 @@ func resourceProviderOAuth2Update(ctx context.Context, d *schema.ResourceData, m
 	}
 	app := resourceProviderOAuth2SchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersOauth2Update(ctx, int32(id)).OAuth2ProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersOauth2Update(ctx, int32(id)).OAuth2ProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -314,7 +374,7 @@ func resourceProviderOAuth2Delete(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersOauth2Destroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersOauth2Destroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

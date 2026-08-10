@@ -36,8 +36,13 @@ resource "authentik_stage_authenticator_validate" "name" {
 
 - `configuration_stages` (List of String)
 - `device_classes` (List of String)
+- `email_otp_throttling_factor` (Number) Defaults to `1`.
 - `last_auth_threshold` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `seconds=0`.
+- `sms_otp_throttling_factor` (Number) Defaults to `1`.
+- `static_otp_throttling_factor` (Number) Defaults to `1`.
+- `totp_otp_throttling_factor` (Number) Defaults to `1`.
 - `webauthn_allowed_device_types` (List of String)
+- `webauthn_hints` (List of String)
 - `webauthn_user_verification` (String) Allowed values:
   - `required`
   - `preferred`

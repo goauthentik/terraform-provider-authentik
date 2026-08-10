@@ -26,8 +26,5 @@ data "authentik_outpost" "by_id" {
 
 ### Optional
 
+- `id` (String) Generated.
 - `name` (String)
-
-### Read-Only
-
-- `id` (String) The ID of this resource.

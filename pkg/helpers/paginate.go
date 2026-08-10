@@ -27,6 +27,8 @@ type PaginatorOptions struct {
 	PageSize int
 }
 
+const DefaultPageSize = 10
+
 // Automatically fetch all objects from an API endpoint using the pagination
 // data received from the server.
 func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
@@ -34,6 +36,9 @@ func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
 	opts PaginatorOptions,
 ) ([]Tobj, *http.Response, error) {
 	var bfreq, cfreq any
+	if opts.PageSize < 1 {
+		opts.PageSize = DefaultPageSize
+	}
 	fetchOffset := func(page int32) (Tres, *http.Response, error) {
 		bfreq = req.Page(page)
 		cfreq = bfreq.(PaginatorRequest[Treq, Tres]).PageSize(int32(opts.PageSize))

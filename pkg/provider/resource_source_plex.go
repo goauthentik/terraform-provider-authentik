@@ -129,7 +129,7 @@ func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m any
 
 	r := resourceSourcePlexSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesPlexCreate(ctx).PlexSourceRequest(*r).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesPlexCreate(ctx).PlexSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -141,7 +141,7 @@ func resourceSourcePlexCreate(ctx context.Context, d *schema.ResourceData, m any
 func resourceSourcePlexRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesPlexRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesPlexRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -173,7 +173,7 @@ func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m any
 	c := m.(*APIClient)
 	app := resourceSourcePlexSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesPlexUpdate(ctx, d.Id()).PlexSourceRequest(*app).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesPlexUpdate(ctx, d.Id()).PlexSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -184,7 +184,7 @@ func resourceSourcePlexUpdate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceSourcePlexDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesPlexDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.SourcesAPI.SourcesPlexDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

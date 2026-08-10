@@ -98,7 +98,7 @@ func resourceTokenCreate(ctx context.Context, d *schema.ResourceData, m any) dia
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreTokensCreate(ctx).TokenRequest(*app).Execute()
+	res, hr, err := c.client.CoreAPI.CoreTokensCreate(ctx).TokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -111,7 +111,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.CoreApi.CoreTokensRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.CoreAPI.CoreTokensRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -124,7 +124,7 @@ func resourceTokenRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 		helpers.SetWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
 	}
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
-		res, hr, err := c.client.CoreApi.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
+		res, hr, err := c.client.CoreAPI.CoreTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -140,7 +140,7 @@ func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m any) dia
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.CoreApi.CoreTokensUpdate(ctx, d.Id()).TokenRequest(*app).Execute()
+	res, hr, err := c.client.CoreAPI.CoreTokensUpdate(ctx, d.Id()).TokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -151,7 +151,7 @@ func resourceTokenUpdate(ctx context.Context, d *schema.ResourceData, m any) dia
 
 func resourceTokenDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.CoreApi.CoreTokensDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.CoreAPI.CoreTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

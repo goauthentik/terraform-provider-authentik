@@ -46,7 +46,7 @@ func resourcePropertyMappingProviderMicrosoftEntraCreate(ctx context.Context, d 
 
 	r := resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraCreate(ctx).MicrosoftEntraProviderMappingRequest(*r).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderMicrosoftEntraCreate(ctx).MicrosoftEntraProviderMappingRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -59,7 +59,7 @@ func resourcePropertyMappingProviderMicrosoftEntraRead(ctx context.Context, d *s
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderMicrosoftEntraRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -74,7 +74,7 @@ func resourcePropertyMappingProviderMicrosoftEntraUpdate(ctx context.Context, d 
 
 	app := resourcePropertyMappingProviderMicrosoftEntraSchemaToProvider(d)
 
-	res, hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraUpdate(ctx, d.Id()).MicrosoftEntraProviderMappingRequest(*app).Execute()
+	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderMicrosoftEntraUpdate(ctx, d.Id()).MicrosoftEntraProviderMappingRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -85,7 +85,7 @@ func resourcePropertyMappingProviderMicrosoftEntraUpdate(ctx context.Context, d 
 
 func resourcePropertyMappingProviderMicrosoftEntraDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsApi.PropertymappingsProviderMicrosoftEntraDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderMicrosoftEntraDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

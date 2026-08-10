@@ -26,7 +26,7 @@ func dataSourceStageRead(ctx context.Context, d *schema.ResourceData, m any) dia
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.StagesApi.StagesAllList(ctx)
+	req := c.client.StagesAPI.StagesAllList(ctx)
 	if s, ok := d.GetOk("name"); ok {
 		req = req.Name(s.(string))
 	}

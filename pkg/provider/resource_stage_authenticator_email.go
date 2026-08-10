@@ -126,7 +126,7 @@ func resourceStageAuthenticatorEmailCreate(ctx context.Context, d *schema.Resour
 
 	r := resourceStageAuthenticatorEmailSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailCreate(ctx).AuthenticatorEmailStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorEmailCreate(ctx).AuthenticatorEmailStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -139,7 +139,7 @@ func resourceStageAuthenticatorEmailRead(ctx context.Context, d *schema.Resource
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorEmailRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -166,7 +166,7 @@ func resourceStageAuthenticatorEmailUpdate(ctx context.Context, d *schema.Resour
 
 	app := resourceStageAuthenticatorEmailSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorEmailUpdate(ctx, d.Id()).AuthenticatorEmailStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorEmailUpdate(ctx, d.Id()).AuthenticatorEmailStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -177,7 +177,7 @@ func resourceStageAuthenticatorEmailUpdate(ctx context.Context, d *schema.Resour
 
 func resourceStageAuthenticatorEmailDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorEmailDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesAuthenticatorEmailDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

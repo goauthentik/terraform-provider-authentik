@@ -147,7 +147,7 @@ func setUser(data *schema.ResourceData, user api.User) diag.Diagnostics {
 }
 
 func dataSourceUserReadByPk(ctx context.Context, d *schema.ResourceData, c *APIClient, pk int) diag.Diagnostics {
-	req := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(pk))
+	req := c.client.CoreAPI.CoreUsersRetrieve(ctx, int32(pk))
 
 	res, hr, err := req.Execute()
 	if err != nil {
@@ -158,7 +158,7 @@ func dataSourceUserReadByPk(ctx context.Context, d *schema.ResourceData, c *APIC
 }
 
 func dataSourceUserReadByUsername(ctx context.Context, d *schema.ResourceData, c *APIClient, username string) diag.Diagnostics {
-	req := c.client.CoreApi.CoreUsersList(ctx)
+	req := c.client.CoreAPI.CoreUsersList(ctx)
 	req = req.Username(username)
 
 	res, hr, err := req.Execute()

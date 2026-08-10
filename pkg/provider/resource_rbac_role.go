@@ -43,7 +43,7 @@ func resourceRBACRoleCreate(ctx context.Context, d *schema.ResourceData, m any) 
 		return diags
 	}
 
-	res, hr, err := c.client.RbacApi.RbacRolesCreate(ctx).RoleRequest(*app).Execute()
+	res, hr, err := c.client.RbacAPI.RbacRolesCreate(ctx).RoleRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -56,7 +56,7 @@ func resourceRBACRoleRead(ctx context.Context, d *schema.ResourceData, m any) di
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.RbacApi.RbacRolesRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.RbacAPI.RbacRolesRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -72,7 +72,7 @@ func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m any) 
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.RbacApi.RbacRolesUpdate(ctx, d.Id()).RoleRequest(*app).Execute()
+	res, hr, err := c.client.RbacAPI.RbacRolesUpdate(ctx, d.Id()).RoleRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -83,7 +83,7 @@ func resourceRBACRoleUpdate(ctx context.Context, d *schema.ResourceData, m any) 
 
 func resourceRBACRoleDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.RbacApi.RbacRolesDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.RbacAPI.RbacRolesDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

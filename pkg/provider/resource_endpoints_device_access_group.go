@@ -43,7 +43,7 @@ func resourceEndpointsDeviceAccessGroupCreate(ctx context.Context, d *schema.Res
 		return diags
 	}
 
-	res, hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsCreate(ctx).DeviceAccessGroupRequest(*app).Execute()
+	res, hr, err := c.client.EndpointsAPI.EndpointsDeviceAccessGroupsCreate(ctx).DeviceAccessGroupRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -56,7 +56,7 @@ func resourceEndpointsDeviceAccessGroupRead(ctx context.Context, d *schema.Resou
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.EndpointsAPI.EndpointsDeviceAccessGroupsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -72,7 +72,7 @@ func resourceEndpointsDeviceAccessGroupUpdate(ctx context.Context, d *schema.Res
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsUpdate(ctx, d.Id()).DeviceAccessGroupRequest(*app).Execute()
+	res, hr, err := c.client.EndpointsAPI.EndpointsDeviceAccessGroupsUpdate(ctx, d.Id()).DeviceAccessGroupRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -83,7 +83,7 @@ func resourceEndpointsDeviceAccessGroupUpdate(ctx context.Context, d *schema.Res
 
 func resourceEndpointsDeviceAccessGroupDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.EndpointsApi.EndpointsDeviceAccessGroupsDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.EndpointsAPI.EndpointsDeviceAccessGroupsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

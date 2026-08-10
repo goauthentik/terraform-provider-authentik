@@ -79,7 +79,7 @@ func dataSourceGroups() *schema.Resource {
 func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
-	req := c.client.CoreApi.CoreGroupsList(ctx)
+	req := c.client.CoreAPI.CoreGroupsList(ctx)
 
 	for key, _schema := range dataSourceGroups().Schema {
 		var v any

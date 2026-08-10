@@ -43,9 +43,9 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 			"resident_key_requirement": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.RESIDENTKEYREQUIREMENTENUM_PREFERRED,
-				Description:      helpers.EnumToDescription(api.AllowedResidentKeyRequirementEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedResidentKeyRequirementEnumEnumValues),
+				Default:          api.USERVERIFICATIONENUM_PREFERRED,
+				Description:      helpers.EnumToDescription(api.AllowedUserVerificationEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserVerificationEnumEnumValues),
 			},
 			"authenticator_attachment": {
 				Type:             schema.TypeString,
@@ -64,20 +64,41 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"hints": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					Description:      helpers.EnumToDescription(api.AllowedWebAuthnHintEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedWebAuthnHintEnumEnumValues),
+				},
+			},
+			"prevent_duplicate_devices": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
 
 func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorWebAuthnStageRequest {
 	r := api.AuthenticatorWebAuthnStageRequest{
-		Name:                   d.Get("name").(string),
-		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
-		ResidentKeyRequirement: api.ResidentKeyRequirementEnum(d.Get("resident_key_requirement").(string)).Ptr(),
-		DeviceTypeRestrictions: helpers.CastSlice[string](d, "device_type_restrictions"),
-		FriendlyName:           helpers.GetP[string](d, "friendly_name"),
-		ConfigureFlow:          *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
-		MaxAttempts:            helpers.GetIntP(d, "max_attempts"),
+		Name:                    d.Get("name").(string),
+		UserVerification:        api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
+		ResidentKeyRequirement:  api.UserVerificationEnum(d.Get("resident_key_requirement").(string)).Ptr(),
+		DeviceTypeRestrictions:  helpers.CastSlice[string](d, "device_type_restrictions"),
+		FriendlyName:            helpers.GetP[string](d, "friendly_name"),
+		ConfigureFlow:           *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		MaxAttempts:             helpers.GetIntP(d, "max_attempts"),
+		PreventDuplicateDevices: new(d.Get("prevent_duplicate_devices").(bool)),
 	}
+
+	hints := make([]api.WebAuthnHintEnum, 0)
+	for _, hintS := range d.Get("hints").([]any) {
+		hints = append(hints, api.WebAuthnHintEnum(hintS.(string)))
+	}
+	r.Hints = hints
 
 	if x, set := d.GetOk("authenticator_attachment"); set {
 		r.AuthenticatorAttachment.Set(api.AuthenticatorAttachmentEnum(x.(string)).Ptr())
@@ -90,7 +111,7 @@ func resourceStageAuthenticatorWebAuthnCreate(ctx context.Context, d *schema.Res
 
 	r := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnCreate(ctx).AuthenticatorWebAuthnStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorWebauthnCreate(ctx).AuthenticatorWebAuthnStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -103,7 +124,7 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorWebauthnRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -119,6 +140,8 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 		res.DeviceTypeRestrictions,
 	))
 	helpers.SetWrapper(d, "max_attempts", res.MaxAttempts)
+	helpers.SetWrapper(d, "hints", res.Hints)
+	helpers.SetWrapper(d, "prevent_duplicate_devices", res.PreventDuplicateDevices)
 	return diags
 }
 
@@ -127,7 +150,7 @@ func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.Res
 
 	app := resourceStageAuthenticatorWebAuthnSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticatorWebAuthnStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesAuthenticatorWebauthnUpdate(ctx, d.Id()).AuthenticatorWebAuthnStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -138,7 +161,7 @@ func resourceStageAuthenticatorWebAuthnUpdate(ctx context.Context, d *schema.Res
 
 func resourceStageAuthenticatorWebAuthnDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesAuthenticatorWebauthnDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesAuthenticatorWebauthnDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

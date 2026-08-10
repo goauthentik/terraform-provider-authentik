@@ -188,7 +188,7 @@ func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m
 		return diags
 	}
 
-	res, hr, err := c.client.SourcesApi.SourcesKerberosCreate(ctx).KerberosSourceRequest(*r).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesKerberosCreate(ctx).KerberosSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -200,7 +200,7 @@ func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m
 func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesKerberosRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesKerberosRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -236,7 +236,7 @@ func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m
 		return diags
 	}
 
-	res, hr, err := c.client.SourcesApi.SourcesKerberosUpdate(ctx, d.Id()).KerberosSourceRequest(*app).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesKerberosUpdate(ctx, d.Id()).KerberosSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -247,7 +247,7 @@ func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesKerberosDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.SourcesAPI.SourcesKerberosDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

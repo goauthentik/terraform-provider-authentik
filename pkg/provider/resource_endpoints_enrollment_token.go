@@ -89,7 +89,7 @@ func resourceEndpointsEnrollmentTokenCreate(ctx context.Context, d *schema.Resou
 		return diags
 	}
 
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensCreate(ctx).EnrollmentTokenRequest(*app).Execute()
+	res, hr, err := c.client.EndpointsAPI.EndpointsAgentsEnrollmentTokensCreate(ctx).EnrollmentTokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -102,7 +102,7 @@ func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.Resourc
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.EndpointsAPI.EndpointsAgentsEnrollmentTokensRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -114,7 +114,7 @@ func resourceEndpointsEnrollmentTokenRead(ctx context.Context, d *schema.Resourc
 		helpers.SetWrapper(d, "expires_in", time.Until(*res.Expires.Get()).Seconds())
 	}
 	if rt, ok := d.Get("retrieve_key").(bool); ok && rt {
-		res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensViewKeyRetrieve(ctx, d.Id()).Execute()
+		res, hr, err := c.client.EndpointsAPI.EndpointsAgentsEnrollmentTokensViewKeyRetrieve(ctx, d.Id()).Execute()
 		if err != nil {
 			return helpers.HTTPToDiag(d, hr, err)
 		}
@@ -130,7 +130,7 @@ func resourceEndpointsEnrollmentTokenUpdate(ctx context.Context, d *schema.Resou
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensUpdate(ctx, d.Id()).EnrollmentTokenRequest(*app).Execute()
+	res, hr, err := c.client.EndpointsAPI.EndpointsAgentsEnrollmentTokensUpdate(ctx, d.Id()).EnrollmentTokenRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -141,7 +141,7 @@ func resourceEndpointsEnrollmentTokenUpdate(ctx context.Context, d *schema.Resou
 
 func resourceEndpointsEnrollmentTokenDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.EndpointsApi.EndpointsAgentsEnrollmentTokensDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.EndpointsAPI.EndpointsAgentsEnrollmentTokensDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

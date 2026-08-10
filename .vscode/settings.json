@@ -20,14 +20,8 @@
         "TF_LOG": "trace",
         "TF_ACC": "1",
     },
-    "gopls": {
-        "build.buildFlags": [
-            "-tags=enterprise",
-        ]
-    },
     "go.testFlags": [
         "-count=1"
     ],
-    "go.testTags": "enterprise",
     "go.testTimeout": "30m"
 }

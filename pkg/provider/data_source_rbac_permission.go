@@ -34,7 +34,7 @@ func dataSourceRBACPermissionRead(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.RbacApi.RbacPermissionsList(ctx)
+	req := c.client.RbacAPI.RbacPermissionsList(ctx)
 	if codename, ok := d.GetOk("codename"); ok {
 		req = req.Codename(codename.(string))
 	}

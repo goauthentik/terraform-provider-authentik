@@ -88,7 +88,7 @@ func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.RacApi.RacEndpointsCreate(ctx).EndpointRequest(*r).Execute()
+	res, hr, err := c.client.RacAPI.RacEndpointsCreate(ctx).EndpointRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -99,7 +99,7 @@ func resourceRACEndpointCreate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourceRACEndpointRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	res, hr, err := c.client.RacApi.RacEndpointsRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.RacAPI.RacEndpointsRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -123,7 +123,7 @@ func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m an
 		return diags
 	}
 
-	res, hr, err := c.client.RacApi.RacEndpointsUpdate(ctx, d.Id()).EndpointRequest(*app).Execute()
+	res, hr, err := c.client.RacAPI.RacEndpointsUpdate(ctx, d.Id()).EndpointRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -134,7 +134,7 @@ func resourceRACEndpointUpdate(ctx context.Context, d *schema.ResourceData, m an
 
 func resourceRACEndpointDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.RacApi.RacEndpointsDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.RacAPI.RacEndpointsDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

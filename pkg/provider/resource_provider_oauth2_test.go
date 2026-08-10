@@ -20,6 +20,8 @@ func TestAccResourceProviderOAuth2(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "name", rName),
 					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "client_id", rName),
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "allowed_redirect_uris.0.redirect_uri_type", "authorization"),
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "allowed_redirect_uris.1.redirect_uri_type", "logout"),
 					resource.TestCheckResourceAttr("authentik_application.name", "name", appName),
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", appName),
 				),
@@ -29,6 +31,8 @@ func TestAccResourceProviderOAuth2(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "name", rName+"test"),
 					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "client_id", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "allowed_redirect_uris.0.redirect_uri_type", "authorization"),
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "allowed_redirect_uris.1.redirect_uri_type", "logout"),
 					resource.TestCheckResourceAttr("authentik_application.name", "name", appName+"test"),
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", appName+"test"),
 				),
@@ -89,8 +93,14 @@ resource "authentik_provider_oauth2" "name" {
   invalidation_flow = data.authentik_flow.default-provider-invalidation-flow.id
   allowed_redirect_uris = [
     {
-      matching_mode = "strict",
-	  url = "http://localhost",
+      matching_mode     = "strict",
+      url               = "http://localhost/callback",
+      redirect_uri_type = "authorization",
+    },
+    {
+      matching_mode     = "strict",
+      url               = "http://localhost/",
+      redirect_uri_type = "logout",
     }
   ]
 }

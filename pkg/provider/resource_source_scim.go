@@ -91,7 +91,7 @@ func resourceSourceSCIMCreate(ctx context.Context, d *schema.ResourceData, m any
 
 	r := resourceSourceSCIMSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesScimCreate(ctx).SCIMSourceRequest(*r).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesScimCreate(ctx).SCIMSourceRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -103,7 +103,7 @@ func resourceSourceSCIMCreate(ctx context.Context, d *schema.ResourceData, m any
 func resourceSourceSCIMRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesApi.SourcesScimRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesScimRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -122,7 +122,7 @@ func resourceSourceSCIMRead(ctx context.Context, d *schema.ResourceData, m any) 
 		res.GroupPropertyMappings,
 	))
 
-	meta, hr, err := c.client.SourcesApi.SourcesScimRetrieve(ctx, d.Id()).Execute()
+	meta, hr, err := c.client.SourcesAPI.SourcesScimRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -135,7 +135,7 @@ func resourceSourceSCIMUpdate(ctx context.Context, d *schema.ResourceData, m any
 	c := m.(*APIClient)
 	app := resourceSourceSCIMSchemaToSource(d)
 
-	res, hr, err := c.client.SourcesApi.SourcesScimUpdate(ctx, d.Id()).SCIMSourceRequest(*app).Execute()
+	res, hr, err := c.client.SourcesAPI.SourcesScimUpdate(ctx, d.Id()).SCIMSourceRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -146,7 +146,7 @@ func resourceSourceSCIMUpdate(ctx context.Context, d *schema.ResourceData, m any
 
 func resourceSourceSCIMDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.SourcesApi.SourcesScimDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.SourcesAPI.SourcesScimDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

@@ -65,7 +65,7 @@ func dataSourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.Re
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsProviderSamlList(ctx)
+	req := c.client.PropertymappingsAPI.PropertymappingsProviderSamlList(ctx)
 
 	if _, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(helpers.CastSlice[string](d, "managed_list"))

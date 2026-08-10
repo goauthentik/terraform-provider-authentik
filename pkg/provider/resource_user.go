@@ -113,7 +113,7 @@ func resourceUserSetPassword(d *schema.ResourceData, c *APIClient, ctx context.C
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.CoreApi.CoreUsersSetPasswordCreate(ctx, int32(uid)).UserPasswordSetRequest(api.UserPasswordSetRequest{
+	hr, err := c.client.CoreAPI.CoreUsersSetPasswordCreate(ctx, int32(uid)).UserPasswordSetRequest(api.UserPasswordSetRequest{
 		Password: password,
 	}).Execute()
 	if err != nil {
@@ -131,7 +131,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m any) diag
 		return diags
 	}
 
-	res, hr, err := c.client.CoreApi.CoreUsersCreate(ctx).UserRequest(*app).Execute()
+	res, hr, err := c.client.CoreAPI.CoreUsersCreate(ctx).UserRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -153,7 +153,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m any) diag.D
 		return diag.FromErr(err)
 	}
 
-	res, hr, err := c.client.CoreApi.CoreUsersRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.CoreAPI.CoreUsersRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -186,7 +186,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m any) diag
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.CoreApi.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
+	res, hr, err := c.client.CoreAPI.CoreUsersUpdate(ctx, int32(id)).UserRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -206,7 +206,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m any) diag
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.CoreApi.CoreUsersDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.CoreAPI.CoreUsersDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

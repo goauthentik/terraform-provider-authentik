@@ -22,6 +22,7 @@ description: |-
 
 - `event_retention` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=30`.
 - `jwt_federation_providers` (List of Number) JWTs issued by any of the configured providers can be used to authenticate on behalf of this provider.
+- `push_verify_certificates` (Boolean) Defaults to `true`.
 - `signing_key` (String)
 
 ### Read-Only

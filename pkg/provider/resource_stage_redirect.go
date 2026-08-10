@@ -64,7 +64,7 @@ func resourceStageRedirectCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	r := resourceStageRedirectSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesRedirectCreate(ctx).RedirectStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesRedirectCreate(ctx).RedirectStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -77,7 +77,7 @@ func resourceStageRedirectRead(ctx context.Context, d *schema.ResourceData, m an
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesRedirectRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesRedirectRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -95,7 +95,7 @@ func resourceStageRedirectUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 	app := resourceStageRedirectSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesRedirectUpdate(ctx, d.Id()).RedirectStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesRedirectUpdate(ctx, d.Id()).RedirectStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -106,7 +106,7 @@ func resourceStageRedirectUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourceStageRedirectDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesRedirectDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesRedirectDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

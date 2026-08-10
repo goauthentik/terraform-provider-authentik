@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
@@ -44,12 +45,12 @@ func dataSourceFlowRead(ctx context.Context, d *schema.ResourceData, m any) diag
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.FlowsApi.FlowsInstancesList(ctx)
+	req := c.client.FlowsAPI.FlowsInstancesList(ctx)
 	if s, ok := d.GetOk("slug"); ok {
 		req = req.Slug(s.(string))
 	}
 	if des, ok := d.GetOk("designation"); ok {
-		req = req.Designation(des.(string))
+		req = req.Designation(api.FlowDesignationEnum(des.(string)))
 	}
 
 	res, hr, err := req.Execute()

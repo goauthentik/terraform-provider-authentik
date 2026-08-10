@@ -56,6 +56,7 @@ resource "authentik_application" "name" {
 - `backchannel_providers` (List of Number)
 - `group` (String)
 - `meta_description` (String)
+- `meta_hide` (Boolean) Defaults to `false`.
 - `meta_icon` (String)
 - `meta_launch_url` (String)
 - `meta_publisher` (String)

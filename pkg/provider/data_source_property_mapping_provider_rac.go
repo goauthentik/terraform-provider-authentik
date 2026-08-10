@@ -59,7 +59,7 @@ func dataSourcePropertyMappingProviderRACRead(ctx context.Context, d *schema.Res
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.PropertymappingsApi.PropertymappingsProviderRacList(ctx)
+	req := c.client.PropertymappingsAPI.PropertymappingsProviderRacList(ctx)
 
 	if _, ok := d.GetOk("managed_list"); ok {
 		req = req.Managed(helpers.CastSlice[string](d, "managed_list"))

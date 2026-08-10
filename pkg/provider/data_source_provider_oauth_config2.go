@@ -55,6 +55,10 @@ func dataSourceProviderOAuth2Config() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"client_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -63,9 +67,11 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
+	var clientId *string
+	var finalId int32
 	id, ok := d.GetOk("provider_id")
 	if !ok {
-		req := c.client.ProvidersApi.ProvidersOauth2List(ctx)
+		req := c.client.ProvidersAPI.ProvidersOauth2List(ctx)
 		if m, ok := d.Get("name").(string); ok {
 			req = req.Name(m)
 		}
@@ -77,11 +83,20 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 			return diag.Errorf("no matching providers found")
 		}
 		id = int(res.Results[0].Pk)
+		finalId = int32(id.(int))
+		clientId = res.Results[0].ClientId
+	} else {
+		finalId = int32(id.(int))
+		req := c.client.ProvidersAPI.ProvidersOauth2Retrieve(ctx, finalId)
+		res, hr, err := req.Execute()
+		if err != nil {
+			return helpers.HTTPToDiag(d, hr, err)
+		}
+		clientId = res.ClientId
 	}
-	finalId := int32(id.(int))
 	d.SetId(strconv.FormatInt(int64(finalId), 10))
 
-	meta, hr, err := c.client.ProvidersApi.ProvidersOauth2SetupUrlsRetrieve(ctx, finalId).Execute()
+	meta, hr, err := c.client.ProvidersAPI.ProvidersOauth2SetupUrlsRetrieve(ctx, finalId).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -92,5 +107,6 @@ func dataSourceProviderOAuth2ConfigRead(ctx context.Context, d *schema.ResourceD
 	helpers.SetWrapper(d, "provider_info_url", meta.ProviderInfo)
 	helpers.SetWrapper(d, "logout_url", meta.Logout)
 	helpers.SetWrapper(d, "jwks_url", meta.Jwks)
+	helpers.SetWrapper(d, "client_id", clientId)
 	return diags
 }

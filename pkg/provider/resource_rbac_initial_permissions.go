@@ -57,7 +57,7 @@ func resourceRBACInitialPermissionsCreate(ctx context.Context, d *schema.Resourc
 		return diags
 	}
 
-	res, hr, err := c.client.RbacApi.RbacInitialPermissionsCreate(ctx).InitialPermissionsRequest(*app).Execute()
+	res, hr, err := c.client.RbacAPI.RbacInitialPermissionsCreate(ctx).InitialPermissionsRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -74,7 +74,7 @@ func resourceRBACInitialPermissionsRead(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(err)
 	}
 
-	res, hr, err := c.client.RbacApi.RbacInitialPermissionsRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.RbacAPI.RbacInitialPermissionsRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -99,7 +99,7 @@ func resourceRBACInitialPermissionsUpdate(ctx context.Context, d *schema.Resourc
 	if di != nil {
 		return di
 	}
-	res, hr, err := c.client.RbacApi.RbacInitialPermissionsUpdate(ctx, int32(id)).InitialPermissionsRequest(*app).Execute()
+	res, hr, err := c.client.RbacAPI.RbacInitialPermissionsUpdate(ctx, int32(id)).InitialPermissionsRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -114,7 +114,7 @@ func resourceRBACInitialPermissionsDelete(ctx context.Context, d *schema.Resourc
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.RbacApi.RbacInitialPermissionsDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.RbacAPI.RbacInitialPermissionsDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

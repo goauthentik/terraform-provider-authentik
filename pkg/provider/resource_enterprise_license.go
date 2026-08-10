@@ -57,7 +57,7 @@ func resourceEnterpriseLicenseCreate(ctx context.Context, d *schema.ResourceData
 
 	r := resourceEnterpriseLicenseSchemaToProvider(d)
 
-	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseCreate(ctx).LicenseRequest(*r).Execute()
+	res, hr, err := c.client.EnterpriseAPI.EnterpriseLicenseCreate(ctx).LicenseRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -70,7 +70,7 @@ func resourceEnterpriseLicenseRead(ctx context.Context, d *schema.ResourceData, 
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.EnterpriseAPI.EnterpriseLicenseRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -88,7 +88,7 @@ func resourceEnterpriseLicenseUpdate(ctx context.Context, d *schema.ResourceData
 
 	app := resourceEnterpriseLicenseSchemaToProvider(d)
 
-	res, hr, err := c.client.EnterpriseApi.EnterpriseLicenseUpdate(ctx, d.Id()).LicenseRequest(*app).Execute()
+	res, hr, err := c.client.EnterpriseAPI.EnterpriseLicenseUpdate(ctx, d.Id()).LicenseRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -99,7 +99,7 @@ func resourceEnterpriseLicenseUpdate(ctx context.Context, d *schema.ResourceData
 
 func resourceEnterpriseLicenseDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.EnterpriseApi.EnterpriseLicenseDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.EnterpriseAPI.EnterpriseLicenseDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

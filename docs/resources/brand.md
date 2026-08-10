@@ -42,6 +42,7 @@ resource "authentik_brand" "default" {
 - `flow_authentication` (String)
 - `flow_device_code` (String)
 - `flow_invalidation` (String)
+- `flow_lockdown` (String)
 - `flow_recovery` (String)
 - `flow_unenrollment` (String)
 - `flow_user_settings` (String)

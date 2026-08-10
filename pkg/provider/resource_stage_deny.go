@@ -45,7 +45,7 @@ func resourceStageDenyCreate(ctx context.Context, d *schema.ResourceData, m any)
 
 	r := resourceStageDenySchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesDenyCreate(ctx).DenyStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesDenyCreate(ctx).DenyStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -58,7 +58,7 @@ func resourceStageDenyRead(ctx context.Context, d *schema.ResourceData, m any) d
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesDenyRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesDenyRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -73,7 +73,7 @@ func resourceStageDenyUpdate(ctx context.Context, d *schema.ResourceData, m any)
 
 	app := resourceStageDenySchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesDenyUpdate(ctx, d.Id()).DenyStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesDenyUpdate(ctx, d.Id()).DenyStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -84,7 +84,7 @@ func resourceStageDenyUpdate(ctx context.Context, d *schema.ResourceData, m any)
 
 func resourceStageDenyDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesDenyDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesDenyDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

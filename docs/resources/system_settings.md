@@ -31,7 +31,7 @@ resource "authentik_system_settings" "settings" {
 - `default_user_change_name` (Boolean) Defaults to `true`.
 - `default_user_change_username` (Boolean) Defaults to `false`.
 - `event_retention` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `days=365`.
-- `flags` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{"flows_refresh_others":false,"policies_buffered_access_view":false}`.
+- `flags` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{"core_default_app_access":false,"enterprise_audit_include_expanded_diff":false,"flows_continuous_login":false,"flows_refresh_others":false}`.
 - `footer_links` (List of Map of String)
 - `gdpr_compliance` (Boolean) Defaults to `true`.
 - `impersonation` (Boolean) Defaults to `true`.
@@ -48,4 +48,4 @@ resource "authentik_system_settings" "settings" {
 
 Import is supported using the following syntax:
 
-{{codefile "shell" "examples/resources/authentik_system_settings/import.sh"}}
+{{codefile "shell" "/Users/connorpeshek/projects/terraform-provider-authentik/examples/resources/authentik_system_settings/import.sh"}}

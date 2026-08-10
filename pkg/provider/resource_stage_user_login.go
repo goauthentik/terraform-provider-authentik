@@ -86,7 +86,7 @@ func resourceStageUserLoginCreate(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourceStageUserLoginSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserLoginCreate(ctx).UserLoginStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserLoginCreate(ctx).UserLoginStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -99,7 +99,7 @@ func resourceStageUserLoginRead(ctx context.Context, d *schema.ResourceData, m a
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesUserLoginRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserLoginRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -117,7 +117,7 @@ func resourceStageUserLoginUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	app := resourceStageUserLoginSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesUserLoginUpdate(ctx, d.Id()).UserLoginStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesUserLoginUpdate(ctx, d.Id()).UserLoginStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -128,7 +128,7 @@ func resourceStageUserLoginUpdate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceStageUserLoginDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesUserLoginDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesUserLoginDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

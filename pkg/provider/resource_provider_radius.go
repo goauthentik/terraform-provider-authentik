@@ -82,7 +82,7 @@ func resourceProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m
 
 	r := resourceProviderRadiusSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersRadiusCreate(ctx).RadiusProviderRequest(*r).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersRadiusCreate(ctx).RadiusProviderRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -98,7 +98,7 @@ func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m a
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	res, hr, err := c.client.ProvidersApi.ProvidersRadiusRetrieve(ctx, int32(id)).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersRadiusRetrieve(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -125,7 +125,7 @@ func resourceProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m
 	}
 	app := resourceProviderRadiusSchemaToProvider(d)
 
-	res, hr, err := c.client.ProvidersApi.ProvidersRadiusUpdate(ctx, int32(id)).RadiusProviderRequest(*app).Execute()
+	res, hr, err := c.client.ProvidersAPI.ProvidersRadiusUpdate(ctx, int32(id)).RadiusProviderRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -140,7 +140,7 @@ func resourceProviderRadiusDelete(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	hr, err := c.client.ProvidersApi.ProvidersRadiusDestroy(ctx, int32(id)).Execute()
+	hr, err := c.client.ProvidersAPI.ProvidersRadiusDestroy(ctx, int32(id)).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}

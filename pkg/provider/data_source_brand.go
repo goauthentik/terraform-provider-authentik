@@ -103,7 +103,7 @@ func dataSourceBrandRead(ctx context.Context, d *schema.ResourceData, m any) dia
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	req := c.client.CoreApi.CoreBrandsList(ctx)
+	req := c.client.CoreAPI.CoreBrandsList(ctx)
 	if s, ok := d.GetOk("domain"); ok {
 		req = req.Domain(s.(string))
 	}

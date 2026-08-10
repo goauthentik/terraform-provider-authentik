@@ -52,10 +52,12 @@ resource "authentik_provider_scim" "name" {
   - `aws`
   - `slack`
   - `sfdc`
+  - `webex`
+  - `vcenter`
  Defaults to `default`.
 - `dry_run` (Boolean) Defaults to `false`.
 - `exclude_users_service_account` (Boolean)
-- `filter_group` (String)
+- `group_filters` (List of String)
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
 - `service_provider_config_cache_timeout` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `hours=1`.

@@ -27,9 +27,9 @@ func resourceStageConsent() *schema.Resource {
 			"mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE,
-				Description:      helpers.EnumToDescription(api.AllowedConsentStageModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedConsentStageModeEnumEnumValues),
+				Default:          api.CONSENTMODEENUM_ALWAYS_REQUIRE,
+				Description:      helpers.EnumToDescription(api.AllowedConsentModeEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedConsentModeEnumEnumValues),
 			},
 			"consent_expire_in": {
 				Type:             schema.TypeString,
@@ -49,7 +49,7 @@ func resourceStageConsentSchemaToProvider(d *schema.ResourceData) *api.ConsentSt
 	}
 
 	if m, mSet := d.GetOk("mode"); mSet {
-		r.Mode = api.ConsentStageModeEnum(m.(string)).Ptr()
+		r.Mode = api.ConsentModeEnum(m.(string)).Ptr()
 	}
 	return &r
 }
@@ -59,7 +59,7 @@ func resourceStageConsentCreate(ctx context.Context, d *schema.ResourceData, m a
 
 	r := resourceStageConsentSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesConsentCreate(ctx).ConsentStageRequest(*r).Execute()
+	res, hr, err := c.client.StagesAPI.StagesConsentCreate(ctx).ConsentStageRequest(*r).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -72,7 +72,7 @@ func resourceStageConsentRead(ctx context.Context, d *schema.ResourceData, m any
 	var diags diag.Diagnostics
 	c := m.(*APIClient)
 
-	res, hr, err := c.client.StagesApi.StagesConsentRetrieve(ctx, d.Id()).Execute()
+	res, hr, err := c.client.StagesAPI.StagesConsentRetrieve(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -88,7 +88,7 @@ func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m a
 
 	app := resourceStageConsentSchemaToProvider(d)
 
-	res, hr, err := c.client.StagesApi.StagesConsentUpdate(ctx, d.Id()).ConsentStageRequest(*app).Execute()
+	res, hr, err := c.client.StagesAPI.StagesConsentUpdate(ctx, d.Id()).ConsentStageRequest(*app).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
@@ -99,7 +99,7 @@ func resourceStageConsentUpdate(ctx context.Context, d *schema.ResourceData, m a
 
 func resourceStageConsentDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
-	hr, err := c.client.StagesApi.StagesConsentDestroy(ctx, d.Id()).Execute()
+	hr, err := c.client.StagesAPI.StagesConsentDestroy(ctx, d.Id()).Execute()
 	if err != nil {
 		return helpers.HTTPToDiag(d, hr, err)
 	}
