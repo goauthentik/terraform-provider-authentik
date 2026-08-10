@@ -16,6 +16,7 @@ func dataSourceOutpost() *schema.Resource {
 			"id": {
 				Type:         schema.TypeString,
 				Optional:     true,
+				Computed:     true,
 				ExactlyOneOf: []string{"id", "name"},
 			},
 			"name": {

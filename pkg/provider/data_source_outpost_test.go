@@ -15,7 +15,8 @@ func TestAccDataSourceOutpost(t *testing.T) {
 			{
 				Config: testAccDataSourceOutpostConfig("test-outpost-ds"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.authentik_outpost.test", "name", "test-outpost-ds"),
+					resource.TestCheckResourceAttr("data.authentik_outpost.by_name", "name", "test-outpost-ds"),
+					resource.TestCheckResourceAttr("data.authentik_outpost.by_id", "name", "test-outpost-ds"),
 				),
 			},
 		},
@@ -45,8 +46,12 @@ resource "authentik_outpost" "test" {
   protocol_providers = [authentik_provider_proxy.test.id]
 }
 
-data "authentik_outpost" "test" {
+data "authentik_outpost" "by_name" {
   name = authentik_outpost.test.name
+}
+
+data "authentik_outpost" "by_id" {
+  id = authentik_outpost.test.id
 }
 `, name, name)
 }
