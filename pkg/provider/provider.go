@@ -144,6 +144,10 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 	return []func() resource.Resource{
 		newGroupResource,
 		newApplicationResource,
+		newStageDummyResource,
+		newStageUserDeleteResource,
+		newStageUserLogoutResource,
+		newStageDenyResource,
 	}
 }
 
