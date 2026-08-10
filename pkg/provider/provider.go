@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/getsentry/sentry-go"
@@ -43,20 +44,17 @@ func Provider(version string, testing bool) *schema.Provider {
 		Schema: map[string]*schema.Schema{
 			"url": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("AUTHENTIK_URL", nil),
+				Optional:    true,
 				Description: "The authentik API endpoint, can optionally be passed as `AUTHENTIK_URL` environmental variable",
 			},
 			"insecure": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("AUTHENTIK_INSECURE", false),
 				Description: "Whether to skip TLS verification, can optionally be passed as `AUTHENTIK_INSECURE` environmental variable",
 			},
 			"token": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("AUTHENTIK_TOKEN", nil),
+				Optional:    true,
 				Sensitive:   true,
 				Description: "The authentik API token, can optionally be passed as `AUTHENTIK_TOKEN` environmental variable",
 			},
@@ -208,11 +206,27 @@ type APIClient struct {
 func providerConfigure(version string, testing bool) schema.ConfigureContextFunc {
 	return func(c context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
 		apiURL := d.Get("url").(string)
+		if apiURL == "" {
+			apiURL = os.Getenv("AUTHENTIK_URL")
+		}
 		token := d.Get("token").(string)
+		if token == "" {
+			token = os.Getenv("AUTHENTIK_TOKEN")
+		}
 		insecure := d.Get("insecure").(bool)
+		if !insecure {
+			insecure, _ = strconv.ParseBool(os.Getenv("AUTHENTIK_INSECURE"))
+		}
 
 		// Warning or errors can be collected in a slice type
 		var diags diag.Diagnostics
+
+		if apiURL == "" {
+			return nil, diag.Errorf("no authentik URL configured, set `url` or the AUTHENTIK_URL environment variable")
+		}
+		if token == "" {
+			return nil, diag.Errorf("no authentik token configured, set `token` or the AUTHENTIK_TOKEN environment variable")
+		}
 
 		akURL, err := url.Parse(apiURL)
 		if err != nil {
