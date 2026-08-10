@@ -164,6 +164,10 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newStageUserWriteResource,
 		newStageAuthenticatorWebAuthnResource,
 		newStageAuthenticatorSmsResource,
+		newStageCaptchaResource,
+		newStageEmailResource,
+		newStageAuthenticatorDuoResource,
+		newStageAuthenticatorEmailResource,
 	}
 }
 
