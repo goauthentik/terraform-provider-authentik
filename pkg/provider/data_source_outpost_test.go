@@ -15,22 +15,12 @@ func TestAccDataSourceOutpost(t *testing.T) {
 			{
 				Config: testAccDataSourceOutpostConfig("test-outpost-ds"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.authentik_outpost.test", "name", "test-outpost-ds"),
+					resource.TestCheckResourceAttr("data.authentik_outpost.by_name", "name", "test-outpost-ds"),
+					resource.TestCheckResourceAttr("data.authentik_outpost.by_id", "name", "test-outpost-ds"),
 				),
 			},
 		},
 	})
-}
-
-func TestDataSourceOutpostIDComputed(t *testing.T) {
-	idSchema := Provider("testing", true).DataSourcesMap["authentik_outpost"].Schema["id"]
-
-	if !idSchema.Optional {
-		t.Fatal("authentik_outpost id should remain optional for lookup by id")
-	}
-	if !idSchema.Computed {
-		t.Fatal("authentik_outpost id should be computed for lookup by name")
-	}
 }
 
 func testAccDataSourceOutpostConfig(name string) string {
@@ -56,8 +46,12 @@ resource "authentik_outpost" "test" {
   protocol_providers = [authentik_provider_proxy.test.id]
 }
 
-data "authentik_outpost" "test" {
+data "authentik_outpost" "by_name" {
   name = authentik_outpost.test.name
+}
+
+data "authentik_outpost" "by_id" {
+  id = authentik_outpost.test.id
 }
 `, name, name)
 }
