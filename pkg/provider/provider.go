@@ -147,5 +147,7 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 }
 
 func (p *authentikProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{}
+	return []func() datasource.DataSource{
+		newGroupDataSource,
+	}
 }

@@ -1,14 +1,11 @@
 package sdkprovider
 
 import (
-	"context"
 	"encoding/json"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"goauthentik.io/api/v3"
-	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
 func dataSourceGroupMember() *schema.Resource {
@@ -50,9 +47,11 @@ func dataSourceGroupMember() *schema.Resource {
 	}
 }
 
+// dataSourceGroup is no longer registered as its own data source (moved to
+// pkg/provider) - it's kept here purely because dataSourceGroups (the plural data
+// source, still SDKv2, migrating in Phase 4) clones its Schema at runtime.
 func dataSourceGroup() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceGroupRead,
 		Description: "Directory --- Get groups by pk or name",
 		Schema: map[string]*schema.Schema{
 			"pk": {
@@ -177,82 +176,4 @@ func mapFromGroup(group api.Group) (map[string]any, error) {
 	m["users_obj"] = users_obj
 
 	return m, nil
-}
-
-func setGroup(data *schema.ResourceData, group api.Group) diag.Diagnostics {
-	m, err := mapFromGroup(group)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	for key, value := range m {
-		switch key {
-		case "pk":
-			data.SetId(value.(string))
-			helpers.SetWrapper(data, key, value.(string))
-		case "num_pk":
-			helpers.SetWrapper(data, key, value.(int))
-		case "is_superuser":
-			helpers.SetWrapper(data, key, value.(bool))
-		case "users":
-			helpers.SetWrapper(data, key, value.([]int))
-		case "users_obj":
-			helpers.SetWrapper(data, key, value.([]map[string]any))
-		case "parents":
-			helpers.SetWrapper(data, key, value.([]string))
-		default:
-			helpers.SetWrapper(data, key, value.(string))
-		}
-	}
-	return diag.Diagnostics{}
-}
-
-func dataSourceGroupReadByPk(ctx context.Context, d *schema.ResourceData, c *APIClient, pk string, includeUsers bool) diag.Diagnostics {
-	req := c.client.CoreAPI.CoreGroupsRetrieve(ctx, pk)
-	req = req.IncludeUsers(includeUsers)
-
-	res, hr, err := req.Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	return setGroup(d, *res)
-}
-
-func dataSourceGroupReadByName(ctx context.Context, d *schema.ResourceData, c *APIClient, name string, includeUsers bool) diag.Diagnostics {
-	req := c.client.CoreAPI.CoreGroupsList(ctx)
-	req = req.IncludeUsers(includeUsers)
-	req = req.Name(name)
-
-	res, hr, err := req.Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	if len(res.Results) < 1 {
-		return diag.Errorf("No matching groups found")
-	}
-
-	if len(res.Results) > 1 {
-		return diag.Errorf("Multiple groups found")
-	}
-
-	return setGroup(d, res.Results[0])
-}
-
-func dataSourceGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	includeUsers := true
-	if i := d.Get("include_users"); i != nil {
-		includeUsers = i.(bool)
-	}
-
-	if n, ok := d.GetOk("pk"); ok {
-		return dataSourceGroupReadByPk(ctx, d, c, n.(string), includeUsers)
-	}
-
-	if n, ok := d.GetOk("name"); ok {
-		return dataSourceGroupReadByName(ctx, d, c, n.(string), includeUsers)
-	}
-
-	return diag.Errorf("Neither pk nor name were provided")
 }

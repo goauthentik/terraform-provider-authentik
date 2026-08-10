@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"

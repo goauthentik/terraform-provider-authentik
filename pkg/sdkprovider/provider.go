@@ -165,7 +165,6 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_brand":                            td(dataSourceBrand),
 			"authentik_certificate_key_pair":             td(dataSourceCertificateKeyPair),
 			"authentik_flow":                             td(dataSourceFlow),
-			"authentik_group":                            td(dataSourceGroup),
 			"authentik_groups":                           td(dataSourceGroups),
 			"authentik_outpost":                          td(dataSourceOutpost),
 			"authentik_policy_binding":                   td(dataSourcePolicyBinding),
