@@ -122,6 +122,36 @@ func MergeList[T comparable](ctx context.Context, prior types.List, elemType att
 	return listValue, diags
 }
 
+// SliceOrEmpty is the write-direction counterpart of MergeList, and the list analogue of
+// StringPtrEmpty. It converts a types.List to a plain slice, returning a non-nil empty
+// slice - never nil - for a null or unknown list.
+//
+// Both halves of that matter. Every generated API request model gates its list fields on
+// `if !IsNil(o.X)`, so a nil slice is omitted from the request body entirely, and for an
+// update the server then keeps its current value instead of clearing it. SDKv2's
+// CastSlice always returned a non-nil slice, so plain `var x []T; list.ElementsAs(...)`
+// is both a behaviour change (removing an optional list no longer clears it) and a hard
+// failure: the plan says null, the API keeps the old contents, and the framework raises
+// "Provider produced inconsistent result after apply".
+//
+// The unknown case is separate and louder. ElementsAs cannot write an unknown value into
+// a []T target and returns an error diagnostic instead, which means an Optional+Computed
+// list (authentik_group's users - unknown in the plan whenever it is unset) fails on
+// Create. Treating unknown as "send nothing" is right for those: the whole point of
+// Optional+Computed is that the server decides when config is silent.
+func SliceOrEmpty[T any](ctx context.Context, l types.List) ([]T, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	out := []T{}
+	if l.IsNull() || l.IsUnknown() {
+		return out, diags
+	}
+	diags.Append(l.ElementsAs(ctx, &out, false)...)
+	if out == nil {
+		out = []T{}
+	}
+	return out, diags
+}
+
 // MergeStringList is MergeList specialised to types.StringType, the common case for
 // slug/PK reference lists (e.g. authentik_group's parents/roles).
 func MergeStringList(ctx context.Context, prior types.List, apiValues []string) (types.List, diag.Diagnostics) {

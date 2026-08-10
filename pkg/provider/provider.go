@@ -160,6 +160,10 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newStageMutualTLSResource,
 		newStagePasswordResource,
 		newStageAccountLockdownResource,
+		newStageIdentificationResource,
+		newStageUserWriteResource,
+		newStageAuthenticatorWebAuthnResource,
+		newStageAuthenticatorSmsResource,
 	}
 }
 
