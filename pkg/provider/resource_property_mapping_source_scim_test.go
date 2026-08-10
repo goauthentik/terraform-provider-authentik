@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,34 +9,33 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourcePropertyMappingProviderScope(t *testing.T) {
+func TestAccResourcePropertyMappingSourceSCIM(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourcePropertyMappingProviderScope(rName),
+				Config: testAccResourcePropertyMappingSourceSCIM(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_provider_scope.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_property_mapping_source_scim.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourcePropertyMappingProviderScope(rName + "test"),
+				Config: testAccResourcePropertyMappingSourceSCIM(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_provider_scope.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_property_mapping_source_scim.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourcePropertyMappingProviderScope(name string) string {
+func testAccResourcePropertyMappingSourceSCIM(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_property_mapping_provider_scope" "name" {
-  name       = "%[1]s"
-  scope_name = "%[1]s"
-  expression = "return True"
+resource "authentik_property_mapping_source_scim" "name" {
+  name         = "%[1]s"
+  expression   = "return True"
 }
 `, name)
 }

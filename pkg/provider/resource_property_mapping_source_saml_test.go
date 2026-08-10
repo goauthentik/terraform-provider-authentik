@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,31 +9,31 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourcePropertyMappingSourcePlex(t *testing.T) {
+func TestAccResourcePropertyMappingSourceSAML(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourcePropertyMappingSourcePlex(rName),
+				Config: testAccResourcePropertyMappingSourceSAML(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_source_plex.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_property_mapping_source_saml.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourcePropertyMappingSourcePlex(rName + "test"),
+				Config: testAccResourcePropertyMappingSourceSAML(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_source_plex.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_property_mapping_source_saml.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourcePropertyMappingSourcePlex(name string) string {
+func testAccResourcePropertyMappingSourceSAML(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_property_mapping_source_plex" "name" {
+resource "authentik_property_mapping_source_saml" "name" {
   name         = "%[1]s"
   expression   = "return True"
 }

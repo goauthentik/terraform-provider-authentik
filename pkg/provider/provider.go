@@ -171,6 +171,20 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newStageAuthenticatorValidateResource,
 		newStageUserLoginResource,
 		newStagePromptFieldResource,
+		newPropertyMappingNotificationResource,
+		newPropertyMappingProviderGoogleWorkspaceResource,
+		newPropertyMappingProviderMicrosoftEntraResource,
+		newPropertyMappingProviderRACResource,
+		newPropertyMappingProviderRadiusResource,
+		newPropertyMappingProviderSAMLResource,
+		newPropertyMappingProviderSCIMResource,
+		newPropertyMappingProviderScopeResource,
+		newPropertyMappingSourceKerberosResource,
+		newPropertyMappingSourceLDAPResource,
+		newPropertyMappingSourceOAuthResource,
+		newPropertyMappingSourcePlexResource,
+		newPropertyMappingSourceSAMLResource,
+		newPropertyMappingSourceSCIMResource,
 	}
 }
 

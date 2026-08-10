@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,31 +9,31 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourcePropertyMappingSourceOAuth(t *testing.T) {
+func TestAccResourcePropertyMappingSourceLDAP(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourcePropertyMappingSourceOAuth(rName),
+				Config: testAccResourcePropertyMappingSourceLDAP(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_source_oauth.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_property_mapping_source_ldap.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourcePropertyMappingSourceOAuth(rName + "test"),
+				Config: testAccResourcePropertyMappingSourceLDAP(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_source_oauth.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_property_mapping_source_ldap.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourcePropertyMappingSourceOAuth(name string) string {
+func testAccResourcePropertyMappingSourceLDAP(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_property_mapping_source_oauth" "name" {
+resource "authentik_property_mapping_source_ldap" "name" {
   name         = "%[1]s"
   expression   = "return True"
 }

@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,33 +9,33 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourcePropertyMappingNotification(t *testing.T) {
+func TestAccResourcePropertyMappingProviderRadius(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourcePropertyMappingNotification(rName),
+				Config: testAccResourcePropertyMappingProviderRadius(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_notification.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_property_mapping_provider_radius.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourcePropertyMappingNotification(rName + "test"),
+				Config: testAccResourcePropertyMappingProviderRadius(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_property_mapping_notification.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_property_mapping_provider_radius.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourcePropertyMappingNotification(name string) string {
+func testAccResourcePropertyMappingProviderRadius(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_property_mapping_notification" "name" {
-  name       = "%[1]s"
-  expression = "return True"
+resource "authentik_property_mapping_provider_radius" "name" {
+  name         = "%[1]s"
+  expression   = "return True"
 }
 `, name)
 }
