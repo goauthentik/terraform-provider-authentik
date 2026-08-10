@@ -105,3 +105,41 @@ func Int32Ptr(v types.Int32) *int32 {
 	i := v.ValueInt32()
 	return &i
 }
+
+// BoolPtr is the write-direction counterpart of BoolOrNull: null config becomes a nil
+// pointer so the field is omitted, and an explicit false is sent as false.
+//
+// This is the fix for SDKv2's GetP[bool], which was built on d.GetOk and therefore
+// returned nil for *any* false value - it could not tell "unset" from "explicitly false".
+// Combined with omitempty on the request field and the API leaving absent fields unchanged
+// on PUT, that meant a boolean could be turned on but never back off: the request omitted
+// it, the API kept true, Read returned true, and the plan showed a permanent diff.
+// authentik_policy_geoip's check_history_distance/check_impossible_travel are the case
+// migration-plan.md flags as "where the null-semantics change is user-visible".
+//
+// Use this only for Optional booleans with no schema Default. With a Default the value is
+// never null, so send it unconditionally with new(v.ValueBool()) instead.
+func BoolPtr(v types.Bool) *bool {
+	if v.IsNull() {
+		return nil
+	}
+	b := v.ValueBool()
+	return &b
+}
+
+// Int64Ptr is Int32Ptr for the int64 API fields.
+func Int64Ptr(v types.Int64) *int64 {
+	if v.IsNull() {
+		return nil
+	}
+	i := v.ValueInt64()
+	return &i
+}
+
+// Int64OrNull is Int32OrNull for the int64 API fields.
+func Int64OrNull(prior types.Int64, v int64) types.Int64 {
+	if v == 0 && prior.IsNull() {
+		return types.Int64Null()
+	}
+	return types.Int64Value(v)
+}

@@ -5,6 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/defaults"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int32default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 )
 
@@ -71,3 +72,20 @@ func Float64Default(v float64) Float64DefaultValue {
 
 // Value returns the default value.
 func (d Float64DefaultValue) Value() float64 { return d.value }
+
+// Int64DefaultValue is a defaults.Int64 that also exposes the value it defaults to.
+type Int64DefaultValue struct {
+	defaults.Int64
+	value int64
+}
+
+// Int64Default builds an Int64DefaultValue for v. Only needed where the API field is an
+// int64 rather than the usual int32 (authentik_policy_geoip's history_max_distance_km is
+// currently the only one); both serialise to protocol `number`, so the choice is invisible
+// in state and docs.
+func Int64Default(v int64) Int64DefaultValue {
+	return Int64DefaultValue{Int64: int64default.StaticInt64(v), value: v}
+}
+
+// Value returns the default value.
+func (d Int64DefaultValue) Value() int64 { return d.value }

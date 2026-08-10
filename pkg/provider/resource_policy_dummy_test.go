@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,33 +9,32 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourcePolicyPassword(t *testing.T) {
+func TestAccResourcePolicyDummy(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourcePolicyPassword(rName),
+				Config: testAccResourcePolicyDummy(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_policy_password.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_policy_dummy.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourcePolicyPassword(rName + "test"),
+				Config: testAccResourcePolicyDummy(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_policy_password.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_policy_dummy.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourcePolicyPassword(name string) string {
+func testAccResourcePolicyDummy(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_policy_password" "name" {
+resource "authentik_policy_dummy" "name" {
   name              = "%[1]s"
-  error_message = "foo"
 }
 `, name)
 }

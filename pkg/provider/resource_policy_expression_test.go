@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,34 +9,39 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourcePolicyGeoIP(t *testing.T) {
+func TestAccResourcePolicyExpression(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourcePolicyGeoIP(rName),
+				Config: testAccResourcePolicyExpression(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_policy_geoip.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_policy_expression.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourcePolicyGeoIP(rName + "test"),
+				Config: testAccResourcePolicyExpression(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_policy_geoip.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_policy_expression.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourcePolicyGeoIP(name string) string {
+func testAccResourcePolicyExpression(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_policy_geoip" "name" {
+resource "authentik_policy_expression" "name" {
   name              = "%[1]s"
-  asns = [123]
-  countries = ["DE"]
+  expression = "return True"
+}
+resource "authentik_policy_expression" "name2" {
+  name              = "%[1]s-EOT"
+  expression = <<EOT
+return True
+EOT
 }
 `, name)
 }

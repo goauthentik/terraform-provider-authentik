@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,39 +9,32 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourcePolicyExpression(t *testing.T) {
+func TestAccResourcePolicyReputation(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourcePolicyExpression(rName),
+				Config: testAccResourcePolicyReputation(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_policy_expression.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_policy_reputation.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourcePolicyExpression(rName + "test"),
+				Config: testAccResourcePolicyReputation(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_policy_expression.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_policy_reputation.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourcePolicyExpression(name string) string {
+func testAccResourcePolicyReputation(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_policy_expression" "name" {
+resource "authentik_policy_reputation" "name" {
   name              = "%[1]s"
-  expression = "return True"
-}
-resource "authentik_policy_expression" "name2" {
-  name              = "%[1]s-EOT"
-  expression = <<EOT
-return True
-EOT
 }
 `, name)
 }

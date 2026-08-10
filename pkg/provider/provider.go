@@ -185,6 +185,15 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newPropertyMappingSourcePlexResource,
 		newPropertyMappingSourceSAMLResource,
 		newPropertyMappingSourceSCIMResource,
+		newPolicyBindingResource,
+		newPolicyDummyResource,
+		newPolicyEventMatcherResource,
+		newPolicyExpiryResource,
+		newPolicyExpressionResource,
+		newPolicyGeoIPResource,
+		newPolicyPasswordResource,
+		newPolicyReputationResource,
+		newPolicyUniquePasswordResource,
 	}
 }
 
