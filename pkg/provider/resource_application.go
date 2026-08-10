@@ -131,11 +131,10 @@ func (r *applicationResource) Schema(_ context.Context, _ resource.SchemaRequest
 func (r *applicationResource) toRequest(ctx context.Context, data *applicationModel) (*api.ApplicationRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var backchannelProviders []int32
-	diags.Append(data.BackchannelProviders.ElementsAs(ctx, &backchannelProviders, false)...)
-	if backchannelProviders == nil {
-		backchannelProviders = []int32{}
-	}
+	// The non-nil guard this used to spell out inline now lives in helpers.SliceOrEmpty,
+	// which also handles the unknown case.
+	backchannelProviders, d := helpers.SliceOrEmpty[int32](ctx, data.BackchannelProviders)
+	diags.Append(d...)
 
 	return &api.ApplicationRequest{
 		Name:                 data.Name.ValueString(),

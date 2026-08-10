@@ -96,8 +96,8 @@ func (r *stageMutualTLSResource) Schema(_ context.Context, _ resource.SchemaRequ
 func (r *stageMutualTLSResource) toRequest(ctx context.Context, data *stageMutualTLSModel) (*api.MutualTLSStageRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var certificateAuthorities []string
-	diags.Append(data.CertificateAuthorities.ElementsAs(ctx, &certificateAuthorities, false)...)
+	certificateAuthorities, d := helpers.SliceOrEmpty[string](ctx, data.CertificateAuthorities)
+	diags.Append(d...)
 	if diags.HasError() {
 		return nil, diags
 	}

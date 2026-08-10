@@ -66,11 +66,13 @@ func (r *stagePromptResource) Schema(_ context.Context, _ resource.SchemaRequest
 func (r *stagePromptResource) toRequest(ctx context.Context, data *stagePromptModel) (*api.PromptStageRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var fields []string
-	diags.Append(data.Fields.ElementsAs(ctx, &fields, false)...)
+	fields, d := helpers.SliceOrEmpty[string](ctx, data.Fields)
+	diags.Append(d...)
 
-	var validationPolicies []string
-	diags.Append(data.ValidationPolicies.ElementsAs(ctx, &validationPolicies, false)...)
+	// validation_policies is Optional, so this is the one that matters here: as a nil
+	// slice it would be omitted and removing it from config would not clear it.
+	validationPolicies, d := helpers.SliceOrEmpty[string](ctx, data.ValidationPolicies)
+	diags.Append(d...)
 
 	return &api.PromptStageRequest{
 		Name:               data.Name.ValueString(),

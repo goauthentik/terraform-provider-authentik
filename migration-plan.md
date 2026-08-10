@@ -13,16 +13,17 @@
 | 1d — resource/datasource base + tracing | Done (`804f513`) | `resourceBase`/`dataSourceBase` in `pkg/provider/{resource,datasource}.go`: `Configure` (nil-safe), `ImportState` via passthrough ID, `span()` helper. No consumers yet — own unit tests exercise them directly. `golangci-lint run ./...` clean. |
 | 1e — documentation parity | Done (`b880bb3`) | `describe.go` (`Desc`/`WithDefault`/`Generated`/`MarkResourceDeprecated`), `defaults.go` (`StringDefault`/`BoolDefault`/`Int32Default`/`Float64Default` value-exposing wrappers). `golangci-lint run ./...` clean, full non-network test suite green. |
 | 2 — pattern-setter resource | Done | `authentik_group` resource (`dc35615`), `authentik_group` data source (`404adb5`), `authentik_application` resource (`34dd87c`) — all three migrated, all verified byte-identical `tfplugindocs` output. See "Discoveries during Phase 2" below for what the plan didn't anticipate. |
-| 3 — resource batches | In progress — batch 1 (stages) 16/27 | Parts 1-4 of 7 done (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`), plus `cd132d0` fixing discovery #5 across the twelve resources migrated before it was found. Migrated so far: dummy, user_delete, user_logout, deny, invitation, endpoints, source, prompt, authenticator_endpoint_gdtc, consent, authenticator_totp, authenticator_static, redirect, mutual_tls, password, account_lockdown. Remaining 11: identification, user_write, authenticator_webauthn, authenticator_sms, captcha, email, authenticator_duo, authenticator_email, authenticator_validate, user_login, prompt_field. Zero docs drift throughout. **Nothing in Phase 3 has been run against a live authentik** — no instance in this environment. |
+| 3 — resource batches | In progress — batch 1 (stages) 20/27 | Parts 1-5 of 7 done (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`, `85656c6`), plus two fix-up commits for defects the parts uncovered in already-migrated code: `cd132d0` (discovery #5, twelve resources) and `71f71e0` (discovery #6, four resources). Migrated so far: dummy, user_delete, user_logout, deny, invitation, endpoints, source, prompt, authenticator_endpoint_gdtc, consent, authenticator_totp, authenticator_static, redirect, mutual_tls, password, account_lockdown, identification, user_write, authenticator_webauthn, authenticator_sms. Remaining 7: captcha, email, authenticator_duo, authenticator_email, authenticator_validate, user_login, prompt_field — i.e. the four H4 secret-carriers, the two `Float64` resources, and `authenticator_validate`'s #935 case, so parts 6-7 are the hard ones. Zero docs drift throughout. Acceptance tests run in CI, not in this environment. |
 | 4 — data sources | Not started | |
 | 5 — cleanup | Not started | |
 
 ## Discoveries during Phase 2 (read before starting Phase 3)
 
-Six things the original plan didn't spell out. The first five were found while porting the
-three pattern-setter objects; #5 was found later, in Phase 3 batch 1 part 4, and is the
-one that had already been copied into twelve resources before anyone noticed. All are now
-established pattern — follow them in every Phase 3 batch rather than rediscovering them
+Seven things the original plan didn't spell out. The first four and #7 were found while
+porting the three pattern-setter objects; #5 and #6 were found later, in Phase 3 batch 1
+parts 4 and 5, and are the two that had already been copied into a dozen resources before
+anyone noticed - both are write/read-mapping rules that no docs diff can detect. All are
+now established pattern — follow them in every Phase 3 batch rather than rediscovering them
 per-resource.
 
 1. **Moving a resource's tests to `pkg/provider` creates an import cycle with
@@ -88,7 +89,35 @@ per-resource.
    had before part 4 — it needs an `ImportStateVerify` step or a direct `fromAPI` unit
    test with a null-seeded model. `resource_stage_defaults_internal_test.go` is the
    executable spec; the fix across the twelve already-migrated resources is `cd132d0`.
-6. **Data source `Default` doesn't exist in the framework at all** — `datasource/schema`
+6. **Optional list attributes must be written as a non-nil empty slice, never as a nil
+   one — use `helpers.SliceOrEmpty`, not bare `ElementsAs`.** Found in Phase 3 batch 1
+   part 5, alongside #5, and it had also already been copied into four resources. Two
+   independent problems, one fix:
+
+   - Every generated API request model gates its list fields on `if !IsNil(o.X)` in
+     `ToMap()`. `ElementsAs` writes a **nil** slice for a null list, so the field is
+     omitted from the request body entirely; the API leaves absent fields unchanged on
+     `PUT`, so removing an optional list from config no longer clears it server-side.
+     SDKv2's `CastSlice` always returned a non-nil slice and so always sent `[]`. The
+     failure is loud rather than silent — the plan says null, the API keeps the old
+     contents, and the framework raises `Provider produced inconsistent result after
+     apply` — but it breaks a completely ordinary operation.
+   - `ElementsAs` **cannot write an unknown value into a `[]T` target at all**; it
+     returns `Received unknown value, however the target type cannot handle unknown
+     values`. An `Optional+Computed` list is unknown in the plan whenever config omits
+     it, so `authentik_group.users` failed `Create` outright. Treating unknown as "send
+     nothing" is right for those: the point of `Optional+Computed` is that the server
+     decides when config is silent.
+
+   `SliceOrEmpty` is the list analogue of `StringPtrEmpty` and the counterpart of
+   `MergeList` on the read side. Note the asymmetry: **null lists stay null on the way
+   in (`MergeList`) but go out as `[]` (`SliceOrEmpty`)** — H1 governs state, the API's
+   `!IsNil` gate governs the wire, and they genuinely disagree. Fixed across
+   `authentik_group`, `authentik_application`, `authentik_stage_prompt` and
+   `authentik_stage_mutual_tls` in `71f71e0`; the group unknown case is pinned by
+   `TestResourceGroupToRequest_ListEncodings`, which asserts against `ToMap()` rather
+   than the struct field, since `ToMap` is what decides what reaches the wire.
+7. **Data source `Default` doesn't exist in the framework at all** — `datasource/schema`
    attribute types have no `Default` field (data sources aren't planned, so there's
    nothing to default at plan time). SDKv2's data-source-level `Default: true` (e.g.
    `authentik_group`'s `include_users`) must be applied by hand in `Read` when the

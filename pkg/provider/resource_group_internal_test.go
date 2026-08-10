@@ -54,3 +54,46 @@ func TestResourceGroupReadRolesPreserveConfiguredOrder(t *testing.T) {
 		"role-d",
 	}, roles)
 }
+
+// TestResourceGroupToRequest_ListEncodings covers the write direction for this resource's
+// three lists, which is where two distinct defects lived before helpers.SliceOrEmpty.
+//
+// users is Optional+Computed, so config omitting it makes the plan value *unknown* rather
+// than null - and ElementsAs cannot write an unknown into a []int32, so a plain port
+// failed Create outright with "target type cannot handle unknown values". parents and
+// roles are plain Optional, so they arrive null, and a null list converted with
+// ElementsAs yields a nil slice that GroupRequest.ToMap gates out with !IsNil() - which
+// means clearing either one would leave the API's copy in place and then fail the apply
+// on the plan/state mismatch. All three must serialise as a present, empty array, exactly
+// as SDKv2's CastSlice did.
+func TestResourceGroupToRequest_ListEncodings(t *testing.T) {
+	ctx := context.Background()
+	r := &groupResource{}
+
+	data := &groupModel{
+		Name:        types.StringValue("infrastructure"),
+		IsSuperuser: types.BoolValue(false),
+		Parents:     types.ListNull(types.StringType),
+		Users:       types.ListUnknown(types.Int32Type),
+		Roles:       types.ListNull(types.StringType),
+		Attributes:  jsontypes.NewNormalizedValue("{}"),
+	}
+
+	body, diags := r.toRequest(ctx, data)
+	require.False(t, diags.HasError(), "an unknown users list must not produce diagnostics: %v", diags)
+	require.NotNil(t, body)
+
+	require.NotNil(t, body.Parents, "a nil parents slice would be omitted, so clearing it would not clear it")
+	assert.Empty(t, body.Parents)
+	require.NotNil(t, body.Roles, "a nil roles slice would be omitted, so clearing it would not clear it")
+	assert.Empty(t, body.Roles)
+	require.NotNil(t, body.Users, "unknown users must serialise as [], matching SDKv2's CastSlice")
+	assert.Empty(t, body.Users)
+
+	// ToMap is what actually decides whether a field reaches the wire.
+	serialised, err := body.ToMap()
+	require.NoError(t, err)
+	for _, key := range []string{"parents", "users", "roles"} {
+		assert.Containsf(t, serialised, key, "%s must be present in the request body", key)
+	}
+}

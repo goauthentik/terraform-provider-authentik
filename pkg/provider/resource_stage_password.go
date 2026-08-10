@@ -93,8 +93,10 @@ func (r *stagePasswordResource) Schema(_ context.Context, _ resource.SchemaReque
 func (r *stagePasswordResource) toRequest(ctx context.Context, data *stagePasswordModel) (*api.PasswordStageRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var backends []string
-	diags.Append(data.Backends.ElementsAs(ctx, &backends, false)...)
+	// backends is Required, so it can never be null - SliceOrEmpty is used anyway so
+	// every list in this package goes through one code path.
+	backends, d := helpers.SliceOrEmpty[string](ctx, data.Backends)
+	diags.Append(d...)
 	if diags.HasError() {
 		return nil, diags
 	}

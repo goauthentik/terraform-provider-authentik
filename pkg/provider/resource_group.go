@@ -100,14 +100,19 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 func (r *groupResource) toRequest(ctx context.Context, data *groupModel) (*api.GroupRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var parents []string
-	diags.Append(data.Parents.ElementsAs(ctx, &parents, false)...)
+	// SliceOrEmpty rather than ElementsAs on all three: a nil slice is gated out of the
+	// request body by !IsNil(), so clearing one of these lists would leave the API's copy
+	// untouched and then fail the apply on the resulting plan/state mismatch. users is
+	// additionally Optional+Computed, so it is *unknown* (not null) in the plan whenever
+	// config omits it, and ElementsAs cannot write an unknown into a []int32 at all.
+	parents, d := helpers.SliceOrEmpty[string](ctx, data.Parents)
+	diags.Append(d...)
 
-	var users []int32
-	diags.Append(data.Users.ElementsAs(ctx, &users, false)...)
+	users, d := helpers.SliceOrEmpty[int32](ctx, data.Users)
+	diags.Append(d...)
 
-	var roles []string
-	diags.Append(data.Roles.ElementsAs(ctx, &roles, false)...)
+	roles, d := helpers.SliceOrEmpty[string](ctx, data.Roles)
+	diags.Append(d...)
 
 	var attributes map[string]any
 	diags.Append(data.Attributes.Unmarshal(&attributes)...)
