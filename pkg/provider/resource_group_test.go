@@ -1,14 +1,16 @@
 package provider
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	api "goauthentik.io/api/v3"
@@ -17,9 +19,10 @@ import (
 
 func TestAccResourceGroup(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
+		CheckDestroy:      testAccCheckGroupDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceGroup(rName),
@@ -35,8 +38,30 @@ func TestAccResourceGroup(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_group.group", "name", rName+"test"),
 				),
 			},
+			{
+				ResourceName:      "authentik_group.group",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 		},
 	})
+}
+
+func testAccCheckGroupDestroy(s *terraform.State) error {
+	c := testAccAPIClientFromEnv()
+	for _, rs := range s.RootModule().Resources {
+		if rs.Type != "authentik_group" {
+			continue
+		}
+		_, hr, err := c.CoreAPI.CoreGroupsRetrieve(context.Background(), rs.Primary.ID).Execute()
+		if err == nil {
+			return fmt.Errorf("group %s still exists", rs.Primary.ID)
+		}
+		if hr == nil || hr.StatusCode != http.StatusNotFound {
+			return err
+		}
+	}
+	return nil
 }
 
 func testAccResourceGroup(name string) string {

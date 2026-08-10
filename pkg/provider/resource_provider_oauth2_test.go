@@ -1,19 +1,24 @@
 package provider
 
 import (
+	"context"
 	"fmt"
+	"net/http"
+	"strconv"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccResourceProviderOAuth2(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
+		CheckDestroy:      testAccCheckProviderOAuth2Destroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceProviderOAuth2(rName, appName),
@@ -37,14 +42,40 @@ func TestAccResourceProviderOAuth2(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", appName+"test"),
 				),
 			},
+			{
+				ResourceName:      "authentik_provider_oauth2.name",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 		},
 	})
+}
+
+func testAccCheckProviderOAuth2Destroy(s *terraform.State) error {
+	c := testAccAPIClientFromEnv()
+	for _, rs := range s.RootModule().Resources {
+		if rs.Type != "authentik_provider_oauth2" {
+			continue
+		}
+		id, err := strconv.ParseInt(rs.Primary.ID, 10, 32)
+		if err != nil {
+			return err
+		}
+		_, hr, err := c.ProvidersAPI.ProvidersOauth2Retrieve(context.Background(), int32(id)).Execute()
+		if err == nil {
+			return fmt.Errorf("provider_oauth2 %s still exists", rs.Primary.ID)
+		}
+		if hr == nil || hr.StatusCode != http.StatusNotFound {
+			return err
+		}
+	}
+	return nil
 }
 
 func TestAccResourceProviderOAuth2_WithSecret(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{

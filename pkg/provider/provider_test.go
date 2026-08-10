@@ -1,11 +1,14 @@
 package provider
 
 import (
+	"context"
 	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	testinginterface "github.com/mitchellh/go-testing-interface"
 	"github.com/stretchr/testify/assert"
+	api "goauthentik.io/api/v3"
 )
 
 // providerFactories are used to instantiate a provider during acceptance testing.
@@ -33,6 +36,19 @@ func TestProvider(t *testing.T) {
 func testAccPreCheck(t *testing.T) {
 	testEnvIsSet("AUTHENTIK_URL", t)
 	testEnvIsSet("AUTHENTIK_TOKEN", t)
+}
+
+// testAccAPIClientFromEnv builds a live API client from AUTHENTIK_URL/AUTHENTIK_TOKEN,
+// for use in CheckDestroy functions, which only receive a *terraform.State and have
+// no *testing.T to plumb through.
+func testAccAPIClientFromEnv() *api.APIClient {
+	rt := &testinginterface.RuntimeT{}
+	p := Provider("test", false)
+	raw, diags := p.ConfigureContextFunc(context.Background(), schema.TestResourceDataRaw(rt, p.Schema, map[string]any{}))
+	if diags.HasError() {
+		rt.Fatalf("failed to configure provider: %v", diags)
+	}
+	return raw.(*APIClient).client
 }
 
 func testEnvIsSet(k string, t *testing.T) {
@@ -90,7 +106,7 @@ func TestProviderConfigure_PathBasedURL(t *testing.T) {
 
 			_ac, diag := p.ConfigureContextFunc(t.Context(), schema.TestResourceDataRaw(t, p.Schema, map[string]any{
 				"url":      tc.inputURL,
-				"token":    "",
+				"token":    "test-token",
 				"insecure": false,
 			}))
 			assert.Nil(t, diag)

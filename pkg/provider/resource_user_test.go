@@ -1,18 +1,23 @@
 package provider
 
 import (
+	"context"
 	"fmt"
+	"net/http"
+	"strconv"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccResourceUser(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
+		CheckDestroy:      testAccCheckUserDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceUser(rName),
@@ -25,6 +30,12 @@ func TestAccResourceUser(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_user.name", "username", rName+"test"),
 				),
+			},
+			{
+				ResourceName:            "authentik_user.name",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"password"},
 			},
 			{
 				Config: testAccResourceUserGroup(rName),
@@ -58,7 +69,7 @@ func TestAccResourceUser(t *testing.T) {
 
 func TestAccResourceUserAttributes(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
@@ -71,6 +82,27 @@ func TestAccResourceUserAttributes(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccCheckUserDestroy(s *terraform.State) error {
+	c := testAccAPIClientFromEnv()
+	for _, rs := range s.RootModule().Resources {
+		if rs.Type != "authentik_user" {
+			continue
+		}
+		id, err := strconv.ParseInt(rs.Primary.ID, 10, 32)
+		if err != nil {
+			return err
+		}
+		_, hr, err := c.CoreAPI.CoreUsersRetrieve(context.Background(), int32(id)).Execute()
+		if err == nil {
+			return fmt.Errorf("user %s still exists", rs.Primary.ID)
+		}
+		if hr == nil || hr.StatusCode != http.StatusNotFound {
+			return err
+		}
+	}
+	return nil
 }
 
 func testAccResourceUser(name string) string {
