@@ -13,7 +13,7 @@
 | 1d — resource/datasource base + tracing | Done (`804f513`) | `resourceBase`/`dataSourceBase` in `pkg/provider/{resource,datasource}.go`: `Configure` (nil-safe), `ImportState` via passthrough ID, `span()` helper. No consumers yet — own unit tests exercise them directly. `golangci-lint run ./...` clean. |
 | 1e — documentation parity | Done (`b880bb3`) | `describe.go` (`Desc`/`WithDefault`/`Generated`/`MarkResourceDeprecated`), `defaults.go` (`StringDefault`/`BoolDefault`/`Int32Default`/`Float64Default` value-exposing wrappers). `golangci-lint run ./...` clean, full non-network test suite green. |
 | 2 — pattern-setter resource | Done | `authentik_group` resource (`dc35615`), `authentik_group` data source (`404adb5`), `authentik_application` resource (`34dd87c`) — all three migrated, all verified byte-identical `tfplugindocs` output. See "Discoveries during Phase 2" below for what the plan didn't anticipate. |
-| 3 — resource batches | In progress — batch 1 (stages) 20/27 | Parts 1-5 of 7 done (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`, `85656c6`), plus two fix-up commits for defects the parts uncovered in already-migrated code: `cd132d0` (discovery #5, twelve resources) and `71f71e0` (discovery #6, four resources). Migrated so far: dummy, user_delete, user_logout, deny, invitation, endpoints, source, prompt, authenticator_endpoint_gdtc, consent, authenticator_totp, authenticator_static, redirect, mutual_tls, password, account_lockdown, identification, user_write, authenticator_webauthn, authenticator_sms. Remaining 7: captcha, email, authenticator_duo, authenticator_email, authenticator_validate, user_login, prompt_field — i.e. the four H4 secret-carriers, the two `Float64` resources, and `authenticator_validate`'s #935 case, so parts 6-7 are the hard ones. Zero docs drift throughout. Acceptance tests run in CI, not in this environment. |
+| 3 — resource batches | In progress — **batch 1 (stages) done, 27/27** | All seven parts landed (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`, `85656c6`, `e2e87d6`, `72e1d35`), plus two fix-up commits for defects the later parts uncovered in already-migrated code: `faafb13` (discovery #5, twelve resources) and `d5402fa` (discovery #6, four resources). `pkg/sdkprovider` now has no `resource_stage_*` files at all; its two remaining `authentik_stage*` registry entries are data sources for Phase 4. Zero docs drift on every part. Landed along the way: the first `Float64Attribute`s (6 total, in `stage_captcha` and `stage_authenticator_validate`), the first `helpers.Expression` consumers (`stage_prompt_field`'s `placeholder`/`initial_value` — 2 of 18), the #935 regression test ported off `schema.TestResourceDataRaw`, and 8 of the 18 H4 resources. Acceptance tests run in CI, not in this environment. |
 | 4 — data sources | Not started | |
 | 5 — cleanup | Not started | |
 
@@ -703,9 +703,31 @@ Otherwise, batch by the `Description: "X --- "` subcategory (Directory / Applica
 Customization / Flows & Stages / System / RBAC / Sources / Endpoints), ~8–12 objects per PR,
 which keeps each PR's docs diff and test surface coherent. Rough order:
 
-1. **Stages** (27 files, `resource_stage_*.go`) — mostly flat strings/bools/enums, and the
-   only `TypeFloat` attributes (`resource_stage_authenticator_validate.go`,
-   `resource_stage_captcha.go` → `Float64Attribute`).
+1. ~~**Stages** (27 files, `resource_stage_*.go`)~~ — **done**, in seven parts. Mostly flat
+   strings/bools/enums as expected, and the only `TypeFloat` attributes
+   (`resource_stage_authenticator_validate.go`, `resource_stage_captcha.go` →
+   `Float64Attribute`, which needed no schema change since both serialise to protocol
+   `number`). Four things to carry forward into later batches:
+   - The batch turned up **two mapping defects that had already been copied into a dozen
+     resources** before anyone noticed — now discoveries #5 and #6. Both are invisible to
+     the docs gate. Expect this to be the failure mode for the remaining batches too:
+     write a `fromAPI`/`toRequest` unit test per resource, don't trust docs drift.
+   - `GetP`/`GetIntP` returning nil for a zero value silently dropped fields from the
+     UPDATE `PUT`, so several booleans could never be turned back off once enabled
+     (`stage_authenticator_sms.verify_only`, `stage_email.activate_user_on_success`,
+     and #935's `not_configured_action`). **Any attribute sourced through `GetP` in SDKv2
+     deserves a look for this**, not just a mechanical translation.
+   - SDKv2 merged some list attributes with `ListConsistentMerge` and wrote the API's
+     order directly for others. Optional-only lists must **all** merge now: the framework
+     requires state to match config exactly after apply, so an API reordering is a hard
+     error rather than the warning SDKv2 got.
+   - H4 comes in two flavours, and both appeared here: write-only secrets the API never
+     returns (part 6's four resources — the acceptance test needs
+     `ImportStateVerifyIgnore`), and attributes the API *does* return but Read never
+     refreshed (`stage_user_login`'s bindings, `stage_authenticator_endpoint_gdtc`'s
+     `friendly_name`). The second kind also needs `ImportStateVerifyIgnore`, but because
+     import has nothing to preserve rather than because the value is secret — and it
+     overrides discovery #5 where the two collide.
 2. **Property mappings** (14 files) — nearly identical; all carry the `expression`
    attribute, so this batch validates `helpers.Expression` at scale.
 3. **Policies** (9 files) — `resource_policy_geoip.go` needs care: it is the main user
