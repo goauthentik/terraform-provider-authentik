@@ -13,8 +13,8 @@ func TestAccResourceToken(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	expires := time.Now().Add(30 * time.Minute).Format(time.RFC3339)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceToken(rName, expires),

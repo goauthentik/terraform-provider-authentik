@@ -9,8 +9,8 @@ import (
 
 func TestAccDataSourcePolicyExpression(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourcePolicyExpressionByNameSimple,
@@ -30,8 +30,8 @@ func TestAccDataSourcePolicyExpression(t *testing.T) {
 
 func TestAccDataSourcePolicyExpression_Errors(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDataSourcePolicyExpressionMissingConfigSimple,

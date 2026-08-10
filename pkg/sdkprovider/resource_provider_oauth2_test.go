@@ -16,9 +16,9 @@ func TestAccResourceProviderOAuth2(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
-		CheckDestroy:      testAccCheckProviderOAuth2Destroy,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
+		CheckDestroy:             testAccCheckProviderOAuth2Destroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceProviderOAuth2(rName, appName),
@@ -76,8 +76,8 @@ func TestAccResourceProviderOAuth2_WithSecret(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceProviderOAuth2WithSecret(rName, appName),

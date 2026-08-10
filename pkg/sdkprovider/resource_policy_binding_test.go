@@ -11,8 +11,8 @@ import (
 func TestAccResourcePolicyBinding(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourcePolicyBindingPolicy(rName, 0),
@@ -29,8 +29,8 @@ func TestAccResourcePolicyBinding(t *testing.T) {
 		},
 	})
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourcePolicyBindingGroup(rName),
@@ -47,8 +47,8 @@ func TestAccResourcePolicyBinding(t *testing.T) {
 		},
 	})
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourcePolicyBindingUser(rName),

@@ -71,8 +71,8 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 		t.Fatal(err)
 	}
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceCertificateKeyPairSimple(rName, cert, key),
@@ -91,8 +91,8 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 		},
 	})
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerTestFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerTestFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccResourceCertificateKeyPairSimple(rName, cert, key),

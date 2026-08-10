@@ -15,9 +15,9 @@ import (
 func TestAccResourceUser(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
-		CheckDestroy:      testAccCheckUserDestroy,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
+		CheckDestroy:             testAccCheckUserDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceUser(rName),
@@ -70,8 +70,8 @@ func TestAccResourceUser(t *testing.T) {
 func TestAccResourceUserAttributes(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceUserAttributes(rName, true),

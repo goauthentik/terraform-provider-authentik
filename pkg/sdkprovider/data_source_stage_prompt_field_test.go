@@ -9,8 +9,8 @@ import (
 
 func TestAccDataSourceStagePromptField(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceStagePromptFieldByNameSimple,
@@ -30,8 +30,8 @@ func TestAccDataSourceStagePromptField(t *testing.T) {
 
 func TestAccDataSourceStagePromptField_Errors(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDataSourceStagePromptFieldMissingConfigSimple,

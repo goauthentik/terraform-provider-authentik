@@ -13,8 +13,8 @@ func TestAccDataSourceOAuth2ProviderConfig(t *testing.T) {
 	clientId := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceOAuth2ProviderConfigSimple(rName, clientId, appName),

@@ -48,8 +48,8 @@ func TestResourceStageAuthenticatorValidateSchemaToProvider(t *testing.T) {
 func TestAccResourceStageAuthenticatorValidate(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceStageAuthenticatorValidateAction(rName, "skip"),
