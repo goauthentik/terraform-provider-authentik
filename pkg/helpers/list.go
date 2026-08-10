@@ -1,6 +1,13 @@
 package helpers
 
-import "sort"
+import (
+	"context"
+	"sort"
+
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+)
 
 // offsetInSlice Return the offset of a matching string in a slice or -1 if not found
 func offsetInSlice[T comparable](s T, list []T) int {
@@ -86,4 +93,43 @@ func Slice32ToInt(in []int32) []int {
 		sl[i] = int(m)
 	}
 	return sl
+}
+
+// MergeList applies ListConsistentMerge to a framework types.List against a fresh
+// slice of API values, staying null-aware per H1: if prior was null and the API
+// returned nothing, the result stays null rather than becoming an empty list. The
+// algorithm itself is unchanged from ListConsistentMerge; only the null handling and
+// the types.List<->[]T conversion are new.
+func MergeList[T comparable](ctx context.Context, prior types.List, elemType attr.Type, apiValues []T) (types.List, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	if prior.IsNull() && len(apiValues) == 0 {
+		return types.ListNull(elemType), diags
+	}
+
+	var priorValues []T
+	if !prior.IsNull() {
+		diags.Append(prior.ElementsAs(ctx, &priorValues, false)...)
+		if diags.HasError() {
+			return types.ListUnknown(elemType), diags
+		}
+	}
+
+	merged := ListConsistentMerge(priorValues, apiValues)
+
+	listValue, d := types.ListValueFrom(ctx, elemType, merged)
+	diags.Append(d...)
+	return listValue, diags
+}
+
+// MergeStringList is MergeList specialised to types.StringType, the common case for
+// slug/PK reference lists (e.g. authentik_group's parents/roles).
+func MergeStringList(ctx context.Context, prior types.List, apiValues []string) (types.List, diag.Diagnostics) {
+	return MergeList(ctx, prior, types.StringType, apiValues)
+}
+
+// MergeInt32List is MergeList specialised to types.Int32Type, for int32 PK reference
+// lists (e.g. authentik_group's users).
+func MergeInt32List(ctx context.Context, prior types.List, apiValues []int32) (types.List, diag.Diagnostics) {
+	return MergeList(ctx, prior, types.Int32Type, apiValues)
 }
