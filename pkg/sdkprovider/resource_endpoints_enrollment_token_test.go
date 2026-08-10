@@ -1,7 +1,8 @@
-package sdkprovider
+package sdkprovider_test
 
 import (
 	"fmt"
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
 	"testing"
 	"time"
 
@@ -13,8 +14,8 @@ func TestAccResourceEndpointEnrollmentToken(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	expires := time.Now().Add(30 * time.Minute).Format(time.RFC3339)
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceEndpointEnrollmentToken(rName, expires),

@@ -1,8 +1,9 @@
-package sdkprovider
+package sdkprovider_test
 
 import (
 	"context"
 	"fmt"
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
 	"net/http"
 	"strconv"
 	"testing"
@@ -16,8 +17,8 @@ func TestAccResourceProviderOAuth2(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		CheckDestroy:             testAccCheckProviderOAuth2Destroy,
 		Steps: []resource.TestStep{
 			{
@@ -52,7 +53,7 @@ func TestAccResourceProviderOAuth2(t *testing.T) {
 }
 
 func testAccCheckProviderOAuth2Destroy(s *terraform.State) error {
-	c := testAccAPIClientFromEnv()
+	c := pkgacctest.APIClientFromEnv()
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "authentik_provider_oauth2" {
 			continue
@@ -76,8 +77,8 @@ func TestAccResourceProviderOAuth2_WithSecret(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceProviderOAuth2WithSecret(rName, appName),

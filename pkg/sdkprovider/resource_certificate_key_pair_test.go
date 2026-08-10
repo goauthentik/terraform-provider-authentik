@@ -1,4 +1,4 @@
-package sdkprovider
+package sdkprovider_test
 
 import (
 	"crypto/rand"
@@ -7,6 +7,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
 	"log"
 	"math/big"
 	"regexp"
@@ -71,8 +72,8 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 		t.Fatal(err)
 	}
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceCertificateKeyPairSimple(rName, cert, key),
@@ -91,8 +92,8 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 		},
 	})
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerTestFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderTestFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccResourceCertificateKeyPairSimple(rName, cert, key),

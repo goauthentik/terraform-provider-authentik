@@ -1,7 +1,8 @@
-package sdkprovider
+package sdkprovider_test
 
 import (
 	"fmt"
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
 	"strings"
 	"testing"
 
@@ -12,8 +13,8 @@ import (
 func TestAccRBACRoleObjectPermission(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccRBACRoleObjectPermissionScoped(rName),
@@ -71,8 +72,8 @@ resource "authentik_rbac_permission_role" "name" {
 func TestAccRBACRoleObjectPermissionPagination(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccRBACRoleObjectPermissionManyGlobal(rName),

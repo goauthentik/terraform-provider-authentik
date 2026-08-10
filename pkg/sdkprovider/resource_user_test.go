@@ -1,8 +1,9 @@
-package sdkprovider
+package sdkprovider_test
 
 import (
 	"context"
 	"fmt"
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
 	"net/http"
 	"strconv"
 	"testing"
@@ -15,8 +16,8 @@ import (
 func TestAccResourceUser(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		CheckDestroy:             testAccCheckUserDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -70,8 +71,8 @@ func TestAccResourceUser(t *testing.T) {
 func TestAccResourceUserAttributes(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceUserAttributes(rName, true),
@@ -85,7 +86,7 @@ func TestAccResourceUserAttributes(t *testing.T) {
 }
 
 func testAccCheckUserDestroy(s *terraform.State) error {
-	c := testAccAPIClientFromEnv()
+	c := pkgacctest.APIClientFromEnv()
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "authentik_user" {
 			continue

@@ -1,6 +1,7 @@
-package sdkprovider
+package sdkprovider_test
 
 import (
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
 	"regexp"
 	"testing"
 
@@ -9,8 +10,8 @@ import (
 
 func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceOutpostServiceConnectionKubernetesSimple,
@@ -27,8 +28,8 @@ func TestAccDataSourceOutpostServiceConnectionsKubernetes(t *testing.T) {
 
 func TestAccDataSourceOutpostServiceConnectionsKubernetes_NotFound(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDataSourceOutpostServiceConnectionKubernetesNotFound,

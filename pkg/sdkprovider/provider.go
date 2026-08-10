@@ -77,7 +77,6 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_event_transport":                            tr(resourceEventTransport),
 			"authentik_flow_stage_binding":                         tr(resourceFlowStageBinding),
 			"authentik_flow":                                       tr(resourceFlow),
-			"authentik_group":                                      tr(resourceGroup),
 			"authentik_outpost":                                    tr(resourceOutpost),
 			"authentik_outpost_provider_attachment":                tr(resourceOutpostProviderAttachment),
 			"authentik_policy_binding":                             tr(resourcePolicyBinding),
@@ -195,6 +194,13 @@ func Provider(version string, testing bool) *schema.Provider {
 // APIClient Hold the API Client and any relevant configuration
 type APIClient struct {
 	client *api.APIClient
+}
+
+// Client exposes the underlying *api.APIClient. The field itself stays unexported so
+// in-package resource files keep using the terser c.client, but cross-package callers
+// (pkg/acctest's CheckDestroy helper) need a way in.
+func (a *APIClient) Client() *api.APIClient {
+	return a.client
 }
 
 func providerConfigure(version string, testing bool) schema.ConfigureContextFunc {

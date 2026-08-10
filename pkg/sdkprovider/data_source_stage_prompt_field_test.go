@@ -1,6 +1,7 @@
-package sdkprovider
+package sdkprovider_test
 
 import (
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
 	"regexp"
 	"testing"
 
@@ -9,8 +10,8 @@ import (
 
 func TestAccDataSourceStagePromptField(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceStagePromptFieldByNameSimple,
@@ -30,8 +31,8 @@ func TestAccDataSourceStagePromptField(t *testing.T) {
 
 func TestAccDataSourceStagePromptField_Errors(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: providerFactories,
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDataSourceStagePromptFieldMissingConfigSimple,

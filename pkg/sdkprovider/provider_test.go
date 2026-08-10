@@ -2,7 +2,6 @@ package sdkprovider
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -10,44 +9,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
-	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	testinginterface "github.com/mitchellh/go-testing-interface"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	api "goauthentik.io/api/v3"
 	fwprovider "goauthentik.io/terraform-provider-authentik/pkg/provider"
 )
-
-// muxProviderServer builds the same muxed protocol 6 server main.go serves, so
-// acceptance tests exercise the exact composition users get rather than the bare
-// SDKv2 provider in isolation.
-func muxProviderServer(version string, testing bool) (tfprotov6.ProviderServer, error) {
-	upgradedSDKServer, err := tf5to6server.UpgradeServer(context.Background(), Provider(version, testing).GRPCProvider)
-	if err != nil {
-		return nil, err
-	}
-
-	return tf6muxserver.NewMuxServer(context.Background(),
-		func() tfprotov6.ProviderServer { return upgradedSDKServer },
-		providerserver.NewProtocol6(fwprovider.New(version, testing)),
-	)
-}
-
-// ProtoV6ProviderFactories are used to instantiate the muxed provider during
-// acceptance testing. The factory function will be invoked for every Terraform CLI
-// command executed to create a provider server to which the CLI can reattach.
-var providerFactories = map[string]func() (tfprotov6.ProviderServer, error){
-	"authentik": func() (tfprotov6.ProviderServer, error) {
-		return muxProviderServer("test", false)
-	},
-}
-
-var providerTestFactories = map[string]func() (tfprotov6.ProviderServer, error){
-	"authentik": func() (tfprotov6.ProviderServer, error) {
-		return muxProviderServer("test", true)
-	},
-}
 
 func TestProvider(t *testing.T) {
 	p := Provider("testing", false)
@@ -91,30 +57,6 @@ func TestProviderSchemaMatchesSDKv2(t *testing.T) {
 
 	if diff := cmp.Diff(sdkSchema.Provider, fwSchema.Provider, schemaCmpOptions...); diff != "" {
 		t.Errorf("provider block schema mismatch between pkg/sdkprovider and pkg/provider (-sdk +framework):\n%s", diff)
-	}
-}
-
-func testAccPreCheck(t *testing.T) {
-	testEnvIsSet("AUTHENTIK_URL", t)
-	testEnvIsSet("AUTHENTIK_TOKEN", t)
-}
-
-// testAccAPIClientFromEnv builds a live API client from AUTHENTIK_URL/AUTHENTIK_TOKEN,
-// for use in CheckDestroy functions, which only receive a *terraform.State and have
-// no *testing.T to plumb through.
-func testAccAPIClientFromEnv() *api.APIClient {
-	rt := &testinginterface.RuntimeT{}
-	p := Provider("test", false)
-	raw, diags := p.ConfigureContextFunc(context.Background(), schema.TestResourceDataRaw(rt, p.Schema, map[string]any{}))
-	if diags.HasError() {
-		rt.Fatalf("failed to configure provider: %v", diags)
-	}
-	return raw.(*APIClient).client
-}
-
-func testEnvIsSet(k string, t *testing.T) {
-	if v := os.Getenv(k); v == "" {
-		t.Fatalf("%[1]s must be set for acceptance tests", k)
 	}
 }
 
