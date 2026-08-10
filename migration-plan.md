@@ -13,7 +13,7 @@
 | 1d — resource/datasource base + tracing | Done (`804f513`) | `resourceBase`/`dataSourceBase` in `pkg/provider/{resource,datasource}.go`: `Configure` (nil-safe), `ImportState` via passthrough ID, `span()` helper. No consumers yet — own unit tests exercise them directly. `golangci-lint run ./...` clean. |
 | 1e — documentation parity | Done (`b880bb3`) | `describe.go` (`Desc`/`WithDefault`/`Generated`/`MarkResourceDeprecated`), `defaults.go` (`StringDefault`/`BoolDefault`/`Int32Default`/`Float64Default` value-exposing wrappers). `golangci-lint run ./...` clean, full non-network test suite green. |
 | 2 — pattern-setter resource | Done | `authentik_group` resource (`dc35615`), `authentik_group` data source (`404adb5`), `authentik_application` resource (`34dd87c`) — all three migrated, all verified byte-identical `tfplugindocs` output. See "Discoveries during Phase 2" below for what the plan didn't anticipate. |
-| 3 — resource batches | In progress — **batch 1 (stages) done, 27/27** | All seven parts landed (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`, `85656c6`, `e2e87d6`, `72e1d35`), plus two fix-up commits for defects the later parts uncovered in already-migrated code: `faafb13` (discovery #5, twelve resources) and `d5402fa` (discovery #6, four resources). `pkg/sdkprovider` now has no `resource_stage_*` files at all; its two remaining `authentik_stage*` registry entries are data sources for Phase 4. Zero docs drift on every part. Landed along the way: the first `Float64Attribute`s (6 total, in `stage_captcha` and `stage_authenticator_validate`), the first `helpers.Expression` consumers (`stage_prompt_field`'s `placeholder`/`initial_value` — 2 of 18), the #935 regression test ported off `schema.TestResourceDataRaw`, and 8 of the 18 H4 resources. Acceptance tests run in CI, not in this environment. |
+| 3 — resource batches | In progress — **batches 1-2 done (41 resources)** | Batch 2 (property mappings, 14 files) landed in one commit (`f6f0be1`) with zero docs drift; `helpers.Expression` is now proven at scale and guarded by a registry-wide sweep. Batch 1 (stages, 27 files): all seven parts landed (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`, `85656c6`, `e2e87d6`, `72e1d35`), plus two fix-up commits for defects the later parts uncovered in already-migrated code: `faafb13` (discovery #5, twelve resources) and `d5402fa` (discovery #6, four resources). `pkg/sdkprovider` now has no `resource_stage_*` files at all; its two remaining `authentik_stage*` registry entries are data sources for Phase 4. Zero docs drift on every part. Landed along the way: the first `Float64Attribute`s (6 total, in `stage_captcha` and `stage_authenticator_validate`), the first `helpers.Expression` consumers (`stage_prompt_field`'s `placeholder`/`initial_value` — 2 of 18), the #935 regression test ported off `schema.TestResourceDataRaw`, and 8 of the 18 H4 resources. Acceptance tests run in CI, not in this environment. |
 | 4 — data sources | Not started | |
 | 5 — cleanup | Not started | |
 
@@ -728,8 +728,33 @@ which keeps each PR's docs diff and test surface coherent. Rough order:
      `friendly_name`). The second kind also needs `ImportStateVerifyIgnore`, but because
      import has nothing to preserve rather than because the value is secret — and it
      overrides discovery #5 where the two collide.
-2. **Property mappings** (14 files) — nearly identical; all carry the `expression`
-   attribute, so this batch validates `helpers.Expression` at scale.
+2. ~~**Property mappings** (14 files)~~ — **done** (`f6f0be1`), in one commit. Eleven have
+   an identical schema (`name` + `expression`, both Required) and differ only in API type
+   and endpoint; only `provider_rac` (Optional `expression` + JSON `settings`),
+   `provider_saml` (+`saml_name`/`friendly_name`) and `provider_scope`
+   (+`scope_name`/`description`) differ. Kept one file per resource rather than
+   consolidating behind a generic base — the duplication is real, but each resource stays
+   independently greppable and a mistake stays contained.
+   - `helpers.Expression` is validated by **`expression_registry_test.go`, a registry-wide
+     sweep** asserting every attribute named `expression` declares
+     `CustomType: helpers.ExpressionType{}`. This is the one mistake in the family that no
+     other gate catches — `ExpressionType` is a plain protocol `string`, so the docs gate,
+     `ValidateImplementation` and the per-resource tests all pass without it, and the only
+     symptom is a permanent diff for heredoc users. The sweep covers later batches
+     automatically, so the policies batch's `expression` attributes are already guarded.
+   - `provider_saml` vs `provider_scope` is the worked example of discovery #3 in one
+     batch: `friendly_name` is a `NullableString` (→ `StringPtrOrNull`) while
+     `description` is a plain `*string` the API fills with `""` (→ prior-aware
+     `StringOrNull`). Swapping them is invisible in docs and reintroduces H1.
+   - **The import-vs-semantic-equality interaction is now pinned by test placement**:
+     `provider_saml`'s `ImportStateVerify` step sits while `expression` is single-line,
+     because against a heredoc it would legitimately fail — import starts from an empty
+     model, so `ExpressionOrNull` sees a null prior and state takes the API's stripped
+     value. That is the Phase 2 note about `DiffSuppressFunc` → semantic equality, made
+     executable. **Expect the same constraint on the other 16 expression attributes.**
+   - Four have no acceptance test at all (`provider_google_workspace`,
+     `provider_microsoft_entra`, `provider_rac`, `source_kerberos`) — they had none in
+     SDKv2 either. `provider_rac` has unit coverage instead.
 3. **Policies** (9 files) — `resource_policy_geoip.go` needs care: it is the main user
    of `GetP[bool]`, so it is where the null-semantics change is user-visible.
 4. **Sources** (7 files) — all declare a `uuid` Computed attribute alongside the slug `id`.
