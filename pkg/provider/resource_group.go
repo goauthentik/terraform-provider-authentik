@@ -136,7 +136,7 @@ func (r *groupResource) fromAPI(ctx context.Context, data *groupModel, res *api.
 
 	data.ID = types.StringValue(res.Pk)
 	data.Name = types.StringValue(res.Name)
-	data.IsSuperuser = helpers.BoolOrNull(data.IsSuperuser, res.GetIsSuperuser())
+	data.IsSuperuser = types.BoolValue(res.GetIsSuperuser())
 
 	parents, d := helpers.MergeStringList(ctx, data.Parents, res.Parents)
 	diags.Append(d...)

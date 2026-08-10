@@ -71,7 +71,7 @@ func (r *stageInvitationResource) toRequest(data *stageInvitationModel) *api.Inv
 func (r *stageInvitationResource) fromAPI(data *stageInvitationModel, res *api.InvitationStage) {
 	data.ID = types.StringValue(res.Pk)
 	data.Name = types.StringValue(res.Name)
-	data.ContinueFlowWithoutInvitation = helpers.BoolOrNull(data.ContinueFlowWithoutInvitation, res.GetContinueFlowWithoutInvitation())
+	data.ContinueFlowWithoutInvitation = types.BoolValue(res.GetContinueFlowWithoutInvitation())
 }
 
 func (r *stageInvitationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

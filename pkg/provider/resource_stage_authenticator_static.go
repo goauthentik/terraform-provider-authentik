@@ -94,9 +94,9 @@ func (r *stageAuthenticatorStaticResource) toRequest(data *stageAuthenticatorSta
 func (r *stageAuthenticatorStaticResource) fromAPI(data *stageAuthenticatorStaticModel, res *api.AuthenticatorStaticStage) {
 	data.ID = types.StringValue(res.Pk)
 	data.Name = types.StringValue(res.Name)
-	data.TokenCount = helpers.Int32OrNull(data.TokenCount, res.GetTokenCount())
-	data.TokenLength = helpers.Int32OrNull(data.TokenLength, res.GetTokenLength())
-	data.FriendlyName = helpers.StringOrNull(data.FriendlyName, res.GetFriendlyName())
+	data.TokenCount = types.Int32Value(res.GetTokenCount())
+	data.TokenLength = types.Int32Value(res.GetTokenLength())
+	data.FriendlyName = types.StringValue(res.GetFriendlyName())
 	data.ConfigureFlow = helpers.StringPtrOrNull(res.ConfigureFlow.Get())
 }
 

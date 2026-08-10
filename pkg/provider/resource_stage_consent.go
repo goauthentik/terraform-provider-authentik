@@ -93,7 +93,7 @@ func (r *stageConsentResource) fromAPI(data *stageConsentModel, res *api.Consent
 	if res.Mode != nil {
 		data.Mode = types.StringValue(string(*res.Mode))
 	}
-	data.ConsentExpireIn = helpers.StringOrNull(data.ConsentExpireIn, res.GetConsentExpireIn())
+	data.ConsentExpireIn = types.StringValue(res.GetConsentExpireIn())
 }
 
 func (r *stageConsentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

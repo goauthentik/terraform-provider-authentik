@@ -90,7 +90,7 @@ func (r *stageAuthenticatorTOTPResource) fromAPI(data *stageAuthenticatorTOTPMod
 	data.ID = types.StringValue(res.Pk)
 	data.Name = types.StringValue(res.Name)
 	data.Digits = types.StringValue(string(res.Digits))
-	data.FriendlyName = helpers.StringOrNull(data.FriendlyName, res.GetFriendlyName())
+	data.FriendlyName = types.StringValue(res.GetFriendlyName())
 	data.ConfigureFlow = helpers.StringPtrOrNull(res.ConfigureFlow.Get())
 }
 

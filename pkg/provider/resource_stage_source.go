@@ -81,7 +81,7 @@ func (r *stageSourceResource) fromAPI(data *stageSourceModel, res *api.SourceSta
 	data.ID = types.StringValue(res.Pk)
 	data.Name = types.StringValue(res.Name)
 	data.Source = helpers.StringOrNull(data.Source, res.Source)
-	data.ResumeTimeout = helpers.StringOrNull(data.ResumeTimeout, res.GetResumeTimeout())
+	data.ResumeTimeout = types.StringValue(res.GetResumeTimeout())
 }
 
 func (r *stageSourceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
