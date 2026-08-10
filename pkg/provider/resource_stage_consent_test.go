@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,31 +9,31 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourceStageAuthenticatorStatic(t *testing.T) {
+func TestAccResourceStageConsent(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceStageAuthenticatorStatic(rName),
+				Config: testAccResourceStageConsent(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_authenticator_static.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_stage_consent.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourceStageAuthenticatorStatic(rName + "test"),
+				Config: testAccResourceStageConsent(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_authenticator_static.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_stage_consent.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourceStageAuthenticatorStatic(name string) string {
+func testAccResourceStageConsent(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_stage_authenticator_static" "name" {
+resource "authentik_stage_consent" "name" {
   name              = "%[1]s"
 }
 `, name)

@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,31 +9,31 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourceStageAuthenticatorTOTP(t *testing.T) {
+func TestAccResourceStageAuthenticatorStatic(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceStageAuthenticatorTOTP(rName),
+				Config: testAccResourceStageAuthenticatorStatic(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_authenticator_totp.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_static.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourceStageAuthenticatorTOTP(rName + "test"),
+				Config: testAccResourceStageAuthenticatorStatic(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_authenticator_totp.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_static.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourceStageAuthenticatorTOTP(name string) string {
+func testAccResourceStageAuthenticatorStatic(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_stage_authenticator_totp" "name" {
+resource "authentik_stage_authenticator_static" "name" {
   name              = "%[1]s"
 }
 `, name)

@@ -152,6 +152,10 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newStageEndpointsResource,
 		newStageSourceResource,
 		newStagePromptResource,
+		newStageAuthenticatorEndpointGDTCResource,
+		newStageConsentResource,
+		newStageAuthenticatorTOTPResource,
+		newStageAuthenticatorStaticResource,
 	}
 }
 

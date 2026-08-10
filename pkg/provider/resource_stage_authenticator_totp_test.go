@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,31 +9,31 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourceStageConsent(t *testing.T) {
+func TestAccResourceStageAuthenticatorTOTP(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { pkgacctest.PreCheck(t) },
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceStageConsent(rName),
+				Config: testAccResourceStageAuthenticatorTOTP(rName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_consent.name", "name", rName),
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_totp.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourceStageConsent(rName + "test"),
+				Config: testAccResourceStageAuthenticatorTOTP(rName + "test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_stage_consent.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_stage_authenticator_totp.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourceStageConsent(name string) string {
+func testAccResourceStageAuthenticatorTOTP(name string) string {
 	return fmt.Sprintf(`
-resource "authentik_stage_consent" "name" {
+resource "authentik_stage_authenticator_totp" "name" {
   name              = "%[1]s"
 }
 `, name)
