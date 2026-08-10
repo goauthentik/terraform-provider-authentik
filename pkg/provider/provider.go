@@ -168,6 +168,9 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newStageEmailResource,
 		newStageAuthenticatorDuoResource,
 		newStageAuthenticatorEmailResource,
+		newStageAuthenticatorValidateResource,
+		newStageUserLoginResource,
+		newStagePromptFieldResource,
 	}
 }
 

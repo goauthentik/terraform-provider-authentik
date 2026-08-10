@@ -106,3 +106,35 @@ func (v ExpressionValue) StringSemanticEquals(_ context.Context, newValuable bas
 
 	return strings.TrimRight(v.ValueString(), "\n") == strings.TrimRight(newValue.ValueString(), "\n"), diags
 }
+
+// NewExpressionValue returns an ExpressionValue holding v.
+func NewExpressionValue(v string) ExpressionValue {
+	return ExpressionValue{StringValue: basetypes.NewStringValue(v)}
+}
+
+// NewExpressionNull returns a null ExpressionValue.
+func NewExpressionNull() ExpressionValue {
+	return ExpressionValue{StringValue: basetypes.NewStringNull()}
+}
+
+// ExpressionOrNull is StringOrNull for ExpressionValue: it returns null when v is empty
+// and prior was already null, so a never-configured optional expression stays null in
+// state instead of becoming "" (H1). Semantic equality does not help here - it cannot
+// bridge null to "", because value_semantic_equality.go returns early when the prior
+// value is null.
+func ExpressionOrNull(prior ExpressionValue, v string) ExpressionValue {
+	if v == "" && prior.IsNull() {
+		return NewExpressionNull()
+	}
+	return NewExpressionValue(v)
+}
+
+// ExpressionPtr is StringPtr for ExpressionValue: null config becomes a nil pointer, so
+// the field is omitted from the API request.
+func ExpressionPtr(v ExpressionValue) *string {
+	if v.IsNull() {
+		return nil
+	}
+	s := v.ValueString()
+	return &s
+}
