@@ -38,6 +38,16 @@ func StringPtrOrNull(v *string) types.String {
 	return types.StringValue(*v)
 }
 
+// Int32PtrOrNull is StringPtrOrNull's Int32 counterpart, for nullable-int API fields
+// (e.g. api.NullableInt32.Get()). ValueInt32Pointer() is NOT a substitute for this in
+// the write direction - see Int32Ptr below.
+func Int32PtrOrNull(v *int32) types.Int32 {
+	if v == nil {
+		return types.Int32Null()
+	}
+	return types.Int32Value(*v)
+}
+
 // Int32OrNull returns types.Int32Null() when v is 0 and prior was already null, and
 // types.Int32Value(v) otherwise.
 func Int32OrNull(prior types.Int32, v int32) types.Int32 {
@@ -84,4 +94,14 @@ func StringPtr(v types.String) *string {
 func StringPtrEmpty(v types.String) *string {
 	s := v.ValueString()
 	return &s
+}
+
+// Int32Ptr is Int32PtrOrNull's write-direction counterpart: null config becomes a nil
+// pointer, so a Nullable-typed API field built from it stays unset (omitted).
+func Int32Ptr(v types.Int32) *int32 {
+	if v.IsNull() {
+		return nil
+	}
+	i := v.ValueInt32()
+	return &i
 }

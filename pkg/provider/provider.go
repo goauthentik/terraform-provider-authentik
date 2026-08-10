@@ -143,6 +143,7 @@ func (p *authentikProvider) Configure(ctx context.Context, req provider.Configur
 func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		newGroupResource,
+		newApplicationResource,
 	}
 }
 

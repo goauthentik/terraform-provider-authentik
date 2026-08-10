@@ -26,6 +26,21 @@ func TestStringPtrOrNull(t *testing.T) {
 	assert.Equal(t, types.StringValue(""), StringPtrOrNull(&empty))
 }
 
+func TestInt32PtrOrNull(t *testing.T) {
+	assert.True(t, Int32PtrOrNull(nil).IsNull())
+	v := int32(5)
+	assert.Equal(t, types.Int32Value(5), Int32PtrOrNull(&v))
+	zero := int32(0)
+	assert.Equal(t, types.Int32Value(0), Int32PtrOrNull(&zero))
+}
+
+func TestInt32Ptr(t *testing.T) {
+	assert.Nil(t, Int32Ptr(types.Int32Null()))
+	v := Int32Ptr(types.Int32Value(5))
+	require.NotNil(t, v)
+	assert.Equal(t, int32(5), *v)
+}
+
 func TestInt32OrNull(t *testing.T) {
 	assert.True(t, Int32OrNull(types.Int32Null(), 0).IsNull())
 	assert.Equal(t, types.Int32Value(0), Int32OrNull(types.Int32Value(0), 0))
