@@ -105,7 +105,7 @@ func resourceStageAuthenticatorValidateSchemaToProvider(d *schema.ResourceData) 
 		Name:                       d.Get("name").(string),
 		LastAuthThreshold:          new(d.Get("last_auth_threshold").(string)),
 		WebauthnAllowedDeviceTypes: helpers.CastSlice[string](d, "webauthn_allowed_device_types"),
-		NotConfiguredAction:        helpers.CastString[api.NotConfiguredActionEnum](helpers.GetP[string](d, "not_configured_action")),
+		NotConfiguredAction:        helpers.CastString[api.NotConfiguredActionEnum](api.PtrString(d.Get("not_configured_action").(string))),
 		ConfigurationStages:        helpers.CastSlice[string](d, "configuration_stages"),
 		WebauthnUserVerification:   helpers.CastString[api.UserVerificationEnum](helpers.GetP[string](d, "webauthn_user_verification")),
 		EmailOtpThrottlingFactor:   new(d.Get("email_otp_throttling_factor").(float64)),

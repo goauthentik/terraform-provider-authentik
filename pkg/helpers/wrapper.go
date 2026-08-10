@@ -40,6 +40,19 @@ func GetP[T any](d ResourceData, key string) *T {
 	return nil
 }
 
+// Get Pointer value from resource data, if castable to generic type
+func GetStringP(d ResourceData, key string) *string {
+	fallback := ""
+	rv, ok := d.GetOk(key)
+	if !ok {
+		return &fallback
+	}
+	if tt, ok := rv.(string); ok {
+		return new(strings.TrimSpace(tt))
+	}
+	return &fallback
+}
+
 // Similar to `GetP` however also casts to an int32 as that is what the API prefers
 func GetIntP(d ResourceData, key string) *int32 {
 	rv, ok := d.GetOk(key)

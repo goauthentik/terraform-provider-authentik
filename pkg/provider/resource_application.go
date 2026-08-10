@@ -93,9 +93,9 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 		OpenInNewTab:     new(d.Get("open_in_new_tab").(bool)),
 		MetaHide:         new(d.Get("meta_hide").(bool)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		Group:            helpers.GetP[string](d, "group"),
-		MetaIcon:         helpers.GetP[string](d, "meta_icon"),
-		MetaLaunchUrl:    helpers.GetP[string](d, "meta_launch_url"),
+		Group:            helpers.GetStringP(d, "group"),
+		MetaIcon:         helpers.GetStringP(d, "meta_icon"),
+		MetaLaunchUrl:    helpers.GetStringP(d, "meta_launch_url"),
 		MetaDescription:  helpers.GetP[string](d, "meta_description"),
 		MetaPublisher:    helpers.GetP[string](d, "meta_publisher"),
 	}
@@ -104,6 +104,7 @@ func resourceApplicationSchemaToModel(d *schema.ResourceData) *api.ApplicationRe
 	for _, bp := range d.Get("backchannel_providers").([]any) {
 		m.BackchannelProviders = append(m.BackchannelProviders, int32(bp.(int)))
 	}
+
 	return &m
 }
 

@@ -65,7 +65,7 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      - uses: goauthentik/action-setup-authentik@3e55d49b89bd7fc1bd6f2b714b4bd311549aaa97 # v3.0
+      - uses: goauthentik/action-setup-authentik@3a1d4f81e5a29709c173f8b74250b1781e298bf9 # v3.1
         id: setup
         with:
           version: ${{ matrix.authentik_version }}
