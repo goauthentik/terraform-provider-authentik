@@ -205,6 +205,10 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newProviderRACResource,
 		newProviderRadiusResource,
 		newProviderSSFResource,
+		newProviderGoogleWorkspaceResource,
+		newProviderMicrosoftEntraResource,
+		newProviderSCIMResource,
+		newProviderWSFederationResource,
 	}
 }
 
