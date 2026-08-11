@@ -1,4 +1,4 @@
-package sdkprovider_test
+package provider_test
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccResourceSourceSCIM(t *testing.T) {
+func TestAccResourceSourceTelegram(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	appName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
@@ -17,32 +17,35 @@ func TestAccResourceSourceSCIM(t *testing.T) {
 		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceSourceSCIM(rName, appName),
+				Config: testAccResourceSourceTelegram(rName, appName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_source_scim.name", "name", rName),
-					resource.TestCheckResourceAttrSet("authentik_source_scim.name", "scim_url"),
-					resource.TestCheckResourceAttrSet("authentik_source_scim.name", "token"),
+					resource.TestCheckResourceAttr("authentik_source_telegram.name", "name", rName),
 				),
 			},
 			{
-				Config: testAccResourceSourceSCIM(rName+"test", appName+"test"),
+				Config: testAccResourceSourceTelegram(rName+"test", appName+"test"),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("authentik_source_scim.name", "name", rName+"test"),
+					resource.TestCheckResourceAttr("authentik_source_telegram.name", "name", rName+"test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccResourceSourceSCIM(name string, appName string) string {
+func testAccResourceSourceTelegram(name string, appName string) string {
 	return fmt.Sprintf(`
 data "authentik_flow" "default-authorization-flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
-resource "authentik_source_scim" "name" {
+resource "authentik_source_telegram" "name" {
   name      = "%[1]s"
   slug      = "%[1]s"
+  authentication_flow = data.authentik_flow.default-authorization-flow.id
+  enrollment_flow = data.authentik_flow.default-authorization-flow.id
+  pre_authentication_flow = data.authentik_flow.default-authorization-flow.id
+  bot_username = "foo"
+  bot_token = "foo"
 }
 `, name, appName)
 }

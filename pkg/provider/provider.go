@@ -194,6 +194,9 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newPolicyPasswordResource,
 		newPolicyReputationResource,
 		newPolicyUniquePasswordResource,
+		newSourceSCIMResource,
+		newSourcePlexResource,
+		newSourceTelegramResource,
 	}
 }
 
