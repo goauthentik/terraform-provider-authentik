@@ -13,7 +13,7 @@
 | 1d — resource/datasource base + tracing | Done (`804f513`) | `resourceBase`/`dataSourceBase` in `pkg/provider/{resource,datasource}.go`: `Configure` (nil-safe), `ImportState` via passthrough ID, `span()` helper. No consumers yet — own unit tests exercise them directly. `golangci-lint run ./...` clean. |
 | 1e — documentation parity | Done (`b880bb3`) | `describe.go` (`Desc`/`WithDefault`/`Generated`/`MarkResourceDeprecated`), `defaults.go` (`StringDefault`/`BoolDefault`/`Int32Default`/`Float64Default` value-exposing wrappers). `golangci-lint run ./...` clean, full non-network test suite green. |
 | 2 — pattern-setter resource | Done | `authentik_group` resource (`dc35615`), `authentik_group` data source (`404adb5`), `authentik_application` resource (`34dd87c`) — all three migrated, all verified byte-identical `tfplugindocs` output. See "Discoveries during Phase 2" below for what the plan didn't anticipate. |
-| 3 — resource batches | In progress — **batches 1-3 done (50 resources), 52→43 left in SDKv2** | Batch 3 (policies, 9 files) landed in `50e21f4`: fixed the `GetP[bool]` "can be switched on but never off" bug properly via the new `helpers.BoolPtr`, plus the provider's only int64 field. Batch 2 (property mappings, 14 files) landed in one commit (`f6f0be1`) with zero docs drift; `helpers.Expression` is now proven at scale and guarded by a registry-wide sweep. Batch 1 (stages, 27 files): all seven parts landed (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`, `85656c6`, `e2e87d6`, `72e1d35`), plus two fix-up commits for defects the later parts uncovered in already-migrated code: `faafb13` (discovery #5, twelve resources) and `d5402fa` (discovery #6, four resources). `pkg/sdkprovider` now has no `resource_stage_*` files at all; its two remaining `authentik_stage*` registry entries are data sources for Phase 4. Zero docs drift on every part. Landed along the way: the first `Float64Attribute`s (6 total, in `stage_captcha` and `stage_authenticator_validate`), the first `helpers.Expression` consumers (`stage_prompt_field`'s `placeholder`/`initial_value` — 2 of 18), the #935 regression test ported off `schema.TestResourceDataRaw`, and 8 of the 18 H4 resources. Acceptance tests run in CI, not in this environment. |
+| 3 — resource batches | In progress — **batches 1-4 done (59 resources), 36 left in SDKv2** | Batch 4 (sources, 7 files) landed in `6b0c044` + `8a0f071`: first resources to hit H3 (slug-derived `id`) and H4 together, guarded by a new `id_planmodifier_registry_test.go` sweep; fixed a `group_matching_mode` bug in `source_kerberos` that the framework would turn from a silent diff into a hard error. Batch 3 (policies, 9 files) landed in `50e21f4`: fixed the `GetP[bool]` "can be switched on but never off" bug properly via the new `helpers.BoolPtr`, plus the provider's only int64 field. Batch 2 (property mappings, 14 files) landed in one commit (`f6f0be1`) with zero docs drift; `helpers.Expression` is now proven at scale and guarded by a registry-wide sweep. Batch 1 (stages, 27 files): all seven parts landed (`a0baac9`, `3936085`, `4a391dc`, `954b9a1`, `85656c6`, `e2e87d6`, `72e1d35`), plus two fix-up commits for defects the later parts uncovered in already-migrated code: `faafb13` (discovery #5, twelve resources) and `d5402fa` (discovery #6, four resources). `pkg/sdkprovider` now has no `resource_stage_*` files at all; its two remaining `authentik_stage*` registry entries are data sources for Phase 4. Zero docs drift on every part. Landed along the way: the first `Float64Attribute`s (6 total, in `stage_captcha` and `stage_authenticator_validate`), the first `helpers.Expression` consumers (`stage_prompt_field`'s `placeholder`/`initial_value` — 2 of 18), the #935 regression test ported off `schema.TestResourceDataRaw`, and 8 of the 18 H4 resources. Acceptance tests run in CI, not in this environment. |
 | 4 — data sources | Not started | |
 | 5 — cleanup | Not started | |
 
@@ -790,7 +790,35 @@ which keeps each PR's docs diff and test surface coherent. Rough order:
      Its `action` stays a bare String with no validator — SDKv2 declared none and the doc
      page shows none, so "improving" it would drift the docs.
    - `policy_unique_password` has no acceptance test, and had none in SDKv2.
-4. **Sources** (7 files) — all declare a `uuid` Computed attribute alongside the slug `id`.
+4. ~~**Sources** (7 files)~~ — **done** (`6b0c044` scim/plex/telegram, `8a0f071`
+   kerberos/ldap/oauth/saml). As the note said, all seven declare a `uuid` alongside the
+   slug `id` — and that pairing is the whole lesson of the batch, because the two need
+   **opposite** treatment:
+
+   > `id` is `res.Slug`, derived from a mutable attribute → **no plan modifier** (H3).
+   > `uuid` is `res.Pk`, stable from creation → **`UseStateForUnknown()`**.
+
+   Plus `Update` must take the prior id from `req.State`, never `req.Plan`.
+   - **`id_planmodifier_registry_test.go` is the guard**, checking both directions across
+     the registry. Neither mistake is visible to any other gate — plan modifiers aren't in
+     the protocol schema, so the docs job and `ValidateImplementation` are blind, and
+     per-resource tests pass either way. Getting it wrong on an H3 resource only surfaces
+     as a failed apply during a rename; elsewhere only as plan noise. Covers
+     `authentik_flow` and `authentik_token` automatically when they land.
+   - **Found a real bug**: `source_kerberos`'s Read populated `group_matching_mode` from
+     `res.UserMatchingMode`. Unique to this resource (saml/oauth are correct). Silent
+     permanent diff under SDKv2; a *hard* data-consistency error under the framework.
+   - Sources contribute 7 of the 18 H4 attributes (kerberos ×3, ldap, oauth, telegram).
+     `bind_password`/`consumer_secret`/`bot_token` are Required, so nulling them fails the
+     apply outright.
+   - Three Computed attributes here are **sibling-derived** and so must *not* pin state:
+     `oauth.oidc_jwks` (server-filled from `oidc_well_known_url`), `oauth.callback_uri` and
+     `saml.metadata` (both embed the slug). `(known after apply)` on those is correct, not
+     an oversight.
+   - Two "second API call" cases that look alike but aren't: SCIM's was the *same*
+     endpoint fetched twice and was dropped; SAML's `metadata` is a genuinely different
+     endpoint and stays.
+   - `source_kerberos` has no acceptance test, and had none in SDKv2.
 5. **Providers** (11 files) — the int32-PK cluster. `resource_provider_oauth2.go` is the
    single largest file and owns `allowed_redirect_uris` (`TypeList` of untyped `TypeMap`).
    Keep it as `ListAttribute{ElementType: types.MapType{ElemType: types.StringType}}` to
