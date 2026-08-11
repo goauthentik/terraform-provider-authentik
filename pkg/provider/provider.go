@@ -197,6 +197,10 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newSourceSCIMResource,
 		newSourcePlexResource,
 		newSourceTelegramResource,
+		newSourceKerberosResource,
+		newSourceLDAPResource,
+		newSourceOAuthResource,
+		newSourceSAMLResource,
 	}
 }
 
