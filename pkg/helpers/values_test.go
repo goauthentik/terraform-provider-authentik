@@ -124,3 +124,30 @@ func Test_Int64OrNull(t *testing.T) {
 	assert.Equal(t, int64(0), Int64OrNull(types.Int64Value(0), 0).ValueInt64())
 	assert.Equal(t, int64(100), Int64OrNull(types.Int64Null(), 100).ValueInt64())
 }
+
+// Test_ParseInt32ID covers the int32-PK providers' id round trip. The id stays a string in
+// state (SDKv2 stringified the PK, and changing it to types.Int32 would alter the state type
+// for every existing resource), so every CRUD method has to parse it back.
+func Test_ParseInt32ID(t *testing.T) {
+	t.Run("valid numeric id", func(t *testing.T) {
+		id, diags := ParseInt32ID(types.StringValue("42"))
+		require.False(t, diags.HasError(), diags)
+		assert.Equal(t, int32(42), id)
+	})
+
+	t.Run("non-numeric id reports a diagnostic rather than panicking", func(t *testing.T) {
+		_, diags := ParseInt32ID(types.StringValue("not-a-number"))
+		require.True(t, diags.HasError(), "a malformed id must surface as a diagnostic")
+		assert.Contains(t, diags.Errors()[0].Detail(), "not-a-number")
+	})
+
+	t.Run("value beyond int32 is rejected", func(t *testing.T) {
+		_, diags := ParseInt32ID(types.StringValue("2147483648"))
+		assert.True(t, diags.HasError(), "ParseInt with bitSize 32 must reject an out-of-range PK")
+	})
+
+	t.Run("null id is rejected rather than silently becoming 0", func(t *testing.T) {
+		_, diags := ParseInt32ID(types.StringNull())
+		assert.True(t, diags.HasError())
+	})
+}

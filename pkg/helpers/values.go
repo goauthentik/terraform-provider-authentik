@@ -2,6 +2,8 @@ package helpers
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -142,4 +144,25 @@ func Int64OrNull(prior types.Int64, v int64) types.Int64 {
 		return types.Int64Null()
 	}
 	return types.Int64Value(v)
+}
+
+// ParseInt32ID converts the string id the 15 int32-PK resources keep in state back into the
+// int32 their API endpoints take.
+//
+// Those resources store a stringified PK (SDKv2 did strconv.Itoa(int(res.Pk)) and parsed it
+// back with strconv.ParseInt on every call), and the id stays a string here deliberately:
+// switching it to types.Int32 would change the state type for every existing resource and
+// need a state upgrader for no user-visible benefit.
+func ParseInt32ID(id types.String) (int32, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	parsed, err := strconv.ParseInt(id.ValueString(), 10, 32)
+	if err != nil {
+		diags.AddError(
+			"Invalid resource ID",
+			fmt.Sprintf("Expected a numeric ID for this resource, got %q: %s", id.ValueString(), err),
+		)
+		return 0, diags
+	}
+	return int32(parsed), diags
 }

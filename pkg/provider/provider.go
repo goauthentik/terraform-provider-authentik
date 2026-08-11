@@ -201,6 +201,10 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newSourceLDAPResource,
 		newSourceOAuthResource,
 		newSourceSAMLResource,
+		newProviderLDAPResource,
+		newProviderRACResource,
+		newProviderRadiusResource,
+		newProviderSSFResource,
 	}
 }
 
