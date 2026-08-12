@@ -1,20 +1,25 @@
-package provider
+package provider_test
 
 import (
+	"context"
 	"fmt"
+	pkgacctest "goauthentik.io/terraform-provider-authentik/pkg/acctest"
+	"net/http"
 	"regexp"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	api "goauthentik.io/api/v3"
 )
 
 func TestAccResourceApplication(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.UnitTest(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providerFactories,
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { pkgacctest.PreCheck(t) },
+		ProtoV6ProviderFactories: pkgacctest.ProviderFactories,
+		CheckDestroy:             testAccCheckApplicationDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceApplicationSimple(rName, "icon", "https://example.com", "testgroup"),
@@ -58,11 +63,33 @@ func TestAccResourceApplication(t *testing.T) {
 				),
 			},
 			{
+				ResourceName:      "authentik_application.name",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
 				Config:      testAccResourceApplicationSimple(rName+"test+", "icon", "", ""),
 				ExpectError: regexp.MustCompile("consisting of letters, numbers, underscores or hyphens"),
 			},
 		},
 	})
+}
+
+func testAccCheckApplicationDestroy(s *terraform.State) error {
+	c := pkgacctest.APIClientFromEnv()
+	for _, rs := range s.RootModule().Resources {
+		if rs.Type != "authentik_application" {
+			continue
+		}
+		_, hr, err := c.CoreAPI.CoreApplicationsRetrieve(context.Background(), rs.Primary.ID).Execute()
+		if err == nil {
+			return fmt.Errorf("application %s still exists", rs.Primary.ID)
+		}
+		if hr == nil || hr.StatusCode != http.StatusNotFound {
+			return err
+		}
+	}
+	return nil
 }
 
 func testAccResourceApplicationSimple(name string, icon string, launchUrl string, group string) string {

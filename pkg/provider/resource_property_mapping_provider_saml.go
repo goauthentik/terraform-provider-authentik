@@ -3,103 +3,162 @@ package provider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func resourcePropertyMappingProviderSAML() *schema.Resource {
-	return &schema.Resource{
-		Description:   "Customization --- Manage SAML Provider Property mappings",
-		CreateContext: resourcePropertyMappingProviderSAMLCreate,
-		ReadContext:   resourcePropertyMappingProviderSAMLRead,
-		UpdateContext: resourcePropertyMappingProviderSAMLUpdate,
-		DeleteContext: resourcePropertyMappingProviderSAMLDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
+var (
+	_ resource.Resource                = &propertyMappingProviderSAMLResource{}
+	_ resource.ResourceWithConfigure   = &propertyMappingProviderSAMLResource{}
+	_ resource.ResourceWithImportState = &propertyMappingProviderSAMLResource{}
+)
+
+func newPropertyMappingProviderSAMLResource() resource.Resource {
+	return &propertyMappingProviderSAMLResource{}
+}
+
+type propertyMappingProviderSAMLResource struct {
+	resourceBase
+}
+
+type propertyMappingProviderSAMLModel struct {
+	ID           types.String            `tfsdk:"id"`
+	Name         types.String            `tfsdk:"name"`
+	SamlName     types.String            `tfsdk:"saml_name"`
+	FriendlyName types.String            `tfsdk:"friendly_name"`
+	Expression   helpers.ExpressionValue `tfsdk:"expression"`
+}
+
+func (r *propertyMappingProviderSAMLResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_property_mapping_provider_saml"
+}
+
+func (r *propertyMappingProviderSAMLResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		MarkdownDescription: "Customization --- Manage SAML Provider Property mappings",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"name": schema.StringAttribute{
 				Required: true,
 			},
-			"saml_name": {
-				Type:     schema.TypeString,
+			"saml_name": schema.StringAttribute{
 				Required: true,
 			},
-			"friendly_name": {
-				Type:     schema.TypeString,
+			"friendly_name": schema.StringAttribute{
 				Optional: true,
 			},
-			"expression": {
-				Type:             schema.TypeString,
-				Required:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
+			// See the note in resource_property_mapping_source_ldap.go on ExpressionType.
+			"expression": schema.StringAttribute{
+				CustomType: helpers.ExpressionType{},
+				Required:   true,
 			},
 		},
 	}
 }
 
-func resourcePropertyMappingProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLPropertyMappingRequest {
-	r := api.SAMLPropertyMappingRequest{
-		Name:         d.Get("name").(string),
-		SamlName:     d.Get("saml_name").(string),
-		Expression:   d.Get("expression").(string),
-		FriendlyName: *api.NewNullableString(helpers.GetP[string](d, "friendly_name")),
+func (r *propertyMappingProviderSAMLResource) toRequest(data *propertyMappingProviderSAMLModel) *api.SAMLPropertyMappingRequest {
+	return &api.SAMLPropertyMappingRequest{
+		Name:       data.Name.ValueString(),
+		SamlName:   data.SamlName.ValueString(),
+		Expression: data.Expression.ValueString(),
+		// friendly_name is a genuinely nullable API field (NullableString), so null config
+		// stays null on the wire rather than becoming "".
+		FriendlyName: *api.NewNullableString(helpers.StringPtr(data.FriendlyName)),
 	}
-	return &r
 }
 
-func resourcePropertyMappingProviderSAMLCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-
-	r := resourcePropertyMappingProviderSAMLSchemaToProvider(d)
-
-	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderSamlCreate(ctx).SAMLPropertyMappingRequest(*r).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	d.SetId(res.Pk)
-	return resourcePropertyMappingProviderSAMLRead(ctx, d, m)
+func (r *propertyMappingProviderSAMLResource) fromAPI(data *propertyMappingProviderSAMLModel, res *api.SAMLPropertyMapping) {
+	data.ID = types.StringValue(res.Pk)
+	data.Name = types.StringValue(res.Name)
+	data.SamlName = types.StringValue(res.SamlName)
+	data.Expression = helpers.NewExpressionValue(res.Expression)
+	// Nullable API field, so StringPtrOrNull is correct here rather than the prior-aware
+	// StringOrNull - see discovery #3.
+	data.FriendlyName = helpers.StringPtrOrNull(res.FriendlyName.Get())
 }
 
-func resourcePropertyMappingProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	var diags diag.Diagnostics
-	c := m.(*APIClient)
+func (r *propertyMappingProviderSAMLResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	defer r.span(ctx, "create")()
 
-	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderSamlRetrieve(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data propertyMappingProviderSAMLModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	helpers.SetWrapper(d, "name", res.Name)
-	helpers.SetWrapper(d, "expression", res.Expression)
-	helpers.SetWrapper(d, "saml_name", res.SamlName)
-	helpers.SetWrapper(d, "friendly_name", res.FriendlyName.Get())
-	return diags
+	res, hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderSamlCreate(ctx).SAMLPropertyMappingRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourcePropertyMappingProviderSAMLUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+func (r *propertyMappingProviderSAMLResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	defer r.span(ctx, "read")()
 
-	app := resourcePropertyMappingProviderSAMLSchemaToProvider(d)
-
-	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderSamlUpdate(ctx, d.Id()).SAMLPropertyMappingRequest(*app).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data propertyMappingProviderSAMLModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	d.SetId(res.Pk)
-	return resourcePropertyMappingProviderSAMLRead(ctx, d, m)
+	res, hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderSamlRetrieve(ctx, data.ID.ValueString()).Execute()
+	if err != nil {
+		if helpers.IsNotFound(hr) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourcePropertyMappingProviderSAMLDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderSamlDestroy(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+func (r *propertyMappingProviderSAMLResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	defer r.span(ctx, "update")()
+
+	var data propertyMappingProviderSAMLModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	return diag.Diagnostics{}
+
+	res, hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderSamlUpdate(ctx, data.ID.ValueString()).SAMLPropertyMappingRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *propertyMappingProviderSAMLResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	defer r.span(ctx, "delete")()
+
+	var data propertyMappingProviderSAMLModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderSamlDestroy(ctx, data.ID.ValueString()).Execute()
+	if err != nil && !helpers.IsNotFound(hr) {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+	}
 }

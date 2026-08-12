@@ -4,145 +4,243 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func resourceProviderRadius() *schema.Resource {
-	return &schema.Resource{
-		Description:   "Applications --- ",
-		CreateContext: resourceProviderRadiusCreate,
-		ReadContext:   resourceProviderRadiusRead,
-		UpdateContext: resourceProviderRadiusUpdate,
-		DeleteContext: resourceProviderRadiusDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"authorization_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"invalidation_flow": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"property_mappings": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+var (
+	_ resource.Resource                = &providerRadiusResource{}
+	_ resource.ResourceWithConfigure   = &providerRadiusResource{}
+	_ resource.ResourceWithImportState = &providerRadiusResource{}
+)
+
+func newProviderRadiusResource() resource.Resource {
+	return &providerRadiusResource{}
+}
+
+type providerRadiusResource struct {
+	resourceBase
+}
+
+type providerRadiusModel struct {
+	ID                types.String `tfsdk:"id"`
+	Name              types.String `tfsdk:"name"`
+	AuthorizationFlow types.String `tfsdk:"authorization_flow"`
+	InvalidationFlow  types.String `tfsdk:"invalidation_flow"`
+	PropertyMappings  types.List   `tfsdk:"property_mappings"`
+	ClientNetworks    types.String `tfsdk:"client_networks"`
+	SharedSecret      types.String `tfsdk:"shared_secret"`
+	MFASupport        types.Bool   `tfsdk:"mfa_support"`
+	Certificate       types.String `tfsdk:"certificate"`
+}
+
+func (r *providerRadiusResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_provider_radius"
+}
+
+func (r *providerRadiusResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	clientNetworksDefault := helpers.StringDefault("0.0.0.0/0, ::/0")
+	mfaSupportDefault := helpers.BoolDefault(true)
+
+	resp.Schema = schema.Schema{
+		MarkdownDescription: "Applications --- ",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
-				Optional: true,
 			},
-			"client_networks": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "0.0.0.0/0, ::/0",
+			"name": schema.StringAttribute{
+				Required: true,
 			},
-			"shared_secret": {
-				Type:      schema.TypeString,
+			"authorization_flow": schema.StringAttribute{
+				Required: true,
+			},
+			"invalidation_flow": schema.StringAttribute{
+				Required: true,
+			},
+			"property_mappings": schema.ListAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"client_networks": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             clientNetworksDefault,
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(clientNetworksDefault.Value())),
+			},
+			// Unlike the other providers' secrets, shared_secret is returned by the API, so
+			// this resource is not one of the 18 H4 cases and fromAPI writes it normally.
+			"shared_secret": schema.StringAttribute{
 				Required:  true,
 				Sensitive: true,
 			},
-			"mfa_support": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
+			"mfa_support": schema.BoolAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             mfaSupportDefault,
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(mfaSupportDefault.Value())),
 			},
-			"certificate": {
-				Type:     schema.TypeString,
+			"certificate": schema.StringAttribute{
 				Optional: true,
 			},
 		},
 	}
 }
 
-func resourceProviderRadiusSchemaToProvider(d *schema.ResourceData) *api.RadiusProviderRequest {
-	r := api.RadiusProviderRequest{
-		Name:              d.Get("name").(string),
-		AuthorizationFlow: d.Get("authorization_flow").(string),
-		InvalidationFlow:  d.Get("invalidation_flow").(string),
-		ClientNetworks:    new(d.Get("client_networks").(string)),
-		SharedSecret:      new(d.Get("shared_secret").(string)),
-		MfaSupport:        new(d.Get("mfa_support").(bool)),
-		PropertyMappings:  helpers.CastSlice[string](d, "property_mappings"),
-		Certificate:       *api.NewNullableString(helpers.GetP[string](d, "certificate")),
-	}
-	return &r
-}
-
-func resourceProviderRadiusCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-
-	r := resourceProviderRadiusSchemaToProvider(d)
-
-	res, hr, err := c.client.ProvidersAPI.ProvidersRadiusCreate(ctx).RadiusProviderRequest(*r).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	d.SetId(strconv.Itoa(int(res.Pk)))
-	return resourceProviderRadiusRead(ctx, d, m)
-}
-
-func resourceProviderRadiusRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+func (r *providerRadiusResource) toRequest(ctx context.Context, data *providerRadiusModel) (*api.RadiusProviderRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	c := m.(*APIClient)
-	id, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	res, hr, err := c.client.ProvidersAPI.ProvidersRadiusRetrieve(ctx, int32(id)).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+
+	propertyMappings, d := helpers.SliceOrEmpty[string](ctx, data.PropertyMappings)
+	diags.Append(d...)
+	if diags.HasError() {
+		return nil, diags
 	}
 
-	helpers.SetWrapper(d, "name", res.Name)
-	helpers.SetWrapper(d, "authorization_flow", res.AuthorizationFlow)
-	helpers.SetWrapper(d, "invalidation_flow", res.InvalidationFlow)
-	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
-		helpers.CastSlice[string](d, "property_mappings"),
-		res.PropertyMappings,
-	))
-	helpers.SetWrapper(d, "client_networks", res.ClientNetworks)
-	helpers.SetWrapper(d, "shared_secret", res.SharedSecret)
-	helpers.SetWrapper(d, "mfa_support", res.MfaSupport)
-	helpers.SetWrapper(d, "certificate", res.Certificate.Get())
+	return &api.RadiusProviderRequest{
+		Name:              data.Name.ValueString(),
+		AuthorizationFlow: data.AuthorizationFlow.ValueString(),
+		InvalidationFlow:  data.InvalidationFlow.ValueString(),
+		ClientNetworks:    new(data.ClientNetworks.ValueString()),
+		SharedSecret:      new(data.SharedSecret.ValueString()),
+		MfaSupport:        new(data.MFASupport.ValueBool()),
+		PropertyMappings:  propertyMappings,
+		Certificate:       *api.NewNullableString(helpers.StringPtr(data.Certificate)),
+	}, diags
+}
+
+func (r *providerRadiusResource) fromAPI(ctx context.Context, data *providerRadiusModel, res *api.RadiusProvider) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	data.ID = types.StringValue(strconv.Itoa(int(res.Pk)))
+	data.Name = types.StringValue(res.Name)
+	data.AuthorizationFlow = types.StringValue(res.AuthorizationFlow)
+	data.InvalidationFlow = types.StringValue(res.InvalidationFlow)
+
+	propertyMappings, d := helpers.MergeStringList(ctx, data.PropertyMappings, res.PropertyMappings)
+	diags.Append(d...)
+	data.PropertyMappings = propertyMappings
+
+	// Nullable API field.
+	data.Certificate = helpers.StringPtrOrNull(res.Certificate.Get())
+	// Required, so never null.
+	data.SharedSecret = types.StringValue(res.GetSharedSecret())
+	// Have Defaults, so verbatim.
+	data.ClientNetworks = types.StringValue(res.GetClientNetworks())
+	data.MFASupport = types.BoolValue(res.GetMfaSupport())
+
 	return diags
 }
 
-func resourceProviderRadiusUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	id, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	app := resourceProviderRadiusSchemaToProvider(d)
+func (r *providerRadiusResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	defer r.span(ctx, "create")()
 
-	res, hr, err := c.client.ProvidersAPI.ProvidersRadiusUpdate(ctx, int32(id)).RadiusProviderRequest(*app).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data providerRadiusModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	d.SetId(strconv.Itoa(int(res.Pk)))
-	return resourceProviderRadiusRead(ctx, d, m)
+	body, diags := r.toRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	res, hr, err := r.client.ProvidersAPI.ProvidersRadiusCreate(ctx).RadiusProviderRequest(*body).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	resp.Diagnostics.Append(r.fromAPI(ctx, &data, res)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourceProviderRadiusDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	id, err := strconv.ParseInt(d.Id(), 10, 32)
-	if err != nil {
-		return diag.FromErr(err)
+func (r *providerRadiusResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	defer r.span(ctx, "read")()
+
+	var data providerRadiusModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	hr, err := c.client.ProvidersAPI.ProvidersRadiusDestroy(ctx, int32(id)).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+
+	id, diags := helpers.ParseInt32ID(data.ID)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	return diag.Diagnostics{}
+
+	res, hr, err := r.client.ProvidersAPI.ProvidersRadiusRetrieve(ctx, id).Execute()
+	if err != nil {
+		if helpers.IsNotFound(hr) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	resp.Diagnostics.Append(r.fromAPI(ctx, &data, res)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *providerRadiusResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	defer r.span(ctx, "update")()
+
+	var data providerRadiusModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	id, diags := helpers.ParseInt32ID(data.ID)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	body, diags := r.toRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	res, hr, err := r.client.ProvidersAPI.ProvidersRadiusUpdate(ctx, id).RadiusProviderRequest(*body).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	resp.Diagnostics.Append(r.fromAPI(ctx, &data, res)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *providerRadiusResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	defer r.span(ctx, "delete")()
+
+	var data providerRadiusModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	id, diags := helpers.ParseInt32ID(data.ID)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	hr, err := r.client.ProvidersAPI.ProvidersRadiusDestroy(ctx, id).Execute()
+	if err != nil && !helpers.IsNotFound(hr) {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+	}
 }

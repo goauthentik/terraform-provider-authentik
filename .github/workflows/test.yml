@@ -36,6 +36,26 @@ jobs:
           go-version-file: go.mod
           cache: true
       - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
+  docs:
+    name: Docs drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
+        with:
+          install-only: true
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_wrapper: false
+      - name: Regenerate docs
+        run: make gen
+      - name: Fail if docs are out of date
+        run: git diff --exit-code docs/
   test:
     name: Acceptance tests - authentik ${{ matrix.authentik_version }} - Terraform ${{ matrix.terraform }}
     runs-on: ubuntu-latest

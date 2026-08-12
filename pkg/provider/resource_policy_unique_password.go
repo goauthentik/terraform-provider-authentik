@@ -3,105 +3,169 @@ package provider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func resourcePolicyUniquePassword() *schema.Resource {
-	return &schema.Resource{
-		Description:   "Customization --- ",
-		CreateContext: resourcePolicyUniquePasswordCreate,
-		ReadContext:   resourcePolicyUniquePasswordRead,
-		UpdateContext: resourcePolicyUniquePasswordUpdate,
-		DeleteContext: resourcePolicyUniquePasswordDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
+var (
+	_ resource.Resource                = &policyUniquePasswordResource{}
+	_ resource.ResourceWithConfigure   = &policyUniquePasswordResource{}
+	_ resource.ResourceWithImportState = &policyUniquePasswordResource{}
+)
+
+func newPolicyUniquePasswordResource() resource.Resource {
+	return &policyUniquePasswordResource{}
+}
+
+type policyUniquePasswordResource struct {
+	resourceBase
+}
+
+type policyUniquePasswordModel struct {
+	ID                     types.String `tfsdk:"id"`
+	Name                   types.String `tfsdk:"name"`
+	ExecutionLogging       types.Bool   `tfsdk:"execution_logging"`
+	PasswordField          types.String `tfsdk:"password_field"`
+	NumHistoricalPasswords types.Int32  `tfsdk:"num_historical_passwords"`
+}
+
+func (r *policyUniquePasswordResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_policy_unique_password"
+}
+
+func (r *policyUniquePasswordResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	executionLoggingDefault := helpers.BoolDefault(false)
+	passwordFieldDefault := helpers.StringDefault("password")
+	numHistoricalPasswordsDefault := helpers.Int32Default(1)
+
+	resp.Schema = schema.Schema{
+		MarkdownDescription: "Customization --- ",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"name": schema.StringAttribute{
 				Required: true,
 			},
-			"execution_logging": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+			"execution_logging": schema.BoolAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             executionLoggingDefault,
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(executionLoggingDefault.Value())),
 			},
-			"password_field": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "password",
+			"password_field": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             passwordFieldDefault,
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(passwordFieldDefault.Value())),
 			},
-			"num_historical_passwords": {
-				Type:     schema.TypeInt,
-				Default:  1,
-				Optional: true,
+			"num_historical_passwords": schema.Int32Attribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             numHistoricalPasswordsDefault,
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(numHistoricalPasswordsDefault.Value())),
 			},
 		},
 	}
 }
 
-func resourcePolicyUniquePasswordSchemaToProvider(d *schema.ResourceData) *api.UniquePasswordPolicyRequest {
-	r := api.UniquePasswordPolicyRequest{
-		Name:                   d.Get("name").(string),
-		ExecutionLogging:       new(d.Get("execution_logging").(bool)),
-		PasswordField:          new(d.Get("password_field").(string)),
-		NumHistoricalPasswords: new(int32(d.Get("num_historical_passwords").(int))),
+func (r *policyUniquePasswordResource) toRequest(data *policyUniquePasswordModel) *api.UniquePasswordPolicyRequest {
+	return &api.UniquePasswordPolicyRequest{
+		Name:                   data.Name.ValueString(),
+		ExecutionLogging:       new(data.ExecutionLogging.ValueBool()),
+		PasswordField:          new(data.PasswordField.ValueString()),
+		NumHistoricalPasswords: new(data.NumHistoricalPasswords.ValueInt32()),
 	}
-	return &r
 }
 
-func resourcePolicyUniquePasswordCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-
-	r := resourcePolicyUniquePasswordSchemaToProvider(d)
-
-	res, hr, err := c.client.PoliciesAPI.PoliciesUniquePasswordCreate(ctx).UniquePasswordPolicyRequest(*r).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	d.SetId(res.Pk)
-	return resourcePolicyUniquePasswordRead(ctx, d, m)
+func (r *policyUniquePasswordResource) fromAPI(data *policyUniquePasswordModel, res *api.UniquePasswordPolicy) {
+	data.ID = types.StringValue(res.Pk)
+	data.Name = types.StringValue(res.Name)
+	data.ExecutionLogging = types.BoolValue(res.GetExecutionLogging())
+	data.PasswordField = types.StringValue(res.GetPasswordField())
+	data.NumHistoricalPasswords = types.Int32Value(res.GetNumHistoricalPasswords())
 }
 
-func resourcePolicyUniquePasswordRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	var diags diag.Diagnostics
-	c := m.(*APIClient)
+func (r *policyUniquePasswordResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	defer r.span(ctx, "create")()
 
-	res, hr, err := c.client.PoliciesAPI.PoliciesUniquePasswordRetrieve(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data policyUniquePasswordModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	helpers.SetWrapper(d, "name", res.Name)
-	helpers.SetWrapper(d, "execution_logging", res.ExecutionLogging)
-	helpers.SetWrapper(d, "password_field", res.PasswordField)
-	helpers.SetWrapper(d, "num_historical_passwords", res.NumHistoricalPasswords)
-	return diags
+	res, hr, err := r.client.PoliciesAPI.PoliciesUniquePasswordCreate(ctx).UniquePasswordPolicyRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourcePolicyUniquePasswordUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+func (r *policyUniquePasswordResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	defer r.span(ctx, "read")()
 
-	app := resourcePolicyUniquePasswordSchemaToProvider(d)
-
-	res, hr, err := c.client.PoliciesAPI.PoliciesUniquePasswordUpdate(ctx, d.Id()).UniquePasswordPolicyRequest(*app).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data policyUniquePasswordModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	d.SetId(res.Pk)
-	return resourcePolicyUniquePasswordRead(ctx, d, m)
+	res, hr, err := r.client.PoliciesAPI.PoliciesUniquePasswordRetrieve(ctx, data.ID.ValueString()).Execute()
+	if err != nil {
+		if helpers.IsNotFound(hr) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourcePolicyUniquePasswordDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PoliciesAPI.PoliciesUniquePasswordDestroy(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+func (r *policyUniquePasswordResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	defer r.span(ctx, "update")()
+
+	var data policyUniquePasswordModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	return diag.Diagnostics{}
+
+	res, hr, err := r.client.PoliciesAPI.PoliciesUniquePasswordUpdate(ctx, data.ID.ValueString()).UniquePasswordPolicyRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *policyUniquePasswordResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	defer r.span(ctx, "delete")()
+
+	var data policyUniquePasswordModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	hr, err := r.client.PoliciesAPI.PoliciesUniquePasswordDestroy(ctx, data.ID.ValueString()).Execute()
+	if err != nil && !helpers.IsNotFound(hr) {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+	}
 }

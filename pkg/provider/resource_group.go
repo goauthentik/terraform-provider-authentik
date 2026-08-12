@@ -2,143 +2,264 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func resourceGroup() *schema.Resource {
-	return &schema.Resource{
-		Description:   "Directory --- ",
-		CreateContext: resourceGroupCreate,
-		ReadContext:   resourceGroupRead,
-		UpdateContext: resourceGroupUpdate,
-		DeleteContext: resourceGroupDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
+var (
+	_ resource.Resource                = &groupResource{}
+	_ resource.ResourceWithConfigure   = &groupResource{}
+	_ resource.ResourceWithImportState = &groupResource{}
+)
+
+func newGroupResource() resource.Resource {
+	return &groupResource{}
+}
+
+type groupResource struct {
+	resourceBase
+}
+
+type groupModel struct {
+	ID          types.String         `tfsdk:"id"`
+	Name        types.String         `tfsdk:"name"`
+	IsSuperuser types.Bool           `tfsdk:"is_superuser"`
+	Parents     types.List           `tfsdk:"parents"`
+	Users       types.List           `tfsdk:"users"`
+	Roles       types.List           `tfsdk:"roles"`
+	Attributes  jsontypes.Normalized `tfsdk:"attributes"`
+}
+
+func (r *groupResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_group"
+}
+
+// Schema is byte-for-byte equivalent to pkg/sdkprovider's resourceGroup, plus the
+// explicit "id" attribute the framework doesn't inject automatically (H3). Pk is a
+// stable, server-generated key (never derived from a mutable attribute), so
+// UseStateForUnknown is safe here - contrast H3's ten slug/identifier-keyed resources,
+// which must not have it.
+func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	attributesDefault := helpers.StringDefault("{}")
+
+	resp.Schema = schema.Schema{
+		MarkdownDescription: "Directory --- ",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"name": schema.StringAttribute{
 				Required: true,
 			},
-			"is_superuser": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+			"is_superuser": schema.BoolAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             helpers.BoolDefault(false),
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(false)),
 			},
-			"parents": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+			"parents": schema.ListAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
 			},
-			"users": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Computed: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
-				},
+			"users": schema.ListAttribute{
+				ElementType:         types.Int32Type,
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: helpers.Desc("", helpers.Generated()),
 			},
-			"attributes": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          "{}",
-				Description:      helpers.JSONDescription,
-				DiffSuppressFunc: helpers.DiffSuppressJSON,
-				ValidateDiagFunc: helpers.ValidateJSON,
+			"attributes": schema.StringAttribute{
+				CustomType:          jsontypes.NormalizedType{},
+				Optional:            true,
+				Computed:            true,
+				Default:             attributesDefault,
+				MarkdownDescription: helpers.Desc(helpers.JSONDescription, helpers.WithDefault(attributesDefault.Value())),
 			},
-			"roles": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+			"roles": schema.ListAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
 			},
 		},
 	}
 }
 
-func resourceGroupSchemaToModel(d *schema.ResourceData) (*api.GroupRequest, diag.Diagnostics) {
-	m := api.GroupRequest{
-		Name:        d.Get("name").(string),
-		IsSuperuser: new(d.Get("is_superuser").(bool)),
-		Parents:     helpers.CastSlice[string](d, "parents"),
-		Users:       helpers.CastSliceInt32(d.Get("users").([]any)),
-		Roles:       helpers.CastSlice[string](d, "roles"),
+// toRequest converts the plan/state model to an API request body. Unlike SDKv2's
+// GetJSON/CastSlice helpers, ElementsAs on a null types.List sets the target to nil
+// without error, so no null-guard is needed before it.
+func (r *groupResource) toRequest(ctx context.Context, data *groupModel) (*api.GroupRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	// SliceOrEmpty rather than ElementsAs on all three: a nil slice is gated out of the
+	// request body by !IsNil(), so clearing one of these lists would leave the API's copy
+	// untouched and then fail the apply on the resulting plan/state mismatch. users is
+	// additionally Optional+Computed, so it is *unknown* (not null) in the plan whenever
+	// config omits it, and ElementsAs cannot write an unknown into a []int32 at all.
+	parents, d := helpers.SliceOrEmpty[string](ctx, data.Parents)
+	diags.Append(d...)
+
+	users, d := helpers.SliceOrEmpty[int32](ctx, data.Users)
+	diags.Append(d...)
+
+	roles, d := helpers.SliceOrEmpty[string](ctx, data.Roles)
+	diags.Append(d...)
+
+	var attributes map[string]any
+	diags.Append(data.Attributes.Unmarshal(&attributes)...)
+
+	if diags.HasError() {
+		return nil, diags
 	}
-	attr, err := helpers.GetJSON[map[string]any](d, ("attributes"))
-	m.Attributes = attr
-	return &m, err
+
+	return &api.GroupRequest{
+		Name:        data.Name.ValueString(),
+		IsSuperuser: new(data.IsSuperuser.ValueBool()),
+		Parents:     parents,
+		Users:       users,
+		Roles:       roles,
+		Attributes:  attributes,
+	}, diags
 }
 
-func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+// fromAPI is the H4/H1 fix: data is seeded from the plan (Create/Update) or prior state
+// (Read) before this overwrites it, so list ordering is preserved via
+// helpers.MergeStringList/MergeInt32List (the executable spec for that is
+// TestResourceGroupReadRolesPreserveConfiguredOrder in resource_group_test.go) and
+// nothing marshals a zero value where the config said null.
+func (r *groupResource) fromAPI(ctx context.Context, data *groupModel, res *api.Group) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-	app, diags := resourceGroupSchemaToModel(d)
-	if diags != nil {
+	data.ID = types.StringValue(res.Pk)
+	data.Name = types.StringValue(res.Name)
+	data.IsSuperuser = types.BoolValue(res.GetIsSuperuser())
+
+	parents, d := helpers.MergeStringList(ctx, data.Parents, res.Parents)
+	diags.Append(d...)
+	data.Parents = parents
+
+	users, d := helpers.MergeInt32List(ctx, data.Users, res.Users)
+	diags.Append(d...)
+	data.Users = users
+
+	roles, d := helpers.MergeStringList(ctx, data.Roles, res.Roles)
+	diags.Append(d...)
+	data.Roles = roles
+
+	attrBytes, err := json.Marshal(res.Attributes)
+	if err != nil {
+		diags.AddError("Failed to encode group attributes", err.Error())
 		return diags
 	}
+	data.Attributes = jsontypes.NewNormalizedValue(string(attrBytes))
 
-	res, hr, err := c.client.CoreAPI.CoreGroupsCreate(ctx).GroupRequest(*app).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	d.SetId(res.Pk)
-	return resourceGroupRead(ctx, d, m)
+	return diags
 }
 
-func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	defer r.span(ctx, "create")()
 
-	res, hr, err := c.client.CoreAPI.CoreGroupsRetrieve(ctx, d.Id()).IncludeUsers(false).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data groupModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	helpers.SetWrapper(d, "name", res.Name)
-	helpers.SetWrapper(d, "is_superuser", res.IsSuperuser)
-	helpers.SetWrapper(d, "parents", helpers.ListConsistentMerge(
-		helpers.CastSlice[string](d, "parents"),
-		res.Parents,
-	))
-	helpers.SetWrapper(d, "users", helpers.ListConsistentMerge(
-		helpers.CastSlice[int](d, "users"),
-		helpers.Slice32ToInt(res.Users),
-	))
-	helpers.SetWrapper(d, "roles", helpers.ListConsistentMerge(
-		helpers.CastSlice[string](d, "roles"),
-		res.Roles,
-	))
-	return helpers.SetJSON(d, "attributes", res.Attributes)
+	body, diags := r.toRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	res, hr, err := r.client.CoreAPI.CoreGroupsCreate(ctx).GroupRequest(*body).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	resp.Diagnostics.Append(r.fromAPI(ctx, &data, res)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+func (r *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	defer r.span(ctx, "read")()
 
-	app, di := resourceGroupSchemaToModel(d)
-	if di != nil {
-		return di
+	var data groupModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	res, hr, err := c.client.CoreAPI.CoreGroupsUpdate(ctx, d.Id()).GroupRequest(*app).Execute()
+
+	res, hr, err := r.client.CoreAPI.CoreGroupsRetrieve(ctx, data.ID.ValueString()).IncludeUsers(false).Execute()
 	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+		if helpers.IsNotFound(hr) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
 	}
 
-	d.SetId(res.Pk)
-	return resourceGroupRead(ctx, d, m)
+	resp.Diagnostics.Append(r.fromAPI(ctx, &data, res)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.CoreAPI.CoreGroupsDestroy(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	defer r.span(ctx, "update")()
+
+	var data groupModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	return diag.Diagnostics{}
+
+	body, diags := r.toRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// data.ID is already the existing group's Pk: "id" has UseStateForUnknown, so the
+	// plan value is the prior state value carried forward, not unknown.
+	res, hr, err := r.client.CoreAPI.CoreGroupsUpdate(ctx, data.ID.ValueString()).GroupRequest(*body).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	resp.Diagnostics.Append(r.fromAPI(ctx, &data, res)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *groupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	defer r.span(ctx, "delete")()
+
+	var data groupModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	hr, err := r.client.CoreAPI.CoreGroupsDestroy(ctx, data.ID.ValueString()).Execute()
+	if err != nil && !helpers.IsNotFound(hr) {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+	}
 }

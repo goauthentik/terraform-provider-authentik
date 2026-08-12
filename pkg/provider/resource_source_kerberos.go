@@ -3,253 +3,360 @@ package provider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func resourceSourceKerberos() *schema.Resource {
-	return &schema.Resource{
-		Description:   "Directory --- ",
-		CreateContext: resourceSourceKerberosCreate,
-		ReadContext:   resourceSourceKerberosRead,
-		UpdateContext: resourceSourceKerberosUpdate,
-		DeleteContext: resourceSourceKerberosDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"uuid": {
-				Type:     schema.TypeString,
-				Optional: true,
+var (
+	_ resource.Resource                = &sourceKerberosResource{}
+	_ resource.ResourceWithConfigure   = &sourceKerberosResource{}
+	_ resource.ResourceWithImportState = &sourceKerberosResource{}
+)
+
+func newSourceKerberosResource() resource.Resource {
+	return &sourceKerberosResource{}
+}
+
+type sourceKerberosResource struct {
+	resourceBase
+}
+
+type sourceKerberosModel struct {
+	ID                                  types.String `tfsdk:"id"`
+	Name                                types.String `tfsdk:"name"`
+	UUID                                types.String `tfsdk:"uuid"`
+	Slug                                types.String `tfsdk:"slug"`
+	UserPathTemplate                    types.String `tfsdk:"user_path_template"`
+	AuthenticationFlow                  types.String `tfsdk:"authentication_flow"`
+	EnrollmentFlow                      types.String `tfsdk:"enrollment_flow"`
+	Enabled                             types.Bool   `tfsdk:"enabled"`
+	PolicyEngineMode                    types.String `tfsdk:"policy_engine_mode"`
+	UserMatchingMode                    types.String `tfsdk:"user_matching_mode"`
+	GroupMatchingMode                   types.String `tfsdk:"group_matching_mode"`
+	Realm                               types.String `tfsdk:"realm"`
+	Krb5Conf                            types.String `tfsdk:"krb5_conf"`
+	SyncUsers                           types.Bool   `tfsdk:"sync_users"`
+	SyncUsersPassword                   types.Bool   `tfsdk:"sync_users_password"`
+	SyncPrincipal                       types.String `tfsdk:"sync_principal"`
+	SyncPassword                        types.String `tfsdk:"sync_password"`
+	SyncKeytab                          types.String `tfsdk:"sync_keytab"`
+	SyncCcache                          types.String `tfsdk:"sync_ccache"`
+	SpnegoServerName                    types.String `tfsdk:"spnego_server_name"`
+	SpnegoKeytab                        types.String `tfsdk:"spnego_keytab"`
+	SpnegoCcache                        types.String `tfsdk:"spnego_ccache"`
+	PasswordLoginUpdateInternalPassword types.Bool   `tfsdk:"password_login_update_internal_password"`
+	SyncOutgoingTriggerMode             types.String `tfsdk:"sync_outgoing_trigger_mode"`
+}
+
+func (r *sourceKerberosResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_source_kerberos"
+}
+
+func (r *sourceKerberosResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	userPathTemplateDefault := helpers.StringDefault("goauthentik.io/sources/%(slug)s")
+	enabledDefault := helpers.BoolDefault(true)
+	policyEngineModeDefault := helpers.StringDefault(string(api.POLICYENGINEMODE_ANY))
+	userMatchingModeDefault := helpers.StringDefault(string(api.USERMATCHINGMODEENUM_IDENTIFIER))
+	groupMatchingModeDefault := helpers.StringDefault(string(api.GROUPMATCHINGMODEENUM_IDENTIFIER))
+	syncUsersDefault := helpers.BoolDefault(true)
+	syncUsersPasswordDefault := helpers.BoolDefault(true)
+	passwordLoginUpdateInternalPasswordDefault := helpers.BoolDefault(false)
+	syncOutgoingTriggerModeDefault := helpers.StringDefault(string(api.SYNCOUTGOINGTRIGGERMODEENUM_DEFERRED_END))
+
+	resp.Schema = schema.Schema{
+		MarkdownDescription: "Directory --- ",
+		Attributes: map[string]schema.Attribute{
+			// H3: id is res.Slug, so no UseStateForUnknown - see resource_source_scim.go.
+			"id": schema.StringAttribute{
 				Computed: true,
 			},
-			"slug": {
-				Type:     schema.TypeString,
+			"name": schema.StringAttribute{
 				Required: true,
 			},
-			"user_path_template": {
-				Type:     schema.TypeString,
-				Default:  "goauthentik.io/sources/%(slug)s",
+			"uuid": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: helpers.Desc("", helpers.Generated()),
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"slug": schema.StringAttribute{
+				Required: true,
+			},
+			"user_path_template": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             userPathTemplateDefault,
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(userPathTemplateDefault.Value())),
+			},
+			"authentication_flow": schema.StringAttribute{
 				Optional: true,
 			},
-			"authentication_flow": {
-				Type:     schema.TypeString,
+			"enrollment_flow": schema.StringAttribute{
 				Optional: true,
 			},
-			"enrollment_flow": {
-				Type:     schema.TypeString,
-				Optional: true,
+			"enabled": schema.BoolAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             enabledDefault,
+				MarkdownDescription: helpers.Desc("", helpers.WithDefault(enabledDefault.Value())),
 			},
-			"enabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
+			"policy_engine_mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             policyEngineModeDefault,
+				MarkdownDescription: helpers.Desc(helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues), helpers.WithDefault(policyEngineModeDefault.Value())),
+				Validators: []validator.String{
+					helpers.OneOf(api.AllowedPolicyEngineModeEnumValues),
+				},
 			},
-			"policy_engine_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.POLICYENGINEMODE_ANY,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyEngineModeEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyEngineModeEnumValues),
+			"user_matching_mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             userMatchingModeDefault,
+				MarkdownDescription: helpers.Desc(helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues), helpers.WithDefault(userMatchingModeDefault.Value())),
+				Validators: []validator.String{
+					helpers.OneOf(api.AllowedUserMatchingModeEnumEnumValues),
+				},
 			},
-			"user_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.USERMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedUserMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedUserMatchingModeEnumEnumValues),
+			"group_matching_mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             groupMatchingModeDefault,
+				MarkdownDescription: helpers.Desc(helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues), helpers.WithDefault(groupMatchingModeDefault.Value())),
+				Validators: []validator.String{
+					helpers.OneOf(api.AllowedGroupMatchingModeEnumEnumValues),
+				},
 			},
-			"group_matching_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.GROUPMATCHINGMODEENUM_IDENTIFIER,
-				Description:      helpers.EnumToDescription(api.AllowedGroupMatchingModeEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedGroupMatchingModeEnumEnumValues),
+			"realm": schema.StringAttribute{
+				Required:            true,
+				MarkdownDescription: "Kerberos realm",
 			},
-
-			"realm": {
-				Description: "Kerberos realm",
-				Type:        schema.TypeString,
-				Required:    true,
+			"krb5_conf": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "Custom krb5.conf to use. Uses the system one by default",
 			},
-			"krb5_conf": {
-				Description: "Custom krb5.conf to use. Uses the system one by default",
-				Type:        schema.TypeString,
-				Optional:    true,
+			"sync_users": schema.BoolAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             syncUsersDefault,
+				MarkdownDescription: helpers.Desc("Sync users from Kerberos into authentik", helpers.WithDefault(syncUsersDefault.Value())),
 			},
-			"sync_users": {
-				Description: "Sync users from Kerberos into authentik",
-				Type:        schema.TypeBool,
-				Default:     true,
-				Optional:    true,
+			"sync_users_password": schema.BoolAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             syncUsersPasswordDefault,
+				MarkdownDescription: helpers.Desc("When a user changes their password, sync it back to Kerberos", helpers.WithDefault(syncUsersPasswordDefault.Value())),
 			},
-			"sync_users_password": {
-				Description: "When a user changes their password, sync it back to Kerberos",
-				Type:        schema.TypeBool,
-				Default:     true,
-				Optional:    true,
+			"sync_principal": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "Principal to authenticate to kadmin for sync.",
 			},
-			"sync_principal": {
-				Description: "Principal to authenticate to kadmin for sync.",
-				Type:        schema.TypeString,
-				Optional:    true,
+			// sync_password, sync_keytab and spnego_keytab are three of the 18 H4
+			// attributes: the API never returns them, so fromAPI must not assign them.
+			"sync_password": schema.StringAttribute{
+				Optional:            true,
+				Sensitive:           true,
+				MarkdownDescription: "Password to authenticate to kadmin for sync",
 			},
-			"sync_password": {
-				Description: "Password to authenticate to kadmin for sync",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
+			"sync_keytab": schema.StringAttribute{
+				Optional:            true,
+				Sensitive:           true,
+				MarkdownDescription: "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual",
 			},
-			"sync_keytab": {
-				Description: "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
+			"sync_ccache": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual",
 			},
-			"sync_ccache": {
-				Description: "Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual",
-				Type:        schema.TypeString,
-				Optional:    true,
+			"spnego_server_name": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "Force the use of a specific server name for SPNEGO",
 			},
-			"spnego_server_name": {
-				Description: "Force the use of a specific server name for SPNEGO",
-				Type:        schema.TypeString,
-				Optional:    true,
+			"spnego_keytab": schema.StringAttribute{
+				Optional:            true,
+				Sensitive:           true,
+				MarkdownDescription: "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path",
 			},
-			"spnego_keytab": {
-				Description: "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
+			"spnego_ccache": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "Credential cache to use for SPNEGO in form type:residual",
 			},
-			"spnego_ccache": {
-				Description: "Credential cache to use for SPNEGO in form type:residual",
-				Type:        schema.TypeString,
-				Optional:    true,
+			"password_login_update_internal_password": schema.BoolAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             passwordLoginUpdateInternalPasswordDefault,
+				MarkdownDescription: helpers.Desc("If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend", helpers.WithDefault(passwordLoginUpdateInternalPasswordDefault.Value())),
 			},
-			"password_login_update_internal_password": {
-				Description: "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-			},
-			"sync_outgoing_trigger_mode": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Default:          api.SYNCOUTGOINGTRIGGERMODEENUM_DEFERRED_END,
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSyncOutgoingTriggerModeEnumEnumValues),
-				Description:      helpers.EnumToDescription(api.AllowedSyncOutgoingTriggerModeEnumEnumValues),
+			"sync_outgoing_trigger_mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				Default:             syncOutgoingTriggerModeDefault,
+				MarkdownDescription: helpers.Desc(helpers.EnumToDescription(api.AllowedSyncOutgoingTriggerModeEnumEnumValues), helpers.WithDefault(syncOutgoingTriggerModeDefault.Value())),
+				Validators: []validator.String{
+					helpers.OneOf(api.AllowedSyncOutgoingTriggerModeEnumEnumValues),
+				},
 			},
 		},
 	}
 }
 
-func resourceSourceKerberosSchemaToSource(d *schema.ResourceData) (*api.KerberosSourceRequest, diag.Diagnostics) {
-	r := api.KerberosSourceRequest{
-		Name:             d.Get("name").(string),
-		Slug:             d.Get("slug").(string),
-		Enabled:          new(d.Get("enabled").(bool)),
-		UserPathTemplate: new(d.Get("user_path_template").(string)),
-
-		PolicyEngineMode:   api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
-		UserMatchingMode:   api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
-		GroupMatchingMode:  api.GroupMatchingModeEnum(d.Get("group_matching_mode").(string)).Ptr(),
-		AuthenticationFlow: *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
-		EnrollmentFlow:     *api.NewNullableString(helpers.GetP[string](d, "enrollment_flow")),
-
-		Realm:                               d.Get("realm").(string),
-		Krb5Conf:                            new(d.Get("krb5_conf").(string)),
-		SyncUsers:                           new(d.Get("sync_users").(bool)),
-		SyncUsersPassword:                   new(d.Get("sync_users_password").(bool)),
-		SyncPrincipal:                       new(d.Get("sync_principal").(string)),
-		SyncPassword:                        new(d.Get("sync_password").(string)),
-		SyncKeytab:                          new(d.Get("sync_keytab").(string)),
-		SyncCcache:                          new(d.Get("sync_ccache").(string)),
-		SpnegoServerName:                    new(d.Get("spnego_server_name").(string)),
-		SpnegoKeytab:                        new(d.Get("spnego_keytab").(string)),
-		SpnegoCcache:                        new(d.Get("spnego_ccache").(string)),
-		PasswordLoginUpdateInternalPassword: new(d.Get("password_login_update_internal_password").(bool)),
-		SyncOutgoingTriggerMode:             api.SyncOutgoingTriggerModeEnum(d.Get("sync_outgoing_trigger_mode").(string)).Ptr(),
+func (r *sourceKerberosResource) toRequest(data *sourceKerberosModel) *api.KerberosSourceRequest {
+	return &api.KerberosSourceRequest{
+		Name:               data.Name.ValueString(),
+		Slug:               data.Slug.ValueString(),
+		Enabled:            new(data.Enabled.ValueBool()),
+		UserPathTemplate:   new(data.UserPathTemplate.ValueString()),
+		PolicyEngineMode:   api.PolicyEngineMode(data.PolicyEngineMode.ValueString()).Ptr(),
+		UserMatchingMode:   api.UserMatchingModeEnum(data.UserMatchingMode.ValueString()).Ptr(),
+		GroupMatchingMode:  api.GroupMatchingModeEnum(data.GroupMatchingMode.ValueString()).Ptr(),
+		AuthenticationFlow: *api.NewNullableString(helpers.StringPtr(data.AuthenticationFlow)),
+		EnrollmentFlow:     *api.NewNullableString(helpers.StringPtr(data.EnrollmentFlow)),
+		Realm:              data.Realm.ValueString(),
+		// SDKv2 built all of these with new(d.Get(...).(string)), i.e. always a pointer and
+		// "" when unset, so they keep StringPtrEmpty semantics rather than being omitted.
+		Krb5Conf:                            new(data.Krb5Conf.ValueString()),
+		SyncPrincipal:                       new(data.SyncPrincipal.ValueString()),
+		SyncPassword:                        new(data.SyncPassword.ValueString()),
+		SyncKeytab:                          new(data.SyncKeytab.ValueString()),
+		SyncCcache:                          new(data.SyncCcache.ValueString()),
+		SpnegoServerName:                    new(data.SpnegoServerName.ValueString()),
+		SpnegoKeytab:                        new(data.SpnegoKeytab.ValueString()),
+		SpnegoCcache:                        new(data.SpnegoCcache.ValueString()),
+		SyncUsers:                           new(data.SyncUsers.ValueBool()),
+		SyncUsersPassword:                   new(data.SyncUsersPassword.ValueBool()),
+		PasswordLoginUpdateInternalPassword: new(data.PasswordLoginUpdateInternalPassword.ValueBool()),
+		SyncOutgoingTriggerMode:             api.SyncOutgoingTriggerModeEnum(data.SyncOutgoingTriggerMode.ValueString()).Ptr(),
 	}
-	return &r, nil
 }
 
-func resourceSourceKerberosCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+// fromAPI deliberately never assigns SyncPassword, SyncKeytab or SpnegoKeytab: this is one
+// of the 18 H4 resources and the API returns none of the three. Callers seed data from
+// req.Plan or req.State first, so the omissions preserve the configured secrets - see
+// stageCaptchaResource.fromAPI for the full explanation.
+func (r *sourceKerberosResource) fromAPI(data *sourceKerberosModel, res *api.KerberosSource) {
+	// H3: id is the slug, not the Pk.
+	data.ID = types.StringValue(res.Slug)
+	data.Name = types.StringValue(res.Name)
+	data.Slug = types.StringValue(res.Slug)
+	data.UUID = types.StringValue(res.Pk)
+	data.Realm = types.StringValue(res.Realm)
 
-	r, diags := resourceSourceKerberosSchemaToSource(d)
-	if diags != nil {
-		return diags
-	}
+	// Nullable API fields.
+	data.AuthenticationFlow = helpers.StringPtrOrNull(res.AuthenticationFlow.Get())
+	data.EnrollmentFlow = helpers.StringPtrOrNull(res.EnrollmentFlow.Get())
 
-	res, hr, err := c.client.SourcesAPI.SourcesKerberosCreate(ctx).KerberosSourceRequest(*r).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
+	// No Default on these five, so they keep the prior-aware helper.
+	data.Krb5Conf = helpers.StringOrNull(data.Krb5Conf, res.GetKrb5Conf())
+	data.SyncPrincipal = helpers.StringOrNull(data.SyncPrincipal, res.GetSyncPrincipal())
+	data.SyncCcache = helpers.StringOrNull(data.SyncCcache, res.GetSyncCcache())
+	data.SpnegoServerName = helpers.StringOrNull(data.SpnegoServerName, res.GetSpnegoServerName())
+	data.SpnegoCcache = helpers.StringOrNull(data.SpnegoCcache, res.GetSpnegoCcache())
 
-	d.SetId(res.Slug)
-	return resourceSourceKerberosRead(ctx, d, m)
+	// Everything below has a Default and takes the API value verbatim.
+	data.UserPathTemplate = types.StringValue(res.GetUserPathTemplate())
+	data.Enabled = types.BoolValue(res.GetEnabled())
+	data.PolicyEngineMode = types.StringValue(string(res.GetPolicyEngineMode()))
+	data.UserMatchingMode = types.StringValue(string(res.GetUserMatchingMode()))
+	// SDKv2's Read set group_matching_mode from res.UserMatchingMode - a copy-paste slip
+	// that no other source has. Under SDKv2 it silently produced a permanent diff whenever
+	// the two modes differed; in the framework it would be a hard "provider produced
+	// inconsistent result" error, since the plan carries the configured value and state
+	// would get the other one. Fixed here to read GroupMatchingMode.
+	data.GroupMatchingMode = types.StringValue(string(res.GetGroupMatchingMode()))
+	data.SyncUsers = types.BoolValue(res.GetSyncUsers())
+	data.SyncUsersPassword = types.BoolValue(res.GetSyncUsersPassword())
+	data.PasswordLoginUpdateInternalPassword = types.BoolValue(res.GetPasswordLoginUpdateInternalPassword())
+	data.SyncOutgoingTriggerMode = types.StringValue(string(res.GetSyncOutgoingTriggerMode()))
 }
 
-func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	var diags diag.Diagnostics
-	c := m.(*APIClient)
-	res, hr, err := c.client.SourcesAPI.SourcesKerberosRetrieve(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+func (r *sourceKerberosResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	defer r.span(ctx, "create")()
+
+	var data sourceKerberosModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	helpers.SetWrapper(d, "name", res.Name)
-	helpers.SetWrapper(d, "slug", res.Slug)
-	helpers.SetWrapper(d, "uuid", res.Pk)
-	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
-	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
-	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
-	helpers.SetWrapper(d, "enabled", res.Enabled)
-	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
-	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	helpers.SetWrapper(d, "group_matching_mode", res.UserMatchingMode)
+	res, hr, err := r.client.SourcesAPI.SourcesKerberosCreate(ctx).KerberosSourceRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
 
-	helpers.SetWrapper(d, "realm", res.Realm)
-	helpers.SetWrapper(d, "krb5_conf", res.Krb5Conf)
-	helpers.SetWrapper(d, "sync_users", res.SyncUsers)
-	helpers.SetWrapper(d, "sync_users_password", res.SyncUsersPassword)
-	helpers.SetWrapper(d, "sync_principal", res.SyncPrincipal)
-	helpers.SetWrapper(d, "sync_ccache", res.SyncCcache)
-	helpers.SetWrapper(d, "spnego_server_name", res.SpnegoServerName)
-	helpers.SetWrapper(d, "spnego_ccache", res.SpnegoCcache)
-	helpers.SetWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
-	helpers.SetWrapper(d, "sync_outgoing_trigger_mode", res.SyncOutgoingTriggerMode)
-	return diags
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourceSourceKerberosUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	app, diags := resourceSourceKerberosSchemaToSource(d)
-	if diags != nil {
-		return diags
+func (r *sourceKerberosResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	defer r.span(ctx, "read")()
+
+	// Seeding from prior state carries the three keytab/password secrets - see fromAPI.
+	var data sourceKerberosModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	res, hr, err := c.client.SourcesAPI.SourcesKerberosUpdate(ctx, d.Id()).KerberosSourceRequest(*app).Execute()
+	res, hr, err := r.client.SourcesAPI.SourcesKerberosRetrieve(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+		if helpers.IsNotFound(hr) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
 	}
 
-	d.SetId(res.Slug)
-	return resourceSourceKerberosRead(ctx, d, m)
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourceSourceKerberosDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.SourcesAPI.SourcesKerberosDestroy(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+func (r *sourceKerberosResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	defer r.span(ctx, "update")()
+
+	var data sourceKerberosModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	return diag.Diagnostics{}
+
+	// H3/discovery #4: the plan's id is unknown when the slug changes.
+	var priorID types.String
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("id"), &priorID)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	res, hr, err := r.client.SourcesAPI.SourcesKerberosUpdate(ctx, priorID.ValueString()).KerberosSourceRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *sourceKerberosResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	defer r.span(ctx, "delete")()
+
+	var data sourceKerberosModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	hr, err := r.client.SourcesAPI.SourcesKerberosDestroy(ctx, data.ID.ValueString()).Execute()
+	if err != nil && !helpers.IsNotFound(hr) {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+	}
 }

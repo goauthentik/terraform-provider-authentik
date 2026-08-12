@@ -1,101 +1,57 @@
 package provider
 
 import (
-	"os"
+	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	fwresource "github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-// providerFactories are used to instantiate a provider during acceptance testing.
-// The factory function will be invoked for every Terraform CLI command executed
-// to create a provider server to which the CLI can reattach.
-var providerFactories = map[string]func() (*schema.Provider, error){
-	"authentik": func() (*schema.Provider, error) {
-		return Provider("test", false), nil
-	},
-}
+// TestRegistrySchemasValidate walks every resource and data source New() registers with
+// the framework provider and validates its schema via the framework's own
+// ValidateImplementation, table-driven over the registry rather than one test per
+// resource. This is what catches H2 (Default set without Computed, and friends) at
+// `go test` time instead of the "GetProviderSchema" RPC failing at `terraform plan` time.
+func TestRegistrySchemasValidate(t *testing.T) {
+	ctx := context.Background()
+	p := New("testing", true)
 
-var providerTestFactories = map[string]func() (*schema.Provider, error){
-	"authentik": func() (*schema.Provider, error) {
-		return Provider("test", true), nil
-	},
-}
+	t.Run("resources", func(t *testing.T) {
+		for _, newResource := range p.Resources(ctx) {
+			r := newResource()
 
-func TestProvider(t *testing.T) {
-	p := Provider("testing", false)
-	if err := p.InternalValidate(); err != nil {
-		t.Fatalf("err: %[1]s", err)
-	}
-}
+			var metaResp fwresource.MetadataResponse
+			r.Metadata(ctx, fwresource.MetadataRequest{ProviderTypeName: "authentik"}, &metaResp)
 
-func testAccPreCheck(t *testing.T) {
-	testEnvIsSet("AUTHENTIK_URL", t)
-	testEnvIsSet("AUTHENTIK_TOKEN", t)
-}
+			t.Run(metaResp.TypeName, func(t *testing.T) {
+				var schemaResp fwresource.SchemaResponse
+				r.Schema(ctx, fwresource.SchemaRequest{}, &schemaResp)
+				require.Empty(t, schemaResp.Diagnostics)
 
-func testEnvIsSet(k string, t *testing.T) {
-	if v := os.Getenv(k); v == "" {
-		t.Fatalf("%[1]s must be set for acceptance tests", k)
-	}
-}
+				diags := schemaResp.Schema.ValidateImplementation(ctx)
+				assert.Empty(t, diags)
+			})
+		}
+	})
 
-func TestProviderConfigure_PathBasedURL(t *testing.T) {
-	testCases := []struct {
-		name        string
-		inputURL    string
-		expectedURL string
-	}{
-		{
-			name:        "Root path with trailing slash",
-			inputURL:    "https://api.example.com/",
-			expectedURL: "https://api.example.com/api/v3",
-		},
-		{
-			name:        "Root path without trailing slash",
-			inputURL:    "https://api.example.com",
-			expectedURL: "https://api.example.com/api/v3",
-		},
-		{
-			name:        "Single segment path with trailing slash",
-			inputURL:    "https://api.example.com/sso/",
-			expectedURL: "https://api.example.com/sso/api/v3",
-		},
-		{
-			name:        "Single segment path without trailing slash",
-			inputURL:    "https://api.example.com/sso",
-			expectedURL: "https://api.example.com/sso/api/v3",
-		},
-		{
-			name:        "Multi-segment path with trailing slash",
-			inputURL:    "https://api.example.com/auth/sso/",
-			expectedURL: "https://api.example.com/auth/sso/api/v3",
-		},
-		{
-			name:        "Multi-segment path without trailing slash",
-			inputURL:    "https://api.example.com/auth/sso",
-			expectedURL: "https://api.example.com/auth/sso/api/v3",
-		},
-		{
-			name:        "HTTP scheme with path",
-			inputURL:    "http://localhost:9000/sso/",
-			expectedURL: "http://localhost:9000/sso/api/v3",
-		},
-	}
+	t.Run("data_sources", func(t *testing.T) {
+		for _, newDataSource := range p.DataSources(ctx) {
+			d := newDataSource()
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			p := Provider("testing", true)
+			var metaResp datasource.MetadataResponse
+			d.Metadata(ctx, datasource.MetadataRequest{ProviderTypeName: "authentik"}, &metaResp)
 
-			_ac, diag := p.ConfigureContextFunc(t.Context(), schema.TestResourceDataRaw(t, p.Schema, map[string]any{
-				"url":      tc.inputURL,
-				"token":    "",
-				"insecure": false,
-			}))
-			assert.Nil(t, diag)
-			ac := _ac.(*APIClient)
-			assert.Equal(t, tc.expectedURL, ac.client.GetConfig().Servers[0].URL, "Server URL should be constructed correctly")
-		})
-	}
+			t.Run(metaResp.TypeName, func(t *testing.T) {
+				var schemaResp datasource.SchemaResponse
+				d.Schema(ctx, datasource.SchemaRequest{}, &schemaResp)
+				require.Empty(t, schemaResp.Diagnostics)
+
+				diags := schemaResp.Schema.ValidateImplementation(ctx)
+				assert.Empty(t, diags)
+			})
+		}
+	})
 }

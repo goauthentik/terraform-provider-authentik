@@ -3,91 +3,151 @@ package provider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	api "goauthentik.io/api/v3"
 	"goauthentik.io/terraform-provider-authentik/pkg/helpers"
 )
 
-func resourcePropertyMappingProviderGoogleWorkspace() *schema.Resource {
-	return &schema.Resource{
-		Description:   "Customization --- Manage Google Workspace Provider Property mappings",
-		CreateContext: resourcePropertyMappingProviderGoogleWorkspaceCreate,
-		ReadContext:   resourcePropertyMappingProviderGoogleWorkspaceRead,
-		UpdateContext: resourcePropertyMappingProviderGoogleWorkspaceUpdate,
-		DeleteContext: resourcePropertyMappingProviderGoogleWorkspaceDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
+var (
+	_ resource.Resource                = &propertyMappingProviderGoogleWorkspaceResource{}
+	_ resource.ResourceWithConfigure   = &propertyMappingProviderGoogleWorkspaceResource{}
+	_ resource.ResourceWithImportState = &propertyMappingProviderGoogleWorkspaceResource{}
+)
+
+func newPropertyMappingProviderGoogleWorkspaceResource() resource.Resource {
+	return &propertyMappingProviderGoogleWorkspaceResource{}
+}
+
+type propertyMappingProviderGoogleWorkspaceResource struct {
+	resourceBase
+}
+
+type propertyMappingProviderGoogleWorkspaceModel struct {
+	ID         types.String            `tfsdk:"id"`
+	Name       types.String            `tfsdk:"name"`
+	Expression helpers.ExpressionValue `tfsdk:"expression"`
+}
+
+func (r *propertyMappingProviderGoogleWorkspaceResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_property_mapping_provider_google_workspace"
+}
+
+func (r *propertyMappingProviderGoogleWorkspaceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		MarkdownDescription: "Customization --- Manage Google Workspace Provider Property mappings",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"name": schema.StringAttribute{
 				Required: true,
 			},
-			"expression": {
-				Type:             schema.TypeString,
-				Required:         true,
-				DiffSuppressFunc: helpers.DiffSuppressExpression,
+			// helpers.ExpressionType replaces SDKv2's DiffSuppressExpression: authentik
+			// returns expressions with trailing newlines stripped, so a heredoc config
+			// value ending in "\n" would otherwise show a permanent diff. It stays a
+			// protocol `string`, so neither the doc page nor the state layout changes.
+			"expression": schema.StringAttribute{
+				CustomType: helpers.ExpressionType{},
+				Required:   true,
 			},
 		},
 	}
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d *schema.ResourceData) *api.GoogleWorkspaceProviderMappingRequest {
-	r := api.GoogleWorkspaceProviderMappingRequest{
-		Name:       d.Get("name").(string),
-		Expression: d.Get("expression").(string),
+func (r *propertyMappingProviderGoogleWorkspaceResource) toRequest(data *propertyMappingProviderGoogleWorkspaceModel) *api.GoogleWorkspaceProviderMappingRequest {
+	return &api.GoogleWorkspaceProviderMappingRequest{
+		Name:       data.Name.ValueString(),
+		Expression: data.Expression.ValueString(),
 	}
-	return &r
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-
-	r := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
-
-	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderMappingRequest(*r).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
-	}
-
-	d.SetId(res.Pk)
-	return resourcePropertyMappingProviderGoogleWorkspaceRead(ctx, d, m)
+// fromAPI needs no prior-aware helper for expression: it is Required, so it can never be
+// null, and semantic equality handles the trailing-newline difference on its own.
+func (r *propertyMappingProviderGoogleWorkspaceResource) fromAPI(data *propertyMappingProviderGoogleWorkspaceModel, res *api.GoogleWorkspaceProviderMapping) {
+	data.ID = types.StringValue(res.Pk)
+	data.Name = types.StringValue(res.Name)
+	data.Expression = helpers.NewExpressionValue(res.Expression)
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	var diags diag.Diagnostics
-	c := m.(*APIClient)
+func (r *propertyMappingProviderGoogleWorkspaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	defer r.span(ctx, "create")()
 
-	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceRetrieve(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data propertyMappingProviderGoogleWorkspaceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	helpers.SetWrapper(d, "name", res.Name)
-	helpers.SetWrapper(d, "expression", res.Expression)
-	return diags
+	res, hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceCreate(ctx).GoogleWorkspaceProviderMappingRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
+func (r *propertyMappingProviderGoogleWorkspaceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	defer r.span(ctx, "read")()
 
-	app := resourcePropertyMappingProviderGoogleWorkspaceSchemaToProvider(d)
-
-	res, hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceUpdate(ctx, d.Id()).GoogleWorkspaceProviderMappingRequest(*app).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+	var data propertyMappingProviderGoogleWorkspaceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	d.SetId(res.Pk)
-	return resourcePropertyMappingProviderGoogleWorkspaceRead(ctx, d, m)
+	res, hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceRetrieve(ctx, data.ID.ValueString()).Execute()
+	if err != nil {
+		if helpers.IsNotFound(hr) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func resourcePropertyMappingProviderGoogleWorkspaceDelete(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
-	c := m.(*APIClient)
-	hr, err := c.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, d.Id()).Execute()
-	if err != nil {
-		return helpers.HTTPToDiag(d, hr, err)
+func (r *propertyMappingProviderGoogleWorkspaceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	defer r.span(ctx, "update")()
+
+	var data propertyMappingProviderGoogleWorkspaceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	return diag.Diagnostics{}
+
+	res, hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceUpdate(ctx, data.ID.ValueString()).GoogleWorkspaceProviderMappingRequest(*r.toRequest(&data)).Execute()
+	if err != nil {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+		return
+	}
+
+	r.fromAPI(&data, res)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *propertyMappingProviderGoogleWorkspaceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	defer r.span(ctx, "delete")()
+
+	var data propertyMappingProviderGoogleWorkspaceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	hr, err := r.client.PropertymappingsAPI.PropertymappingsProviderGoogleWorkspaceDestroy(ctx, data.ID.ValueString()).Execute()
+	if err != nil && !helpers.IsNotFound(hr) {
+		resp.Diagnostics.Append(helpers.HTTPError(hr, err)...)
+	}
 }
