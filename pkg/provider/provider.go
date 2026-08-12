@@ -209,6 +209,7 @@ func (p *authentikProvider) Resources(_ context.Context) []func() resource.Resou
 		newProviderMicrosoftEntraResource,
 		newProviderSCIMResource,
 		newProviderWSFederationResource,
+		newProviderOAuth2Resource,
 	}
 }
 

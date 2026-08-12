@@ -78,7 +78,6 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_flow":                                       tr(resourceFlow),
 			"authentik_outpost":                                    tr(resourceOutpost),
 			"authentik_outpost_provider_attachment":                tr(resourceOutpostProviderAttachment),
-			"authentik_provider_oauth2":                            tr(resourceProviderOAuth2),
 			"authentik_provider_proxy":                             tr(resourceProviderProxy),
 			"authentik_provider_saml":                              tr(resourceProviderSAML),
 			"authentik_rac_endpoint":                               tr(resourceRACEndpoint),
