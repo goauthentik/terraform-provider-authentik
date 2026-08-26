@@ -20,7 +20,7 @@ func resourceProviderOAuth2DCR() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
-			"provider": {
+			"oauth2_provider": {
 				Type:        schema.TypeInt,
 				Required:    true,
 				Description: "PK of the OAuth2 provider dynamic client registration applies to.",
@@ -78,7 +78,7 @@ func resourceProviderOAuth2DCR() *schema.Resource {
 
 func resourceProviderOAuth2DCRSchemaToModel(d *schema.ResourceData) *api.OAuth2DynamicClientRegistrationRequest {
 	m := api.OAuth2DynamicClientRegistrationRequest{
-		Provider:                  int32(d.Get("provider").(int)),
+		Provider:                  int32(d.Get("oauth2_provider").(int)),
 		DefaultApplicationGroup:   helpers.GetP[string](d, "default_application_group"),
 		OverrideAuthorizationFlow: *api.NewNullableString(helpers.GetP[string](d, "override_authorization_flow")),
 		OverrideInvalidationFlow:  *api.NewNullableString(helpers.GetP[string](d, "override_invalidation_flow")),
@@ -116,7 +116,7 @@ func resourceProviderOAuth2DCRRead(ctx context.Context, d *schema.ResourceData, 
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	helpers.SetWrapper(d, "provider", res.Provider)
+	helpers.SetWrapper(d, "oauth2_provider", res.Provider)
 	helpers.SetWrapper(d, "default_application_group", res.DefaultApplicationGroup)
 	helpers.SetWrapper(d, "override_authorization_flow", res.OverrideAuthorizationFlow.Get())
 	helpers.SetWrapper(d, "override_invalidation_flow", res.OverrideInvalidationFlow.Get())

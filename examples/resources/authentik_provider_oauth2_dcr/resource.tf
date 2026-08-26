@@ -20,7 +20,7 @@ resource "authentik_provider_oauth2" "example" {
 }
 
 resource "authentik_provider_oauth2_dcr" "example" {
-  provider               = authentik_provider_oauth2.example.id
+  oauth2_provider        = authentik_provider_oauth2.example.id
   access_token_validity  = "minutes=5"
   refresh_token_validity = "days=30"
   allowed_grant_types    = ["authorization_code", "refresh_token"]

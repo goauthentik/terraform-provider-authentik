@@ -18,7 +18,7 @@ func TestAccResourceProviderOAuth2DCR(t *testing.T) {
 				Config: testAccResourceProviderOAuth2DCR(rName, "hours=1"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("authentik_provider_oauth2_dcr.dcr", "access_token_validity", "hours=1"),
-					resource.TestCheckResourceAttrSet("authentik_provider_oauth2_dcr.dcr", "provider"),
+					resource.TestCheckResourceAttrSet("authentik_provider_oauth2_dcr.dcr", "oauth2_provider"),
 				),
 			},
 			{
@@ -55,7 +55,7 @@ resource "authentik_provider_oauth2" "name" {
 }
 
 resource "authentik_provider_oauth2_dcr" "dcr" {
-  provider               = authentik_provider_oauth2.name.id
+  oauth2_provider        = authentik_provider_oauth2.name.id
   access_token_validity  = "%[2]s"
   allowed_grant_types    = ["authorization_code", "refresh_token"]
 }
