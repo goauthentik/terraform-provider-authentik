@@ -12,9 +12,15 @@ description: |-
 ## Example Usage
 
 ```terraform
+resource "authentik_user" "example_agent_parent" {
+  username = "example-agent-parent"
+  name     = "Example Agent Parent"
+}
+
 resource "authentik_agent" "example" {
   username        = "example-agent"
   name            = "Example Agent"
+  parent          = authentik_user.example_agent_parent.id
   policy_behavior = "mirror"
   is_active       = true
 }
@@ -40,7 +46,7 @@ resource "authentik_agent" "example" {
   - `mirror`
   - `copy`
   - `none`
- Defaults to `mirror`.
+ Mirroring/copying requires an explicit `parent`; without one the server falls back to `none`. Generated.
 
 ### Read-Only
 

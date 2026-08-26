@@ -36,9 +36,15 @@ func TestAccResourceAgent(t *testing.T) {
 
 func testAccResourceAgent(name string, isActive string) string {
 	return fmt.Sprintf(`
+resource "authentik_user" "parent" {
+  username = "%[1]s-parent"
+  name     = "%[1]s-parent"
+}
+
 resource "authentik_agent" "name" {
   username        = "%[1]s"
   name            = "%[1]s"
+  parent          = authentik_user.parent.id
   policy_behavior = "mirror"
   is_active       = %[2]s
 }

@@ -41,9 +41,9 @@ func resourceAgent() *schema.Resource {
 			"policy_behavior": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          api.POLICYBEHAVIORENUM_MIRROR,
+				Computed:         true,
 				ForceNew:         true,
-				Description:      helpers.EnumToDescription(api.AllowedPolicyBehaviorEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedPolicyBehaviorEnumEnumValues) + " Mirroring/copying requires an explicit `parent`; without one the server falls back to `none`.",
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedPolicyBehaviorEnumEnumValues),
 			},
 			"is_active": {
@@ -115,9 +115,11 @@ func resourceAgentExpiresSet(d *schema.ResourceData, set func(*time.Time)) diag.
 // call in resourceAgentCreate, since AgentCreateRequest has no fields for them.
 func resourceAgentSchemaToCreateModel(d *schema.ResourceData) (*api.AgentCreateRequest, diag.Diagnostics) {
 	m := api.AgentCreateRequest{
-		Parent:         helpers.GetIntP(d, "parent"),
-		Expiring:       new(d.Get("expiring").(bool)),
-		PolicyBehavior: api.PolicyBehaviorEnum(d.Get("policy_behavior").(string)).Ptr(),
+		Parent:   helpers.GetIntP(d, "parent"),
+		Expiring: new(d.Get("expiring").(bool)),
+	}
+	if pb, ok := d.GetOk("policy_behavior"); ok {
+		m.PolicyBehavior = api.PolicyBehaviorEnum(pb.(string)).Ptr()
 	}
 	if diags := resourceAgentExpiresSet(d, m.Expires.Set); diags != nil {
 		return nil, diags

@@ -118,7 +118,9 @@ func resourceObjectAttributeRead(ctx context.Context, d *schema.ResourceData, m 
 		return helpers.HTTPToDiag(d, hr, err)
 	}
 
-	helpers.SetWrapper(d, "object_type", res.ObjectType)
+	// res.ObjectType is a human-readable display string (e.g. "authentik Core | User");
+	// the machine-readable "app_label.model" form accepted on write round-trips via ObjectTypeObj.
+	helpers.SetWrapper(d, "object_type", res.ObjectTypeObj.FullyQualifiedModel)
 	helpers.SetWrapper(d, "key", res.Key)
 	helpers.SetWrapper(d, "label", res.Label)
 	helpers.SetWrapper(d, "type", res.Type)

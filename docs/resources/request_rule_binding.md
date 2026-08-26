@@ -39,8 +39,8 @@ resource "authentik_request_rule_binding" "example" {
 
 ### Optional
 
-- `expiry_granted_max` (String) The maximum duration a grant approved against this binding can last. Format: hours=1;minutes=2;seconds=3.
-- `expiry_pending` (String) How long a request against this binding stays pending before it automatically lapses if not approved or denied. Format: hours=1;minutes=2;seconds=3.
+- `expiry_granted_max` (String) The maximum duration a grant approved against this binding can last. Format: hours=1;minutes=2;seconds=3. Generated.
+- `expiry_pending` (String) How long a request against this binding stays pending before it automatically lapses if not approved or denied. Format: hours=1;minutes=2;seconds=3. Generated.
 - `policy_engine_mode` (String) Allowed values:
   - `all`
   - `any`

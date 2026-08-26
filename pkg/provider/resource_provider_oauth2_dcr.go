@@ -49,11 +49,13 @@ func resourceProviderOAuth2DCR() *schema.Resource {
 			"access_token_validity": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Maximum access token validity for registered clients. Format: hours=1;minutes=2;seconds=3.",
 			},
 			"refresh_token_validity": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Maximum refresh token validity for registered clients. Format: hours=1;minutes=2;seconds=3.",
 			},
 			"allowed_grant_types": {

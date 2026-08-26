@@ -40,11 +40,13 @@ func resourceRequestRuleBinding() *schema.Resource {
 			"expiry_pending": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "How long a request against this binding stays pending before it automatically lapses if not approved or denied. Format: hours=1;minutes=2;seconds=3.",
 			},
 			"expiry_granted_max": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "The maximum duration a grant approved against this binding can last. Format: hours=1;minutes=2;seconds=3.",
 			},
 			// Computed

@@ -50,7 +50,7 @@ resource "authentik_provider_oauth2_dcr" "example" {
 
 ### Optional
 
-- `access_token_validity` (String) Maximum access token validity for registered clients. Format: hours=1;minutes=2;seconds=3.
+- `access_token_validity` (String) Maximum access token validity for registered clients. Format: hours=1;minutes=2;seconds=3. Generated.
 - `allowed_grant_types` (List of String) If empty, all grant types are allowed. Allowed values:
   - `authorization_code`
   - `implicit`
@@ -68,7 +68,7 @@ resource "authentik_provider_oauth2_dcr" "example" {
   - `all`
   - `any`
  Generated.
-- `refresh_token_validity` (String) Maximum refresh token validity for registered clients. Format: hours=1;minutes=2;seconds=3.
+- `refresh_token_validity` (String) Maximum refresh token validity for registered clients. Format: hours=1;minutes=2;seconds=3. Generated.
 
 ### Read-Only
 
