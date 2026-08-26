@@ -71,6 +71,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"authentik_agent":                                      tr(resourceAgent),
 			"authentik_application_entitlement":                    tr(resourceApplicationEntitlement),
 			"authentik_application":                                tr(resourceApplication),
 			"authentik_blueprint":                                  tr(resourceBlueprintInstance),
@@ -86,6 +87,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_flow_stage_binding":                         tr(resourceFlowStageBinding),
 			"authentik_flow":                                       tr(resourceFlow),
 			"authentik_group":                                      tr(resourceGroup),
+			"authentik_object_attribute":                           tr(resourceObjectAttribute),
 			"authentik_outpost":                                    tr(resourceOutpost),
 			"authentik_outpost_provider_attachment":                tr(resourceOutpostProviderAttachment),
 			"authentik_policy_binding":                             tr(resourcePolicyBinding),
@@ -115,6 +117,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_provider_ldap":                              tr(resourceProviderLDAP),
 			"authentik_provider_microsoft_entra":                   tr(resourceProviderMicrosoftEntra),
 			"authentik_provider_oauth2":                            tr(resourceProviderOAuth2),
+			"authentik_provider_oauth2_dcr":                        tr(resourceProviderOAuth2DCR),
 			"authentik_provider_proxy":                             tr(resourceProviderProxy),
 			"authentik_provider_rac":                               tr(resourceProviderRAC),
 			"authentik_provider_radius":                            tr(resourceProviderRadius),
@@ -128,6 +131,9 @@ func Provider(version string, testing bool) *schema.Provider {
 			// TODO: Remove in 2026.2 or later
 			"authentik_rbac_permission_user":              tr(helpers.MarkDeprecated(resourceRBACUserObjectPermission, "authentik_rbac_permission_role")),
 			"authentik_rbac_role":                         tr(resourceRBACRole),
+			"authentik_request_rule":                      tr(resourceRequestRule),
+			"authentik_request_rule_binding":              tr(resourceRequestRuleBinding),
+			"authentik_request_rule_child_binding":        tr(resourceRequestRuleChildBinding),
 			"authentik_service_connection_docker":         tr(resourceServiceConnectionDocker),
 			"authentik_service_connection_kubernetes":     tr(resourceServiceConnectionKubernetes),
 			"authentik_source_kerberos":                   tr(resourceSourceKerberos),
@@ -168,6 +174,7 @@ func Provider(version string, testing bool) *schema.Provider {
 			"authentik_task_schedule":                     tr(resourceTaskSchedule),
 			"authentik_token":                             tr(resourceToken),
 			"authentik_user":                              tr(resourceUser),
+			"authentik_user_offboarding":                  tr(resourceUserOffboarding),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"authentik_application_entitlement":          td(dataSourceApplicationEntitlement),
