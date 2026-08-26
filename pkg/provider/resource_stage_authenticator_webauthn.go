@@ -73,25 +73,19 @@ func resourceStageAuthenticatorWebAuthn() *schema.Resource {
 					ValidateDiagFunc: helpers.StringInEnum(api.AllowedWebAuthnHintEnumEnumValues),
 				},
 			},
-			"prevent_duplicate_devices": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
 		},
 	}
 }
 
 func resourceStageAuthenticatorWebAuthnSchemaToProvider(d *schema.ResourceData) *api.AuthenticatorWebAuthnStageRequest {
 	r := api.AuthenticatorWebAuthnStageRequest{
-		Name:                    d.Get("name").(string),
-		UserVerification:        api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
-		ResidentKeyRequirement:  api.UserVerificationEnum(d.Get("resident_key_requirement").(string)).Ptr(),
-		DeviceTypeRestrictions:  helpers.CastSlice[string](d, "device_type_restrictions"),
-		FriendlyName:            helpers.GetP[string](d, "friendly_name"),
-		ConfigureFlow:           *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
-		MaxAttempts:             helpers.GetIntP(d, "max_attempts"),
-		PreventDuplicateDevices: new(d.Get("prevent_duplicate_devices").(bool)),
+		Name:                   d.Get("name").(string),
+		UserVerification:       api.UserVerificationEnum(d.Get("user_verification").(string)).Ptr(),
+		ResidentKeyRequirement: api.UserVerificationEnum(d.Get("resident_key_requirement").(string)).Ptr(),
+		DeviceTypeRestrictions: helpers.CastSlice[string](d, "device_type_restrictions"),
+		FriendlyName:           helpers.GetP[string](d, "friendly_name"),
+		ConfigureFlow:          *api.NewNullableString(helpers.GetP[string](d, "configure_flow")),
+		MaxAttempts:            helpers.GetIntP(d, "max_attempts"),
 	}
 
 	hints := make([]api.WebAuthnHintEnum, 0)
@@ -141,7 +135,6 @@ func resourceStageAuthenticatorWebAuthnRead(ctx context.Context, d *schema.Resou
 	))
 	helpers.SetWrapper(d, "max_attempts", res.MaxAttempts)
 	helpers.SetWrapper(d, "hints", res.Hints)
-	helpers.SetWrapper(d, "prevent_duplicate_devices", res.PreventDuplicateDevices)
 	return diags
 }
 

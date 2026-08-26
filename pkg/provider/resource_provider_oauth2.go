@@ -57,8 +57,8 @@ func resourceProviderOAuth2() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Schema{
 					Type:             schema.TypeString,
-					Description:      helpers.EnumToDescription(api.AllowedGrantTypesEnumEnumValues),
-					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGrantTypesEnumEnumValues),
+					Description:      helpers.EnumToDescription(api.AllowedGrantTypeEnumEnumValues),
+					ValidateDiagFunc: helpers.StringInEnum(api.AllowedGrantTypeEnumEnumValues),
 				},
 			},
 			"client_id": {
@@ -202,9 +202,9 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 	// Only send grant_types when explicitly set; the API rejects an empty list and
 	// otherwise derives the value from the provider configuration server-side.
 	if raw := d.Get("grant_types").([]any); len(raw) > 0 {
-		grantTypes := make([]api.GrantTypesEnum, 0, len(raw))
+		grantTypes := make([]api.GrantTypeEnum, 0, len(raw))
 		for _, gt := range raw {
-			grantTypes = append(grantTypes, api.GrantTypesEnum(gt.(string)))
+			grantTypes = append(grantTypes, api.GrantTypeEnum(gt.(string)))
 		}
 		r.GrantTypes = grantTypes
 	}
