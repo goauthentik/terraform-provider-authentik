@@ -42,11 +42,10 @@ resource "authentik_source_oauth" "name" {
 - `consumer_secret` (String, Sensitive)
 - `name` (String)
 - `provider_type` (String) Allowed values:
-  - `apple`
   - `openidconnect`
-  - `entraid`
-  - `azuread`
+  - `apple`
   - `discord`
+  - `entraid`
   - `facebook`
   - `github`
   - `gitlab`
