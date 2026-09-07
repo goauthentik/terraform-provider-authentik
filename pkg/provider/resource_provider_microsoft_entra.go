@@ -162,7 +162,7 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	helpers.SetWrapper(d, "user_delete_action", res.UserDeleteAction)
 	helpers.SetWrapper(d, "group_delete_action", res.GroupDeleteAction)
-	helpers.SetWrapper(d, "filter_group", res.FilterGroup)
+	helpers.SetWrapper(d, "filter_group", res.FilterGroup.Get())
 	helpers.SetWrapper(d, "dry_run", res.DryRun)
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
 		helpers.CastSlice[string](d, "property_mappings"),
