@@ -221,9 +221,7 @@ func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "sync_users", res.SyncUsers)
 	helpers.SetWrapper(d, "sync_users_password", res.SyncUsersPassword)
 	helpers.SetWrapper(d, "sync_principal", res.SyncPrincipal)
-	helpers.SetWrapper(d, "sync_ccache", res.SyncCcache)
 	helpers.SetWrapper(d, "spnego_server_name", res.SpnegoServerName)
-	helpers.SetWrapper(d, "spnego_ccache", res.SpnegoCcache)
 	helpers.SetWrapper(d, "password_login_update_internal_password", res.PasswordLoginUpdateInternalPassword)
 	helpers.SetWrapper(d, "sync_outgoing_trigger_mode", res.SyncOutgoingTriggerMode)
 	return diags
