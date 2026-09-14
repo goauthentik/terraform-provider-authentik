@@ -123,8 +123,6 @@ func resourceStageAuthenticatorSmsRead(ctx context.Context, d *schema.ResourceDa
 	helpers.SetWrapper(d, "sms_provider", res.Provider)
 	helpers.SetWrapper(d, "from_number", res.FromNumber)
 	helpers.SetWrapper(d, "account_sid", res.AccountSid)
-	helpers.SetWrapper(d, "auth", res.Auth)
-	helpers.SetWrapper(d, "auth_password", res.AuthPassword)
 	helpers.SetWrapper(d, "auth_type", res.AuthType)
 	helpers.SetWrapper(d, "verify_only", res.VerifyOnly)
 	helpers.SetWrapper(d, "mapping", res.Mapping.Get())
