@@ -157,7 +157,6 @@ func resourceProviderMicrosoftEntraRead(ctx context.Context, d *schema.ResourceD
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "client_id", res.ClientId)
-	helpers.SetWrapper(d, "client_secret", res.ClientSecret)
 	helpers.SetWrapper(d, "tenant_id", res.TenantId)
 	helpers.SetWrapper(d, "exclude_users_service_account", res.ExcludeUsersServiceAccount)
 	helpers.SetWrapper(d, "user_delete_action", res.UserDeleteAction)

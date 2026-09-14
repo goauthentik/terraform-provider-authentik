@@ -167,7 +167,6 @@ func resourceProviderSCIMRead(ctx context.Context, d *schema.ResourceData, m any
 
 	helpers.SetWrapper(d, "name", res.Name)
 	helpers.SetWrapper(d, "url", res.Url)
-	helpers.SetWrapper(d, "token", res.Token)
 	helpers.SetWrapper(d, "property_mappings", helpers.ListConsistentMerge(
 		helpers.CastSlice[string](d, "property_mappings"),
 		res.PropertyMappings,
