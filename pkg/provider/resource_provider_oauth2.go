@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -113,8 +114,9 @@ func resourceProviderOAuth2() *schema.Resource {
 				Optional: true,
 			},
 			"allowed_redirect_uris": {
-				Type:     schema.TypeList,
-				Optional: true,
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: redirectURIsDescription(),
 				Elem: &schema.Schema{
 					Type: schema.TypeMap,
 				},
@@ -209,6 +211,18 @@ func resourceProviderOAuth2SchemaToProvider(d *schema.ResourceData) *api.OAuth2P
 		r.GrantTypes = grantTypes
 	}
 	return &r
+}
+
+// redirectURIsDescription documents the keys of each allowed_redirect_uris entry.
+// The entries are untyped maps, so tfplugindocs cannot derive a nested schema.
+func redirectURIsDescription() string {
+	return fmt.Sprintf("List of allowed redirect URIs. Each entry is a map with the following keys:\n"+
+		"  - `matching_mode` (Required): `%s` or `%s`\n"+
+		"  - `url` (Required): the redirect URI or, with `matching_mode = \"%s\"`, a regular expression\n"+
+		"  - `redirect_uri_type` (Optional): `%s` for authorization redirects or `%s` for post-logout redirects. Defaults to `%s`.",
+		api.MATCHINGMODEENUM_STRICT, api.MATCHINGMODEENUM_REGEX,
+		api.MATCHINGMODEENUM_REGEX,
+		api.REDIRECTURITYPEENUM_AUTHORIZATION, api.REDIRECTURITYPEENUM_LOGOUT, api.REDIRECTURITYPEENUM_AUTHORIZATION)
 }
 
 func redirectURITypeFromMap(rd map[string]any) *api.RedirectURITypeEnum {
