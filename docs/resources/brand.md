@@ -46,6 +46,7 @@ resource "authentik_brand" "default" {
 - `flow_recovery` (String)
 - `flow_unenrollment` (String)
 - `flow_user_settings` (String)
+- `flow_user_switch` (String)
 - `web_certificate` (String)
 
 ### Read-Only
