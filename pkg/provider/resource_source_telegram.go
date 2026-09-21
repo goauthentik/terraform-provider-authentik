@@ -51,6 +51,11 @@ func resourceSourceTelegram() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"promoted": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"policy_engine_mode": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -107,6 +112,7 @@ func resourceSourceTelegramSchemaToSource(d *schema.ResourceData) *api.TelegramS
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
 		Enabled:          new(d.Get("enabled").(bool)),
+		Promoted:         new(d.Get("promoted").(bool)),
 		UserPathTemplate: new(d.Get("user_path_template").(string)),
 		PolicyEngineMode: api.PolicyEngineMode(d.Get("policy_engine_mode").(string)).Ptr(),
 		UserMatchingMode: api.UserMatchingModeEnum(d.Get("user_matching_mode").(string)).Ptr(),
@@ -154,6 +160,7 @@ func resourceSourceTelegramRead(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "authentication_flow", res.AuthenticationFlow.Get())
 	helpers.SetWrapper(d, "enrollment_flow", res.EnrollmentFlow.Get())
 	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "promoted", res.Promoted)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
 	helpers.SetWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
