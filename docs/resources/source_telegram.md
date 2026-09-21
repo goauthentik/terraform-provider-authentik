@@ -31,6 +31,7 @@ description: |-
   - `all`
   - `any`
  Defaults to `any`.
+- `promoted` (Boolean) Defaults to `false`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
 - `request_message_access` (Boolean) Defaults to `false`.
