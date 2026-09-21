@@ -48,6 +48,7 @@ resource "authentik_source_ldap" "name" {
 - `lookup_groups_from_user` (Boolean) Defaults to `true`.
 - `object_uniqueness_field` (String) Defaults to `objectSid`.
 - `password_login_update_internal_password` (Boolean) Defaults to `false`.
+- `promoted` (Boolean) Defaults to `false`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
 - `sni` (Boolean) Defaults to `false`.
