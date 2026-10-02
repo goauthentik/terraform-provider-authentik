@@ -44,8 +44,9 @@ func resourceBrand() *schema.Resource {
 				Default:  "/static/dist/assets/images/flow_background.jpg",
 			},
 			"branding_custom_css": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"branding_favicon": {
 				Type:     schema.TypeString,
