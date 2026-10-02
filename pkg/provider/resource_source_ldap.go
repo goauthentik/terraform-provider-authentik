@@ -43,6 +43,11 @@ func resourceSourceLDAP() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"promoted": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 
 			"server_uri": {
 				Type:     schema.TypeString,
@@ -170,6 +175,7 @@ func resourceSourceLDAPSchemaToSource(d *schema.ResourceData) *api.LDAPSourceReq
 		Name:             d.Get("name").(string),
 		Slug:             d.Get("slug").(string),
 		Enabled:          new(d.Get("enabled").(bool)),
+		Promoted:         new(d.Get("promoted").(bool)),
 		UserPathTemplate: new(d.Get("user_path_template").(string)),
 
 		BaseDn:       d.Get("base_dn").(string),
@@ -227,6 +233,7 @@ func resourceSourceLDAPRead(ctx context.Context, d *schema.ResourceData, m any) 
 	helpers.SetWrapper(d, "slug", res.Slug)
 	helpers.SetWrapper(d, "uuid", res.Pk)
 	helpers.SetWrapper(d, "enabled", res.Enabled)
+	helpers.SetWrapper(d, "promoted", res.Promoted)
 	helpers.SetWrapper(d, "user_path_template", res.UserPathTemplate)
 
 	helpers.SetWrapper(d, "base_dn", res.BaseDn)
