@@ -12,6 +12,26 @@ permissions:
   contents: read
 
 jobs:
+  authentik-version:
+    name: Determine authentik version(s) to test against
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      primary: ${{ steps.versions.outputs.primary }}
+      include: ${{ steps.versions.outputs.include }}
+    steps:
+      - id: versions
+        # On a version-* branch (or a PR targeting one), this provider is being released for a
+        # specific older authentik version, so test against that version instead of {beta, stable}.
+        run: |
+          ref="${GITHUB_BASE_REF:-$GITHUB_REF_NAME}"
+          if [[ "$ref" == version-* ]]; then
+            echo "primary=[\"${ref#version-}\"]" >> "$GITHUB_OUTPUT"
+            echo "include=[]" >> "$GITHUB_OUTPUT"
+          else
+            echo 'primary=["beta"]' >> "$GITHUB_OUTPUT"
+            echo 'include=[{"authentik_version":"stable","terraform":"latest","allow_failure":true}]' >> "$GITHUB_OUTPUT"
+          fi
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -38,6 +58,7 @@ jobs:
       - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
   test:
     name: Acceptance tests - authentik ${{ matrix.authentik_version }} - Terraform ${{ matrix.terraform }}
+    needs: authentik-version
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -53,12 +74,8 @@ jobs:
           - "beta"
           - "rc"
           - "latest"
-        authentik_version:
-          - "beta"
-        include:
-          - authentik_version: "stable"
-            terraform: latest
-            allow_failure: true
+        authentik_version: ${{ fromJson(needs.authentik-version.outputs.primary) }}
+        include: ${{ fromJson(needs.authentik-version.outputs.include) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
