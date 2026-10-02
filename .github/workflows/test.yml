@@ -56,6 +56,42 @@ jobs:
           go-version-file: go.mod
           cache: true
       - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
+  unit-test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      # Needed for checkout
+      contents: read
+      # Needed for codecov OIDC token
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Unit tests
+        run: go test -v -race ./... | tee test-output
+      - if: ${{ always() }}
+        run: |
+          go tool github.com/jstemmer/go-junit-report/v2 -in test-output -set-exit-code -iocopy -out junit.xml
+      - if: ${{ always() }}
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2
+        with:
+          paths: junit.xml
+          show: "fail"
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v5
+        with:
+          flags: unittest
+          use_oidc: true
+      - if: ${{ always() }}
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v5
+        with:
+          flags: unittest
+          use_oidc: true
+          report_type: test_results
   test:
     name: Acceptance tests - authentik ${{ matrix.authentik_version }} - Terraform ${{ matrix.terraform }}
     needs: authentik-version

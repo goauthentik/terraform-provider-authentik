@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccResourceSystemSettings(t *testing.T) {
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{

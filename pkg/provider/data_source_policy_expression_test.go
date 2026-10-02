@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccDataSourcePolicyExpression(t *testing.T) {
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
@@ -29,7 +29,7 @@ func TestAccDataSourcePolicyExpression(t *testing.T) {
 }
 
 func TestAccDataSourcePolicyExpression_Errors(t *testing.T) {
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{

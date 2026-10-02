@@ -12,7 +12,7 @@ import (
 func TestAccResourceEndpointEnrollmentToken(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	expires := time.Now().Add(30 * time.Minute).Format(time.RFC3339)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{

@@ -12,7 +12,7 @@ import (
 func TestAccResourceUserOffboarding(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	scheduledAt := time.Now().Add(24 * time.Hour).Format(time.RFC3339)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
