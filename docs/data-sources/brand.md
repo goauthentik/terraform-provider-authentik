@@ -39,9 +39,11 @@ data "authentik_brand" "authentik-default" {
 - `flow_authentication` (String) Generated.
 - `flow_device_code` (String) Generated.
 - `flow_invalidation` (String) Generated.
+- `flow_lockdown` (String) Generated.
 - `flow_recovery` (String) Generated.
 - `flow_unenrollment` (String) Generated.
 - `flow_user_settings` (String) Generated.
+- `flow_user_switch` (String) Generated.
 - `web_certificate` (String) Generated.
 
 ### Read-Only
