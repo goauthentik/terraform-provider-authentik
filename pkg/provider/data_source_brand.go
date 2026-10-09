@@ -78,6 +78,16 @@ func dataSourceBrand() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"flow_lockdown": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
+			"flow_user_switch": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"web_certificate": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -131,6 +141,8 @@ func dataSourceBrandRead(ctx context.Context, d *schema.ResourceData, m any) dia
 	helpers.SetWrapper(d, "flow_unenrollment", f.FlowUnenrollment.Get())
 	helpers.SetWrapper(d, "flow_user_settings", f.FlowUserSettings.Get())
 	helpers.SetWrapper(d, "flow_device_code", f.FlowDeviceCode.Get())
+	helpers.SetWrapper(d, "flow_lockdown", f.FlowLockdown.Get())
+	helpers.SetWrapper(d, "flow_user_switch", f.FlowUserSwitch.Get())
 	helpers.SetWrapper(d, "web_certificate", f.WebCertificate.Get())
 	helpers.SetWrapper(d, "client_certificates", f.ClientCertificates)
 	helpers.SetWrapper(d, "default_application", f.DefaultApplication.Get())
