@@ -194,8 +194,8 @@ func resourceProviderSAML() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Default:          api.SAMLNAMEIDPOLICYENUM_URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT,
-				Description:      helpers.EnumToDescription(api.AllowedSAMLBindingsEnumEnumValues),
-				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLBindingsEnumEnumValues),
+				Description:      helpers.EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
 			},
 		},
 	}
