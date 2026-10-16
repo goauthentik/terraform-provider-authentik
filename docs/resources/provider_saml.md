@@ -97,7 +97,7 @@ resource "authentik_application" "name" {
 - `sp_binding` (String) Allowed values:
   - `redirect`
   - `post`
- :Defaults to `redirect`.
+ Defaults to `redirect`.
 - `url_slo_post` (String) Generated.
 - `url_slo_redirect` (String) Generated.
 - `url_sso_init` (String) Generated.
