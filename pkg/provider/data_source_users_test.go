@@ -7,7 +7,7 @@ import (
 )
 
 func TestAccDataSourceUsers(t *testing.T) {
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
@@ -25,5 +25,6 @@ func TestAccDataSourceUsers(t *testing.T) {
 const testAccDataSourceUserSimple = `
 data "authentik_users" "admins" {
   is_superuser = true
+  username     = "akadmin"
 }
 `

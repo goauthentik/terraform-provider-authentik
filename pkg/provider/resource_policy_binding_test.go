@@ -10,7 +10,7 @@ import (
 
 func TestAccResourcePolicyBinding(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
@@ -28,7 +28,7 @@ func TestAccResourcePolicyBinding(t *testing.T) {
 			},
 		},
 	})
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
@@ -46,7 +46,7 @@ func TestAccResourcePolicyBinding(t *testing.T) {
 			},
 		},
 	})
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
