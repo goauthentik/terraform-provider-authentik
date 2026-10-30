@@ -77,7 +77,10 @@ func resourceRBACRoleObjectPermissionCreate(ctx context.Context, d *schema.Resou
 		return diag.Errorf("invalid API response")
 	}
 	d.SetId(res[0].Id)
-	return resourceRBACRoleObjectPermissionRead(ctx, d, m)
+	// Deliberately not calling Read here: every attribute is Required+ForceNew and
+	// already known from config, and Read re-derives "permission" by paginating/scanning
+	// the role's full permission list
+	return nil
 }
 
 func resourceRBACRoleObjectPermissionRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
