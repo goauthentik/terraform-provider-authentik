@@ -36,6 +36,7 @@ description: |-
   - `all`
   - `any`
  Defaults to `any`.
+- `promoted` (Boolean) Defaults to `false`.
 - `spnego_ccache` (String) Credential cache to use for SPNEGO in form type:residual
 - `spnego_keytab` (String, Sensitive) SPNEGO keytab base64-encoded or path to keytab in the form FILE:path
 - `spnego_server_name` (String) Force the use of a specific server name for SPNEGO
