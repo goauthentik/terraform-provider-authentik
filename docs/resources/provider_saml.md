@@ -48,14 +48,14 @@ resource "authentik_application" "name" {
 - `audience` (String) Defaults to ``.
 - `authentication_flow` (String)
 - `authn_context_class_ref_mapping` (String)
-- `default_name_id_policy` (String) Allwoed values:
-  - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`,
-  - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`,
-  - `urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName`,
-  - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`,
-  - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`,
-  - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`,
- Defaults to `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`
+- `default_name_id_policy` (String) Allowed values:
+  - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
+  - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`
+  - `urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName`
+  - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`
+  - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
+  - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+ Defaults to `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`.
 - `default_relay_state` (String) Defaults to ``.
 - `digest_algorithm` (String) Allowed values:
   - `http://www.w3.org/2000/09/xmldsig#sha1`
