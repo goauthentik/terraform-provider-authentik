@@ -100,16 +100,19 @@ func resourceSourceOAuth() *schema.Resource {
 			"authorization_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
 			},
 			"access_token_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Only required for OAuth1.",
 			},
 			"profile_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.",
 			},
 
@@ -121,6 +124,7 @@ func resourceSourceOAuth() *schema.Resource {
 			"oidc_jwks_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Automatically configure JWKS if not specified by `oidc_well_known_url`.",
 			},
 			"oidc_jwks": {
