@@ -149,12 +149,12 @@ func resourceProviderProxySchemaToProvider(d *schema.ResourceData) *api.ProxyPro
 		JwtFederationSources:      helpers.CastSlice[string](d, "jwt_federation_sources"),
 		AuthenticationFlow:        *api.NewNullableString(helpers.GetP[string](d, "authentication_flow")),
 		InternalHost:              helpers.GetP[string](d, "internal_host"),
-		InternalHostSslValidation: helpers.GetP[bool](d, "internal_host_ssl_validation"),
+		InternalHostSslValidation: new(d.Get("internal_host_ssl_validation").(bool)),
 
 		SkipPathRegex: helpers.GetP[string](d, "skip_path_regex"),
 
-		BasicAuthEnabled:           helpers.GetP[bool](d, "basic_auth_enabled"),
-		InterceptHeaderAuth:        helpers.GetP[bool](d, "intercept_header_auth"),
+		BasicAuthEnabled:           new(d.Get("basic_auth_enabled").(bool)),
+		InterceptHeaderAuth:        new(d.Get("intercept_header_auth").(bool)),
 		BasicAuthUserAttribute:     helpers.GetP[string](d, "basic_auth_username_attribute"),
 		BasicAuthPasswordAttribute: helpers.GetP[string](d, "basic_auth_password_attribute"),
 
