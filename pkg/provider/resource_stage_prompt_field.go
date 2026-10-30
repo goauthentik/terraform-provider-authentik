@@ -86,8 +86,8 @@ func resourceStagePromptFieldSchemaToProvider(d *schema.ResourceData) *api.Promp
 		PlaceholderExpression:  new(d.Get("placeholder_expression").(bool)),
 		InitialValueExpression: new(d.Get("initial_value_expression").(bool)),
 		SubText:                new(d.Get("sub_text").(string)),
-		Placeholder:            helpers.GetP[string](d, "placeholder"),
-		InitialValue:           helpers.GetP[string](d, "initial_value"),
+		Placeholder:            helpers.GetStringP(d, "placeholder"),
+		InitialValue:           helpers.GetStringP(d, "initial_value"),
 		Order:                  helpers.GetIntP(d, "order"),
 	}
 	return &r
