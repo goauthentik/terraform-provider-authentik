@@ -11,7 +11,7 @@ import (
 func TestAccResourceAgent(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
+		PreCheck:          func() { testAccPreCheckEnterprise(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
