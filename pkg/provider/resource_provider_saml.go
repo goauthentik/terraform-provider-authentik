@@ -190,6 +190,13 @@ func resourceProviderSAML() *schema.Resource {
 				Description:      helpers.EnumToDescription(api.AllowedSAMLLogoutMethodsEnumValues),
 				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLLogoutMethodsEnumValues),
 			},
+			"default_name_id_policy": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Default:          api.SAMLNAMEIDPOLICYENUM_URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED,
+				Description:      helpers.EnumToDescription(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+				ValidateDiagFunc: helpers.StringInEnum(api.AllowedSAMLNameIDPolicyEnumEnumValues),
+			},
 		},
 	}
 }
@@ -223,6 +230,7 @@ func resourceProviderSAMLSchemaToProvider(d *schema.ResourceData) *api.SAMLProvi
 		SignLogoutResponse:          helpers.GetP[bool](d, "sign_logout_response"),
 		SlsBinding:                  helpers.CastString[api.SAMLBindingsEnum](helpers.GetP[string](d, "sls_binding")),
 		LogoutMethod:                helpers.CastString[api.SAMLLogoutMethods](helpers.GetP[string](d, "logout_method")),
+		DefaultNameIdPolicy:         helpers.CastString[api.SAMLNameIDPolicyEnum](helpers.GetP[string](d, "default_name_id_policy")),
 	}
 	return &r
 }
@@ -290,6 +298,7 @@ func resourceProviderSAMLRead(ctx context.Context, d *schema.ResourceData, m any
 	helpers.SetWrapper(d, "sign_logout_response", res.SignLogoutResponse)
 	helpers.SetWrapper(d, "sls_binding", res.SlsBinding)
 	helpers.SetWrapper(d, "logout_method", res.LogoutMethod)
+	helpers.SetWrapper(d, "default_name_id_policy", res.DefaultNameIdPolicy)
 	return diags
 }
 
