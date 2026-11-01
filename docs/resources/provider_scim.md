@@ -44,6 +44,7 @@ resource "authentik_provider_scim" "name" {
 - `auth_mode` (String) Allowed values:
   - `token`
   - `oauth`
+  - `oauth_interactive`
  Defaults to `token`.
 - `auth_oauth` (String) Slug of an OAuth source used for authentication
 - `auth_oauth_params` (String) JSON format expected. Use `jsonencode()` to pass objects. Defaults to `{}`.
@@ -52,6 +53,7 @@ resource "authentik_provider_scim" "name" {
   - `aws`
   - `slack`
   - `sfdc`
+  - `gitlab`
   - `webex`
   - `vcenter`
  Defaults to `default`.

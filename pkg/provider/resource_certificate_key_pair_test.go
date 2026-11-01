@@ -70,7 +70,7 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
@@ -90,7 +90,7 @@ func TestAccResourceCertificateKeyPair(t *testing.T) {
 			},
 		},
 	})
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerTestFactories,
 		Steps: []resource.TestStep{

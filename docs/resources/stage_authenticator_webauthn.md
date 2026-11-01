@@ -49,7 +49,6 @@ resource "authentik_stage_authenticator_webauthn" "name" {
 - `friendly_name` (String) Defaults to ``.
 - `hints` (List of String)
 - `max_attempts` (Number)
-- `prevent_duplicate_devices` (Boolean) Defaults to `true`.
 - `resident_key_requirement` (String) Allowed values:
   - `required`
   - `preferred`

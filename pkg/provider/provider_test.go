@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stretchr/testify/assert"
+	api "goauthentik.io/api/v3"
 )
 
 // providerFactories are used to instantiate a provider during acceptance testing.
@@ -33,6 +34,24 @@ func TestProvider(t *testing.T) {
 func testAccPreCheck(t *testing.T) {
 	testEnvIsSet("AUTHENTIK_URL", t)
 	testEnvIsSet("AUTHENTIK_TOKEN", t)
+}
+
+// testAccPreCheckEnterprise skips the test when the authentik instance has no valid enterprise license
+// (e.g. CI runs for PRs from forks, which don't get access to the license secret)
+func testAccPreCheckEnterprise(t *testing.T) {
+	testAccPreCheck(t)
+	p := Provider("test", false)
+	ac, diags := p.ConfigureContextFunc(t.Context(), schema.TestResourceDataRaw(t, p.Schema, map[string]any{}))
+	if diags.HasError() {
+		t.Fatalf("failed to configure provider: %v", diags)
+	}
+	summary, _, err := ac.(*APIClient).client.EnterpriseAPI.EnterpriseLicenseSummaryRetrieve(t.Context()).Execute()
+	if err != nil {
+		t.Fatalf("failed to get license summary: %v", err)
+	}
+	if summary.Status != api.LICENSESUMMARYSTATUSENUM_VALID && summary.Status != api.LICENSESUMMARYSTATUSENUM_EXPIRY_SOON {
+		t.Skipf("enterprise license not available (status: %s)", summary.Status)
+	}
 }
 
 func testEnvIsSet(k string, t *testing.T) {

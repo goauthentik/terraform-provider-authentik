@@ -44,8 +44,9 @@ func resourceBrand() *schema.Resource {
 				Default:  "/static/dist/assets/images/flow_background.jpg",
 			},
 			"branding_custom_css": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:             schema.TypeString,
+				Optional:         true,
+				DiffSuppressFunc: helpers.DiffSuppressExpression,
 			},
 			"branding_favicon": {
 				Type:     schema.TypeString,
@@ -76,6 +77,10 @@ func resourceBrand() *schema.Resource {
 				Optional: true,
 			},
 			"flow_lockdown": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"flow_user_switch": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -122,6 +127,7 @@ func resourceBrandSchemaToModel(d *schema.ResourceData) (*api.BrandRequest, diag
 		FlowUserSettings:              *api.NewNullableString(helpers.GetP[string](d, "flow_user_settings")),
 		FlowDeviceCode:                *api.NewNullableString(helpers.GetP[string](d, "flow_device_code")),
 		FlowLockdown:                  *api.NewNullableString(helpers.GetP[string](d, "flow_lockdown")),
+		FlowUserSwitch:                *api.NewNullableString(helpers.GetP[string](d, "flow_user_switch")),
 		WebCertificate:                *api.NewNullableString(helpers.GetP[string](d, "web_certificate")),
 		ClientCertificates:            helpers.CastSlice[string](d, "client_certificates"),
 		DefaultApplication:            *api.NewNullableString(helpers.GetP[string](d, "default_application")),
@@ -171,6 +177,7 @@ func resourceBrandRead(ctx context.Context, d *schema.ResourceData, m any) diag.
 	helpers.SetWrapper(d, "flow_user_settings", res.FlowUserSettings.Get())
 	helpers.SetWrapper(d, "flow_device_code", res.FlowDeviceCode.Get())
 	helpers.SetWrapper(d, "flow_lockdown", res.FlowLockdown.Get())
+	helpers.SetWrapper(d, "flow_user_switch", res.FlowUserSwitch.Get())
 	helpers.SetWrapper(d, "web_certificate", res.WebCertificate.Get())
 	helpers.SetWrapper(d, "client_certificates", helpers.ListConsistentMerge(
 		helpers.CastSlice[string](d, "client_certificates"),

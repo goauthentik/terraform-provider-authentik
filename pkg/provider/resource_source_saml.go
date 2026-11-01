@@ -210,7 +210,7 @@ func resourceSourceSAMLSchemaToSource(d *schema.ResourceData) *api.SAMLSourceReq
 		VerificationKp:           *api.NewNullableString(helpers.GetP[string](d, "verification_kp")),
 		SignedAssertion:          new(d.Get("signed_assertion").(bool)),
 		SignedResponse:           new(d.Get("signed_response").(bool)),
-		Issuer:                   new(d.Get("issuer").(string)),
+		IssuerOverride:           new(d.Get("issuer").(string)),
 		AllowIdpInitiated:        new(d.Get("allow_idp_initiated").(bool)),
 		ForceAuthn:               new(d.Get("force_authn").(bool)),
 		TemporaryUserDeleteAfter: new(d.Get("temporary_user_delete_after").(string)),
@@ -258,7 +258,7 @@ func resourceSourceSAMLRead(ctx context.Context, d *schema.ResourceData, m any) 
 	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
 	helpers.SetWrapper(d, "pre_authentication_flow", res.PreAuthenticationFlow)
-	helpers.SetWrapper(d, "issuer", res.Issuer)
+	helpers.SetWrapper(d, "issuer", res.IssuerOverride)
 	helpers.SetWrapper(d, "sso_url", res.SsoUrl)
 	helpers.SetWrapper(d, "slo_url", res.SloUrl.Get())
 	helpers.SetWrapper(d, "allow_idp_initiated", res.AllowIdpInitiated)

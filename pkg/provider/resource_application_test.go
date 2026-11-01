@@ -12,7 +12,7 @@ import (
 
 func TestAccResourceApplication(t *testing.T) {
 	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
@@ -38,7 +38,7 @@ func TestAccResourceApplication(t *testing.T) {
 					resource.TestCheckResourceAttr("authentik_application.name", "slug", rName),
 					resource.TestCheckResourceAttr("authentik_application.name", "protocol_provider", "0"),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_launch_url", ""),
-					resource.TestCheckResourceAttr("authentik_application.name", "meta_icon", ""),
+					resource.TestCheckResourceAttr("authentik_application.name", "meta_icon", "http://localhost/"),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_description", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "meta_publisher", ""),
 					resource.TestCheckResourceAttr("authentik_application.name", "group", ""),
