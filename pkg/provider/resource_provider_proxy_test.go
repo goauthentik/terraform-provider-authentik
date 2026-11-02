@@ -196,7 +196,7 @@ resource "authentik_provider_proxy" "test" {
 			),
 		})
 	}
-	resource.UnitTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps:             steps,
