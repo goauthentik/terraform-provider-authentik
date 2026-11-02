@@ -104,9 +104,9 @@ func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m any) dia
 			case "email":
 				req = req.Email(v.(string))
 			case "groups_by_name":
-				req = req.GroupsByName(v.([]string))
+				req = req.GroupsByName(helpers.CastSlice[string](d, key))
 			case "groups_by_pk":
-				req = req.GroupsByPk(v.([]string))
+				req = req.GroupsByPk(helpers.CastSlice[string](d, key))
 			case "is_active":
 				req = req.IsActive(v.(bool))
 			case "is_superuser":
