@@ -62,14 +62,14 @@ resource "authentik_source_oauth" "name" {
 
 ### Optional
 
-- `access_token_url` (String) Only required for OAuth1.
+- `access_token_url` (String) Only required for OAuth1. Generated.
 - `additional_scopes` (String)
 - `authentication_flow` (String)
 - `authorization_code_auth_method` (String) Allowed values:
   - `basic_auth`
   - `post_body`
  Defaults to `basic_auth`.
-- `authorization_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
+- `authorization_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set. Generated.
 - `enabled` (Boolean) Defaults to `true`.
 - `enrollment_flow` (String)
 - `group_matching_mode` (String) Allowed values:
@@ -78,7 +78,7 @@ resource "authentik_source_oauth" "name" {
   - `name_deny`
  Defaults to `identifier`.
 - `oidc_jwks` (String) Manually configure JWKS keys for use with machine-to-machine authentication. JSON format expected. Use `jsonencode()` to pass objects. Generated.
-- `oidc_jwks_url` (String) Automatically configure JWKS if not specified by `oidc_well_known_url`.
+- `oidc_jwks_url` (String) Automatically configure JWKS if not specified by `oidc_well_known_url`. Generated.
 - `oidc_well_known_url` (String) Automatically configure source from OIDC well-known endpoint. URL is taken as is, and should end with `.well-known/openid-configuration`.
 - `pkce` (String) Allowed values:
   - `none`
@@ -89,7 +89,7 @@ resource "authentik_source_oauth" "name" {
   - `all`
   - `any`
  Defaults to `any`.
-- `profile_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set.
+- `profile_url` (String) Manually configure OAuth2 URLs when `oidc_well_known_url` is not set. Generated.
 - `promoted` (Boolean) Defaults to `false`.
 - `property_mappings` (List of String)
 - `property_mappings_group` (List of String)
