@@ -45,7 +45,8 @@ resource "authentik_group" "group" {
 
 resource "authentik_provider_google_workspace" "name" {
   name = "%[1]s"
-  default_group_email_domain = "goauthentik.io"
+  default_group_email_domain = "t.goauthentik.io"
+  delegated_subject = "test@t.goauthentik.io"
   %[2]s
 }
 `, name, fg)
