@@ -5,9 +5,15 @@ resource "authentik_provider_oauth2" "name" {
   client_id = "grafana"
   allowed_redirect_uris = [
     {
-      matching_mode = "strict",
-      url           = "http://localhost",
-    }
+      matching_mode     = "strict",
+      url               = "http://localhost/oauth2/callback",
+      redirect_uri_type = "authorization",
+    },
+    {
+      matching_mode     = "strict",
+      url               = "http://localhost/oauth2/logout",
+      redirect_uri_type = "logout",
+    },
   ]
 }
 
