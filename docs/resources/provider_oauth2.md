@@ -19,9 +19,15 @@ resource "authentik_provider_oauth2" "name" {
   client_id = "grafana"
   allowed_redirect_uris = [
     {
-      matching_mode = "strict",
-      url           = "http://localhost",
-    }
+      matching_mode     = "strict",
+      url               = "http://localhost/oauth2/callback",
+      redirect_uri_type = "authorization",
+    },
+    {
+      matching_mode     = "strict",
+      url               = "http://localhost/oauth2/logout",
+      redirect_uri_type = "logout",
+    },
   ]
 }
 
@@ -46,7 +52,10 @@ resource "authentik_application" "name" {
 
 - `access_code_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=1`.
 - `access_token_validity` (String) Format: hours=1;minutes=2;seconds=3. Defaults to `minutes=10`.
-- `allowed_redirect_uris` (List of Map of String)
+- `allowed_redirect_uris` (List of Map of String) List of allowed redirect URIs. Each entry is a map with the following keys:
+  - `matching_mode` (Required): `strict` or `regex`
+  - `url` (Required): the redirect URI or, with `matching_mode = "regex"`, a regular expression
+  - `redirect_uri_type` (Optional): `authorization` for authorization redirects or `logout` for post-logout redirects. Defaults to `authorization`.
 - `authentication_flow` (String)
 - `client_secret` (String, Sensitive) Generated.
 - `client_type` (String) Allowed values:
