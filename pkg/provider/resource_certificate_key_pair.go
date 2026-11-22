@@ -79,7 +79,11 @@ func resourceCertificateKeyPairRead(ctx context.Context, d *schema.ResourceData,
 
 	rk, _, err := c.client.CryptoAPI.CryptoCertificatekeypairsViewPrivateKeyRetrieve(ctx, d.Id()).Execute()
 	if err == nil {
-		helpers.SetWrapper(d, "key_data", rk.Data+"\n")
+		if rk.Data != "" {
+			helpers.SetWrapper(d, "key_data", rk.Data+"\n")
+		} else {
+			helpers.SetWrapper(d, "key_data", "")
+		}
 	}
 
 	return diags
