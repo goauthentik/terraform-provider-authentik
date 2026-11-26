@@ -3,7 +3,7 @@ SHELL = /bin/bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-TESTARGS=-v -race -cover -coverprofile=coverage.txt -covermode=atomic -timeout 25m
+TESTARGS=-v -parallel 4 -race -cover -coverprofile=coverage.txt -covermode=atomic -timeout 25m
 
 GEN_API_GO = gen-go-api
 AUTHENTIK_MAIN = authentik_main
