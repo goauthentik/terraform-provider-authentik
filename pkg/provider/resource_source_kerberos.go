@@ -221,7 +221,7 @@ func resourceSourceKerberosRead(ctx context.Context, d *schema.ResourceData, m a
 	helpers.SetWrapper(d, "promoted", res.Promoted)
 	helpers.SetWrapper(d, "policy_engine_mode", res.PolicyEngineMode)
 	helpers.SetWrapper(d, "user_matching_mode", res.UserMatchingMode)
-	helpers.SetWrapper(d, "group_matching_mode", res.UserMatchingMode)
+	helpers.SetWrapper(d, "group_matching_mode", res.GroupMatchingMode)
 
 	helpers.SetWrapper(d, "realm", res.Realm)
 	helpers.SetWrapper(d, "krb5_conf", res.Krb5Conf)
