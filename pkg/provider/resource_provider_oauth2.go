@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"slices"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -285,6 +286,28 @@ func redirectURIsToList(raw []CustomRedirectURI) []map[string]any {
 	return rus
 }
 
+// mergeRedirectURIs builds the state value of allowed_redirect_uris from the
+// configured entries and the ones authentik returned, keeping the config order.
+//
+// authentik stores `authorization` for entries created without a type. If the
+// matching config entry doesn't set redirect_uri_type, that default is left out
+// of state, so it doesn't show up as a diff on every plan.
+func mergeRedirectURIs(config []any, server []api.RedirectURI) []map[string]any {
+	configured := listToRedirectURIs(config)
+	returned := castRedirectURIs(server)
+	for i, r := range returned {
+		if r.RedirectUriType != api.REDIRECTURITYPEENUM_AUTHORIZATION {
+			continue
+		}
+		untyped := r
+		untyped.RedirectUriType = ""
+		if slices.Contains(configured, untyped) {
+			returned[i] = untyped
+		}
+	}
+	return redirectURIsToList(helpers.ListConsistentMerge(configured, returned))
+}
+
 func resourceProviderOAuth2Create(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
 	c := m.(*APIClient)
 
@@ -327,11 +350,9 @@ func resourceProviderOAuth2Read(ctx context.Context, d *schema.ResourceData, m a
 		helpers.CastSlice[string](d, "property_mappings"),
 		res.PropertyMappings,
 	))
-	helpers.SetWrapper(d, "allowed_redirect_uris", redirectURIsToList(
-		helpers.ListConsistentMerge(
-			listToRedirectURIs(d.Get("allowed_redirect_uris").([]any)),
-			castRedirectURIs(res.RedirectUris),
-		),
+	helpers.SetWrapper(d, "allowed_redirect_uris", mergeRedirectURIs(
+		d.Get("allowed_redirect_uris").([]any),
+		res.RedirectUris,
 	))
 	helpers.SetWrapper(d, "signing_key", res.SigningKey.Get())
 	helpers.SetWrapper(d, "encryption_key", res.EncryptionKey.Get())

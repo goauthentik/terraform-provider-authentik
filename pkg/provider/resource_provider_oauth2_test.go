@@ -70,6 +70,50 @@ func TestAccResourceProviderOAuth2_WithSecret(t *testing.T) {
 	})
 }
 
+// Redirect URIs without redirect_uri_type get "authorization" from authentik.
+// The plan after apply must be empty (#956).
+func TestAccResourceProviderOAuth2_RedirectURIWithoutType(t *testing.T) {
+	rName := acctest.RandStringFromCharSet(10, acctest.CharSetAlphaNum)
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: providerFactories,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccResourceProviderOAuth2RedirectURIWithoutType(rName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "allowed_redirect_uris.#", "1"),
+					resource.TestCheckResourceAttr("authentik_provider_oauth2.name", "allowed_redirect_uris.0.url", "http://localhost/callback"),
+					resource.TestCheckNoResourceAttr("authentik_provider_oauth2.name", "allowed_redirect_uris.0.redirect_uri_type"),
+				),
+			},
+		},
+	})
+}
+
+func testAccResourceProviderOAuth2RedirectURIWithoutType(name string) string {
+	return fmt.Sprintf(`
+data "authentik_flow" "default-authorization-flow" {
+  slug = "default-provider-authorization-implicit-consent"
+}
+data "authentik_flow" "default-provider-invalidation-flow" {
+  slug = "default-provider-invalidation-flow"
+}
+
+resource "authentik_provider_oauth2" "name" {
+  name               = "%[1]s"
+  client_id          = "%[1]s"
+  authorization_flow = data.authentik_flow.default-authorization-flow.id
+  invalidation_flow  = data.authentik_flow.default-provider-invalidation-flow.id
+  allowed_redirect_uris = [
+    {
+      matching_mode = "strict",
+      url           = "http://localhost/callback",
+    }
+  ]
+}
+`, name)
+}
+
 func testAccResourceProviderOAuth2(name string, appName string) string {
 	return fmt.Sprintf(`
 data "authentik_flow" "default-authorization-flow" {
